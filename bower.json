@@ -1,0 +1,30 @@
+{
+  "name": "flickity",
+  "version": "0.0.0",
+  "authors": [
+    "David DeSandro <desandrocodes@gmail.com>"
+  ],
+  "description": "Touch responsive gallery",
+  "main": "src/flickity.js",
+  "dependencies": {
+    "get-size": "~1.2.2"
+  },
+  "moduleType": [
+    "amd",
+    "globals",
+    "node"
+  ],
+  "keywords": [
+    "gallery",
+    "carousel",
+    "touch"
+  ],
+  "license": "GPL",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ]
+}

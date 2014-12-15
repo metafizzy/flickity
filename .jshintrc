@@ -1,0 +1,12 @@
+{
+  "browser": true,
+  "devel": false,
+  "strict": true,
+  "undef": true,
+  "unused": true,
+  "predef": {
+    "define": false,
+    "module": false,
+    "require": false
+  }
+}
