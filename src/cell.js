@@ -9,6 +9,7 @@ function Cell( elem, parent ) {
 
 Cell.prototype.create = function() {
   this.element.style.position = 'absolute';
+  this.x = 0;
 };
 
 Cell.prototype.getSize = function() {
@@ -16,8 +17,10 @@ Cell.prototype.getSize = function() {
 };
 
 Cell.prototype.setPosition = function( x ) {
+  this.x = x;
+  this.target = x + this.size.width / 2;
   this.element.style.left = x + 'px';
-}
+};
 
 window.Cell = Cell;
 

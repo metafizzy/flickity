@@ -82,6 +82,8 @@ Flickity.prototype._create = function() {
   this.velocity = 0;
   this.accel = 0;
 
+  this.selectedIndex = 0;
+
   // set up elements
   // style element
   this.element.style.position = 'relative';
@@ -155,8 +157,8 @@ Flickity.prototype.positionCells = function() {
   var cellX = 0;
   for ( var i=0, len = this.cells.length; i < len; i++ ) {
     var cell = this.cells[i];
-    cell.setPosition( cellX );
     cell.getSize();
+    cell.setPosition( cellX );
     cellX += cell.size.outerWidth;
   }
 };
@@ -221,27 +223,54 @@ Flickity.prototype.dragMove = function( movePoint, event, pointer ) {
 };
 
 Flickity.prototype.dragEnd = function( event, pointer ) {
-  if ( isFinite( this.previousX ) ) {
-    // set slider velocity
-    var timeDelta = this.dragMoveTime - this.previousDragMoveTime;
-    // 60 frames per second, ideally
-    // TODO, velocity should be in pixels per millisecond
-    // currently in pixels per frame
-    timeDelta /= 1000 / 60;
-    var xDelta = this.x - this.previousX;
-    this.velocity = xDelta / timeDelta;
-    // reset
-    delete this.previousX;
-  }
+  this.dragEndFlick();
 
   this.isDragging = false;
 
   this.emitEvent( 'dragEnd', [ this, event, pointer ] );
 };
 
+// apply velocity after dragging
+Flickity.prototype.dragEndFlick = function() {
+  if ( !isFinite( this.previousX ) ) {
+    return;
+  }
+  // set slider velocity
+  var timeDelta = this.dragMoveTime - this.previousDragMoveTime;
+  // 60 frames per second, ideally
+  // TODO, velocity should be in pixels per millisecond
+  // currently in pixels per frame
+  timeDelta /= 1000 / 60;
+  var xDelta = this.x - this.previousX;
+  this.velocity = xDelta / timeDelta;
+  // reset
+  delete this.previousX;
+};
+
+// -------------------------- select -------------------------- //
+
+Flickity.prototype.select = function( index ) {
+  if ( this.cells[ index ] ) {
+    this.selectedIndex = index;
+  }
+};
+
+Flickity.prototype.selectPrevious = function() {
+  this.select( this.selectedIndex - 1);
+};
+
+Flickity.prototype.selectNext = function() {
+  this.select( this.selectedIndex + 1 );
+};
+
 // -------------------------- animate -------------------------- //
 
 Flickity.prototype.animate = function() {
+  if ( !this.isDragging ) {
+    var force = this.getSelectedAttraction();
+    this.applyForce( force );
+  }
+
   this.updatePhysics();
   this.positionSlider();
 
@@ -282,6 +311,20 @@ Flickity.prototype.getRestingPosition = function() {
   }
   return restX;
 };
+
+Flickity.prototype.getSelectedAttraction = function() {
+  var cell = this.cells[ this.selectedIndex ];
+  var distance = -cell.target - this.x;
+  var force = distance * 0.025;
+    if ( isNaN( force ) ) {
+      debugger
+    }
+  return force;
+};
+
+// --------------------------  -------------------------- //
+
+// --------------------------  -------------------------- //
 
 window.Flickity = Flickity;
 
