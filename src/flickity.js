@@ -249,7 +249,7 @@ Flickity.prototype.dragEndFlick = function() {
     return;
   }
   // set slider velocity
-  var timeDelta = this.dragMoveTime - this.previousDragMoveTime;
+  var timeDelta = ( new Date() ) - this.previousDragMoveTime;
   // 60 frames per second, ideally
   // TODO, velocity should be in pixels per millisecond
   // currently in pixels per frame
