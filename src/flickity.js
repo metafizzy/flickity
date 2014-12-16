@@ -69,7 +69,8 @@ function Flickity( element, options ) {
 }
 
 Flickity.defaults = {
-  friction: 0.2
+  friction: 0.2,
+  cursorPosition: 0.5
 };
 
 // inherit EventEmitter
@@ -106,11 +107,12 @@ Flickity.prototype._create = function() {
   firstCell.getSize();
   this.element.style.height = firstCell.size.outerHeight + 'px';
 
+  this.getSize();
+
   // events
-
-
   this.element.addEventListener( 'mousedown', this, false );
 
+  // kick off animation
   this.animate();
 
 };
@@ -161,6 +163,11 @@ Flickity.prototype.positionCells = function() {
     cell.setPosition( cellX );
     cellX += cell.size.outerWidth;
   }
+};
+
+Flickity.prototype.getSize = function() {
+  this.size = getSize( this.element );
+  this.cursorPosition = this.size.outerWidth * this.options.cursorPosition;
 };
 
 // -------------------------- pointer events -------------------------- //
@@ -224,6 +231,7 @@ Flickity.prototype.dragMove = function( movePoint, event, pointer ) {
 
 Flickity.prototype.dragEnd = function( event, pointer ) {
   this.dragEndFlick();
+  this.dragEndSelect();
 
   this.isDragging = false;
 
@@ -245,6 +253,21 @@ Flickity.prototype.dragEndFlick = function() {
   this.velocity = xDelta / timeDelta;
   // reset
   delete this.previousX;
+};
+
+Flickity.prototype.dragEndSelect = function() {
+  var restingX = this.getRestingPosition();
+  // get closest attractor to end position
+  var minDistance = Infinity;
+  var distance;
+  for ( var i=0, len = this.cells.length; i < len; i++ ) {
+    var cell = this.cells[i];
+    distance = Math.abs( -restingX - cell.target );
+    if ( distance < minDistance ) {
+      this.selectedIndex = i;
+      minDistance = distance;
+    }
+  }
 };
 
 // -------------------------- select -------------------------- //
@@ -281,7 +304,7 @@ Flickity.prototype.animate = function() {
 };
 
 Flickity.prototype.positionSlider = function() {
-  this.slider.style.left = this.x + 'px';
+  this.slider.style.left = ( this.x + this.cursorPosition ) + 'px';
 };
 
 // -------------------------- physics -------------------------- //
@@ -316,9 +339,6 @@ Flickity.prototype.getSelectedAttraction = function() {
   var cell = this.cells[ this.selectedIndex ];
   var distance = -cell.target - this.x;
   var force = distance * 0.025;
-    if ( isNaN( force ) ) {
-      debugger
-    }
   return force;
 };
 
