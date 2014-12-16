@@ -1,6 +1,6 @@
 {
   "browser": true,
-  "devel": false,
+  "devel": true,
   "strict": true,
   "undef": true,
   "unused": true,

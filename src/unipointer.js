@@ -197,6 +197,23 @@ Unipointer.prototype.ontouchcancel = function( event ) {
   this._pointerUp( event, touch );
 };
 
+// -----  ----- //
+
+Unipointer.getPointerPoint = function( pointer ) {
+  return {
+    x: pointer.pageX !== undefined ? pointer.pageX : pointer.clientX,
+    y: pointer.pageY !== undefined ? pointer.pageY : pointer.clientY
+  }
+};
+
+// fix for IE8
+Unipointer.setPointerPoint = function( point, pointer ) {
+  point.x = pointer.pageX !== undefined ? pointer.pageX : pointer.clientX;
+  point.y = pointer.pageY !== undefined ? pointer.pageY : pointer.clientY;
+};
+
+// -----  ----- //
+
 window.Unipointer = Unipointer;
 
 })( window );
