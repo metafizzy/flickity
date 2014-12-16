@@ -231,7 +231,12 @@ Flickity.prototype.dragMove = function( movePoint, event, pointer ) {
 
 Flickity.prototype.dragEnd = function( event, pointer ) {
   this.dragEndFlick();
-  this.dragEndSelect();
+  var previousIndex = this.selectedIndex;
+  this.dragEndRestingSelect();
+  // boost selection if selected index has not changed
+  if ( this.selectedIndex === previousIndex ) {
+    this.dragEndBoostSelect();
+  }
 
   this.isDragging = false;
 
@@ -255,7 +260,7 @@ Flickity.prototype.dragEndFlick = function() {
   delete this.previousX;
 };
 
-Flickity.prototype.dragEndSelect = function() {
+Flickity.prototype.dragEndRestingSelect = function() {
   var restingX = this.getRestingPosition();
   // get closest attractor to end position
   var minDistance = Infinity;
@@ -267,6 +272,18 @@ Flickity.prototype.dragEndSelect = function() {
       this.selectedIndex = i;
       minDistance = distance;
     }
+  }
+};
+
+Flickity.prototype.dragEndBoostSelect = function() {
+  var selectedCell = this.cells[ this.selectedIndex ];
+  var distance = -this.x - selectedCell.target;
+  if ( distance > 0 && this.velocity < -1 ) {
+    // if moving towards the right, and positive velocity, and the next attractor
+    this.selectNext();
+  } else if ( distance < 0 && this.velocity > 1 ) {
+    // if moving towards the left, and negative velocity, and previous attractor
+    this.selectPrevious();
   }
 };
 
@@ -304,7 +321,7 @@ Flickity.prototype.animate = function() {
 };
 
 Flickity.prototype.positionSlider = function() {
-  this.slider.style.left = ( this.x + this.cursorPosition ) + 'px';
+  this.slider.style.left = Math.round( this.x + this.cursorPosition ) + 'px';
 };
 
 // -------------------------- physics -------------------------- //
