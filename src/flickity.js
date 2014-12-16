@@ -105,9 +105,11 @@ Flickity.prototype._create = function() {
   // set height
   this.getSize();
   var firstCell = this.cells[0];
-  firstCell.getSize();
   this.element.style.height = firstCell.size.outerHeight +
     this.size.borderTopWidth + this.size.borderBottomWidth + 'px';
+
+  var selectedCell = this.cells[ this.selectedIndex ];
+  this.x = -selectedCell.target;
 
   // events
   this.element.addEventListener( 'mousedown', this, false );
