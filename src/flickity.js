@@ -69,6 +69,7 @@ function Flickity( element, options ) {
 }
 
 Flickity.defaults = {
+  friction: 0.2
 };
 
 // inherit EventEmitter
@@ -78,6 +79,8 @@ U.extend( Flickity.prototype, Unipointer.prototype );
 Flickity.prototype._create = function() {
   // variables
   this.x = 0;
+  this.velocity = 0;
+  this.accel = 0;
 
   // set up elements
   // style element
@@ -186,7 +189,7 @@ Flickity.prototype.pointerMove = function( event, pointer ) {
 
 
 Flickity.prototype.pointerUp = function( event, pointer ) {
-  this.isDragging = false;
+  this.dragEnd( event, pointer );
 
   // this.emitEvent( 'dragMove', [ this, event, pointer ] );
 };
@@ -206,15 +209,40 @@ Flickity.prototype.dragMove = function( movePoint, event, pointer ) {
     return;
   }
 
+  this.previousX = this.x;
+
   var movedX = movePoint.x - this.dragStartPoint.x;
   this.x = this.dragStartPosition + movedX;
 
+  this.previousDragMoveTime = this.dragMoveTime;
+  this.dragMoveTime = new Date();
+
   this.emitEvent( 'dragMove', [ this, event, pointer ] );
+};
+
+Flickity.prototype.dragEnd = function( event, pointer ) {
+  if ( isFinite( this.previousX ) ) {
+    // set slider velocity
+    var timeDelta = this.dragMoveTime - this.previousDragMoveTime;
+    // 60 frames per second, ideally
+    // TODO, velocity should be in pixels per millisecond
+    // currently in pixels per frame
+    timeDelta /= 1000 / 60;
+    var xDelta = this.x - this.previousX;
+    this.velocity = xDelta / timeDelta;
+    // reset
+    delete this.previousX;
+  }
+
+  this.isDragging = false;
+
+  this.emitEvent( 'dragEnd', [ this, event, pointer ] );
 };
 
 // -------------------------- animate -------------------------- //
 
 Flickity.prototype.animate = function() {
+  this.updatePhysics();
   this.positionSlider();
 
   var _this = this;
@@ -227,6 +255,33 @@ Flickity.prototype.positionSlider = function() {
   this.slider.style.left = this.x + 'px';
 };
 
+// -------------------------- physics -------------------------- //
+
+Flickity.prototype.updatePhysics = function() {
+  this.velocity += this.accel;
+  this.velocity *= ( 1 - this.options.friction );
+  this.x += this.velocity;
+  // reset acceleration
+  this.accel = 0;
+};
+
+Flickity.prototype.applyForce = function( force ) {
+  this.accel += force;
+};
+
+
+var restingVelo = 0.07;
+
+Flickity.prototype.getRestingPosition = function() {
+  // little simulation where thing will rest
+  var velo = this.velocity;
+  var restX = this.x;
+  while ( Math.abs( velo ) > restingVelo ) {
+    velo *= 1 - this.options.friction;
+    restX += velo;
+  }
+  return restX;
+};
 
 window.Flickity = Flickity;
 
