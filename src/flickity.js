@@ -38,7 +38,7 @@ Flickity.prototype = new EventEmitter();
 Flickity.prototype._create = function() {
 
   this.element.style.position = 'relative';
-
+  this.element.style.overflow = 'hidden';
 
   // slider element does all the positioning
   this.slider = document.createElement('div');
@@ -48,13 +48,17 @@ Flickity.prototype._create = function() {
 
   // wrap child elements in slider
   while ( this.element.children.length ) {
-    this.slider.appendChild( this.element.children[0] )
+    this.slider.appendChild( this.element.children[0] );
   }
   this.element.appendChild( this.slider );
 
 
   // get cells from children
   this.reloadCells();
+
+  var firstCell = this.cells[0];
+  firstCell.getSize();
+  this.element.style.height = firstCell.size.outerHeight + 'px';
 
 };
 
@@ -70,6 +74,7 @@ Flickity.prototype.option = function( opts ) {
 Flickity.prototype.reloadCells = function() {
   // collection of item elements
   this.cells = this._makeCells( this.slider.children );
+  this.positionCells( this.cells );
 };
 
 /**
@@ -89,6 +94,20 @@ Flickity.prototype._makeCells = function( elems ) {
   }
 
   return cells;
+};
+
+
+/**
+ * @param {Array} cells - Array of Cells
+ */
+Flickity.prototype.positionCells = function() {
+  var cellX = 0;
+  for ( var i=0, len = this.cells.length; i < len; i++ ) {
+    var cell = this.cells[i];
+    cell.setPosition( cellX );
+    cell.getSize();
+    cellX += cell.size.outerWidth;
+  }
 };
 
 
