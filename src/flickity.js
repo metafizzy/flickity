@@ -3,7 +3,7 @@
  * Touch responsive gallery
  */
 
-/*global EventEmitter: false, Cell: false */
+/*global EventEmitter: false, Cell: false, getSize: false */
 
 ( function( window ) {
 
@@ -69,7 +69,7 @@ function Flickity( element, options ) {
 }
 
 Flickity.defaults = {
-  friction: 0.2,
+  friction: 0.25,
   cursorPosition: 0.5
 };
 
@@ -103,11 +103,11 @@ Flickity.prototype._create = function() {
   // get cells from children
   this.reloadCells();
   // set height
+  this.getSize();
   var firstCell = this.cells[0];
   firstCell.getSize();
-  this.element.style.height = firstCell.size.outerHeight + 'px';
-
-  this.getSize();
+  this.element.style.height = firstCell.size.outerHeight +
+    this.size.borderTopWidth + this.size.borderBottomWidth + 'px';
 
   // events
   this.element.addEventListener( 'mousedown', this, false );
@@ -167,7 +167,7 @@ Flickity.prototype.positionCells = function() {
 
 Flickity.prototype.getSize = function() {
   this.size = getSize( this.element );
-  this.cursorPosition = this.size.outerWidth * this.options.cursorPosition;
+  this.cursorPosition = this.size.innerWidth * this.options.cursorPosition;
 };
 
 // -------------------------- pointer events -------------------------- //

@@ -18,7 +18,7 @@ Cell.prototype.getSize = function() {
 
 Cell.prototype.setPosition = function( x ) {
   this.x = x;
-  this.target = x + this.size.innerWidth / 2;
+  this.target = x + this.size.width / 2;
   this.element.style.left = x + 'px';
 };
 
