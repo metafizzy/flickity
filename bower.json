@@ -8,7 +8,8 @@
   "main": "src/flickity.js",
   "dependencies": {
     "get-size": "~1.2.2",
-    "matches-selector": "~1.0.2"
+    "matches-selector": "~1.0.2",
+    "eventEmitter": "~4.2.11"
   },
   "moduleType": [
     "amd",

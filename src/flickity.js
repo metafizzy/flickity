@@ -1,7 +1,6 @@
 /*!
  * Flickity
  * Touch responsive gallery
- * http://isotope.metafizzy.co
  */
 
 /*global EventEmitter: false, Cell: false */
@@ -39,6 +38,14 @@ Flickity.prototype = new EventEmitter();
 Flickity.prototype._create = function() {
   // get cells from children
   this.reloadCells();
+};
+
+/**
+ * set options
+ * @param {Object} opts
+ */
+Flickity.prototype.option = function( opts ) {
+  U.extend( this.options, opts );
 };
 
 // goes through all children

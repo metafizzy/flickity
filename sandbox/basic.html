@@ -1,0 +1,46 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+
+  <title>basic1</title>
+
+  <link rel="stylesheet" href="sandbox" />
+
+</head>
+<body>
+
+  <h1>basic1</h1>
+
+  <div id="full-width" class="container">
+    <div class="cell"></div>
+    <div class="cell"></div>
+    <div class="cell"></div>
+    <div class="cell"></div>
+    <div class="cell"></div>
+    <div class="cell"></div>
+    <div class="cell"></div>
+  </div>
+
+<script src="../bower_components/get-style-property/get-style-property.js"></script>
+<script src="../bower_components/get-size/get-size.js"></script>
+<script src="../bower_components/matches-selector/matches-selector.js"></script>
+<script src="../bower_components/eventEmitter/EventEmitter.js"></script>
+
+<script src="../src/utils.js"></script>
+<script src="../src/cell.js"></script>
+<script src="../src/flickity.js"></script>
+
+<script>
+
+window.onload = function() {
+
+  var flky = window.flky = new Flickity( '#full-width' );
+
+};
+
+
+</script>
+
+</body>
+</html>

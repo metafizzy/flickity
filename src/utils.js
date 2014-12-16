@@ -70,6 +70,18 @@ U.removeFrom = function( obj, ary ) {
   }
 };
 
+// ----- isElement ----- //
+
+// http://stackoverflow.com/a/384380/182183
+U.isElement = ( typeof HTMLElement === 'function' || typeof HTMLElement === 'object' ) ?
+  function isElementDOM2( obj ) {
+    return obj instanceof HTMLElement;
+  } :
+  function isElementQuirky( obj ) {
+    return obj && typeof obj === 'object' &&
+      obj.nodeType === 1 && typeof obj.nodeName === 'string';
+  };
+
 // ----- filterFindElements ----- //
 
 U.filterFindElements = function( elems, selector ) {

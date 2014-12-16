@@ -1,0 +1,34 @@
+* {
+  -webkit-box-sizing: border-box;
+     -moz-box-sizing: border-box;
+          box-sizing: border-box;
+}
+
+body {
+  font-family: sans-serif;
+  color: #333;
+}
+
+.container {
+  border: 1px solid;
+}
+
+.container:after {
+  content: '';
+  display: block;
+  clear: both;
+}
+
+.cell {
+  width: 100%;
+  height: 200px;
+  border: 1px solid #888;
+  background: #CCC;
+}
+
+.cell:nth-child(6n) { background: hsl(0, 80%, 70%); }
+.cell:nth-child(6n+1) { background: hsl(60, 80%, 70%); }
+.cell:nth-child(6n+2) { background: hsl(120, 80%, 70%); }
+.cell:nth-child(6n+3) { background: hsl(180, 80%, 70%); }
+.cell:nth-child(6n+4) { background: hsl(240, 80%, 70%); }
+.cell:nth-child(6n+5) { background: hsl(300, 80%, 70%); }
