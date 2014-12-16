@@ -33,32 +33,39 @@ Flickity.defaults = {
 };
 
 // inherit EventEmitter
-Flickity.prototype = new EventEmitter();
+U.extend( Flickity.prototype, EventEmitter.prototype );
+U.extend( Flickity.prototype, Unipointer.prototype );
 
 Flickity.prototype._create = function() {
+  // variables
+  this.x = 0;
 
+  // set up elements
+  // style element
   this.element.style.position = 'relative';
   this.element.style.overflow = 'hidden';
-
   // slider element does all the positioning
   this.slider = document.createElement('div');
   this.slider.className = 'flickity-slider';
   this.slider.style.position = 'absolute';
   this.slider.style.width = '100%';
-
   // wrap child elements in slider
   while ( this.element.children.length ) {
     this.slider.appendChild( this.element.children[0] );
   }
   this.element.appendChild( this.slider );
 
-
   // get cells from children
   this.reloadCells();
-
+  // set height
   var firstCell = this.cells[0];
   firstCell.getSize();
   this.element.style.height = firstCell.size.outerHeight + 'px';
+
+  // events
+
+
+  this.element.addEventListener( 'mousedown', this, false );
 
 };
 
@@ -109,6 +116,22 @@ Flickity.prototype.positionCells = function() {
     cellX += cell.size.outerWidth;
   }
 };
+
+// -------------------------- pointer events -------------------------- //
+
+Flickity.prototype.pointerDown = function( event, pointer ) {
+  console.log('pointer down');
+}
+
+Flickity.prototype.pointerMove = function( event, pointer ) {
+  console.log('pointer move');
+}
+
+Flickity.prototype.pointerUp = function( event, pointer ) {
+  console.log('pointer up');
+}
+
+// --------------------------  -------------------------- //
 
 
 window.Flickity = Flickity;
