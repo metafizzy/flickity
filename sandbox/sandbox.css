@@ -10,7 +10,8 @@ body {
 }
 
 .container {
-  border: 10px solid;
+  border: 1px solid;
+  margin-bottom: 20px;
 }
 
 .container:after {
@@ -22,7 +23,7 @@ body {
 .cell {
   width: 100%;
   height: 200px;
-  border: 10px solid white;
+  border: 0px solid white;
   background: #CCC;
 }
 
@@ -32,3 +33,8 @@ body {
 .cell:nth-child(6n+3) { background: hsl(180, 80%, 70%); }
 .cell:nth-child(6n+4) { background: hsl(240, 80%, 70%); }
 .cell:nth-child(6n+5) { background: hsl(300, 80%, 70%); }
+
+#half-width .cell {
+  width: 48%;
+  margin-right: 4%;
+}

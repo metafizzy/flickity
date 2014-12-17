@@ -70,7 +70,8 @@ function Flickity( element, options ) {
 
 Flickity.defaults = {
   friction: 0.25,
-  cursorPosition: 0.5
+  cursorPosition: 0.5,
+  targetPosition: 0.5
 };
 
 // inherit EventEmitter

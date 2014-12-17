@@ -22,6 +22,19 @@
     <div class="cell" n7></div>
   </div>
 
+  <div id="half-width" class="container">
+    <div class="cell"></div>
+    <div class="cell"></div>
+    <div class="cell"></div>
+    <div class="cell"></div>
+    <div class="cell"></div>
+    <div class="cell"></div>
+    <div class="cell"></div>
+    <div class="cell"></div>
+    <div class="cell"></div>
+    <div class="cell"></div>
+  </div>
+
 <script src="../bower_components/get-style-property/get-style-property.js"></script>
 <script src="../bower_components/get-size/get-size.js"></script>
 <script src="../bower_components/matches-selector/matches-selector.js"></script>
@@ -38,6 +51,11 @@
 window.onload = function() {
 
   var flky = window.flky = new Flickity( '#full-width' );
+
+  var halfWidthflky = new Flickity( '#half-width', {
+    cursorPosition: 0,
+    targetPosition: 0
+  });
 
 };
 
