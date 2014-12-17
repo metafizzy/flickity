@@ -3,7 +3,7 @@
  * Touch responsive gallery
  */
 
-/*global EventEmitter: false, Cell: false, getSize: false */
+/*global EventEmitter: false, Cell: false, getSize: false, getStyleProperty: false */
 
 ( function( window ) {
 
@@ -323,8 +323,15 @@ Flickity.prototype.animate = function() {
   });
 };
 
+var transformProperty = getStyleProperty('transform');
+
 Flickity.prototype.positionSlider = function() {
-  this.slider.style.left = Math.round( this.x + this.cursorPosition ) + 'px';
+  var x = Math.round( this.x + this.cursorPosition );
+  if ( transformProperty ) {
+    this.slider.style[ transformProperty ] = 'translateX(' + x + 'px)';
+  } else {
+    this.slider.style.left = x + 'px';
+  }
 };
 
 // -------------------------- physics -------------------------- //
