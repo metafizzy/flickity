@@ -4,7 +4,7 @@ quad limit dragging from ends
 window resize logic
 click event
 destroy
-only animate when moving
+<!-- only animate when moving -->
 <!-- add translate -->
 jQuery bridget
 jQuery events

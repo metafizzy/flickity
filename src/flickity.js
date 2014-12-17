@@ -85,6 +85,8 @@ Flickity.prototype._create = function() {
   this.accel = 0;
 
   this.selectedIndex = 0;
+  // how many frames slider has been in same position
+  this.restingFrames = 0;
 
   // set up elements
   // style element
@@ -115,8 +117,7 @@ Flickity.prototype._create = function() {
   // events
   this.element.addEventListener( 'mousedown', this, false );
 
-  // kick off animation
-  this.animate();
+  this.positionSlider();
 
 };
 
@@ -212,6 +213,7 @@ Flickity.prototype.dragStart = function( event, pointer ) {
   this.isDragging = true;
   this.dragStartPoint = Unipointer.getPointerPoint( pointer );
   this.dragStartPosition = this.x;
+  this.startAnimation();
   this.emitEvent( 'dragStart', [ this, event, pointer ] );
 };
 
@@ -221,7 +223,7 @@ Flickity.prototype.dragMove = function( movePoint, event, pointer ) {
     return;
   }
 
-  this.previousX = this.x;
+  this.previousDragX = this.x;
 
   var movedX = movePoint.x - this.dragStartPoint.x;
   this.x = this.dragStartPosition + movedX;
@@ -248,7 +250,7 @@ Flickity.prototype.dragEnd = function( event, pointer ) {
 
 // apply velocity after dragging
 Flickity.prototype.dragEndFlick = function() {
-  if ( !isFinite( this.previousX ) ) {
+  if ( !isFinite( this.previousDragX ) ) {
     return;
   }
   // set slider velocity
@@ -257,7 +259,7 @@ Flickity.prototype.dragEndFlick = function() {
   // TODO, velocity should be in pixels per millisecond
   // currently in pixels per frame
   timeDelta /= 1000 / 60;
-  var xDelta = this.x - this.previousX;
+  var xDelta = this.x - this.previousDragX;
   this.velocity = xDelta / timeDelta;
   // reset
   delete this.previousX;
@@ -308,19 +310,41 @@ Flickity.prototype.selectNext = function() {
 
 // -------------------------- animate -------------------------- //
 
+Flickity.prototype.startAnimation = function() {
+  if ( this.isAnimating ) {
+    return;
+  }
+
+  this.isAnimating = true;
+  this.restingFrames = 0;
+  this.animate();
+};
+
 Flickity.prototype.animate = function() {
   if ( !this.isDragging ) {
     var force = this.getSelectedAttraction();
     this.applyForce( force );
   }
 
+  var previousX = this.x;
+
   this.updatePhysics();
   this.positionSlider();
+  // keep track of frames where x hasn't moved
+  if ( !this.isDragging && Math.round( this.x * 100 ) === Math.round( previousX * 100 ) ) {
+    this.restingFrames++;
+  }
+  // stop animating if resting for 3 or more frames
+  if ( this.restingFrames > 2 ) {
+    this.isAnimating = false;
+  }
 
-  var _this = this;
-  requestAnimationFrame( function animateFrame() {
-    _this.animate();
-  });
+  if ( this.isAnimating ) {
+    var _this = this;
+    requestAnimationFrame( function animateFrame() {
+      _this.animate();
+    });
+  }
 };
 
 var transformProperty = getStyleProperty('transform');
