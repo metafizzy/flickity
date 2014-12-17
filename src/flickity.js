@@ -117,7 +117,7 @@ Flickity.prototype._create = function() {
   // events
   // TODO bind start events proper
   // maybe move to Unipointer
-  this.element.addEventListener( 'mousedown', this, false );
+  eventie.bind( this.element, 'mousedown', this );
 
   if ( this.options.resizeBound ) {
     eventie.bind( window, 'resize', this );
