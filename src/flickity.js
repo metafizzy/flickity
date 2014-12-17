@@ -301,6 +301,7 @@ Flickity.prototype.dragEndBoostSelect = function() {
 Flickity.prototype.select = function( index ) {
   if ( this.cells[ index ] ) {
     this.selectedIndex = index;
+    this.startAnimation();
   }
 };
 

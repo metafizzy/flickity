@@ -1,8 +1,10 @@
 <!-- set initial x to seleted cell -->
 quad limit dragging from ends
 <!-- test margins on items -->
-window resize logic
-click event
+<!-- window resize logic -->
+previous / next buttons
+pager dots
+click event - links, buttons, inputs
 destroy
 <!-- only animate when moving -->
 <!-- add translate -->
