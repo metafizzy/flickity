@@ -3,7 +3,7 @@
  * Touch responsive gallery
  */
 
-/*global EventEmitter: false, Cell: false, getSize: false, getStyleProperty: false */
+/*global EventEmitter: false, Cell: false, getSize: false, getStyleProperty: false, eventie: false */
 
 ( function( window ) {
 
@@ -71,7 +71,8 @@ function Flickity( element, options ) {
 Flickity.defaults = {
   friction: 0.25,
   cursorPosition: 0.5,
-  targetPosition: 0.5
+  targetPosition: 0.5,
+  resizeBound: true
 };
 
 // inherit EventEmitter
@@ -111,13 +112,17 @@ Flickity.prototype._create = function() {
   this.element.style.height = firstCell.size.outerHeight +
     this.size.borderTopWidth + this.size.borderBottomWidth + 'px';
 
-  var selectedCell = this.cells[ this.selectedIndex ];
-  this.x = -selectedCell.target;
+  this.positionSliderAtSelected();
 
   // events
+  // TODO bind start events proper
+  // maybe move to Unipointer
   this.element.addEventListener( 'mousedown', this, false );
 
-  this.positionSlider();
+  if ( this.options.resizeBound ) {
+    eventie.bind( window, 'resize', this );
+  }
+
 
 };
 
@@ -230,7 +235,6 @@ Flickity.prototype.dragMove = function( movePoint, event, pointer ) {
 
   this.previousDragMoveTime = this.dragMoveTime;
   this.dragMoveTime = new Date();
-
   this.emitEvent( 'dragMove', [ this, event, pointer ] );
 };
 
@@ -358,6 +362,12 @@ Flickity.prototype.positionSlider = function() {
   }
 };
 
+Flickity.prototype.positionSliderAtSelected = function() {
+  var selectedCell = this.cells[ this.selectedIndex ];
+  this.x = -selectedCell.target;
+  this.positionSlider();
+};
+
 // -------------------------- physics -------------------------- //
 
 Flickity.prototype.updatePhysics = function() {
@@ -393,7 +403,15 @@ Flickity.prototype.getSelectedAttraction = function() {
   return force;
 };
 
-// --------------------------  -------------------------- //
+// -------------------------- resize -------------------------- //
+
+Flickity.prototype.onresize = function() {
+  this.getSize();
+  this.positionCells();
+  this.positionSliderAtSelected();
+};
+
+U.debounceMethod( Flickity, 'onresize', 150 );
 
 // --------------------------  -------------------------- //
 

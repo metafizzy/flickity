@@ -10,7 +10,8 @@
     "get-size": "~1.2.2",
     "matches-selector": "~1.0.2",
     "eventEmitter": "~4.2.11",
-    "eventie": "~1.0.5"
+    "eventie": "~1.0.5",
+    "get-style-property": "~1.0.4"
   },
   "moduleType": [
     "amd",

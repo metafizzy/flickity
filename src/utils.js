@@ -115,6 +115,28 @@ U.filterFindElements = function( elems, selector ) {
   return ffElems;
 };
 
+// ----- debounceMethod ----- //
+
+U.debounceMethod = function( _class, methodName, threshold ) {
+  // original method
+  var method = _class.prototype[ methodName ];
+  var timeoutName = methodName + 'Timeout';
+
+  _class.prototype[ methodName ] = function() {
+    var timeout = this[ timeoutName ];
+    if ( timeout ) {
+      clearTimeout( timeout );
+    }
+    var args = arguments;
+
+    var _this = this;
+    this[ timeoutName ] = setTimeout( function() {
+      method.apply( _this, args );
+      delete _this[ timeoutName ];
+    }, threshold || 100 );
+  };
+};
+
 // -----  ----- //
 
 window.utils = U;
