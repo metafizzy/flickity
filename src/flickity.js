@@ -3,7 +3,7 @@
  * Touch responsive gallery
  */
 
-/*global EventEmitter: false, Cell: false, getSize: false, getStyleProperty: false, eventie: false */
+/*global EventEmitter: false, Cell: false, getSize: false, getStyleProperty: false, eventie: false, PrevNextButton: false */
 
 ( function( window ) {
 
@@ -191,7 +191,9 @@ Flickity.prototype.pointerDown = function( event, pointer ) {
   } else {
     event.returnValue = false;
   }
-
+  // stop if it was moving
+  this.velocity = 0;
+  // track to see when dragging starts
   this.pointerDownPoint = Unipointer.getPointerPoint( pointer );
 };
 
@@ -330,7 +332,7 @@ Flickity.prototype.startAnimation = function() {
 };
 
 Flickity.prototype.animate = function() {
-  if ( !this.isDragging ) {
+  if ( !this.isPointerDown ) {
     var force = this.getSelectedAttraction();
     this.applyForce( force );
   }
@@ -340,7 +342,7 @@ Flickity.prototype.animate = function() {
   this.updatePhysics();
   this.positionSlider();
   // keep track of frames where x hasn't moved
-  if ( !this.isDragging && Math.round( this.x * 100 ) === Math.round( previousX * 100 ) ) {
+  if ( !this.isPointerDown && Math.round( this.x * 100 ) === Math.round( previousX * 100 ) ) {
     this.restingFrames++;
   }
   // stop animating if resting for 3 or more frames
