@@ -18,3 +18,19 @@ isOriginLeft: false
 isGroupPaging
 isWrapAround
 
+## buttons
+
+font
+svg
+img
+css hack
+
+font?
+
+fall back to ←→, ⟨⟩, ◀▶
+
+no extra files
+
+size
+width
+color
