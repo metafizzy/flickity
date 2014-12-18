@@ -211,9 +211,9 @@ Flickity.prototype.pointerMove = function( event, pointer ) {
 
 
 Flickity.prototype.pointerUp = function( event, pointer ) {
-  this.dragEnd( event, pointer );
-
-  // this.emitEvent( 'dragMove', [ this, event, pointer ] );
+  if ( this.isDragging ) {
+    this.dragEnd( event, pointer );
+  }
 };
 
 // -------------------------- dragging -------------------------- //
