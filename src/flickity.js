@@ -114,6 +114,10 @@ Flickity.prototype._create = function() {
 
   this.positionSliderAtSelected();
 
+  // add prev/next buttons
+  this.prevButton = new PrevNextButton( -1, this );
+  this.nextButton = new PrevNextButton( 1, this );
+
   // events
   // TODO bind start events proper
   // maybe move to Unipointer
@@ -289,10 +293,10 @@ Flickity.prototype.dragEndBoostSelect = function() {
   var distance = -this.x - selectedCell.target;
   if ( distance > 0 && this.velocity < -1 ) {
     // if moving towards the right, and positive velocity, and the next attractor
-    this.selectNext();
+    this.next();
   } else if ( distance < 0 && this.velocity > 1 ) {
     // if moving towards the left, and negative velocity, and previous attractor
-    this.selectPrevious();
+    this.previous();
   }
 };
 
@@ -305,11 +309,11 @@ Flickity.prototype.select = function( index ) {
   }
 };
 
-Flickity.prototype.selectPrevious = function() {
+Flickity.prototype.previous = function() {
   this.select( this.selectedIndex - 1);
 };
 
-Flickity.prototype.selectNext = function() {
+Flickity.prototype.next = function() {
   this.select( this.selectedIndex + 1 );
 };
 
