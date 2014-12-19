@@ -239,7 +239,7 @@ Flickity.prototype.positionClones = function() {
     for ( i=0, len = this.beforeClones.length; i < len; i++ ) {
       clone = this.beforeClones[i];
       cellX -= clone.cell.size.outerWidth;
-      clone.element.style.left = cellX + 'px';
+      clone.element.style.left = this.getPositionValue( cellX );
     }
   }
   // after clones
@@ -248,7 +248,7 @@ Flickity.prototype.positionClones = function() {
     cellX = lastCell.x + lastCell.size.outerWidth;
     for ( i=0, len = this.afterClones.length; i < len; i++ ) {
       clone = this.afterClones[i];
-      clone.element.style.left = cellX + 'px';
+      clone.element.style.left = this.getPositionValue( cellX );
       cellX += clone.cell.size.outerWidth;
     }
   }
@@ -495,8 +495,7 @@ Flickity.prototype.positionSlider = function() {
 
   x = x + this.cursorPosition;
 
-  var value = this.options.pixelPositioning ? Math.round( x ) + 'px' :
-    ( ( x / this.size.width ) * 100 ) + '%';
+  var value = this.getPositionValue( x );
 
   if ( transformProperty ) {
     this.slider.style[ transformProperty ] = 'translateX(' + value + ')';
@@ -509,6 +508,16 @@ Flickity.prototype.positionSliderAtSelected = function() {
   var selectedCell = this.cells[ this.selectedIndex ];
   this.x = -selectedCell.target;
   this.positionSlider();
+};
+
+Flickity.prototype.getPositionValue = function( position ) {
+  if ( this.options.pixelPositioning ) {
+    // pixel positioning
+    return Math.round( position ) + 'px';
+  } else {
+    // percent position, round to 2 digits, like 12.34%
+    return ( Math.round( ( position / this.size.width ) * 10000 ) * 0.01 )+ '%';
+  }
 };
 
 // -------------------------- physics -------------------------- //

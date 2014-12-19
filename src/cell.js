@@ -1,4 +1,8 @@
+/*global getSize: false */
+
 ( function( window ) {
+
+'use strict';
 
 function Cell( elem, parent ) {
   this.element = elem;
@@ -20,10 +24,7 @@ Cell.prototype.setPosition = function( x ) {
   this.x = x;
   this.target = x + this.size.width * this.parent.options.targetPosition;
   // render position of cell with in slider
-  // pixel positioning
-  this.element.style.left = this.parent.options.pixelPositioning ? x + 'px' :
-    // percent positioning
-    ( ( x / this.parent.size.width ) * 100 ) + '%';
+  this.element.style.left = this.parent.getPositionValue( this.x );
 };
 
 window.Cell = Cell;
