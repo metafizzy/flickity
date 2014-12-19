@@ -10,7 +10,7 @@
   height: 60px;
   border: none;
   border-radius: 50%;
-  background: #333;
+  background: white;
   /* vertically center */
   -webkit-transform: translateY(-50%);
       -ms-transform: translateY(-50%);
@@ -29,5 +29,5 @@
 }
 
 .flickity-prev-next-button .arrow {
-  fill: white;
+  fill: #333;
 }
