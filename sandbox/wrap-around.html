@@ -22,6 +22,15 @@
     <div class="cell n6">6</div>
   </div>
 
+  <div id="gallery2" class="container variable-width">
+    <div class="cell n1">1</div>
+    <div class="cell n2 w2">2</div>
+    <div class="cell n3 w3">3</div>
+    <div class="cell n4">4</div>
+    <div class="cell n5 w2">5</div>
+    <div class="cell n6">6</div>
+  </div>
+
 <script src="../bower_components/get-style-property/get-style-property.js"></script>
 <script src="../bower_components/get-size/get-size.js"></script>
 <script src="../bower_components/matches-selector/matches-selector.js"></script>
@@ -39,6 +48,9 @@ window.onload = function() {
 
   var flky = window.flky = new Flickity( '#gallery1', {
     wrapAround: true
+  });
+
+  var flky2 = new Flickity( '#gallery2', {
   });
 
 };

@@ -191,6 +191,10 @@ Flickity.prototype.getSize = function() {
 };
 
 Flickity.prototype._cloneCells = function() {
+  // only for wrap-around
+  if ( !this.options.wrapAround ) {
+    return;
+  }
   // before cells
   // initial gap
   var gapX = this.cursorPosition - this.cells[0].target;
@@ -229,20 +233,24 @@ Flickity.prototype._getClones = function( gapX, cellIndex, increment ) {
 
 Flickity.prototype.positionClones = function() {
   // before clones
-  var cellX = 0;
-  var clone;
-  for ( var i=0, len = this.beforeClones.length; i < len; i++ ) {
-    clone = this.beforeClones[i];
-    cellX -= clone.cell.size.outerWidth;
-    clone.element.style.left = cellX + 'px';
+  var cellX, clone, i, len;
+  if ( this.beforeClones ) {
+    cellX = 0;
+    for ( i=0, len = this.beforeClones.length; i < len; i++ ) {
+      clone = this.beforeClones[i];
+      cellX -= clone.cell.size.outerWidth;
+      clone.element.style.left = cellX + 'px';
+    }
   }
   // after clones
-  var lastCell =  this.cells[ this.cells.length - 1 ];
-  cellX = lastCell.x + lastCell.size.outerWidth;
-  for ( i=0, len = this.afterClones.length; i < len; i++ ) {
-    clone = this.afterClones[i];
-    clone.element.style.left = cellX + 'px';
-    cellX += clone.cell.size.outerWidth;
+  if ( this.afterClones ) {
+    var lastCell =  this.cells[ this.cells.length - 1 ];
+    cellX = lastCell.x + lastCell.size.outerWidth;
+    for ( i=0, len = this.afterClones.length; i < len; i++ ) {
+      clone = this.afterClones[i];
+      clone.element.style.left = cellX + 'px';
+      cellX += clone.cell.size.outerWidth;
+    }
   }
 };
 
@@ -340,14 +348,50 @@ Flickity.prototype.dragEndFlick = function() {
 
 Flickity.prototype.dragEndRestingSelect = function() {
   var restingX = this.getRestingPosition();
-  // get closest attractor to end position
-  var minDistance = Infinity;
-  // velocity is backwards
-  var increment = this.velocity < 0 ? 1 : -1;
   var index = this.selectedWrapIndex;
   var len = this.cells.length;
+  // how far away from selected cell
   var selectedCell = this.cells[ ( ( index % len ) + len ) % len ];
   var distance = Math.abs( -restingX - selectedCell.target );
+  // get closet resting going up and going down
+  var positiveResting = this._getClosestResting( restingX, distance, 1 );
+  var negativeResting = this._getClosestResting( restingX, distance, -1 );
+
+  var isPositiveCloser = positiveResting.distance < negativeResting.distance;
+
+  if ( this.options.wrapAround ) {
+    // use closer resting for wrap-around
+    index = isPositiveCloser ? positiveResting.index : negativeResting.index;
+  } else {
+    // non wrap-around
+    if ( isPositiveCloser && positiveResting.index < len ) {
+      // positive is closer, and it's not a wrap-around index
+      index = positiveResting.index;
+    } else if ( !isPositiveCloser && negativeResting.index >= 0 ) {
+      // negative is closer, and it's not a wrap-around index
+      index = negativeResting.index;
+    } else {
+      // use wrapped previous index
+      index = this.selectedIndex;
+    }
+  }
+
+  this.selectedWrapIndex = index;
+  this.selectedIndex = ( ( index % len ) + len ) % len;
+};
+
+/**
+ * given resting X and distance to selected cell
+ * get the distance and index of the closest cell
+ * @param {Number} restingX - estimated post-flick resting position
+ * @param {Number} distance - distance to selected cell
+ * @param {Integer} increment - +1 or -1, going up or down
+ * @returns {Object} - { distance: {Number}, index: {Integer} }
+ */
+Flickity.prototype._getClosestResting = function( restingX, distance, increment ) {
+  var index = this.selectedWrapIndex;
+  var minDistance = Infinity;
+  var len = this.cells.length;
   while ( distance < minDistance ) {
     // measure distance to next cell
     index += increment;
@@ -356,11 +400,11 @@ Flickity.prototype.dragEndRestingSelect = function() {
     var wrap = this.slideableWidth * Math.floor( index / len );
     distance = Math.abs( -restingX - ( cell.target + wrap ) );
   }
-  // selected was previous index
-  index = index - increment;
-  this.selectedWrapIndex = index;
-  this.selectedIndex = ( ( index % len ) + len ) % len;
-  console.log( this.selectedWrapIndex );
+  return {
+    distance: minDistance,
+    // selected was previous index
+    index: index - increment
+  };
 };
 
 Flickity.prototype.dragEndBoostSelect = function() {
@@ -505,6 +549,12 @@ Flickity.prototype.getSelectedAttraction = function() {
 
 Flickity.prototype.onresize = function() {
   this.getSize();
+  // wrap values
+  if ( this.options.wrapAround ) {
+    var len = this.cells.length;
+    this.selectedWrapIndex = ( ( this.selectedWrapIndex % len ) + len ) % len;
+    this.x = ( ( this.x % this.slideableWidth ) + this.slideableWidth ) % this.slideableWidth;
+  }
   this.positionCells();
   this.positionClones();
   this.positionSliderAtSelected();

@@ -18,6 +18,7 @@ CommonJS
 isOriginLeft: false
 isGroupPaging
 isWrapAround
+IE8 button
 
 ## buttons
 
