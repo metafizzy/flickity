@@ -182,6 +182,11 @@ Flickity.prototype.positionCells = function() {
     cell.setPosition( cellX );
     cellX += cell.size.outerWidth;
   }
+  // calc slideable x
+  // var firstCell = this.cells[0];
+  // var lastCell = this.cells[ len - 1 ];
+  // distance between first and last target
+  this.slideableWidth = cellX;
 };
 
 Flickity.prototype.getSize = function() {
@@ -436,7 +441,17 @@ Flickity.prototype.animate = function() {
 var transformProperty = getStyleProperty('transform');
 
 Flickity.prototype.positionSlider = function() {
-  var x = Math.round( this.x + this.cursorPosition );
+  // var x = Math.round( this.x + this.cursorPosition );
+  var x = this.x;
+  if ( this.options.wrapAround ) {
+    var firstTarget = this.cells[0].target;
+    var lastTarget = this.cells[ this.cells.length - 1 ].target;
+    x = ( x + lastTarget + this.slideableWidth ) % this.slideableWidth;
+    x = x - lastTarget;
+  }
+
+  var x = Math.round( x + this.cursorPosition );
+
   if ( transformProperty ) {
     this.slider.style[ transformProperty ] = 'translateX(' + x + 'px)';
   } else {
