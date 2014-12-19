@@ -86,6 +86,7 @@ Flickity.prototype._create = function() {
   this.accel = 0;
 
   this.selectedIndex = 0;
+  this.selectedWrapIndex = 0;
   // how many frames slider has been in same position
   this.restingFrames = 0;
 
@@ -182,10 +183,7 @@ Flickity.prototype.positionCells = function() {
     cell.setPosition( cellX );
     cellX += cell.size.outerWidth;
   }
-  // calc slideable x
-  // var firstCell = this.cells[0];
-  // var lastCell = this.cells[ len - 1 ];
-  // distance between first and last target
+  // keep track of cellX for wrap-around
   this.slideableWidth = cellX;
 };
 
@@ -359,15 +357,25 @@ Flickity.prototype.dragEndRestingSelect = function() {
   var restingX = this.getRestingPosition();
   // get closest attractor to end position
   var minDistance = Infinity;
-  var distance;
-  for ( var i=0, len = this.cells.length; i < len; i++ ) {
-    var cell = this.cells[i];
-    distance = Math.abs( -restingX - cell.target );
-    if ( distance < minDistance ) {
-      this.selectedIndex = i;
-      minDistance = distance;
-    }
+  // velocity is backwards
+  var increment = this.velocity < 0 ? 1 : -1;
+  var index = this.selectedWrapIndex;
+  var len = this.cells.length;
+  var selectedCell = this.cells[ ( ( index % len ) + len ) % len ];
+  var distance = Math.abs( -restingX - selectedCell.target );
+  while ( distance < minDistance ) {
+    // measure distance to next cell
+    index += increment;
+    minDistance = distance;
+    var cell = this.cells[ ( ( index % len ) + len ) % len ];
+    var wrap = this.slideableWidth * Math.floor( index / len );
+    distance = Math.abs( -restingX - ( cell.target + wrap ) );
   }
+  // selected was previous index
+  index = index - increment;
+  this.selectedWrapIndex = index;
+  this.selectedIndex = ( ( index % len ) + len ) % len;
+  console.log( this.selectedWrapIndex );
 };
 
 Flickity.prototype.dragEndBoostSelect = function() {
@@ -441,16 +449,15 @@ Flickity.prototype.animate = function() {
 var transformProperty = getStyleProperty('transform');
 
 Flickity.prototype.positionSlider = function() {
-  // var x = Math.round( this.x + this.cursorPosition );
   var x = this.x;
+  // wrap position around
   if ( this.options.wrapAround ) {
-    var firstTarget = this.cells[0].target;
-    var lastTarget = this.cells[ this.cells.length - 1 ].target;
-    x = ( x + lastTarget + this.slideableWidth ) % this.slideableWidth;
-    x = x - lastTarget;
+    var w = this.slideableWidth;
+    x = ( ( x % w ) + w ) % w;
+    x = x - w;
   }
 
-  var x = Math.round( x + this.cursorPosition );
+  x = Math.round( x + this.cursorPosition );
 
   if ( transformProperty ) {
     this.slider.style[ transformProperty ] = 'translateX(' + x + 'px)';
@@ -495,7 +502,9 @@ Flickity.prototype.getRestingPosition = function() {
 
 Flickity.prototype.getSelectedAttraction = function() {
   var cell = this.cells[ this.selectedIndex ];
-  var distance = -cell.target - this.x;
+  var wrap = this.options.wrapAround ?
+    this.slideableWidth * Math.floor( this.selectedWrapIndex / this.cells.length ) : 0;
+  var distance = ( cell.target + wrap ) * -1 - this.x;
   var force = distance * 0.025;
   return force;
 };
