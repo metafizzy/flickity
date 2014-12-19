@@ -270,7 +270,7 @@ Flickity.prototype.dragEndFlick = function() {
   var xDelta = this.x - this.previousDragX;
   this.velocity = xDelta / timeDelta;
   // reset
-  delete this.previousX;
+  delete this.previousDragX;
 };
 
 Flickity.prototype.dragEndRestingSelect = function() {
