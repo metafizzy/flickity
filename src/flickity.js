@@ -493,12 +493,15 @@ Flickity.prototype.positionSlider = function() {
     x = x - w;
   }
 
-  x = Math.round( x + this.cursorPosition );
+  x = x + this.cursorPosition;
+
+  var value = this.options.pixelPositioning ? Math.round( x ) + 'px' :
+    ( ( x / this.size.width ) * 100 ) + '%';
 
   if ( transformProperty ) {
-    this.slider.style[ transformProperty ] = 'translateX(' + x + 'px)';
+    this.slider.style[ transformProperty ] = 'translateX(' + value + ')';
   } else {
-    this.slider.style.left = x + 'px';
+    this.slider.style.left = value;
   }
 };
 

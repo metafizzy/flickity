@@ -19,7 +19,11 @@ Cell.prototype.getSize = function() {
 Cell.prototype.setPosition = function( x ) {
   this.x = x;
   this.target = x + this.size.width * this.parent.options.targetPosition;
-  this.element.style.left = x + 'px';
+  // render position of cell with in slider
+  // pixel positioning
+  this.element.style.left = this.parent.options.pixelPositioning ? x + 'px' :
+    // percent positioning
+    ( ( x / this.parent.size.width ) * 100 ) + '%';
 };
 
 window.Cell = Cell;
