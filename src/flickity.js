@@ -147,6 +147,8 @@ Flickity.prototype.reloadCells = function() {
   // clone cells for wrap around
   this.cloneBeforeCells();
   this.positionBeforeCells();
+  this.cloneAfterCells();
+  this.positionAfterCells();
 };
 
 /**
@@ -211,12 +213,48 @@ Flickity.prototype.cloneBeforeCells = function() {
   this.slider.insertBefore( fragment, this.slider.firstChild );
 };
 
+Flickity.prototype.cloneAfterCells = function() {
+  // ending gap between last cell and end of gallery viewport
+  var lastCell = this.cells[ this.cells.length - 1 ];
+  var cellX = (this.size.innerWidth - this.cursorPosition ) -
+    lastCell.size.width * ( 1 - this.options.targetPosition );
+  var cellIndex = 0;
+  this.afterClones = [];
+  var fragment = document.createDocumentFragment();
+  // keep adding cells until the cover the initial gap
+  while ( cellX >= 0 ) {
+    var cell = this.cells[ cellIndex ];
+    cell.getSize();
+    var clone = {
+      // keep track of which cell this clone matches
+      cell: cell,
+      // clone element
+      element: cell.element.cloneNode( true )
+    };
+    this.afterClones.push( clone );
+    fragment.appendChild( clone.element );
+    cellIndex++;
+    cellX -= cell.size.outerWidth;
+  }
+  this.slider.appendChild( fragment );
+};
+
 Flickity.prototype.positionBeforeCells = function() {
   var cellX = 0;
   for ( var i=0, len = this.beforeClones.length; i < len; i++ ) {
     var clone = this.beforeClones[i];
     cellX -= clone.cell.size.outerWidth;
     clone.element.style.left = cellX + 'px';
+  }
+};
+
+Flickity.prototype.positionAfterCells = function() {
+  var lastCell =  this.cells[ this.cells.length - 1 ];
+  var cellX = lastCell.x + lastCell.size.outerWidth;
+  for ( var i=0, len = this.afterClones.length; i < len; i++ ) {
+    var clone = this.afterClones[i];
+    clone.element.style.left = cellX + 'px';
+    cellX += clone.cell.size.outerWidth;
   }
 };
 
