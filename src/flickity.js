@@ -393,6 +393,11 @@ Flickity.prototype.dragEndBoostSelect = function() {
 // -------------------------- select -------------------------- //
 
 Flickity.prototype.select = function( index ) {
+  if ( this.options.wrapAround ) {
+    var len = this.cells.length;
+    index = ( ( index % len ) + len ) % len;
+  }
+
   if ( this.cells[ index ] ) {
     this.selectedIndex = index;
     this.startAnimation();
@@ -400,10 +405,12 @@ Flickity.prototype.select = function( index ) {
 };
 
 Flickity.prototype.previous = function() {
+  this.selectedWrapIndex--;
   this.select( this.selectedIndex - 1);
 };
 
 Flickity.prototype.next = function() {
+  this.selectedWrapIndex++;
   this.select( this.selectedIndex + 1 );
 };
 
