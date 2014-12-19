@@ -146,10 +146,8 @@ Flickity.prototype.reloadCells = function() {
   this.cells = this._makeCells( this.slider.children );
   this.positionCells( this.cells );
   // clone cells for wrap around
-  this.cloneBeforeCells();
-  this.positionBeforeCells();
-  this.cloneAfterCells();
-  this.positionAfterCells();
+  this._cloneCells();
+  this.positionClones();
 };
 
 /**
@@ -192,70 +190,57 @@ Flickity.prototype.getSize = function() {
   this.cursorPosition = this.size.innerWidth * this.options.cursorPosition;
 };
 
-Flickity.prototype.cloneBeforeCells = function() {
+Flickity.prototype._cloneCells = function() {
+  // before cells
   // initial gap
-  var beforeX = this.cursorPosition - this.cells[0].target;
-  this.beforeClones = [];
+  var gapX = this.cursorPosition - this.cells[0].target;
   var cellIndex = this.cells.length - 1;
-  var fragment = document.createDocumentFragment();
-  // keep adding cells until the cover the initial gap
-  while ( beforeX >= 0 ) {
-    var cell = this.cells[ cellIndex ];
-    cell.getSize();
-    var clone = {
-      // keep track of which cell this clone matches
-      cell: cell,
-      // clone element
-      element: cell.element.cloneNode( true )
-    };
-    this.beforeClones.push( clone );
-    fragment.appendChild( clone.element );
-    cellIndex--;
-    beforeX -= cell.size.outerWidth;
-  }
-  this.slider.insertBefore( fragment, this.slider.firstChild );
-};
-
-Flickity.prototype.cloneAfterCells = function() {
+  // start cloning at last cell, working backwards
+  this.beforeClones = this._getClones( gapX, cellIndex, -1 );
+  // after cells
   // ending gap between last cell and end of gallery viewport
   var lastCell = this.cells[ this.cells.length - 1 ];
-  var cellX = (this.size.innerWidth - this.cursorPosition ) -
+  gapX = ( this.size.innerWidth - this.cursorPosition ) -
     lastCell.size.width * ( 1 - this.options.targetPosition );
-  var cellIndex = 0;
-  this.afterClones = [];
+  // start cloning at first cell, working forwards
+  this.afterClones = this._getClones( gapX, 0, 1 );
+};
+
+Flickity.prototype._getClones = function( gapX, cellIndex, increment ) {
+  var clones = [];
   var fragment = document.createDocumentFragment();
   // keep adding cells until the cover the initial gap
-  while ( cellX >= 0 ) {
+  while ( gapX >= 0 ) {
     var cell = this.cells[ cellIndex ];
-    cell.getSize();
     var clone = {
       // keep track of which cell this clone matches
       cell: cell,
       // clone element
       element: cell.element.cloneNode( true )
     };
-    this.afterClones.push( clone );
+    clones.push( clone );
     fragment.appendChild( clone.element );
-    cellIndex++;
-    cellX -= cell.size.outerWidth;
+    cellIndex += increment;
+    gapX -= cell.size.outerWidth;
   }
   this.slider.appendChild( fragment );
+  return clones;
 };
 
-Flickity.prototype.positionBeforeCells = function() {
+Flickity.prototype.positionClones = function() {
+  // before clones
   var cellX = 0;
+  var clone;
   for ( var i=0, len = this.beforeClones.length; i < len; i++ ) {
-    var clone = this.beforeClones[i];
+    clone = this.beforeClones[i];
     cellX -= clone.cell.size.outerWidth;
     clone.element.style.left = cellX + 'px';
   }
-};
-
-Flickity.prototype.positionAfterCells = function() {
+  // after clones
   var lastCell =  this.cells[ this.cells.length - 1 ];
-  var cellX = lastCell.x + lastCell.size.outerWidth;
-  for ( var i=0, len = this.afterClones.length; i < len; i++ ) {
-    var clone = this.afterClones[i];
+  cellX = lastCell.x + lastCell.size.outerWidth;
+  for ( i=0, len = this.afterClones.length; i < len; i++ ) {
+    clone = this.afterClones[i];
     clone.element.style.left = cellX + 'px';
     cellX += clone.cell.size.outerWidth;
   }
@@ -521,6 +506,7 @@ Flickity.prototype.getSelectedAttraction = function() {
 Flickity.prototype.onresize = function() {
   this.getSize();
   this.positionCells();
+  this.positionClones();
   this.positionSliderAtSelected();
 };
 
