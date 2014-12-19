@@ -1,0 +1,48 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+
+  <title>wrap around</title>
+
+  <link rel="stylesheet" href="../css/flickity.css" />
+  <link rel="stylesheet" href="sandbox.css" />
+
+</head>
+<body>
+
+  <h1>wrap around</h1>
+
+  <div id="gallery1" class="container variable-width">
+    <div class="cell n1">1</div>
+    <div class="cell n2 w2">2</div>
+    <div class="cell n3 w3">3</div>
+    <div class="cell n4">4</div>
+    <div class="cell n5 w2">5</div>
+    <div class="cell n6">6</div>
+  </div>
+
+<script src="../bower_components/get-style-property/get-style-property.js"></script>
+<script src="../bower_components/get-size/get-size.js"></script>
+<script src="../bower_components/matches-selector/matches-selector.js"></script>
+<script src="../bower_components/eventEmitter/EventEmitter.js"></script>
+<script src="../bower_components/eventie/eventie.js"></script>
+
+<script src="../src/utils.js"></script>
+<script src="../src/unipointer.js"></script>
+<script src="../src/cell.js"></script>
+<script src="../src/prev-next-button.js"></script>
+<script src="../src/flickity.js"></script>
+
+<script>
+window.onload = function() {
+
+  var flky = window.flky = new Flickity( '#gallery1', {
+    wrapAround: true
+  });
+
+};
+</script>
+
+</body>
+</html>

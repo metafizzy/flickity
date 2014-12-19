@@ -34,7 +34,25 @@ body {
 .cell:nth-child(6n+4) { background: hsl(240, 80%, 70%); }
 .cell:nth-child(6n+5) { background: hsl(300, 80%, 70%); }
 
+.cell.n1 { background: hsl(0, 80%, 70%); }
+.cell.n2 { background: hsl(60, 80%, 70%); }
+.cell.n3 { background: hsl(120, 80%, 70%); }
+.cell.n4 { background: hsl(180, 80%, 70%); }
+.cell.n5 { background: hsl(240, 80%, 70%); }
+.cell.n6 { background: hsl(300, 80%, 70%); }
+
 #half-width .cell {
   width: 48%;
   margin-right: 4%;
 }
+
+.variable-width .cell {
+  width: 20%;
+  margin-right: 3%;
+  font-size: 100px;
+  color: white;
+  font-weight: bold;
+}
+
+.variable-width .cell.w2 { width: 30%; }
+.variable-width .cell.w3 { width: 40%; }

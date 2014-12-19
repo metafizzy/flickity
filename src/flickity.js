@@ -104,10 +104,11 @@ Flickity.prototype._create = function() {
   }
   this.element.appendChild( this.slider );
 
+  this.getSize();
+
   // get cells from children
   this.reloadCells();
   // set height
-  this.getSize();
   var firstCell = this.cells[0];
   this.element.style.height = firstCell.size.outerHeight +
     this.size.borderTopWidth + this.size.borderBottomWidth + 'px';
@@ -143,6 +144,9 @@ Flickity.prototype.reloadCells = function() {
   // collection of item elements
   this.cells = this._makeCells( this.slider.children );
   this.positionCells( this.cells );
+  // clone cells for wrap around
+  this.cloneBeforeCells();
+  this.positionBeforeCells();
 };
 
 /**
@@ -181,6 +185,39 @@ Flickity.prototype.positionCells = function() {
 Flickity.prototype.getSize = function() {
   this.size = getSize( this.element );
   this.cursorPosition = this.size.innerWidth * this.options.cursorPosition;
+};
+
+Flickity.prototype.cloneBeforeCells = function() {
+  // initial gap
+  var beforeX = this.cursorPosition - this.cells[0].target;
+  this.beforeClones = [];
+  var cellIndex = this.cells.length - 1;
+  var fragment = document.createDocumentFragment();
+  // keep adding cells until the cover the initial gap
+  while ( beforeX >= 0 ) {
+    var cell = this.cells[ cellIndex ];
+    cell.getSize();
+    var clone = {
+      // keep track of which cell this clone matches
+      cell: cell,
+      // clone element
+      element: cell.element.cloneNode( true )
+    };
+    this.beforeClones.push( clone );
+    fragment.appendChild( clone.element );
+    cellIndex--;
+    beforeX -= cell.size.outerWidth;
+  }
+  this.slider.insertBefore( fragment, this.slider.firstChild );
+};
+
+Flickity.prototype.positionBeforeCells = function() {
+  var cellX = 0;
+  for ( var i=0, len = this.beforeClones.length; i < len; i++ ) {
+    var clone = this.beforeClones[i];
+    cellX -= clone.cell.size.outerWidth;
+    clone.element.style.left = cellX + 'px';
+  }
 };
 
 // -------------------------- pointer events -------------------------- //
