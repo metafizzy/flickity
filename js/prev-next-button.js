@@ -1,3 +1,5 @@
+/*global utils: false*/
+
 // -------------------------- prev/next button -------------------------- //
 
 ( function( window ) {
@@ -36,6 +38,8 @@ PrevNextButton.prototype._create = function() {
     var svg = this.createSVG();
     this.element.appendChild( svg );
   } else {
+    var arrowText = this.direction === -1 ? '←' : '→';
+    utils.setText( this.element, arrowText );
     this.element.className += ' no-svg';
   }
 

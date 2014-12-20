@@ -31,3 +31,9 @@
 .flickity-prev-next-button .arrow {
   fill: #333;
 }
+
+/* IE8 and Android 2.3 */
+.flickity-prev-next-button.no-svg {
+  color: #333;
+  font-size: 30px;
+}

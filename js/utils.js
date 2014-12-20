@@ -82,6 +82,18 @@ U.isElement = ( typeof HTMLElement === 'function' || typeof HTMLElement === 'obj
       obj.nodeType === 1 && typeof obj.nodeName === 'string';
   };
 
+// ----- setText ----- //
+
+U.setText = ( function() {
+  var setTextProperty;
+  function setText( elem, text ) {
+    // only check setTextProperty once
+    setTextProperty = setTextProperty || ( document.documentElement.textContent !== undefined ? 'textContent' : 'innerText' );
+    elem[ setTextProperty ] = text;
+  }
+  return setText;
+})();
+
 // ----- filterFindElements ----- //
 
 U.filterFindElements = function( elems, selector ) {
