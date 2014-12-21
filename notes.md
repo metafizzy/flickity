@@ -15,24 +15,9 @@ events
 tests
 requirejs
 CommonJS
+free scrolling, no alignment
 isOriginLeft: false
 isGroupPaging
-isWrapAround
+
+<!-- isWrapAround -->
 <!-- IE8 button -->
-
-## buttons
-
-font
-svg
-img
-css hack
-
-font?
-
-fall back to ←→, ⟨⟩, ◀▶
-
-no extra files
-
-size
-width
-color
