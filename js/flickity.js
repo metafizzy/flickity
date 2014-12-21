@@ -71,8 +71,10 @@ function Flickity( element, options ) {
 Flickity.defaults = {
   friction: 0.25,
   cursorPosition: 0.5,
-  targetPosition: 0.5,
-  resizeBound: true
+  draggable: true,
+  prevNextButtons: true,
+  resizeBound: true,
+  targetPosition: 0.5
 };
 
 // inherit EventEmitter
@@ -108,12 +110,16 @@ Flickity.prototype._create = function() {
   this.positionSliderAtSelected();
 
   // add prev/next buttons
-  this.prevButton = new PrevNextButton( -1, this );
-  this.nextButton = new PrevNextButton( 1, this );
+  if ( this.options.prevNextButtons ) {
+    this.prevButton = new PrevNextButton( -1, this );
+    this.nextButton = new PrevNextButton( 1, this );
+  }
 
   // events
-  this.handles = [ this.element ];
-  this.bindHandles();
+  if ( this.options.draggable ) {
+    this.handles = [ this.element ];
+    this.bindHandles();
+  }
 
   if ( this.options.resizeBound ) {
     eventie.bind( window, 'resize', this );

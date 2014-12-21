@@ -28,12 +28,18 @@ var flky = new Flickity( '.gallery', {
   // decimal value 0 - 1, representing where cells should align to
   // 0 is beginning (left) of gallery, 1 is end (right)
 
+  draggable: true,
+  // enables dragging & flicking
+
   friction: 0.2,
   // smaller number = easier to flick farther
 
   pixelPositioning: false,
   // sets positioning in pixels, rather than percentages
   // may be better for more precise positioning
+
+  prevNextButtons: true,
+  // creates and enables buttons to click to previous & next cells
 
   resizeBound: true,
   // listens to window resize events to adjust size & positions
