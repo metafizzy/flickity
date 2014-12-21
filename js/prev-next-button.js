@@ -1,4 +1,4 @@
-/*global utils: false*/
+/*global utils: false */
 
 // -------------------------- prev/next button -------------------------- //
 
@@ -30,6 +30,9 @@ function PrevNextButton( direction, parent ) {
 }
 
 PrevNextButton.prototype._create = function() {
+  // properties
+  this.isEnabled = true;
+
   this.element = document.createElement('button');
   this.element.className = 'flickity-prev-next-button';
   this.element.className += this.direction === -1 ? ' previous' : ' next';
@@ -68,8 +71,27 @@ PrevNextButton.prototype.createSVG = function() {
 };
 
 PrevNextButton.prototype.onclick = function() {
+  if ( !this.isEnabled ) {
+    return;
+  }
   var method = this.direction === -1 ? 'previous' : 'next';
   this.parent[ method ]();
+};
+
+PrevNextButton.prototype.enable = function() {
+  if ( this.isEnabled ) {
+    return;
+  }
+  this.element.disabled = false;
+  this.isEnabled = true;
+};
+
+PrevNextButton.prototype.disable = function() {
+  if ( !this.isEnabled ) {
+    return;
+  }
+  this.element.disabled = true;
+  this.isEnabled = false;
 };
 
 window.PrevNextButton = PrevNextButton;

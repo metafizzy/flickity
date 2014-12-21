@@ -107,13 +107,14 @@ Flickity.prototype._create = function() {
   this.element.style.height = firstCell.size.outerHeight +
     this.size.borderTopWidth + this.size.borderBottomWidth + 'px';
 
-  this.positionSliderAtSelected();
-
   // add prev/next buttons
   if ( this.options.prevNextButtons ) {
     this.prevButton = new PrevNextButton( -1, this );
     this.nextButton = new PrevNextButton( 1, this );
   }
+
+  this.updatePrevNextButtons();
+  this.positionSliderAtSelected();
 
   // events
   if ( this.options.draggable ) {
@@ -357,6 +358,8 @@ Flickity.prototype.dragEnd = function( event, pointer ) {
   if ( this.selectedIndex === previousIndex ) {
     this.dragEndBoostSelect();
   }
+  // apply selection
+  this.select( this.selectedIndex );
 
   this.isDragging = false;
   // re-enable clicking async
@@ -451,10 +454,10 @@ Flickity.prototype.dragEndBoostSelect = function() {
   var distance = -this.x - selectedCell.target;
   if ( distance > 0 && this.velocity < -1 ) {
     // if moving towards the right, and positive velocity, and the next attractor
-    this.next();
+    this.selectedIndex++;
   } else if ( distance < 0 && this.velocity > 1 ) {
     // if moving towards the left, and negative velocity, and previous attractor
-    this.previous();
+    this.selectedIndex--;
   }
 };
 
@@ -477,6 +480,7 @@ Flickity.prototype.select = function( index ) {
 
   if ( this.cells[ index ] ) {
     this.selectedIndex = index;
+    this.updatePrevNextButtons();
     this.startAnimation();
   }
 };
@@ -489,6 +493,25 @@ Flickity.prototype.previous = function() {
 Flickity.prototype.next = function() {
   this.selectedWrapIndex++;
   this.select( this.selectedIndex + 1 );
+};
+
+Flickity.prototype.updatePrevNextButtons = function() {
+  // no need if wrap around
+  if ( this.options.wrapAround ) {
+    return;
+  }
+
+  var method;
+
+  if ( this.prevButton ) {
+    method = this.selectedIndex === 0 ? 'disable' : 'enable';
+    this.prevButton[ method ]();
+  }
+
+  if ( this.nextButton ) {
+    method = this.selectedIndex === this.cells.length - 1 ? 'disable' : 'enable';
+    this.nextButton[ method ]();
+  }
 };
 
 // -------------------------- animate -------------------------- //
