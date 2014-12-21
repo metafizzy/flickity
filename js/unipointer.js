@@ -30,6 +30,82 @@ Unipointer.prototype.getTouch = function( touches ) {
   }
 };
 
+// ----- bind start ----- //
+
+// works as unbinder, as you can .bindHandles( false ) to unbind
+
+/**
+ * @param {Boolean} isBind - will unbind if falsey
+ */
+Unipointer.prototype.bindHandles = function( isBind ) {
+  var binder;
+  if ( window.navigator.pointerEnabled ) {
+    binder = this.bindPointer;
+  } else if ( window.navigator.msPointerEnabled ) {
+    binder = this.bindMSPointer;
+  } else {
+    binder = this.bindMouseTouch;
+  }
+  // munge isBind, default to true
+  isBind = isBind === undefined ? true : !!isBind;
+  for ( var i=0, len = this.handles.length; i < len; i++ ) {
+    var handle = this.handles[i];
+    binder.call( this, handle, isBind );
+  }
+};
+
+Unipointer.prototype.bindPointer = function( handle, isBind ) {
+  // W3C Pointer Events, IE11. See https://coderwall.com/p/mfreca
+  var bindMethod = isBind ? 'bind' : 'unbind';
+  eventie[ bindMethod ]( handle, 'pointerdown', this );
+  // disable scrolling on the element
+  handle.style.touchAction = isBind ? 'none' : '';
+};
+
+Unipointer.prototype.bindMSPointer = function( handle, isBind ) {
+  // IE10 Pointer Events
+  var bindMethod = isBind ? 'bind' : 'unbind';
+  eventie[ bindMethod ]( handle, 'MSPointerDown', this );
+  // disable scrolling on the element
+  handle.style.msTouchAction = isBind ? 'none' : '';
+};
+
+Unipointer.prototype.bindMouseTouch = function( handle, isBind ) {
+  // listen for both, for devices like Chrome Pixel
+  //   which has touch and mouse events
+  var bindMethod = isBind ? 'bind' : 'unbind';
+  eventie[ bindMethod ]( handle, 'mousedown', this );
+  eventie[ bindMethod ]( handle, 'touchstart', this );
+  // TODO re-enable img.ondragstart when unbinding
+  if ( isBind ) {
+    disableImgOndragstart( handle );
+  }
+};
+
+// remove default dragging interaction on all images in IE8
+// IE8 does its own drag thing on images, which messes stuff up
+
+function noDragStart() {
+  return false;
+}
+
+// TODO replace this with a IE8 test
+var isIE8 = 'attachEvent' in document.documentElement;
+
+// IE8 only
+var disableImgOndragstart = !isIE8 ? noop : function( handle ) {
+
+  if ( handle.nodeName === 'IMG' ) {
+    handle.ondragstart = noDragStart;
+  }
+
+  var images = handle.querySelectorAll('img');
+  for ( var i=0, len = images.length; i < len; i++ ) {
+    var img = images[i];
+    img.ondragstart = noDragStart;
+  }
+};
+
 // ----- start event ----- //
 
 Unipointer.prototype.onmousedown = function( event ) {

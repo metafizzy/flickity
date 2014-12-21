@@ -121,14 +121,12 @@ Flickity.prototype._create = function() {
   this.nextButton = new PrevNextButton( 1, this );
 
   // events
-  // TODO bind start events proper
-  // maybe move to Unipointer
-  eventie.bind( this.element, 'mousedown', this );
+  this.handles = [ this.element ];
+  this.bindHandles();
 
   if ( this.options.resizeBound ) {
     eventie.bind( window, 'resize', this );
   }
-
 
 };
 
