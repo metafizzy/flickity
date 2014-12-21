@@ -8,6 +8,21 @@
   <link rel="stylesheet" href="../css/flickity.css" />
   <link rel="stylesheet" href="sandbox.css" />
 
+  <style>
+    #gallery3,
+    #gallery3 input,
+    #gallery3 button {
+      font-size: 20px;
+    }
+
+    #gallery3 .cell {
+      padding-top: 20px;
+      padding-left: 100px;
+    }
+
+    #gallery3 p { margin: 0 0 10px; }
+  </style>
+
 </head>
 <body>
 
@@ -25,6 +40,27 @@
 
   <div id="half-width" class="container">
     <div class="cell"></div>
+    <div class="cell"></div>
+    <div class="cell"></div>
+    <div class="cell"></div>
+    <div class="cell"></div>
+    <div class="cell"></div>
+    <div class="cell"></div>
+    <div class="cell"></div>
+    <div class="cell"></div>
+    <div class="cell"></div>
+  </div>
+
+  <div id="gallery3" class="container">
+    <div class="cell">
+      <p><button>Button</button> <a href="http://example.com">go to example.com</a></p>
+      <p><input /></p>
+      <p>
+        <input type="checkbox" />
+        <input type="radio" name="foo" />
+        <input type="radio" name="foo" />
+      </p>
+    </div>
     <div class="cell"></div>
     <div class="cell"></div>
     <div class="cell"></div>
@@ -57,6 +93,9 @@ window.onload = function() {
   var halfWidthflky = new Flickity( '#half-width', {
     cursorPosition: 0,
     targetPosition: 0
+  });
+
+  new Flickity( '#gallery3', {
   });
 
 };

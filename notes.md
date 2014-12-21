@@ -5,7 +5,7 @@ quad limit dragging from ends
 <!-- previous / next buttons -->
 disable prev/next buttons when at end of cells
 pager dots
-click event - links, buttons, inputs
+<!-- click event - links, buttons, inputs -->
 destroy
 <!-- only animate when moving -->
 <!-- add translate -->
@@ -15,6 +15,10 @@ events
 tests
 requirejs
 CommonJS
+prepend
+append
+insert
+remove
 free scrolling, no alignment
 isOriginLeft: false
 isGroupPaging

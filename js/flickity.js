@@ -119,6 +119,12 @@ Flickity.prototype._create = function() {
   if ( this.options.draggable ) {
     this.handles = [ this.element ];
     this.bindHandles();
+    // bind click handler
+    // TODO unbind click handler on destroy
+    for ( var i=0, len = this.handles.length; i < len; i++ ) {
+      var handle = this.handles[i];
+      eventie.bind( handle, 'click', this );
+    }
   }
 
   if ( this.options.resizeBound ) {
@@ -268,10 +274,11 @@ Flickity.prototype.positionClones = function() {
 // -------------------------- pointer events -------------------------- //
 
 Flickity.prototype.pointerDown = function( event, pointer ) {
-  if ( event.preventDefault ) {
-    event.preventDefault();
-  } else {
-    event.returnValue = false;
+  preventDefaultEvent( event );
+  // kludge to blur focused inputs in dragger
+  var focused = document.activeElement;
+  if ( focused && focused.blur ) {
+    focused.blur();
   }
   // stop if it was moving
   this.velocity = 0;
@@ -297,8 +304,22 @@ Flickity.prototype.pointerMove = function( event, pointer ) {
 Flickity.prototype.pointerUp = function( event, pointer ) {
   if ( this.isDragging ) {
     this.dragEnd( event, pointer );
+  } else {
+    // allow click in text input
+    if ( event.target.nodeName === 'INPUT' && event.target.type === 'text' ) {
+      event.target.focus();
+    }
   }
 };
+
+// handle IE8 prevent default
+function preventDefaultEvent( event ) {
+  if ( event.preventDefault ) {
+    event.preventDefault();
+  } else {
+    event.returnValue = false;
+  }
+}
 
 // -------------------------- dragging -------------------------- //
 
@@ -307,6 +328,8 @@ Flickity.prototype.dragStart = function( event, pointer ) {
   this.dragStartPoint = Unipointer.getPointerPoint( pointer );
   this.dragStartPosition = this.x;
   this.startAnimation();
+  // prevent clicks
+  this.isPreventingClicks = true;
   this.emitEvent( 'dragStart', [ this, event, pointer ] );
 };
 
@@ -336,6 +359,11 @@ Flickity.prototype.dragEnd = function( event, pointer ) {
   }
 
   this.isDragging = false;
+  // re-enable clicking async
+  var _this = this;
+  setTimeout( function() {
+    delete _this.isPreventingClicks;
+  });
 
   this.emitEvent( 'dragEnd', [ this, event, pointer ] );
 };
@@ -427,6 +455,15 @@ Flickity.prototype.dragEndBoostSelect = function() {
   } else if ( distance < 0 && this.velocity > 1 ) {
     // if moving towards the left, and negative velocity, and previous attractor
     this.previous();
+  }
+};
+
+// ----- onclick ----- //
+
+// handle all clicks and prevent clicks when dragging
+Flickity.prototype.onclick = function( event ) {
+  if ( this.isPreventingClicks ) {
+    preventDefaultEvent( event );
   }
 };
 
