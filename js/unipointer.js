@@ -72,7 +72,7 @@ Unipointer.prototype._pointerDown = function( event, pointer ) {
   this.isPointerDown = true;
 
   // bind move and end events
-  this._bindPointerEvents({
+  this._bindPostStartEvents({
     // get proper events to match start event
     events: postStartEvents[ event.type ],
     // IE8 needs to be bound to document
@@ -87,7 +87,7 @@ Unipointer.prototype.pointerDown = noop;
 
 // ----- bind/unbind ----- //
 
-Unipointer.prototype._bindPointerEvents = function( args ) {
+Unipointer.prototype._bindPostStartEvents = function( args ) {
   for ( var i=0, len = args.events.length; i < len; i++ ) {
     var event = args.events[i];
     eventie.bind( args.node, event, this );
@@ -96,7 +96,7 @@ Unipointer.prototype._bindPointerEvents = function( args ) {
   this._boundPointerEvents = args;
 };
 
-Unipointer.prototype._unbindPointerEvents = function() {
+Unipointer.prototype._unbindPostStartEvents = function() {
   var args = this._boundPointerEvents;
   // IE8 can trigger dragEnd twice, check for _boundEvents
   if ( !args || !args.events ) {
@@ -173,7 +173,7 @@ Unipointer.prototype._pointerUp = function( event, pointer ) {
   delete this.pointerIdentifier;
 
   // remove events
-  this._unbindPointerEvents();
+  this._unbindPostStartEvents();
 
   this.pointerUp( event, pointer );
   this.emitEvent( 'pointerUp', [ this, event, pointer ] );
@@ -203,7 +203,7 @@ Unipointer.getPointerPoint = function( pointer ) {
   return {
     x: pointer.pageX !== undefined ? pointer.pageX : pointer.clientX,
     y: pointer.pageY !== undefined ? pointer.pageY : pointer.clientY
-  }
+  };
 };
 
 // fix for IE8
