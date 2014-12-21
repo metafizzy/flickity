@@ -1,0 +1,29 @@
+{
+  "name": "flickity",
+  "version": "0.0.0",
+  "description": "Touch, responsive, flickable galleries",
+  "main": "js/flickity.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/metafizzy/flickity.git"
+  },
+  "keywords": [
+    "touch",
+    "responsive",
+    "flick",
+    "slider",
+    "carousel",
+    "gallery",
+    "DOM",
+    "browser"
+  ],
+  "author": "Metafizzy",
+  "license": "GPL",
+  "bugs": {
+    "url": "https://github.com/metafizzy/flickity/issues"
+  },
+  "homepage": "https://github.com/metafizzy/flickity"
+}
