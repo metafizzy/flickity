@@ -90,20 +90,11 @@ Flickity.prototype._create = function() {
   // how many frames slider has been in same position
   this.restingFrames = 0;
 
-  // set up elements
   // style element
   this.element.style.position = 'relative';
   this.element.style.overflow = 'hidden';
-  // slider element does all the positioning
-  this.slider = document.createElement('div');
-  this.slider.className = 'flickity-slider';
-  this.slider.style.position = 'absolute';
-  this.slider.style.width = '100%';
-  // wrap child elements in slider
-  while ( this.element.children.length ) {
-    this.slider.appendChild( this.element.children[0] );
-  }
-  this.element.appendChild( this.slider );
+
+  this._createSlider();
 
   this.getSize();
 
@@ -137,6 +128,22 @@ Flickity.prototype._create = function() {
 Flickity.prototype.option = function( opts ) {
   U.extend( this.options, opts );
 };
+
+// slider positions the cells
+Flickity.prototype._createSlider = function() {
+  // slider element does all the positioning
+  var slider = document.createElement('div');
+  slider.className = 'flickity-slider';
+  slider.style.position = 'absolute';
+  slider.style.width = '100%';
+  // wrap child elements in slider
+  while ( this.element.children.length ) {
+    slider.appendChild( this.element.children[0] );
+  }
+  this.element.appendChild( slider );
+  this.slider = slider;
+};
+
 
 // goes through all children
 Flickity.prototype.reloadCells = function() {
