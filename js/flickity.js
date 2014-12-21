@@ -527,7 +527,7 @@ Flickity.prototype.getPositionValue = function( position ) {
     return Math.round( position ) + 'px';
   } else {
     // percent position, round to 2 digits, like 12.34%
-    return ( Math.round( ( position / this.size.width ) * 10000 ) * 0.01 )+ '%';
+    return ( Math.round( ( position / this.size.innerWidth ) * 10000 ) * 0.01 )+ '%';
   }
 };
 
