@@ -13,6 +13,10 @@
 var U = window.utils;
 var Unipointer = window.Unipointer;
 
+function modulo( num, div ) {
+  return ( ( num % div ) + div ) % div;
+}
+
 // -------------------------- requestAnimationFrame -------------------------- //
 
 // https://gist.github.com/1866474
@@ -393,7 +397,7 @@ Flickity.prototype.dragEndRestingSelect = function() {
   var index = this.selectedWrapIndex;
   var len = this.cells.length;
   // how far away from selected cell
-  var selectedCell = this.cells[ ( ( index % len ) + len ) % len ];
+  var selectedCell = this.cells[ modulo( index, len ) ];
   var distance = Math.abs( -restingX - selectedCell.target );
   // get closet resting going up and going down
   var positiveResting = this._getClosestResting( restingX, distance, 1 );
@@ -438,7 +442,7 @@ Flickity.prototype._getClosestResting = function( restingX, distance, increment 
     // measure distance to next cell
     index += increment;
     minDistance = distance;
-    var cell = this.cells[ ( ( index % len ) + len ) % len ];
+    var cell = this.cells[ modulo( index, len ) ];
     var wrap = this.slideableWidth * Math.floor( index / len );
     distance = Math.abs( -restingX - ( cell.target + wrap ) );
   }
@@ -482,7 +486,7 @@ Flickity.prototype.select = function( index ) {
     if ( this.selectedWrapIndex % len !== index % len ) {
       this.selectedWrapIndex += index - previousIndex;
     }
-    index = ( ( index % len ) + len ) % len;
+    index = modulo( index, len );
   }
 
   if ( this.cells[ index ] ) {
@@ -564,9 +568,8 @@ Flickity.prototype.positionSlider = function() {
   var x = this.x;
   // wrap position around
   if ( this.options.wrapAround ) {
-    var w = this.slideableWidth;
-    x = ( ( x % w ) + w ) % w;
-    x = x - w;
+    x = modulo( x, this.slideableWidth );
+    x = x - this.slideableWidth;
   }
 
   x = x + this.cursorPosition;
@@ -640,8 +643,8 @@ Flickity.prototype.onresize = function() {
   // wrap values
   if ( this.options.wrapAround ) {
     var len = this.cells.length;
-    this.selectedWrapIndex = ( ( this.selectedWrapIndex % len ) + len ) % len;
-    this.x = ( ( this.x % this.slideableWidth ) + this.slideableWidth ) % this.slideableWidth;
+    this.selectedWrapIndex = modulo( this.selectedWrapIndex, len );
+    this.x = modulo( this.x, this.slideableWidth );
   }
   this.positionCells();
   this.positionClones();
