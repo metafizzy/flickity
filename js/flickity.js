@@ -353,13 +353,13 @@ Flickity.prototype.dragMove = function( movePoint, event, pointer ) {
 Flickity.prototype.dragEnd = function( event, pointer ) {
   this.dragEndFlick();
   var previousIndex = this.selectedIndex;
-  this.dragEndRestingSelect();
+  var index = this.dragEndRestingSelect();
   // boost selection if selected index has not changed
-  if ( this.selectedIndex === previousIndex ) {
-    this.dragEndBoostSelect();
+  if ( index === previousIndex ) {
+    index = this.dragEndBoostSelect();
   }
   // apply selection
-  this.select( this.selectedIndex );
+  this.select( index );
 
   this.isDragging = false;
   // re-enable clicking async
@@ -404,6 +404,7 @@ Flickity.prototype.dragEndRestingSelect = function() {
   if ( this.options.wrapAround ) {
     // use closer resting for wrap-around
     index = isPositiveCloser ? positiveResting.index : negativeResting.index;
+    this.selectedWrapIndex = index;
   } else {
     // non wrap-around
     if ( isPositiveCloser && positiveResting.index < len ) {
@@ -418,8 +419,7 @@ Flickity.prototype.dragEndRestingSelect = function() {
     }
   }
 
-  this.selectedWrapIndex = index;
-  this.selectedIndex = ( ( index % len ) + len ) % len;
+  return index;
 };
 
 /**
@@ -454,11 +454,12 @@ Flickity.prototype.dragEndBoostSelect = function() {
   var distance = -this.x - selectedCell.target;
   if ( distance > 0 && this.velocity < -1 ) {
     // if moving towards the right, and positive velocity, and the next attractor
-    this.selectedIndex++;
+    return this.selectedIndex + 1;
   } else if ( distance < 0 && this.velocity > 1 ) {
     // if moving towards the left, and negative velocity, and previous attractor
-    this.selectedIndex--;
+    return this.selectedIndex - 1;
   }
+  return this.selectedIndex;
 };
 
 // ----- onclick ----- //
@@ -473,8 +474,14 @@ Flickity.prototype.onclick = function( event ) {
 // -------------------------- select -------------------------- //
 
 Flickity.prototype.select = function( index ) {
+  var previousIndex = this.selectedIndex;
   if ( this.options.wrapAround ) {
     var len = this.cells.length;
+    // update selectedWrapIndex if needed
+    // TODO, currently happening in dragEndRestingSelect
+    if ( this.selectedWrapIndex % len !== index % len ) {
+      this.selectedWrapIndex += index - previousIndex;
+    }
     index = ( ( index % len ) + len ) % len;
   }
 
@@ -486,12 +493,10 @@ Flickity.prototype.select = function( index ) {
 };
 
 Flickity.prototype.previous = function() {
-  this.selectedWrapIndex--;
-  this.select( this.selectedIndex - 1);
+  this.select( this.selectedIndex - 1 );
 };
 
 Flickity.prototype.next = function() {
-  this.selectedWrapIndex++;
   this.select( this.selectedIndex + 1 );
 };
 

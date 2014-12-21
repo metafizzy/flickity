@@ -11,6 +11,7 @@ destroy
 <!-- add translate -->
 jQuery bridget
 jQuery events
+HTML init
 events
 tests
 requirejs
