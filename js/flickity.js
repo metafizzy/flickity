@@ -3,7 +3,7 @@
  * Touch responsive gallery
  */
 
-/*global EventEmitter: false, Cell: false, getSize: false, getStyleProperty: false, eventie: false, PrevNextButton: false */
+/*global EventEmitter: false, Cell: false, getSize: false, getStyleProperty: false, eventie: false, PrevNextButton: false, PageDots: false */
 
 ( function( window ) {
 
@@ -76,6 +76,7 @@ Flickity.defaults = {
   friction: 0.25,
   cursorPosition: 0.5,
   draggable: true,
+  pageDots: true,
   prevNextButtons: true,
   resizeBound: true,
   targetPosition: 0.5
@@ -115,6 +116,10 @@ Flickity.prototype._create = function() {
   if ( this.options.prevNextButtons ) {
     this.prevButton = new PrevNextButton( -1, this );
     this.nextButton = new PrevNextButton( 1, this );
+  }
+
+  if ( this.options.pageDots ) {
+    this.pageDots = new PageDots( this );
   }
 
   this.updatePrevNextButtons();
@@ -363,6 +368,7 @@ Flickity.prototype.dragEnd = function( event, pointer ) {
     index = this.dragEndBoostSelect();
   }
   // apply selection
+  // TODO refactor this, selecting here feels weird
   this.select( index );
 
   this.isDragging = false;
@@ -492,6 +498,9 @@ Flickity.prototype.select = function( index ) {
   if ( this.cells[ index ] ) {
     this.selectedIndex = index;
     this.updatePrevNextButtons();
+    if ( this.pageDots ) {
+      this.pageDots.update();
+    }
     this.startAnimation();
   }
 };

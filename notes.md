@@ -4,7 +4,7 @@ quad limit dragging from ends
 <!-- window resize logic -->
 <!-- previous / next buttons -->
 <!-- disable prev/next buttons when at end of cells -->
-pager dots
+<!-- pager dots -->
 <!-- click event - links, buttons, inputs -->
 destroy
 <!-- only animate when moving -->
