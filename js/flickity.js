@@ -10,6 +10,7 @@
 'use strict';
 
 // utils
+var jQuery = window.jQuery;
 var U = window.utils;
 var Unipointer = window.Unipointer;
 
@@ -656,6 +657,10 @@ U.debounceMethod( Flickity, 'onresize', 150 );
 // --------------------------  -------------------------- //
 
 U.htmlInit( Flickity, 'flickity' );
+
+if ( jQuery && jQuery.bridget ) {
+  jQuery.bridget( 'flickity', Flickity );
+}
 
 window.Flickity = Flickity;
 

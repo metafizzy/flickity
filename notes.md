@@ -9,7 +9,7 @@ quad limit dragging from ends
 destroy
 <!-- only animate when moving -->
 <!-- add translate -->
-jQuery bridget
+<!-- jQuery bridget -->
 jQuery events
 <!-- HTML init -->
 events

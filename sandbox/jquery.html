@@ -1,0 +1,64 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+
+  <title>jquery</title>
+
+  <link rel="stylesheet" href="../css/flickity.css" />
+  <link rel="stylesheet" href="sandbox.css" />
+
+</head>
+<body>
+
+  <h1>jquery</h1>
+
+  <div id="gallery1" class="container">
+    <div class="cell" n1></div>
+    <div class="cell" n2></div>
+    <div class="cell" n3></div>
+    <div class="cell" n4></div>
+    <div class="cell" n5></div>
+    <div class="cell" n6></div>
+    <div class="cell" n7></div>
+  </div>
+
+  <div id="gallery2" class="container variable-width">
+    <div class="cell n1">1</div>
+    <div class="cell n2 w2">2</div>
+    <div class="cell n3 w3">3</div>
+    <div class="cell n4">4</div>
+    <div class="cell n5 w2">5</div>
+    <div class="cell n6">6</div>
+  </div>
+
+<script src="../bower_components/get-style-property/get-style-property.js"></script>
+<script src="../bower_components/get-size/get-size.js"></script>
+<script src="../bower_components/matches-selector/matches-selector.js"></script>
+<script src="../bower_components/eventEmitter/EventEmitter.js"></script>
+<script src="../bower_components/eventie/eventie.js"></script>
+<script src="../bower_components/doc-ready/doc-ready.js"></script>
+<script src="../bower_components/jquery/dist/jquery.min.js"></script>
+<script src="../bower_components/jquery-bridget/jquery.bridget.js"></script>
+
+<script src="../js/utils.js"></script>
+<script src="../js/unipointer.js"></script>
+<script src="../js/cell.js"></script>
+<script src="../js/prev-next-button.js"></script>
+<script src="../js/page-dots.js"></script>
+<script src="../js/flickity.js"></script>
+
+<script>
+$( function() {
+
+  $('#gallery1').flickity();
+
+  $('#gallery2').flickity({
+    wrapAround: true
+  });
+
+});
+</script>
+
+</body>
+</html>

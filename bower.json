@@ -14,6 +14,9 @@
     "get-style-property": "~1.0.4",
     "doc-ready": "~1.0.4"
   },
+  "devDependencies": {
+    "jquery-bridget": "~1.1.0"
+  },
   "moduleType": [
     "amd",
     "globals",
