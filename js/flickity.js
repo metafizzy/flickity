@@ -408,25 +408,12 @@ Flickity.prototype.dragEndRestingSelect = function() {
   // get closet resting going up and going down
   var positiveResting = this._getClosestResting( restingX, distance, 1 );
   var negativeResting = this._getClosestResting( restingX, distance, -1 );
-
-  var isPositiveCloser = positiveResting.distance < negativeResting.distance;
-
+  // use closer resting for wrap-around
+  index = positiveResting.distance < negativeResting.distance ?
+    positiveResting.index : negativeResting.index;
+  // set wrapIndex so it can be used for flicking
   if ( this.options.wrapAround ) {
-    // use closer resting for wrap-around
-    index = isPositiveCloser ? positiveResting.index : negativeResting.index;
     this.selectedWrapIndex = index;
-  } else {
-    // non wrap-around
-    if ( isPositiveCloser && positiveResting.index < len ) {
-      // positive is closer, and it's not a wrap-around index
-      index = positiveResting.index;
-    } else if ( !isPositiveCloser && negativeResting.index >= 0 ) {
-      // negative is closer, and it's not a wrap-around index
-      index = negativeResting.index;
-    } else {
-      // use wrapped previous index
-      index = this.selectedIndex;
-    }
   }
 
   return index;
@@ -448,8 +435,12 @@ Flickity.prototype._getClosestResting = function( restingX, distance, increment 
     // measure distance to next cell
     index += increment;
     minDistance = distance;
-    var cell = this.cells[ modulo( index, len ) ];
-    var wrap = this.slideableWidth * Math.floor( index / len );
+    var cellIndex = this.options.wrapAround ? modulo( index, len ) : index;
+    var wrap = this.options.wrapAround ? this.slideableWidth * Math.floor( index / len ) : 0;
+    var cell = this.cells[ cellIndex ];
+    if ( !cell ) {
+      break;
+    }
     distance = Math.abs( -restingX - ( cell.target + wrap ) );
   }
   return {
