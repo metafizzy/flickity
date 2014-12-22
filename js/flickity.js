@@ -655,6 +655,8 @@ U.debounceMethod( Flickity, 'onresize', 150 );
 
 // --------------------------  -------------------------- //
 
+U.htmlInit( Flickity, 'flickity' );
+
 window.Flickity = Flickity;
 
 })( window );
