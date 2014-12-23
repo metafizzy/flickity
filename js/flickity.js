@@ -159,6 +159,8 @@ Flickity.prototype._createSlider = function() {
   slider.className = 'flickity-slider';
   slider.style.position = 'absolute';
   slider.style.width = '100%';
+  var side = this.options.rightToLeft ? 'right' : 'left';
+  slider.style[ side ] = 0;
   // wrap child elements in slider
   while ( this.element.children.length ) {
     slider.appendChild( this.element.children[0] );
@@ -262,12 +264,13 @@ Flickity.prototype._getClones = function( gapX, cellIndex, increment ) {
 Flickity.prototype.positionClones = function() {
   // before clones
   var cellX, clone, i, len;
+  var side = this.options.rightToLeft ? 'right' : 'left';
   if ( this.beforeClones ) {
     cellX = 0;
     for ( i=0, len = this.beforeClones.length; i < len; i++ ) {
       clone = this.beforeClones[i];
       cellX -= clone.cell.size.outerWidth;
-      clone.element.style.left = this.getPositionValue( cellX );
+      clone.element.style[ side ] = this.getPositionValue( cellX );
     }
   }
   // after clones
@@ -276,7 +279,7 @@ Flickity.prototype.positionClones = function() {
     cellX = lastCell.x + lastCell.size.outerWidth;
     for ( i=0, len = this.afterClones.length; i < len; i++ ) {
       clone = this.afterClones[i];
-      clone.element.style.left = this.getPositionValue( cellX );
+      clone.element.style[ side ] = this.getPositionValue( cellX );
       cellX += clone.cell.size.outerWidth;
     }
   }
@@ -353,7 +356,9 @@ Flickity.prototype.dragMove = function( movePoint, event, pointer ) {
   this.previousDragX = this.x;
 
   var movedX = movePoint.x - this.dragStartPoint.x;
-  this.x = this.dragStartPosition + movedX;
+  // reverse if right-to-left
+  var direction = this.options.rightToLeft ? -1 : 1;
+  this.x = this.dragStartPosition + movedX * direction;
 
   this.previousDragMoveTime = this.dragMoveTime;
   this.dragMoveTime = new Date();
@@ -575,12 +580,16 @@ Flickity.prototype.positionSlider = function() {
 
   x = x + this.cursorPosition;
 
+  // reverse if right-to-left and using transform
+  x = this.options.rightToLeft && transformProperty ? -x : x;
+
   var value = this.getPositionValue( x );
 
   if ( transformProperty ) {
     this.slider.style[ transformProperty ] = 'translateX(' + value + ')';
   } else {
-    this.slider.style.left = value;
+    var side = this.options.rightToLeft ? 'right' : 'left';
+    this.slider.style[ side ] = value;
   }
 };
 

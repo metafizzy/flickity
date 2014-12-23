@@ -63,7 +63,8 @@ PrevNextButton.prototype.createSVG = function() {
   path.setAttribute( 'd', 'M 50,0 L 60,10 L 20,50 L 60,90 L 50,100 L 0,50 Z' );
   path.setAttribute( 'class', 'arrow' );
   // adjust arrow
-  var arrowTransform = this.direction === -1 ? 'translate(15,0)' :
+  var leftDirection = this.parent.options.rightToLeft ? 1 : -1;
+  var arrowTransform = this.direction === leftDirection ? 'translate(15,0)' :
     'translate(85,100) rotate(180)';
   path.setAttribute( 'transform', arrowTransform );
   svg.appendChild( path );

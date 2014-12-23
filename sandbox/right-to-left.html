@@ -1,0 +1,69 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+
+  <title>right to left</title>
+
+  <link rel="stylesheet" href="../css/flickity.css" />
+  <link rel="stylesheet" href="sandbox.css" />
+
+  <style>
+  .flickity-prev-next-button.previous { left: auto; right: 10px; }
+  .flickity-prev-next-button.next { right: auto; left: 10px; }
+  .flickity-page-dots { direction: rtl; }
+  </style>
+
+</head>
+<body>
+
+  <h1>right to left</h1>
+
+  <div id="gallery1" class="container variable-width">
+    <div class="cell n1">1</div>
+    <div class="cell n2 w2">2</div>
+    <div class="cell n3 w3">3</div>
+    <div class="cell n4">4</div>
+    <div class="cell n5 w2">5</div>
+    <div class="cell n6">6</div>
+  </div>
+
+  <div id="gallery2" class="container variable-width">
+    <div class="cell n1">1</div>
+    <div class="cell n2 w2">2</div>
+    <div class="cell n3 w3">3</div>
+    <div class="cell n4">4</div>
+    <div class="cell n5 w2">5</div>
+    <div class="cell n6">6</div>
+  </div>
+
+<script src="../bower_components/get-style-property/get-style-property.js"></script>
+<script src="../bower_components/get-size/get-size.js"></script>
+<script src="../bower_components/matches-selector/matches-selector.js"></script>
+<script src="../bower_components/eventEmitter/EventEmitter.js"></script>
+<script src="../bower_components/eventie/eventie.js"></script>
+
+<script src="../js/utils.js"></script>
+<script src="../js/unipointer.js"></script>
+<script src="../js/cell.js"></script>
+<script src="../js/prev-next-button.js"></script>
+<script src="../js/page-dots.js"></script>
+<script src="../js/flickity.js"></script>
+
+<script>
+window.onload = function() {
+
+  var flky = window.flky = new Flickity( '#gallery1', {
+    wrapAround: true,
+    rightToLeft: true
+  });
+
+  var flky2 = new Flickity( '#gallery2', {
+    rightToLeft: true
+  });
+
+};
+</script>
+
+</body>
+</html>
