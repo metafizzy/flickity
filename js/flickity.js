@@ -159,7 +159,7 @@ Flickity.prototype._createSlider = function() {
   slider.className = 'flickity-slider';
   slider.style.position = 'absolute';
   slider.style.width = '100%';
-  var side = this.options.rightToLeft ? 'right' : 'left';
+  var side = this.getOriginSide();
   slider.style[ side ] = 0;
   // wrap child elements in slider
   while ( this.element.children.length ) {
@@ -169,6 +169,9 @@ Flickity.prototype._createSlider = function() {
   this.slider = slider;
 };
 
+Flickity.prototype.getOriginSide = function() {
+  return this.options.rightToLeft ? 'right' : 'left';
+};
 
 // goes through all children
 Flickity.prototype.reloadCells = function() {
@@ -264,7 +267,7 @@ Flickity.prototype._getClones = function( gapX, cellIndex, increment ) {
 Flickity.prototype.positionClones = function() {
   // before clones
   var cellX, clone, i, len;
-  var side = this.options.rightToLeft ? 'right' : 'left';
+  var side = this.getOriginSide();
   if ( this.beforeClones ) {
     cellX = 0;
     for ( i=0, len = this.beforeClones.length; i < len; i++ ) {
@@ -588,7 +591,7 @@ Flickity.prototype.positionSlider = function() {
   if ( transformProperty ) {
     this.slider.style[ transformProperty ] = 'translateX(' + value + ')';
   } else {
-    var side = this.options.rightToLeft ? 'right' : 'left';
+    var side = this.getOriginSide();
     this.slider.style[ side ] = value;
   }
 };

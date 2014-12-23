@@ -24,7 +24,7 @@ Cell.prototype.setPosition = function( x ) {
   this.x = x;
   this.target = x + this.size.width * this.parent.options.targetPosition;
   // render position of cell with in slider
-  var side = this.parent.options.rightToLeft ? 'right' : 'left';
+  var side = this.parent.getOriginSide();
   this.element.style[ side ] = this.parent.getPositionValue( this.x );
 };
 
