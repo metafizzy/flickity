@@ -25,12 +25,15 @@ function lerp( a, b, i ) {
   return ( b - a ) * i + a;
 }
 
-function quadraticFormula( a, b, c ) {
+function quadraticFormula( a, b, c, y ) {
+  y = y || 0;
   if ( Math.abs( a ) < 1e-5 ) {
-    // if a = 0, use linear equation bx + c = 0
-    return [ -c / b, -c / b ];
+    // if a = 0, use linear equation bx + c = y
+    var x = ( y - c ) / b;
+    return [ x, x ];
   }
-  var sqrt = Math.sqrt( b * b - 4 * a * c );
+  // y = ( -b +/- sqrt( b^2 - 4a(y-c) ) ) / 2a
+  var sqrt = Math.sqrt( b * b - 4 * a * ( y - c ) );
   var x1 = ( -b + sqrt ) / ( 2 * a );
   var x2 = ( -b - sqrt ) / ( 2 * a );
   return [ x1, x2 ];
@@ -49,7 +52,7 @@ function quadLimit( value, curveStart, limit, reach ) {
   var a = reach - 2 * limit + curveStart;
   var b = 2 * ( limit - curveStart );
   var c = curveStart;
-  var quadFormXs = quadraticFormula( a, b, c );
+  var quadFormXs = quadraticFormula( a, b, c, value );
   // since sqrt can be +/-, use value that is less than 1
   var t = quadFormXs[0] <= 1 ? quadFormXs[0] : quadFormXs[1];
   // now that we have t, from x, find y using t
@@ -57,7 +60,6 @@ function quadLimit( value, curveStart, limit, reach ) {
   var y1 = lerp( curveStart, limit, t );
   // lerp that with the limit again
   var y2 = lerp( y1, limit, t );
-  // debugger
   return y2;
 }
 
@@ -408,19 +410,16 @@ Flickity.prototype.dragMove = function( movePoint, event, pointer ) {
 
 
   if ( !this.options.wrapAround ) {
-    // console.log( this.x );
     // limit dragging beyond origin bound
     var originBound = -this.cells[0].target;
     var innerWidth = this.size.innerWidth;
-    var maxAdd = innerWidth * 0.3;
-    var reachAdd = innerWidth * 0.6;
-    // this.x = quadLimit( this.x, originBound, originBound + maxAdd, originBound + reachAdd );
+    var maxAdd = innerWidth * 0.33;
+    var reachAdd = innerWidth * 0.66;
+    this.x = quadLimit( this.x, originBound, originBound + maxAdd, originBound + reachAdd );
     // limit dragging beyond end bound
     var endBound = -this.slideableWidth;
     var prevX = this.x;
     this.x = quadLimit( this.x, endBound, endBound - maxAdd, endBound - reachAdd );
-    console.log( prevX, this.x )
-    // if ( ~~this.x === -2427 ) debugger;
   }
 
   this.previousDragMoveTime = this.dragMoveTime;
