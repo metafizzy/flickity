@@ -18,6 +18,42 @@ function modulo( num, div ) {
   return ( ( num % div ) + div ) % div;
 }
 
+// ----- quadLimit ----- //
+// limits a value with a quadratic curve, feels nice
+
+function lerp( a, b, i ) {
+  return ( b - a ) * i + a;
+}
+
+function quadLimit( value, curveStart, limit, reach ) {
+  var direction = curveStart < limit ? 1 : -1;
+  if ( value * direction < curveStart * direction ) {
+    return value;
+  } else if ( value * direction > reach * direction ) {
+    return limit;
+  }
+
+  // within curve, let's get y value
+  var denom = reach - 2 * limit + curveStart;
+  // prevent divide by 0
+  // if ( value - curveStart === 0 ) {
+  //   console.log('zero a');
+  // }
+  denom = denom === 0 ? 1 : denom;
+  var a = ( limit - curveStart ) / denom;
+  var b = Math.sqrt( ( value - curveStart ) / denom + a * a );
+  var i1 = b - a;
+  var i2 = -b - a;
+  // since sqrt can be +/-, use value that is less than 1
+  var i = i1 <= 1 ? i1 : i2;
+  // lerp between curveStart and the limit
+  var lp1 = lerp( curveStart, limit, i );
+  // lerp that with the limit again
+  var lp2 = lerp( lp1, limit, i );
+  debugger
+  return lp2;
+}
+
 // -------------------------- requestAnimationFrame -------------------------- //
 
 // https://gist.github.com/1866474
@@ -362,6 +398,23 @@ Flickity.prototype.dragMove = function( movePoint, event, pointer ) {
   // reverse if right-to-left
   var direction = this.options.rightToLeft ? -1 : 1;
   this.x = this.dragStartPosition + movedX * direction;
+
+
+  if ( !this.options.wrapAround ) {
+    // console.log( this.x );
+    // limit dragging beyond origin bound
+    var originBound = -this.cells[0].target;
+    var innerWidth = this.size.innerWidth;
+    var maxAdd = innerWidth * 0.3;
+    var reachAdd = innerWidth * 0.6;
+    // this.x = quadLimit( this.x, originBound, originBound + maxAdd, originBound + reachAdd );
+    // limit dragging beyond end bound
+    var endBound = -this.slideableWidth;
+    var prevX = this.x;
+    this.x = quadLimit( this.x, endBound, endBound - maxAdd, endBound - reachAdd );
+    console.log( prevX, this.x )
+    // if ( ~~this.x === -2427 ) debugger;
+  }
 
   this.previousDragMoveTime = this.dragMoveTime;
   this.dragMoveTime = new Date();
