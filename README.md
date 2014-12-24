@@ -21,6 +21,9 @@ Flickity works with a container element and a set of child cell elements
 var flky = new Flickity( '.gallery', {
   // options, defaults listed
 
+  accessibility: true,
+  // enable keyboard navigation, pressing left & right keys
+
   cellSelector: undefined,
   // specify selector for cell elements
 

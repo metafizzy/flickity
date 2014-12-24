@@ -119,6 +119,7 @@ function Flickity( element, options ) {
 }
 
 Flickity.defaults = {
+  accessibility: true,
   friction: 0.25,
   cursorPosition: 0.5,
   draggable: true,
@@ -185,6 +186,13 @@ Flickity.prototype._create = function() {
 
   if ( this.options.resizeBound ) {
     eventie.bind( window, 'resize', this );
+  }
+
+  if ( this.options.accessibility ) {
+    // allow element to focusable
+    this.element.tabIndex = 0;
+    // listen for key presses
+    eventie.bind( this.element, 'keydown', this );
   }
 
 };
@@ -339,8 +347,12 @@ Flickity.prototype.pointerDown = function( event, pointer ) {
   preventDefaultEvent( event );
   // kludge to blur focused inputs in dragger
   var focused = document.activeElement;
-  if ( focused && focused.blur ) {
+  if ( focused && focused.blur && focused !== this.element ) {
     focused.blur();
+  }
+  // focus element, if its not an input
+  if ( this.options.accessibility && event.target.nodeName !== 'INPUT' ) {
+    this.element.focus();
   }
   // stop if it was moving
   this.velocity = 0;
@@ -418,7 +430,6 @@ Flickity.prototype.dragMove = function( movePoint, event, pointer ) {
     this.x = quadLimit( this.x, originBound, originBound + maxAdd, originBound + reachAdd );
     // limit dragging beyond end bound
     var endBound = -this.slideableWidth;
-    var prevX = this.x;
     this.x = quadLimit( this.x, endBound, endBound - maxAdd, endBound - reachAdd );
   }
 
@@ -708,7 +719,9 @@ Flickity.prototype.getSelectedAttraction = function() {
   return force;
 };
 
-// -------------------------- resize -------------------------- //
+// -------------------------- events -------------------------- //
+
+// ----- resize ----- //
 
 Flickity.prototype.onresize = function() {
   this.getSize();
@@ -724,6 +737,27 @@ Flickity.prototype.onresize = function() {
 };
 
 U.debounceMethod( Flickity, 'onresize', 150 );
+
+// ----- keydown ----- //
+
+// go previous/next if left/right keys pressed
+Flickity.prototype.onkeydown = function( event ) {
+  // only work if element is in focus
+  if ( !this.options.accessibility ||
+    ( document.activeElement && document.activeElement !== this.element ) ) {
+    return;
+  }
+
+  if ( event.keyCode === 37 ) {
+    // go left
+    var leftMethod = this.options.rightToLeft ? 'next' : 'previous';
+    this[ leftMethod ]();
+  } else if ( event.keyCode === 39 ) {
+    // go right
+    var rightMethod = this.options.rightToLeft ? 'previous' : 'next';
+    this[ rightMethod ]();
+  }
+};
 
 // --------------------------  -------------------------- //
 
