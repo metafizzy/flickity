@@ -25,6 +25,17 @@ function lerp( a, b, i ) {
   return ( b - a ) * i + a;
 }
 
+function quadraticFormula( a, b, c ) {
+  if ( Math.abs( a ) < 1e-5 ) {
+    // if a = 0, use linear equation bx + c = 0
+    return [ -c / b, -c / b ];
+  }
+  var sqrt = Math.sqrt( b * b - 4 * a * c );
+  var x1 = ( -b + sqrt ) / ( 2 * a );
+  var x2 = ( -b - sqrt ) / ( 2 * a );
+  return [ x1, x2 ];
+}
+
 function quadLimit( value, curveStart, limit, reach ) {
   var direction = curveStart < limit ? 1 : -1;
   if ( value * direction < curveStart * direction ) {
@@ -34,24 +45,20 @@ function quadLimit( value, curveStart, limit, reach ) {
   }
 
   // within curve, let's get y value
-  var denom = reach - 2 * limit + curveStart;
-  // prevent divide by 0
-  // if ( value - curveStart === 0 ) {
-  //   console.log('zero a');
-  // }
-  denom = denom === 0 ? 1 : denom;
-  var a = ( limit - curveStart ) / denom;
-  var b = Math.sqrt( ( value - curveStart ) / denom + a * a );
-  var i1 = b - a;
-  var i2 = -b - a;
+  // use quadratic formula
+  var a = reach - 2 * limit + curveStart;
+  var b = 2 * ( limit - curveStart );
+  var c = curveStart;
+  var quadFormXs = quadraticFormula( a, b, c );
   // since sqrt can be +/-, use value that is less than 1
-  var i = i1 <= 1 ? i1 : i2;
+  var t = quadFormXs[0] <= 1 ? quadFormXs[0] : quadFormXs[1];
+  // now that we have t, from x, find y using t
   // lerp between curveStart and the limit
-  var lp1 = lerp( curveStart, limit, i );
+  var y1 = lerp( curveStart, limit, t );
   // lerp that with the limit again
-  var lp2 = lerp( lp1, limit, i );
-  debugger
-  return lp2;
+  var y2 = lerp( y1, limit, t );
+  // debugger
+  return y2;
 }
 
 // -------------------------- requestAnimationFrame -------------------------- //
