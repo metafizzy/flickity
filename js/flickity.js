@@ -615,10 +615,7 @@ Flickity.prototype.startAnimation = function() {
 };
 
 Flickity.prototype.animate = function() {
-  if ( !this.isPointerDown ) {
-    var force = this.getSelectedAttraction();
-    this.applyForce( force );
-  }
+  this.applySelectedAttraction();
 
   var previousX = this.x;
 
@@ -710,13 +707,18 @@ Flickity.prototype.getRestingPosition = function() {
   return restX;
 };
 
-Flickity.prototype.getSelectedAttraction = function() {
+
+Flickity.prototype.applySelectedAttraction = function() {
+  // do not attract if pointer down
+  if ( this.isPointerDown ) {
+    return;
+  }
   var cell = this.cells[ this.selectedIndex ];
   var wrap = this.options.wrapAround ?
     this.slideableWidth * Math.floor( this.selectedWrapIndex / this.cells.length ) : 0;
   var distance = ( cell.target + wrap ) * -1 - this.x;
   var force = distance * 0.025;
-  return force;
+  this.applyForce( force );
 };
 
 // -------------------------- events -------------------------- //
