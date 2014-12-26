@@ -77,6 +77,7 @@ PrevNextButton.prototype.onclick = function() {
   }
   var method = this.direction === -1 ? 'previous' : 'next';
   this.parent[ method ]();
+  this.parent.player.stop();
 };
 
 PrevNextButton.prototype.enable = function() {

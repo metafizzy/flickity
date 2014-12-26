@@ -61,8 +61,8 @@ PageDots.prototype.onclick = function( event ) {
   }
 
   var index = U.indexOf( this.dots, target );
-
   this.parent.select( index );
+  this.parent.player.stop();
 };
 
 window.PageDots = PageDots;

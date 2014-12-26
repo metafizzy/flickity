@@ -3,7 +3,7 @@
  * Touch responsive gallery
  */
 
-/*global EventEmitter: false, Cell: false, getSize: false, getStyleProperty: false, eventie: false, PrevNextButton: false, PageDots: false */
+/*global EventEmitter: false, Cell: false, getSize: false, getStyleProperty: false, eventie: false, PrevNextButton: false, PageDots: false, Player: false */
 
 ( function( window ) {
 
@@ -168,6 +168,11 @@ Flickity.prototype._create = function() {
 
   if ( this.options.pageDots ) {
     this.pageDots = new PageDots( this );
+  }
+
+  this.player = new Player( this );
+  if ( this.options.autoPlay ) {
+    this.player.play();
   }
 
   this.updatePrevNextButtons();
@@ -359,6 +364,8 @@ Flickity.prototype.pointerDown = function( event, pointer ) {
   this.velocity = 0;
   // track to see when dragging starts
   this.pointerDownPoint = Unipointer.getPointerPoint( pointer );
+  // stop auto play
+  this.player.stop();
 };
 
 Flickity.prototype.pointerMove = function( event, pointer ) {
@@ -554,9 +561,13 @@ Flickity.prototype.onclick = function( event ) {
 
 // -------------------------- select -------------------------- //
 
-Flickity.prototype.select = function( index ) {
+/**
+ * @param {Integer} index - index of the cell
+ * @param {Boolean} isWrap - will wrap-around to last/first if at the end
+ */
+Flickity.prototype.select = function( index, isWrap ) {
   var previousIndex = this.selectedIndex;
-  if ( this.options.wrapAround ) {
+  if ( this.options.wrapAround || isWrap ) {
     var len = this.cells.length;
     // update selectedWrapIndex if needed
     // TODO, currently happening in dragEndRestingSelect
@@ -576,12 +587,12 @@ Flickity.prototype.select = function( index ) {
   }
 };
 
-Flickity.prototype.previous = function() {
-  this.select( this.selectedIndex - 1 );
+Flickity.prototype.previous = function( isWrap ) {
+  this.select( this.selectedIndex - 1, isWrap );
 };
 
-Flickity.prototype.next = function() {
-  this.select( this.selectedIndex + 1 );
+Flickity.prototype.next = function( isWrap ) {
+  this.select( this.selectedIndex + 1, isWrap );
 };
 
 Flickity.prototype.updatePrevNextButtons = function() {

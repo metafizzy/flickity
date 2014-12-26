@@ -24,6 +24,12 @@ var flky = new Flickity( '.gallery', {
   accessibility: true,
   // enable keyboard navigation, pressing left & right keys
 
+  autoPlay: undefined
+  // advances to the next cell
+  // if true, default is 3 seconds
+  // or set time between advances in milliseconds
+  // i.e. `autoPlay: 1000` will advance every 1 second
+
   cellSelector: undefined,
   // specify selector for cell elements
 

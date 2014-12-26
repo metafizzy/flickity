@@ -28,7 +28,7 @@ wrapAround without clones
 
 <!-- keyboard events -->
 watch for responsive, create/destroy as needed
-autoPlay
+<!-- autoPlay -->
 free scrolling, no alignment
 isGroupPaging
 lazy load

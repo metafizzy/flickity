@@ -94,6 +94,7 @@
 <script src="../js/cell.js"></script>
 <script src="../js/prev-next-button.js"></script>
 <script src="../js/page-dots.js"></script>
+<script src="../js/player.js"></script>
 <script src="../js/flickity.js"></script>
 
 <script>
@@ -104,7 +105,8 @@ window.onload = function() {
 
   var halfWidthflky = new Flickity( '#half-width', {
     cursorPosition: 0,
-    targetPosition: 0
+    targetPosition: 0,
+    autoPlay: true
   });
 
   new Flickity( '#gallery3', {
