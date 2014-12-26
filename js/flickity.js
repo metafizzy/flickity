@@ -126,6 +126,7 @@ Flickity.defaults = {
   pageDots: true,
   prevNextButtons: true,
   resizeBound: true,
+  selectedAttraction: 0.025,
   targetPosition: 0.5
 };
 
@@ -717,7 +718,7 @@ Flickity.prototype.applySelectedAttraction = function() {
   var wrap = this.options.wrapAround ?
     this.slideableWidth * Math.floor( this.selectedWrapIndex / this.cells.length ) : 0;
   var distance = ( cell.target + wrap ) * -1 - this.x;
-  var force = distance * 0.025;
+  var force = distance * this.options.selectedAttraction;
   this.applyForce( force );
 };
 
