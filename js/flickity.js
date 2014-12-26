@@ -201,6 +201,12 @@ Flickity.prototype._create = function() {
     eventie.bind( this.element, 'keydown', this );
   }
 
+  // add hover listeners
+  if ( this.options.autoPlay ) {
+    eventie.bind( this.element, 'mouseenter', this );
+    // TODO add event for pointer enter
+  }
+
 };
 
 /**
@@ -771,6 +777,27 @@ Flickity.prototype.onkeydown = function( event ) {
     var rightMethod = this.options.rightToLeft ? 'previous' : 'next';
     this[ rightMethod ]();
   }
+};
+
+// ----- mouseenter/leave ----- //
+
+// pause auto-play on hover
+Flickity.prototype.onmouseenter = function() {
+  if ( this.player.isPlaying ) {
+    this.player.stop();
+    this.isPlayerHoverPaused = true;
+  }
+  eventie.bind( this.element, 'mouseleave', this );
+};
+
+// resume auto-play on hover off
+Flickity.prototype.onmouseleave = function() {
+  // re-start player
+  if ( this.isPlayerHoverPaused ) {
+    this.player.play();
+    delete this.isPlayerHoverPaused;
+  }
+  eventie.unbind( this.element, 'mouseleave', this );
 };
 
 // --------------------------  -------------------------- //
