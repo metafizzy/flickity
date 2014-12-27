@@ -9,6 +9,8 @@ function Player( parent ) {
 
 Player.prototype.play = function() {
   this.isPlaying = true;
+  // playing kills pauses
+  delete this.isPaused;
   var _this = this;
   var time = this.parent.options.autoPlay;
   // default to 3 seconds
@@ -21,9 +23,23 @@ Player.prototype.play = function() {
 
 Player.prototype.stop = function() {
   this.isPlaying = false;
-  if ( this.timeout ) {
-    clearTimeout( this.timeout );
-    delete this.timeout;
+  // stopping kills pauses
+  delete this.isPaused;
+  clearTimeout( this.timeout );
+};
+
+Player.prototype.pause = function() {
+  if ( this.isPlaying ) {
+    this.stop();
+    // set pause flag after pause so it persists
+    this.isPaused = true;
+  }
+};
+
+Player.prototype.unpause = function() {
+  // re-start play if in unpaused state
+  if ( this.isPaused ) {
+    this.play();
   }
 };
 

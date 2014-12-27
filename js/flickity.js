@@ -783,20 +783,13 @@ Flickity.prototype.onkeydown = function( event ) {
 
 // pause auto-play on hover
 Flickity.prototype.onmouseenter = function() {
-  if ( this.player.isPlaying ) {
-    this.player.stop();
-    this.isPlayerHoverPaused = true;
-  }
+  this.player.pause();
   eventie.bind( this.element, 'mouseleave', this );
 };
 
 // resume auto-play on hover off
 Flickity.prototype.onmouseleave = function() {
-  // re-start player
-  if ( this.isPlayerHoverPaused ) {
-    this.player.play();
-    delete this.isPlayerHoverPaused;
-  }
+  this.player.unpause();
   eventie.unbind( this.element, 'mouseleave', this );
 };
 
