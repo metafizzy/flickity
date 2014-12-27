@@ -11,8 +11,8 @@ Player.prototype.play = function() {
   this.isPlaying = true;
   var _this = this;
   var time = this.parent.options.autoPlay;
-  // default to 3 seconds if autoPlay: true
-  time = time && time === true ? 3000 : time;
+  // default to 3 seconds
+  time = typeof time === 'number' ? time : 3000;
   this.timeout = setTimeout( function() {
     _this.parent.next( true );
     _this.play();

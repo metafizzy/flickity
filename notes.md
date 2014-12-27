@@ -15,6 +15,7 @@ jQuery events
 events
   select
   click
+  settle - when slider settles at selected cell
 tests
 requirejs
 CommonJS
@@ -23,6 +24,9 @@ wrapAround without clones
 
 <!-- isWrapAround -->
 <!-- IE8 button -->
+
+move click logic to unipointer
+move input stuff to unipointer
 
 ## Feature requests
 
