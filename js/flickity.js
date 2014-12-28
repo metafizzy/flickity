@@ -18,51 +18,6 @@ function modulo( num, div ) {
   return ( ( num % div ) + div ) % div;
 }
 
-// ----- quadLimit ----- //
-// limits a value with a quadratic curve, feels nice
-
-function lerp( a, b, i ) {
-  return ( b - a ) * i + a;
-}
-
-function quadraticFormula( a, b, c, y ) {
-  y = y || 0;
-  if ( Math.abs( a ) < 1e-5 ) {
-    // if a = 0, use linear equation bx + c = y
-    var x = ( y - c ) / b;
-    return [ x, x ];
-  }
-  // x = ( -b +/- sqrt( b^2 + 4a(y-c) ) ) / 2a
-  var sqrt = Math.sqrt( b * b + 4 * a * ( y - c ) );
-  var x1 = ( -b + sqrt ) / ( 2 * a );
-  var x2 = ( -b - sqrt ) / ( 2 * a );
-  return [ x1, x2 ];
-}
-
-function quadLimit( value, curveStart, limit, reach ) {
-  var direction = curveStart < limit ? 1 : -1;
-  if ( value * direction < curveStart * direction ) {
-    return value;
-  } else if ( value * direction > reach * direction ) {
-    return limit;
-  }
-
-  // within curve, let's get y value
-  // use quadratic formula
-  var a = reach + -2 * limit + curveStart;
-  var b = 2 * ( limit - curveStart );
-  var c = curveStart;
-  var ts = quadraticFormula( a, b, c, value );
-  // since sqrt can be +/-, use value that is less than 1
-  var t = ts[0] >= 0 && ts[0] <= 1 ? ts[0] : ts[1];
-  // now that we have t, from x, find y using t
-  // lerp between curveStart and the limit
-  var y1 = lerp( curveStart, limit, t );
-  // lerp that with the limit again
-  var y2 = lerp( y1, limit, t );
-  return y2;
-};
-
 // -------------------------- requestAnimationFrame -------------------------- //
 
 // https://gist.github.com/1866474
@@ -434,17 +389,12 @@ Flickity.prototype.dragMove = function( movePoint, event, pointer ) {
   var direction = this.options.rightToLeft ? -1 : 1;
   this.x = this.dragStartPosition + movedX * direction;
 
-
   if ( !this.options.wrapAround ) {
-    var innerWidth = this.size.innerWidth;
-    var maxAdd = innerWidth;
-    var reachAdd = innerWidth * 10;
-    // limit dragging beyond origin bound
+    // slow drag
     var originBound = -this.cells[0].target;
-    this.x = quadLimit( this.x, originBound, originBound + maxAdd, originBound + reachAdd );
-    // limit dragging beyond end bound
+    this.x = this.x > originBound ? ( this.x - originBound ) * 0.5 + originBound : this.x;
     var endBound = -this.cells[ this.cells.length - 1 ].target;
-    this.x = quadLimit( this.x, endBound, endBound - maxAdd, endBound - reachAdd );
+    this.x = this.x < endBound ? ( this.x - endBound ) * 0.5 + endBound : this.x;
   }
 
   this.previousDragMoveTime = this.dragMoveTime;
