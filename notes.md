@@ -21,12 +21,10 @@ requirejs
 CommonJS
 <!-- isOriginLeft: false -->
 wrapAround without clones
+Flickity.data
 
 <!-- isWrapAround -->
 <!-- IE8 button -->
-
-move click logic to unipointer
-move input stuff to unipointer
 
 ## Feature requests
 
@@ -37,6 +35,12 @@ free scrolling, no alignment
 isGroupPaging
 lazy load
 add/remove: prepend, append, insert, remove
+
+## Check
+
+images
+videos
+dragEnd quadLimit on full-width cells
 
 ## Blog about
 

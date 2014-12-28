@@ -32,8 +32,8 @@ function quadraticFormula( a, b, c, y ) {
     var x = ( y - c ) / b;
     return [ x, x ];
   }
-  // y = ( -b +/- sqrt( b^2 - 4a(y-c) ) ) / 2a
-  var sqrt = Math.sqrt( b * b - 4 * a * ( y - c ) );
+  // x = ( -b +/- sqrt( b^2 + 4a(y-c) ) ) / 2a
+  var sqrt = Math.sqrt( b * b + 4 * a * ( y - c ) );
   var x1 = ( -b + sqrt ) / ( 2 * a );
   var x2 = ( -b - sqrt ) / ( 2 * a );
   return [ x1, x2 ];
@@ -49,19 +49,19 @@ function quadLimit( value, curveStart, limit, reach ) {
 
   // within curve, let's get y value
   // use quadratic formula
-  var a = reach - 2 * limit + curveStart;
+  var a = reach + -2 * limit + curveStart;
   var b = 2 * ( limit - curveStart );
   var c = curveStart;
-  var quadFormXs = quadraticFormula( a, b, c, value );
+  var ts = quadraticFormula( a, b, c, value );
   // since sqrt can be +/-, use value that is less than 1
-  var t = quadFormXs[0] <= 1 ? quadFormXs[0] : quadFormXs[1];
+  var t = ts[0] >= 0 && ts[0] <= 1 ? ts[0] : ts[1];
   // now that we have t, from x, find y using t
   // lerp between curveStart and the limit
   var y1 = lerp( curveStart, limit, t );
   // lerp that with the limit again
   var y2 = lerp( y1, limit, t );
   return y2;
-}
+};
 
 // -------------------------- requestAnimationFrame -------------------------- //
 
@@ -436,14 +436,14 @@ Flickity.prototype.dragMove = function( movePoint, event, pointer ) {
 
 
   if ( !this.options.wrapAround ) {
+    var innerWidth = this.size.innerWidth;
+    var maxAdd = innerWidth;
+    var reachAdd = innerWidth * 10;
     // limit dragging beyond origin bound
     var originBound = -this.cells[0].target;
-    var innerWidth = this.size.innerWidth;
-    var maxAdd = innerWidth * 0.33;
-    var reachAdd = innerWidth * 0.66;
     this.x = quadLimit( this.x, originBound, originBound + maxAdd, originBound + reachAdd );
     // limit dragging beyond end bound
-    var endBound = -this.slideableWidth;
+    var endBound = -this.cells[ this.cells.length - 1 ].target;
     this.x = quadLimit( this.x, endBound, endBound - maxAdd, endBound - reachAdd );
   }
 
