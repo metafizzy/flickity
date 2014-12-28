@@ -25,14 +25,17 @@ Player.prototype.stop = function() {
   this.isPlaying = false;
   // stopping kills pauses
   delete this.isPaused;
+  this.clear();
+};
+
+Player.prototype.clear = function() {
   clearTimeout( this.timeout );
 };
 
 Player.prototype.pause = function() {
   if ( this.isPlaying ) {
-    this.stop();
-    // set pause flag after pause so it persists
     this.isPaused = true;
+    this.clear();
   }
 };
 
