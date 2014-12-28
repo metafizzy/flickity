@@ -21,7 +21,7 @@ requirejs
 CommonJS
 <!-- isOriginLeft: false -->
 wrapAround without clones
-Flickity.data
+<!-- Flickity.data -->
 
 <!-- isWrapAround -->
 <!-- IE8 button -->
@@ -40,7 +40,7 @@ add/remove: prepend, append, insert, remove
 
 images
 videos
-dragEnd quadLimit on full-width cells
+<!-- dragEnd quadLimit on full-width cells -->
 
 ## Blog about
 

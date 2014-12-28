@@ -58,6 +58,11 @@ if ( !requestAnimationFrame || !cancelAnimationFrame )  {
 
 // -------------------------- Flickity -------------------------- //
 
+// globally unique identifiers
+var GUID = 0;
+// internal store of all Outlayer intances
+var instances = {};
+
 function Flickity( element, options ) {
   // use element as selector string
   if ( typeof element === 'string' ) {
@@ -90,6 +95,11 @@ U.extend( Flickity.prototype, EventEmitter.prototype );
 U.extend( Flickity.prototype, Unipointer.prototype );
 
 Flickity.prototype._create = function() {
+  // add id for Outlayer.data
+  var id = ++GUID;
+  this.element.flickityGUID = id; // expando
+  instances[ id ] = this; // associate via id
+
   // variables
   this.x = 0;
   this.velocity = 0;
@@ -746,6 +756,16 @@ Flickity.prototype.onmouseleave = function() {
 };
 
 // --------------------------  -------------------------- //
+
+/**
+ * get Outlayer instance from element
+ * @param {Element} elem
+ * @returns {Outlayer}
+ */
+Flickity.data = function( elem ) {
+  var id = elem && elem.flickityGUID;
+  return id && instances[ id ];
+};
 
 U.htmlInit( Flickity, 'flickity' );
 
