@@ -222,6 +222,9 @@ Flickity.prototype._makeCells = function( elems ) {
   return cells;
 };
 
+Flickity.prototype.getLastCell = function() {
+  return this.cells[ this.cells.length - 1 ];
+};
 
 /**
  * @param {Array} cells - Array of Cells
@@ -256,9 +259,8 @@ Flickity.prototype._cloneCells = function() {
   this.beforeClones = this._getClones( gapX, cellIndex, -1 );
   // after cells
   // ending gap between last cell and end of gallery viewport
-  var lastCell = this.cells[ this.cells.length - 1 ];
   gapX = ( this.size.innerWidth - this.cursorPosition ) -
-    lastCell.size.width * ( 1 - this.options.targetPosition );
+    this.getLastCell().size.width * ( 1 - this.options.targetPosition );
   // start cloning at first cell, working forwards
   this.afterClones = this._getClones( gapX, 0, 1 );
 };
@@ -298,7 +300,7 @@ Flickity.prototype.positionClones = function() {
   }
   // after clones
   if ( this.afterClones ) {
-    var lastCell =  this.cells[ this.cells.length - 1 ];
+    var lastCell =  this.getLastCell();
     cellX = lastCell.x + lastCell.size.outerWidth;
     for ( i=0, len = this.afterClones.length; i < len; i++ ) {
       clone = this.afterClones[i];
@@ -393,7 +395,7 @@ Flickity.prototype.dragMove = function( movePoint, event, pointer ) {
     // slow drag
     var originBound = -this.cells[0].target;
     this.x = this.x > originBound ? ( this.x - originBound ) * 0.5 + originBound : this.x;
-    var endBound = -this.cells[ this.cells.length - 1 ].target;
+    var endBound = -this.getLastCell().target;
     this.x = this.x < endBound ? ( this.x - endBound ) * 0.5 + endBound : this.x;
   }
 
