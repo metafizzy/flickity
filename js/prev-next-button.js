@@ -86,10 +86,9 @@ PrevNextButton.prototype.onclick = function() {
   if ( !this.isEnabled ) {
     return;
   }
+  this.parent.uiChange();
   var method = this.isPrevious() ? 'previous' : 'next';
-  delete this.parent.isFreeScrolling;
   this.parent[ method ]();
-  this.parent.player.stop();
 };
 
 PrevNextButton.prototype.enable = function() {

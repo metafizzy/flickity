@@ -67,10 +67,9 @@ PageDots.prototype.onclick = function( event ) {
     return;
   }
 
+  this.parent.uiChange();
   var index = U.indexOf( this.dots, target );
-  delete this.parent.isFreeScrolling;
   this.parent.select( index );
-  this.parent.player.stop();
 };
 
 window.PageDots = PageDots;

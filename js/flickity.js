@@ -351,6 +351,12 @@ Flickity.prototype.updatePrevNextButtons = function() {
   }
 };
 
+// on button clicks and ui changes
+// stop player and stop free scrolling
+Flickity.prototype.uiChange = function() {
+  this.player.stop();
+  delete this.isFreeScrolling;
+};
 
 // -------------------------- events -------------------------- //
 
@@ -384,10 +390,12 @@ Flickity.prototype.onkeydown = function( event ) {
   if ( event.keyCode === 37 ) {
     // go left
     var leftMethod = this.options.rightToLeft ? 'next' : 'previous';
+    this.uiChange();
     this[ leftMethod ]();
   } else if ( event.keyCode === 39 ) {
     // go right
     var rightMethod = this.options.rightToLeft ? 'previous' : 'next';
+    this.uiChange();
     this[ rightMethod ]();
   }
 };
