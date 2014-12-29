@@ -6,6 +6,8 @@
 
 'use strict';
 
+var svgURI = 'http://www.w3.org/2000/svg';
+
 // -------------------------- inline SVG support -------------------------- //
 
 // only check on demand, not on script load
@@ -17,7 +19,7 @@ var supportsInlineSVG = ( function() {
     }
     var div = document.createElement('div');
     div.innerHTML = '<svg/>';
-    supports = ( div.firstChild && div.firstChild.namespaceURI ) == 'http://www.w3.org/2000/svg';
+    supports = ( div.firstChild && div.firstChild.namespaceURI ) == svgURI;
     return supports;
   }
   return checkSupport;
@@ -28,6 +30,9 @@ function PrevNextButton( direction, parent ) {
   this.parent = parent;
   this._create();
 }
+
+var leftArrowText = '←';
+var rightArrowText = '→';
 
 PrevNextButton.prototype._create = function() {
   // properties
@@ -41,8 +46,11 @@ PrevNextButton.prototype._create = function() {
     var svg = this.createSVG();
     this.element.appendChild( svg );
   } else {
-    // TODO, change for rightToLeft
-    var arrowText = this.isPrevious() ? '←' : '→';
+    // SVG not supported, set button text
+    var rightToLeft = this.parent.options.rightToLeft;
+    var previousArrowText = rightToLeft ? rightArrowText : leftArrowText;
+    var nextArrowText = rightToLeft ? leftArrowText : rightArrowText;
+    var arrowText = this.isPrevious() ? previousArrowText : nextArrowText;
     utils.setText( this.element, arrowText );
     this.element.className += ' no-svg';
   }
@@ -63,7 +71,6 @@ PrevNextButton.prototype._create = function() {
 };
 
 PrevNextButton.prototype.createSVG = function() {
-  var svgURI = 'http://www.w3.org/2000/svg';
   var svg = document.createElementNS( svgURI, 'svg');
   svg.setAttribute( 'viewBox', '0 0 100 100' );
   var path = document.createElementNS( svgURI, 'path');
