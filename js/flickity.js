@@ -3,7 +3,7 @@
  * Touch responsive gallery
  */
 
-/*global EventEmitter: false, Cell: false, getSize: false, getStyleProperty: false, eventie: false, PrevNextButton: false, PageDots: false, Player: false */
+/*global EventEmitter: false, Cell: false, getSize: false, eventie: false, PrevNextButton: false, PageDots: false, Player: false */
 
 ( function( window ) {
 
@@ -12,48 +12,11 @@
 // utils
 var jQuery = window.jQuery;
 var U = window.utils;
-var Unipointer = window.Unipointer;
+var dragPrototype = window.Flickity.dragPrototype;
+var animatePrototype = window.Flickity.animatePrototype;
 
 function modulo( num, div ) {
   return ( ( num % div ) + div ) % div;
-}
-
-// -------------------------- requestAnimationFrame -------------------------- //
-
-// https://gist.github.com/1866474
-
-var lastTime = 0;
-var prefixes = 'webkit moz ms o'.split(' ');
-// get unprefixed rAF and cAF, if present
-var requestAnimationFrame = window.requestAnimationFrame;
-var cancelAnimationFrame = window.cancelAnimationFrame;
-// loop through vendor prefixes and get prefixed rAF and cAF
-var prefix;
-for( var i = 0; i < prefixes.length; i++ ) {
-  if ( requestAnimationFrame && cancelAnimationFrame ) {
-    break;
-  }
-  prefix = prefixes[i];
-  requestAnimationFrame = requestAnimationFrame || window[ prefix + 'RequestAnimationFrame' ];
-  cancelAnimationFrame  = cancelAnimationFrame  || window[ prefix + 'CancelAnimationFrame' ] ||
-                            window[ prefix + 'CancelRequestAnimationFrame' ];
-}
-
-// fallback to setTimeout and clearTimeout if either request/cancel is not supported
-if ( !requestAnimationFrame || !cancelAnimationFrame )  {
-  requestAnimationFrame = function( callback ) {
-    var currTime = new Date().getTime();
-    var timeToCall = Math.max( 0, 16 - ( currTime - lastTime ) );
-    var id = window.setTimeout( function() {
-      callback( currTime + timeToCall );
-    }, timeToCall );
-    lastTime = currTime + timeToCall;
-    return id;
-  };
-
-  cancelAnimationFrame = function( id ) {
-    window.clearTimeout( id );
-  };
 }
 
 // -------------------------- Flickity -------------------------- //
@@ -95,7 +58,6 @@ Flickity.defaults = {
 
 // inherit EventEmitter
 U.extend( Flickity.prototype, EventEmitter.prototype );
-U.extend( Flickity.prototype, Unipointer.prototype );
 
 Flickity.prototype._create = function() {
   // add id for Outlayer.data
@@ -346,213 +308,6 @@ Flickity.prototype.dispatchEvent = function( type, event, args ) {
   }
 };
 
-// -------------------------- pointer events -------------------------- //
-
-Flickity.prototype.pointerDown = function( event, pointer ) {
-  preventDefaultEvent( event );
-  // kludge to blur focused inputs in dragger
-  var focused = document.activeElement;
-  if ( focused && focused.blur && focused !== this.element ) {
-    focused.blur();
-  }
-  // focus element, if its not an input
-  if ( this.options.accessibility && event.target.nodeName !== 'INPUT' ) {
-    this.element.focus();
-  }
-  // stop if it was moving
-  this.velocity = 0;
-  // track to see when dragging starts
-  this.pointerDownPoint = Unipointer.getPointerPoint( pointer );
-  // stop auto play
-  this.player.stop();
-};
-
-Flickity.prototype.pointerMove = function( event, pointer ) {
-
-  var movePoint = Unipointer.getPointerPoint( pointer );
-  var dragMove = movePoint.x - this.pointerDownPoint.x;
-
-  // start drag
-  if ( !this.isDragging && Math.abs( dragMove ) > 3 ) {
-    this.dragStart( event, pointer );
-  }
-
-  this.dragMove( movePoint, event, pointer );
-};
-
-
-
-Flickity.prototype.pointerUp = function( event, pointer ) {
-  if ( this.isDragging ) {
-    this.dragEnd( event, pointer );
-  } else {
-    // allow click in text input
-    if ( event.target.nodeName === 'INPUT' && event.target.type === 'text' ) {
-      event.target.focus();
-    }
-  }
-};
-
-// handle IE8 prevent default
-function preventDefaultEvent( event ) {
-  if ( event.preventDefault ) {
-    event.preventDefault();
-  } else {
-    event.returnValue = false;
-  }
-}
-
-// -------------------------- dragging -------------------------- //
-
-Flickity.prototype.dragStart = function( event, pointer ) {
-  this.isDragging = true;
-  this.dragStartPoint = Unipointer.getPointerPoint( pointer );
-  this.dragStartPosition = this.x;
-  this.startAnimation();
-  // prevent clicks
-  this.isPreventingClicks = true;
-  this.dispatchEvent( 'dragStart', event, [ pointer ] );
-};
-
-Flickity.prototype.dragMove = function( movePoint, event, pointer ) {
-  // do not drag if not dragging yet
-  if ( !this.isDragging ) {
-    return;
-  }
-
-  this.previousDragX = this.x;
-
-  var movedX = movePoint.x - this.dragStartPoint.x;
-  // reverse if right-to-left
-  var direction = this.options.rightToLeft ? -1 : 1;
-  this.x = this.dragStartPosition + movedX * direction;
-
-  if ( !this.options.wrapAround ) {
-    // slow drag
-    var originBound = -this.cells[0].target;
-    this.x = this.x > originBound ? ( this.x - originBound ) * 0.5 + originBound : this.x;
-    var endBound = -this.getLastCell().target;
-    this.x = this.x < endBound ? ( this.x - endBound ) * 0.5 + endBound : this.x;
-  }
-
-  this.previousDragMoveTime = this.dragMoveTime;
-  this.dragMoveTime = new Date();
-  this.dispatchEvent( 'dragMove', event, [ pointer ] );
-};
-
-Flickity.prototype.dragEnd = function( event, pointer ) {
-  this.dragEndFlick();
-  var previousIndex = this.selectedIndex;
-  var index = this.dragEndRestingSelect();
-  // boost selection if selected index has not changed
-  if ( index === previousIndex ) {
-    index = this.dragEndBoostSelect();
-  }
-  // apply selection
-  // TODO refactor this, selecting here feels weird
-  this.select( index );
-
-  this.isDragging = false;
-  // re-enable clicking async
-  var _this = this;
-  setTimeout( function() {
-    delete _this.isPreventingClicks;
-  });
-
-  this.dispatchEvent( 'dragEnd', event, [ pointer ] );
-};
-
-// apply velocity after dragging
-Flickity.prototype.dragEndFlick = function() {
-  if ( !isFinite( this.previousDragX ) ) {
-    return;
-  }
-  // set slider velocity
-  var timeDelta = ( new Date() ) - this.previousDragMoveTime;
-  // 60 frames per second, ideally
-  // TODO, velocity should be in pixels per millisecond
-  // currently in pixels per frame
-  timeDelta /= 1000 / 60;
-  var xDelta = this.x - this.previousDragX;
-  this.velocity = xDelta / timeDelta;
-  // reset
-  delete this.previousDragX;
-};
-
-Flickity.prototype.dragEndRestingSelect = function() {
-  var restingX = this.getRestingPosition();
-  var index = this.selectedWrapIndex;
-  var len = this.cells.length;
-  // how far away from selected cell
-  var selectedCell = this.cells[ modulo( index, len ) ];
-  var distance = Math.abs( -restingX - selectedCell.target );
-  // get closet resting going up and going down
-  var positiveResting = this._getClosestResting( restingX, distance, 1 );
-  var negativeResting = this._getClosestResting( restingX, distance, -1 );
-  // use closer resting for wrap-around
-  index = positiveResting.distance < negativeResting.distance ?
-    positiveResting.index : negativeResting.index;
-  // set wrapIndex so it can be used for flicking
-  if ( this.options.wrapAround ) {
-    this.selectedWrapIndex = index;
-  }
-
-  return index;
-};
-
-/**
- * given resting X and distance to selected cell
- * get the distance and index of the closest cell
- * @param {Number} restingX - estimated post-flick resting position
- * @param {Number} distance - distance to selected cell
- * @param {Integer} increment - +1 or -1, going up or down
- * @returns {Object} - { distance: {Number}, index: {Integer} }
- */
-Flickity.prototype._getClosestResting = function( restingX, distance, increment ) {
-  var index = this.selectedWrapIndex;
-  var minDistance = Infinity;
-  var len = this.cells.length;
-  while ( distance < minDistance ) {
-    // measure distance to next cell
-    index += increment;
-    minDistance = distance;
-    var cellIndex = this.options.wrapAround ? modulo( index, len ) : index;
-    var wrap = this.options.wrapAround ? this.slideableWidth * Math.floor( index / len ) : 0;
-    var cell = this.cells[ cellIndex ];
-    if ( !cell ) {
-      break;
-    }
-    distance = Math.abs( -restingX - ( cell.target + wrap ) );
-  }
-  return {
-    distance: minDistance,
-    // selected was previous index
-    index: index - increment
-  };
-};
-
-Flickity.prototype.dragEndBoostSelect = function() {
-  var selectedCell = this.cells[ this.selectedIndex ];
-  var distance = -this.x - selectedCell.target;
-  if ( distance > 0 && this.velocity < -1 ) {
-    // if moving towards the right, and positive velocity, and the next attractor
-    return this.selectedIndex + 1;
-  } else if ( distance < 0 && this.velocity > 1 ) {
-    // if moving towards the left, and negative velocity, and previous attractor
-    return this.selectedIndex - 1;
-  }
-  return this.selectedIndex;
-};
-
-// ----- onclick ----- //
-
-// handle all clicks and prevent clicks when dragging
-Flickity.prototype.onclick = function( event ) {
-  if ( this.isPreventingClicks ) {
-    preventDefaultEvent( event );
-  }
-};
-
 // -------------------------- select -------------------------- //
 
 /**
@@ -610,130 +365,6 @@ Flickity.prototype.updatePrevNextButtons = function() {
   }
 };
 
-// -------------------------- animate -------------------------- //
-
-Flickity.prototype.startAnimation = function() {
-  if ( this.isAnimating ) {
-    return;
-  }
-
-  this.isAnimating = true;
-  this.restingFrames = 0;
-  this.animate();
-};
-
-Flickity.prototype.animate = function() {
-  this.applySelectedAttraction();
-
-  var previousX = this.x;
-
-  this.updatePhysics();
-  this.positionSlider();
-  this.settle( previousX );
-  // animate next frame
-  if ( this.isAnimating ) {
-    var _this = this;
-    requestAnimationFrame( function animateFrame() {
-      _this.animate();
-    });
-  }
-};
-
-
-var transformProperty = getStyleProperty('transform');
-
-Flickity.prototype.positionSlider = function() {
-  var x = this.x;
-  // wrap position around
-  if ( this.options.wrapAround ) {
-    x = modulo( x, this.slideableWidth );
-    x = x - this.slideableWidth;
-  }
-
-  x = x + this.cursorPosition;
-
-  // reverse if right-to-left and using transform
-  x = this.options.rightToLeft && transformProperty ? -x : x;
-
-  var value = this.getPositionValue( x );
-
-  if ( transformProperty ) {
-    this.slider.style[ transformProperty ] = 'translateX(' + value + ')';
-  } else {
-    var side = this.getOriginSide();
-    this.slider.style[ side ] = value;
-  }
-};
-
-Flickity.prototype.positionSliderAtSelected = function() {
-  var selectedCell = this.cells[ this.selectedIndex ];
-  this.x = -selectedCell.target;
-  this.positionSlider();
-};
-
-Flickity.prototype.getPositionValue = function( position ) {
-  if ( this.options.pixelPositioning ) {
-    // pixel positioning
-    return Math.round( position ) + 'px';
-  } else {
-    // percent position, round to 2 digits, like 12.34%
-    return ( Math.round( ( position / this.size.innerWidth ) * 10000 ) * 0.01 )+ '%';
-  }
-};
-
-Flickity.prototype.settle = function( previousX ) {
-  // keep track of frames where x hasn't moved
-  if ( !this.isPointerDown && Math.round( this.x * 100 ) === Math.round( previousX * 100 ) ) {
-    this.restingFrames++;
-  }
-  // stop animating if resting for 3 or more frames
-  if ( this.restingFrames > 2 ) {
-    this.isAnimating = false;
-    this.dispatchEvent('settle');
-  }
-};
-
-// -------------------------- physics -------------------------- //
-
-Flickity.prototype.updatePhysics = function() {
-  this.velocity += this.accel;
-  this.velocity *= ( 1 - this.options.friction );
-  this.x += this.velocity;
-  // reset acceleration
-  this.accel = 0;
-};
-
-Flickity.prototype.applyForce = function( force ) {
-  this.accel += force;
-};
-
-
-var restingVelo = 0.07;
-
-Flickity.prototype.getRestingPosition = function() {
-  // little simulation where thing will rest
-  var velo = this.velocity;
-  var restX = this.x;
-  while ( Math.abs( velo ) > restingVelo ) {
-    velo *= 1 - this.options.friction;
-    restX += velo;
-  }
-  return restX;
-};
-
-
-Flickity.prototype.applySelectedAttraction = function() {
-  // do not attract if pointer down
-  if ( this.isPointerDown ) {
-    return;
-  }
-  var cell = this.cells[ this.selectedIndex ];
-  var wrap = this.options.wrapAround ?
-    this.slideableWidth * Math.floor( this.selectedWrapIndex / this.cells.length ) : 0;
-  var distance = ( cell.target + wrap ) * -1 - this.x;
-  var force = distance * this.options.selectedAttraction;
-  this.applyForce( force );
-};
 
 // -------------------------- events -------------------------- //
 
@@ -788,6 +419,11 @@ Flickity.prototype.onmouseleave = function() {
   this.player.unpause();
   eventie.unbind( this.element, 'mouseleave', this );
 };
+
+// -------------------------- prototype -------------------------- //
+
+U.extend( Flickity.prototype, dragPrototype );
+U.extend( Flickity.prototype, animatePrototype );
 
 // --------------------------  -------------------------- //
 
