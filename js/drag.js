@@ -118,9 +118,6 @@ proto.dragEnd = function( event, pointer ) {
   this.select( index );
   // set flags
   this.isDragging = false;
-  if ( this.options.freeScroll ) {
-    this.isFreeScrolling = true;
-  }
   // re-enable clicking async
   var _this = this;
   setTimeout( function() {
@@ -145,6 +142,10 @@ proto.dragEndFlick = function() {
   this.velocity = xDelta / timeDelta;
   // reset
   delete this.previousDragX;
+  // set freeScrolling flag
+  if ( this.options.freeScroll ) {
+    this.isFreeScrolling = true;
+  }
 };
 
 proto.dragEndRestingSelect = function() {
