@@ -30,9 +30,16 @@ PageDots.prototype._create = function() {
 
   this.update();
 
-  this.parent.element.appendChild( this.holder );
+  // update on select
+  var _this = this;
+  this.onselect = function() {
+    _this.update();
+  };
+  this.parent.on( 'select', this.onselect );
 
   eventie.bind( this.holder, 'click', this );
+
+  this.parent.element.appendChild( this.holder );
 };
 
 PageDots.prototype.update = function() {
