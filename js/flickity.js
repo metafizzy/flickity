@@ -54,7 +54,9 @@ Flickity.defaults = {
   prevNextButtons: true,
   resizeBound: true,
   selectedAttraction: 0.025,
-  targetPosition: 0.5
+  targetPosition: 0.5,
+  leftArrowText: '←', // text for prev/next button when no SVG support
+  rightArrowText: '→'
 };
 
 // inherit EventEmitter

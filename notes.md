@@ -31,16 +31,11 @@ wrapAround without clones
 <!-- keyboard events -->
 watch for responsive, create/destroy as needed
 <!-- autoPlay -->
-free scrolling, no alignment
+<!-- free scrolling, no alignment -->
 isGroupPaging
 lazy load
 add/remove: prepend, append, insert, remove
-
-## freeScroll
-
-set isSelecting
--> apply selection
--> once settled, no longer isSelecting
+scrollView-like: freeScroll, no wrapAround, bound to content, not to aligning cells
 
 ## Check
 

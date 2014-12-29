@@ -31,9 +31,6 @@ function PrevNextButton( direction, parent ) {
   this._create();
 }
 
-var leftArrowText = '←';
-var rightArrowText = '→';
-
 PrevNextButton.prototype._create = function() {
   // properties
   this.isEnabled = true;
@@ -47,12 +44,7 @@ PrevNextButton.prototype._create = function() {
     this.element.appendChild( svg );
   } else {
     // SVG not supported, set button text
-    var rightToLeft = this.parent.options.rightToLeft;
-    var previousArrowText = rightToLeft ? rightArrowText : leftArrowText;
-    var nextArrowText = rightToLeft ? leftArrowText : rightArrowText;
-    var arrowText = this.isPrevious() ? previousArrowText : nextArrowText;
-    utils.setText( this.element, arrowText );
-    this.element.className += ' no-svg';
+    this.setArrowText();
   }
 
   // update on select
@@ -83,6 +75,16 @@ PrevNextButton.prototype.createSVG = function() {
   path.setAttribute( 'transform', arrowTransform );
   svg.appendChild( path );
   return svg;
+};
+
+PrevNextButton.prototype.setArrowText = function() {
+  var parentOptions = this.parent.options;
+  var previousArrowText = parentOptions.rightToLeft ?
+    parentOptions.rightArrowText : parentOptions.leftArrowText;
+  var nextArrowText = parentOptions.rightToLeft ?
+      parentOptions.leftArrowText : parentOptions.rightArrowText;
+  var arrowText = this.isPrevious() ? previousArrowText : nextArrowText;
+  utils.setText( this.element, arrowText );
 };
 
 PrevNextButton.prototype.isPrevious = function() {
