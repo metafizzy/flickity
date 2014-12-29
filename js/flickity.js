@@ -352,16 +352,11 @@ Flickity.prototype.updatePrevNextButtons = function() {
     return;
   }
 
-  var method;
-
   if ( this.prevButton ) {
-    method = this.selectedIndex === 0 ? 'disable' : 'enable';
-    this.prevButton[ method ]();
+    this.prevButton.update();
   }
-
   if ( this.nextButton ) {
-    method = this.selectedIndex === this.cells.length - 1 ? 'disable' : 'enable';
-    this.nextButton[ method ]();
+    this.nextButton.update();
   }
 };
 

@@ -41,7 +41,8 @@ PrevNextButton.prototype._create = function() {
     var svg = this.createSVG();
     this.element.appendChild( svg );
   } else {
-    var arrowText = this.direction === -1 ? '←' : '→';
+    // TODO, change for rightToLeft
+    var arrowText = this.isPrevious() ? '←' : '→';
     utils.setText( this.element, arrowText );
     this.element.className += ' no-svg';
   }
@@ -71,11 +72,15 @@ PrevNextButton.prototype.createSVG = function() {
   return svg;
 };
 
+PrevNextButton.prototype.isPrevious = function() {
+  return this.direction === -1;
+};
+
 PrevNextButton.prototype.onclick = function() {
   if ( !this.isEnabled ) {
     return;
   }
-  var method = this.direction === -1 ? 'previous' : 'next';
+  var method = this.isPrevious() ? 'previous' : 'next';
   this.parent[ method ]();
   this.parent.player.stop();
 };
@@ -94,6 +99,13 @@ PrevNextButton.prototype.disable = function() {
   }
   this.element.disabled = true;
   this.isEnabled = false;
+};
+
+PrevNextButton.prototype.update = function() {
+  // index of first or last cell, if previous or next
+  var boundIndex = this.isPrevious() ? 0 : this.parent.cells.length - 1;
+  var method = this.parent.selectedIndex === boundIndex ? 'disable' : 'enable';
+  this[ method ]();
 };
 
 window.PrevNextButton = PrevNextButton;
