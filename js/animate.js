@@ -4,9 +4,7 @@
 
 'use strict';
 
-function modulo( num, div ) {
-  return ( ( num % div ) + div ) % div;
-}
+var U = window.utils;
 
 // -------------------------- requestAnimationFrame -------------------------- //
 
@@ -84,7 +82,7 @@ proto.positionSlider = function() {
   var x = this.x;
   // wrap position around
   if ( this.options.wrapAround ) {
-    x = modulo( x, this.slideableWidth );
+    x = U.modulo( x, this.slideableWidth );
     x = x - this.slideableWidth;
   }
 

@@ -15,10 +15,6 @@ var U = window.utils;
 var dragPrototype = window.Flickity.dragPrototype;
 var animatePrototype = window.Flickity.animatePrototype;
 
-function modulo( num, div ) {
-  return ( ( num % div ) + div ) % div;
-}
-
 // -------------------------- Flickity -------------------------- //
 
 // globally unique identifiers
@@ -326,7 +322,7 @@ Flickity.prototype.select = function( index, isWrap ) {
     if ( this.selectedWrapIndex % len !== index % len ) {
       this.selectedWrapIndex += index - previousIndex;
     }
-    index = modulo( index, len );
+    index = U.modulo( index, len );
   }
 
   if ( this.cells[ index ] ) {
@@ -369,8 +365,8 @@ Flickity.prototype.onresize = function() {
   // wrap values
   if ( this.options.wrapAround ) {
     var len = this.cells.length;
-    this.selectedWrapIndex = modulo( this.selectedWrapIndex, len );
-    this.x = modulo( this.x, this.slideableWidth );
+    this.selectedWrapIndex = U.modulo( this.selectedWrapIndex, len );
+    this.x = U.modulo( this.x, this.slideableWidth );
   }
   this.positionCells();
   this.positionClones();

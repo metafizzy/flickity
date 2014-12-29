@@ -20,6 +20,12 @@ U.extend = function( a, b ) {
   return a;
 };
 
+// ----- modulo ----- //
+
+U.modulo = function( num, div ) {
+  return ( ( num % div ) + div ) % div;
+};
+
 // ----- isArray ----- //
   
 var objToString = Object.prototype.toString;

@@ -6,10 +6,6 @@
 
 var U = window.utils;
 
-function modulo( num, div ) {
-  return ( ( num % div ) + div ) % div;
-}
-
 // handle IE8 prevent default
 function preventDefaultEvent( event ) {
   if ( event.preventDefault ) {
@@ -160,7 +156,7 @@ proto.dragEndRestingSelect = function() {
   var index = this.selectedWrapIndex;
   var len = this.cells.length;
   // how far away from selected cell
-  var selectedCell = this.cells[ modulo( index, len ) ];
+  var selectedCell = this.cells[ U.modulo( index, len ) ];
   var distance = Math.abs( -restingX - selectedCell.target );
   // get closet resting going up and going down
   var positiveResting = this._getClosestResting( restingX, distance, 1 );
@@ -192,7 +188,7 @@ proto._getClosestResting = function( restingX, distance, increment ) {
     // measure distance to next cell
     index += increment;
     minDistance = distance;
-    var cellIndex = this.options.wrapAround ? modulo( index, len ) : index;
+    var cellIndex = this.options.wrapAround ? U.modulo( index, len ) : index;
     var wrap = this.options.wrapAround ? this.slideableWidth * Math.floor( index / len ) : 0;
     var cell = this.cells[ cellIndex ];
     if ( !cell ) {
