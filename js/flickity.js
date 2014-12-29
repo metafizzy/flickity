@@ -46,7 +46,8 @@ function Flickity( element, options ) {
 
 Flickity.defaults = {
   accessibility: true,
-  friction: 0.25,
+  freeScrollFriction: 0.075, // friction when free-scrolling
+  friction: 0.25, // friction when selecting
   cursorPosition: 0.5,
   draggable: true,
   pageDots: true,

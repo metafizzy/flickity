@@ -136,7 +136,7 @@ proto.settle = function( previousX ) {
 
 proto.updatePhysics = function() {
   this.velocity += this.accel;
-  this.velocity *= ( 1 - this.options.friction );
+  this.velocity *= this.getFrictionFactor();
   this.x += this.velocity;
   // reset acceleration
   this.accel = 0;
@@ -146,6 +146,10 @@ proto.applyForce = function( force ) {
   this.accel += force;
 };
 
+proto.getFrictionFactor = function() {
+  return 1 - this.options[ this.isFreeScrolling ? 'freeScrollFriction' : 'friction' ];
+};
+
 
 var restingVelo = 0.07;
 
@@ -153,8 +157,9 @@ proto.getRestingPosition = function() {
   // little simulation where thing will rest
   var velo = this.velocity;
   var restX = this.x;
+  var frictionF = this.getFrictionFactor();
   while ( Math.abs( velo ) > restingVelo ) {
-    velo *= 1 - this.options.friction;
+    velo *= frictionF;
     restX += velo;
   }
   return restX;
