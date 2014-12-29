@@ -110,14 +110,17 @@ proto.dragEnd = function( event, pointer ) {
   var previousIndex = this.selectedIndex;
   var index = this.dragEndRestingSelect();
   // boost selection if selected index has not changed
-  if ( index === previousIndex ) {
+  if ( index === previousIndex && !this.options.freeScroll ) {
     index = this.dragEndBoostSelect();
   }
   // apply selection
   // TODO refactor this, selecting here feels weird
   this.select( index );
-
+  // set flags
   this.isDragging = false;
+  if ( this.options.freeScroll ) {
+    this.isFreeScrolling = true;
+  }
   // re-enable clicking async
   var _this = this;
   setTimeout( function() {

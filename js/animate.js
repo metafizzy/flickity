@@ -127,6 +127,7 @@ proto.settle = function( previousX ) {
   // stop animating if resting for 3 or more frames
   if ( this.restingFrames > 2 ) {
     this.isAnimating = false;
+    delete this.isFreeScrolling;
     this.dispatchEvent('settle');
   }
 };
@@ -162,7 +163,7 @@ proto.getRestingPosition = function() {
 
 proto.applySelectedAttraction = function() {
   // do not attract if pointer down
-  if ( this.isPointerDown ) {
+  if ( this.isPointerDown || this.isFreeScrolling ) {
     return;
   }
   var cell = this.cells[ this.selectedIndex ];

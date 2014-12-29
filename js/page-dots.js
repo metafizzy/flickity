@@ -68,6 +68,7 @@ PageDots.prototype.onclick = function( event ) {
   }
 
   var index = U.indexOf( this.dots, target );
+  delete this.parent.isFreeScrolling;
   this.parent.select( index );
   this.parent.player.stop();
 };

@@ -41,6 +41,27 @@
     <div class="cell n6">6</div>
   </div>
 
+  <h2>freeScroll</h2>
+
+  <div id="gallery4" class="container variable-width">
+    <div class="cell n1">1</div>
+    <div class="cell n2 w2">2</div>
+    <div class="cell n3 w3">3</div>
+    <div class="cell n4">4</div>
+    <div class="cell n5 w2">5</div>
+    <div class="cell n6">6</div>
+  </div>
+
+  <div id="gallery5" class="container variable-width">
+    <div class="cell n1">1</div>
+    <div class="cell n2 w2">2</div>
+    <div class="cell n3 w3">3</div>
+    <div class="cell n4">4</div>
+    <div class="cell n5 w2">5</div>
+    <div class="cell n6 w3">6</div>
+  </div>
+
+
 <script src="../bower_components/get-style-property/get-style-property.js"></script>
 <script src="../bower_components/get-size/get-size.js"></script>
 <script src="../bower_components/matches-selector/matches-selector.js"></script>
@@ -67,6 +88,19 @@ window.onload = function() {
 
   var flky2 = window.flky2 = new Flickity( '#gallery2', {
   });
+
+  var flky4 = window.flky4 = new Flickity( '#gallery4', {
+    wrapAround: true,
+    freeScroll: true,
+    friction: 0.1
+  });
+
+  var flky5 = window.flky5 = new Flickity( '#gallery5', {
+    freeScroll: true,
+    friction: 0.1
+  });
+
+
 
 };
 </script>

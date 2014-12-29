@@ -87,6 +87,7 @@ PrevNextButton.prototype.onclick = function() {
     return;
   }
   var method = this.isPrevious() ? 'previous' : 'next';
+  delete this.parent.isFreeScrolling;
   this.parent[ method ]();
   this.parent.player.stop();
 };

@@ -36,6 +36,12 @@ isGroupPaging
 lazy load
 add/remove: prepend, append, insert, remove
 
+## freeScroll
+
+set isSelecting
+-> apply selection
+-> once settled, no longer isSelecting
+
 ## Check
 
 images
