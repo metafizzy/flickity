@@ -108,10 +108,24 @@ proto.dragMove = function( movePoint, event, pointer ) {
 proto.dragEnd = function( event, pointer ) {
   this.dragEndFlick();
   var previousIndex = this.selectedIndex;
-  var index = this.dragEndRestingSelect();
-  // boost selection if selected index has not changed
-  if ( index === previousIndex && !this.options.freeScroll ) {
-    index = this.dragEndBoostSelect();
+  var index;
+  if ( this.options.freeScroll ) {
+    // set freeScrolling flag
+    this.isFreeScrolling = true;
+    index = this.dragEndRestingSelect();
+    if ( !this.options.wrapAround ) {
+      var restingX = this.getRestingPosition();
+      // if not wrap around
+      // free scroll if within first & last target
+      // so end cells can attract slider, and keep it in bounds
+      this.isFreeScrolling = -restingX > this.cells[0].target && -restingX < this.getLastCell().target;
+    }
+  } else {
+    index = this.dragEndRestingSelect();
+    // boost selection if selected index has not changed
+    if ( index === previousIndex ) {
+      index = this.dragEndBoostSelect();
+    }
   }
   // apply selection
   // TODO refactor this, selecting here feels weird
@@ -142,10 +156,6 @@ proto.dragEndFlick = function() {
   this.velocity = xDelta / timeDelta;
   // reset
   delete this.previousDragX;
-  // set freeScrolling flag
-  if ( this.options.freeScroll ) {
-    this.isFreeScrolling = true;
-  }
 };
 
 proto.dragEndRestingSelect = function() {
