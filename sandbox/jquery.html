@@ -52,7 +52,20 @@
 <script>
 $( function() {
 
-  $('#gallery1').flickity();
+  var $gallery1 = $('#gallery1').flickity();
+  var flkty = $gallery1.data('flickity');
+
+  // $gallery1.on( 'dragMove', function( event, pointer ) {
+  //   console.log( event.type, pointer.pageX, pointer.pageY );
+  // });
+
+  $gallery1.on( 'select', function() {
+    console.log('selected', flkty.selectedIndex );
+  });
+
+  $gallery1.on( 'settle', function() {
+    console.log('settled', flkty.x );
+  });
 
   $('#gallery2').flickity({
     wrapAround: true

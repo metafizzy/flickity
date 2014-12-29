@@ -69,7 +69,10 @@ function Flickity( element, options ) {
     element = document.querySelector( element );
   }
   this.element = element;
-
+  // add jQuery
+  if ( jQuery ) {
+    this.$element = jQuery( this.element );
+  }
   // options
   this.options = U.extend( {}, this.constructor.defaults );
   this.option( options );
@@ -320,6 +323,29 @@ Flickity.prototype.positionClones = function() {
   }
 };
 
+/**
+ * emits events via eventEmitter and jQuery events
+ * @param {String} type - name of event
+ * @param {Event} event - original event
+ * @param {Array} args - extra arguments
+ */
+Flickity.prototype.dispatchEvent = function( type, event, args ) {
+  var emitArgs = [ event ].concat( args );
+  this.emitEvent( type, emitArgs );
+
+  if ( jQuery && this.$element ) {
+    // add namespace
+    if ( event ) {
+      // create jQuery event
+      var $event = jQuery.Event( event );
+      $event.type = type;
+      this.$element.trigger( $event, args );
+    } else {
+      this.$element.trigger( type, args );
+    }
+  }
+};
+
 // -------------------------- pointer events -------------------------- //
 
 Flickity.prototype.pointerDown = function( event, pointer ) {
@@ -385,7 +411,7 @@ Flickity.prototype.dragStart = function( event, pointer ) {
   this.startAnimation();
   // prevent clicks
   this.isPreventingClicks = true;
-  this.emitEvent( 'dragStart', [ this, event, pointer ] );
+  this.dispatchEvent( 'dragStart', event, [ pointer ] );
 };
 
 Flickity.prototype.dragMove = function( movePoint, event, pointer ) {
@@ -411,7 +437,7 @@ Flickity.prototype.dragMove = function( movePoint, event, pointer ) {
 
   this.previousDragMoveTime = this.dragMoveTime;
   this.dragMoveTime = new Date();
-  this.emitEvent( 'dragMove', [ this, event, pointer ] );
+  this.dispatchEvent( 'dragMove', event, [ pointer ] );
 };
 
 Flickity.prototype.dragEnd = function( event, pointer ) {
@@ -433,7 +459,7 @@ Flickity.prototype.dragEnd = function( event, pointer ) {
     delete _this.isPreventingClicks;
   });
 
-  this.emitEvent( 'dragEnd', [ this, event, pointer ] );
+  this.dispatchEvent( 'dragEnd', event, [ pointer ] );
 };
 
 // apply velocity after dragging
@@ -552,6 +578,8 @@ Flickity.prototype.select = function( index, isWrap ) {
       this.pageDots.update();
     }
     this.startAnimation();
+
+    this.dispatchEvent('select');
   }
 };
 
@@ -601,15 +629,8 @@ Flickity.prototype.animate = function() {
 
   this.updatePhysics();
   this.positionSlider();
-  // keep track of frames where x hasn't moved
-  if ( !this.isPointerDown && Math.round( this.x * 100 ) === Math.round( previousX * 100 ) ) {
-    this.restingFrames++;
-  }
-  // stop animating if resting for 3 or more frames
-  if ( this.restingFrames > 2 ) {
-    this.isAnimating = false;
-  }
-
+  this.settle( previousX );
+  // animate next frame
   if ( this.isAnimating ) {
     var _this = this;
     requestAnimationFrame( function animateFrame() {
@@ -617,6 +638,7 @@ Flickity.prototype.animate = function() {
     });
   }
 };
+
 
 var transformProperty = getStyleProperty('transform');
 
@@ -656,6 +678,18 @@ Flickity.prototype.getPositionValue = function( position ) {
   } else {
     // percent position, round to 2 digits, like 12.34%
     return ( Math.round( ( position / this.size.innerWidth ) * 10000 ) * 0.01 )+ '%';
+  }
+};
+
+Flickity.prototype.settle = function( previousX ) {
+  // keep track of frames where x hasn't moved
+  if ( !this.isPointerDown && Math.round( this.x * 100 ) === Math.round( previousX * 100 ) ) {
+    this.restingFrames++;
+  }
+  // stop animating if resting for 3 or more frames
+  if ( this.restingFrames > 2 ) {
+    this.isAnimating = false;
+    this.dispatchEvent('settle');
   }
 };
 

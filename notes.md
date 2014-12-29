@@ -10,12 +10,12 @@ destroy
 <!-- only animate when moving -->
 <!-- add translate -->
 <!-- jQuery bridget -->
-jQuery events
+<!-- jQuery events -->
 <!-- HTML init -->
-events
-  select
+<!-- events -->
+  <!-- select -->
   click
-  settle - when slider settles at selected cell
+  <!-- settle - when slider settles at selected cell -->
 tests
 requirejs
 CommonJS
