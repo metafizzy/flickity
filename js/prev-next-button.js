@@ -108,6 +108,10 @@ PrevNextButton.prototype.disable = function() {
 };
 
 PrevNextButton.prototype.update = function() {
+  if ( this.parent.options.wrapAround ) {
+    this.enable();
+    return;
+  }
   // index of first or last cell, if previous or next
   var boundIndex = this.isPrevious() ? 0 : this.parent.cells.length - 1;
   var method = this.parent.selectedIndex === boundIndex ? 'disable' : 'enable';

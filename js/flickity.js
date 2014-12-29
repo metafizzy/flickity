@@ -342,11 +342,6 @@ Flickity.prototype.next = function( isWrap ) {
 };
 
 Flickity.prototype.updatePrevNextButtons = function() {
-  // no need if wrap around
-  if ( this.options.wrapAround ) {
-    return;
-  }
-
   if ( this.prevButton ) {
     this.prevButton.update();
   }
