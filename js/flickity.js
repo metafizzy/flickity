@@ -328,7 +328,6 @@ Flickity.prototype.select = function( index, isWrap ) {
 
   if ( this.cells[ index ] ) {
     this.selectedIndex = index;
-    this.updatePrevNextButtons();
     if ( this.pageDots ) {
       this.pageDots.update();
     }

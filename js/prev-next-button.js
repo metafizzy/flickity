@@ -47,8 +47,14 @@ PrevNextButton.prototype._create = function() {
     this.element.className += ' no-svg';
   }
 
-  // listen to click event
+  // update on select
   var _this = this;
+  this.onselect = function() {
+    _this.update();
+  };
+  this.parent.on( 'select', this.onselect );
+
+  // listen to click event
   this.element.onclick = function() {
     _this.onclick();
   };
