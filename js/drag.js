@@ -109,7 +109,7 @@ proto.dragEnd = function( event, pointer ) {
   }
   // set selectedIndex based on where flick will end up
   var index = this.dragEndRestingSelect();
-  console.log( index, previousIndex );
+
   if ( this.options.freeScroll && !this.options.wrapAround ) {
     // if free-scroll & not wrap around
     // do not free-scroll if going outside of bounding cells
@@ -119,7 +119,7 @@ proto.dragEnd = function( event, pointer ) {
       -restingX < this.getLastCell().target;
   } else if ( !this.options.freeScroll && index === previousIndex ) {
     // boost selection if selected index has not changed
-    index = this.dragEndBoostSelect();
+    index = this.dragEndBoostSelect( index );
   }
   // apply selection
   // TODO refactor this, selecting here feels weird
@@ -155,18 +155,13 @@ proto.dragEndFlick = function() {
 proto.dragEndRestingSelect = function() {
   var restingX = this.getRestingPosition();
   // how far away from selected cell
-  var distance = this.getCellDistance( -restingX, this.selectedWrapIndex );
+  var distance = Math.abs( this.getCellDistance( -restingX, this.selectedWrapIndex ) );
   // get closet resting going up and going down
   var positiveResting = this._getClosestResting( restingX, distance, 1 );
   var negativeResting = this._getClosestResting( restingX, distance, -1 );
   // use closer resting for wrap-around
   var index = positiveResting.distance < negativeResting.distance ?
     positiveResting.index : negativeResting.index;
-  // set wrapIndex so it can be used for flicking
-  if ( this.options.wrapAround ) {
-    this.selectedWrapIndex = index;
-  }
-
   return index;
 };
 
@@ -189,6 +184,7 @@ proto._getClosestResting = function( restingX, distance, increment ) {
     if ( distance === null ) {
       break;
     }
+    distance = Math.abs( distance );
   }
   return {
     distance: minDistance,
@@ -211,21 +207,19 @@ proto.getCellDistance = function( x, index ) {
   }
   // add distance for wrap-around cells
   var wrap = this.options.wrapAround ? this.slideableWidth * Math.floor( index / len ) : 0;
-  return Math.abs( x - ( cell.target + wrap ) );
+  return x - ( cell.target + wrap );
 };
 
-proto.dragEndBoostSelect = function() {
-  console.log('boost');
-  var selectedCell = this.cells[ this.selectedIndex ];
-  var distance = -this.x - selectedCell.target;
-  if ( distance > 0 && this.velocity < -1 ) {
+proto.dragEndBoostSelect = function( index ) {
+  var distance = this.getCellDistance( -this.x, index );
+  if ( distance >= 0 && this.velocity < -1 ) {
     // if moving towards the right, and positive velocity, and the next attractor
-    return this.selectedIndex + 1;
-  } else if ( distance < 0 && this.velocity > 1 ) {
+    return this.selectedWrapIndex + 1;
+  } else if ( distance <= 0 && this.velocity > 1 ) {
     // if moving towards the left, and negative velocity, and previous attractor
-    return this.selectedIndex - 1;
+    return this.selectedWrapIndex - 1;
   }
-  return this.selectedIndex;
+  return this.selectedWrapIndex;
 };
 
 // ----- onclick ----- //

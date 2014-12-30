@@ -316,13 +316,8 @@ Flickity.prototype.dispatchEvent = function( type, event, args ) {
 Flickity.prototype.select = function( index, isWrap ) {
   var previousIndex = this.selectedIndex;
   if ( this.options.wrapAround || isWrap ) {
-    var len = this.cells.length;
-    // update selectedWrapIndex if needed
-    // TODO, currently happening in dragEndRestingSelect
-    if ( this.selectedWrapIndex % len !== index % len ) {
-      this.selectedWrapIndex += index - previousIndex;
-    }
-    index = U.modulo( index, len );
+    this.selectedWrapIndex = index;
+    index = U.modulo( index, this.cells.length );
   }
 
   if ( this.cells[ index ] ) {
@@ -333,11 +328,11 @@ Flickity.prototype.select = function( index, isWrap ) {
 };
 
 Flickity.prototype.previous = function( isWrap ) {
-  this.select( this.selectedIndex - 1, isWrap );
+  this.select( this.selectedWrapIndex - 1, isWrap );
 };
 
 Flickity.prototype.next = function( isWrap ) {
-  this.select( this.selectedIndex + 1, isWrap );
+  this.select( this.selectedWrapIndex + 1, isWrap );
 };
 
 Flickity.prototype.updatePrevNextButtons = function() {
