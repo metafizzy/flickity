@@ -314,7 +314,6 @@ Flickity.prototype.dispatchEvent = function( type, event, args ) {
  * @param {Boolean} isWrap - will wrap-around to last/first if at the end
  */
 Flickity.prototype.select = function( index, isWrap ) {
-  var previousIndex = this.selectedIndex;
   if ( this.options.wrapAround || isWrap ) {
     this.selectedWrapIndex = index;
     index = U.modulo( index, this.cells.length );
@@ -322,6 +321,9 @@ Flickity.prototype.select = function( index, isWrap ) {
 
   if ( this.cells[ index ] ) {
     this.selectedIndex = index;
+    if ( !this.options.wrapAround ) {
+      this.selectedWrapIndex = index;
+    }
     this.startAnimation();
     this.dispatchEvent('select');
   }
