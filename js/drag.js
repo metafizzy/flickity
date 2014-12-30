@@ -103,12 +103,13 @@ proto.dragMove = function( movePoint, event, pointer ) {
 
 proto.dragEnd = function( event, pointer ) {
   this.dragEndFlick();
-  var previousIndex = this.selectedIndex;
+  var previousIndex = this.selectedWrapIndex;
   if ( this.options.freeScroll ) {
     this.isFreeScrolling = true;
   }
   // set selectedIndex based on where flick will end up
   var index = this.dragEndRestingSelect();
+  console.log( index, previousIndex );
   if ( this.options.freeScroll && !this.options.wrapAround ) {
     // if free-scroll & not wrap around
     // do not free-scroll if going outside of bounding cells
@@ -153,16 +154,13 @@ proto.dragEndFlick = function() {
 
 proto.dragEndRestingSelect = function() {
   var restingX = this.getRestingPosition();
-  var index = this.selectedWrapIndex;
-  var len = this.cells.length;
   // how far away from selected cell
-  var selectedCell = this.cells[ U.modulo( index, len ) ];
-  var distance = Math.abs( -restingX - selectedCell.target );
+  var distance = this.getCellDistance( -restingX, this.selectedWrapIndex );
   // get closet resting going up and going down
   var positiveResting = this._getClosestResting( restingX, distance, 1 );
   var negativeResting = this._getClosestResting( restingX, distance, -1 );
   // use closer resting for wrap-around
-  index = positiveResting.distance < negativeResting.distance ?
+  var index = positiveResting.distance < negativeResting.distance ?
     positiveResting.index : negativeResting.index;
   // set wrapIndex so it can be used for flicking
   if ( this.options.wrapAround ) {
@@ -183,18 +181,14 @@ proto.dragEndRestingSelect = function() {
 proto._getClosestResting = function( restingX, distance, increment ) {
   var index = this.selectedWrapIndex;
   var minDistance = Infinity;
-  var len = this.cells.length;
   while ( distance < minDistance ) {
     // measure distance to next cell
     index += increment;
     minDistance = distance;
-    var cellIndex = this.options.wrapAround ? U.modulo( index, len ) : index;
-    var wrap = this.options.wrapAround ? this.slideableWidth * Math.floor( index / len ) : 0;
-    var cell = this.cells[ cellIndex ];
-    if ( !cell ) {
+    distance = this.getCellDistance( -restingX, index );
+    if ( distance === null ) {
       break;
     }
-    distance = Math.abs( -restingX - ( cell.target + wrap ) );
   }
   return {
     distance: minDistance,
@@ -203,7 +197,25 @@ proto._getClosestResting = function( restingX, distance, increment ) {
   };
 };
 
+/**
+ * measure distance between x and a cell target
+ * @param {Number} x
+ * @param {Integer} index - cell index
+ */
+proto.getCellDistance = function( x, index ) {
+  var len = this.cells.length;
+  var cellIndex = this.options.wrapAround ? U.modulo( index, len ) : index;
+  var cell = this.cells[ cellIndex ];
+  if ( !cell ) {
+    return null;
+  }
+  // add distance for wrap-around cells
+  var wrap = this.options.wrapAround ? this.slideableWidth * Math.floor( index / len ) : 0;
+  return Math.abs( x - ( cell.target + wrap ) );
+};
+
 proto.dragEndBoostSelect = function() {
+  console.log('boost');
   var selectedCell = this.cells[ this.selectedIndex ];
   var distance = -this.x - selectedCell.target;
   if ( distance > 0 && this.velocity < -1 ) {
