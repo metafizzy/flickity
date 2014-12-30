@@ -94,6 +94,7 @@ proto.positionSlider = function() {
   var value = this.getPositionValue( x );
 
   if ( transformProperty ) {
+    // TODO use 3D transform, then fallback to 2D when settled
     this.slider.style[ transformProperty ] = 'translateX(' + value + ')';
   } else {
     var side = this.getOriginSide();
@@ -155,6 +156,7 @@ proto.getRestingPosition = function() {
   // little simulation where thing will rest
   var velo = this.velocity;
   var restX = this.x;
+  // TODO always using freeScrollFriction here is nice
   var frictionF = this.getFrictionFactor();
   while ( Math.abs( velo ) > restingVelo ) {
     velo *= frictionF;
