@@ -171,9 +171,7 @@ Flickity.prototype.reloadCells = function() {
   // collection of item elements
   this.cells = this._makeCells( this.slider.children );
   this.positionCells( this.cells );
-  // clone cells for wrap around
-  this._cloneCells();
-  this.positionClones();
+  this._getWrapShiftCells();
 };
 
 /**
@@ -219,7 +217,7 @@ Flickity.prototype.getSize = function() {
   this.cursorPosition = this.size.innerWidth * this.options.cursorPosition;
 };
 
-Flickity.prototype._cloneCells = function() {
+Flickity.prototype._getWrapShiftCells = function() {
   // only for wrap-around
   if ( !this.options.wrapAround ) {
     return;
@@ -228,59 +226,25 @@ Flickity.prototype._cloneCells = function() {
   // initial gap
   var gapX = this.cursorPosition - this.cells[0].target;
   var cellIndex = this.cells.length - 1;
-  // start cloning at last cell, working backwards
-  this.beforeClones = this._getClones( gapX, cellIndex, -1 );
+  this.beforeShiftCells = this._getGapCells( gapX, cellIndex, -1 );
   // after cells
   // ending gap between last cell and end of gallery viewport
   gapX = ( this.size.innerWidth - this.cursorPosition ) -
     this.getLastCell().size.width * ( 1 - this.options.targetPosition );
   // start cloning at first cell, working forwards
-  this.afterClones = this._getClones( gapX, 0, 1 );
+  this.afterShiftCells = this._getGapCells( gapX, 0, 1 );
 };
 
-Flickity.prototype._getClones = function( gapX, cellIndex, increment ) {
-  var clones = [];
-  var fragment = document.createDocumentFragment();
+Flickity.prototype._getGapCells = function( gapX, cellIndex, increment ) {
   // keep adding cells until the cover the initial gap
+  var cells = [];
   while ( gapX >= 0 ) {
     var cell = this.cells[ cellIndex ];
-    var clone = {
-      // keep track of which cell this clone matches
-      cell: cell,
-      // clone element
-      element: cell.element.cloneNode( true )
-    };
-    clones.push( clone );
-    fragment.appendChild( clone.element );
+    cells.push( cell );
     cellIndex += increment;
     gapX -= cell.size.outerWidth;
   }
-  this.slider.appendChild( fragment );
-  return clones;
-};
-
-Flickity.prototype.positionClones = function() {
-  // before clones
-  var cellX, clone, i, len;
-  var side = this.getOriginSide();
-  if ( this.beforeClones ) {
-    cellX = 0;
-    for ( i=0, len = this.beforeClones.length; i < len; i++ ) {
-      clone = this.beforeClones[i];
-      cellX -= clone.cell.size.outerWidth;
-      clone.element.style[ side ] = this.getPositionValue( cellX );
-    }
-  }
-  // after clones
-  if ( this.afterClones ) {
-    var lastCell =  this.getLastCell();
-    cellX = lastCell.x + lastCell.size.outerWidth;
-    for ( i=0, len = this.afterClones.length; i < len; i++ ) {
-      clone = this.afterClones[i];
-      clone.element.style[ side ] = this.getPositionValue( cellX );
-      cellX += clone.cell.size.outerWidth;
-    }
-  }
+  return cells;
 };
 
 /**
@@ -365,11 +329,9 @@ Flickity.prototype.onresize = function() {
   this.getSize();
   // wrap values
   if ( this.options.wrapAround ) {
-    var len = this.cells.length;
     this.x = U.modulo( this.x, this.slideableWidth );
   }
   this.positionCells();
-  this.positionClones();
   this.positionSliderAtSelected();
 };
 

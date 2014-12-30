@@ -84,6 +84,7 @@ proto.positionSlider = function() {
   if ( this.options.wrapAround ) {
     x = U.modulo( x, this.slideableWidth );
     x = x - this.slideableWidth;
+    this.shiftWrapCells( x );
   }
 
   x = x + this.cursorPosition;
@@ -128,6 +129,24 @@ proto.settle = function( previousX ) {
     this.isAnimating = false;
     delete this.isFreeScrolling;
     this.dispatchEvent('settle');
+  }
+};
+
+proto.shiftWrapCells = function( x ) {
+  // shift before cells
+  var beforeGap = this.cursorPosition + x;
+  this._shiftCells( this.beforeShiftCells, beforeGap, -1 );
+  // shift after cells
+  var afterGap = this.size.innerWidth - ( x + this.slideableWidth + this.cursorPosition );
+  this._shiftCells( this.afterShiftCells, afterGap, 1 );
+};
+
+proto._shiftCells = function( cells, gap, shift ) {
+  for ( var i=0, len = cells.length; i < len; i++ ) {
+    var cell = cells[i];
+    var cellShift = gap > 0 ? shift : 0;
+    cell.wrapShift( cellShift );
+    gap -= cell.size.outerWidth;
   }
 };
 
