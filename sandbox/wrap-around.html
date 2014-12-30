@@ -31,6 +31,15 @@
     <div class="cell n6 w3">6</div>
   </div>
 
+  <div id="gallery6" class="container variable-width">
+    <div class="cell n1">1</div>
+    <div class="cell n2 w2">2</div>
+    <div class="cell n3 w3">3</div>
+    <div class="cell n4">4</div>
+    <div class="cell n5 w2">5</div>
+    <div class="cell n6">6</div>
+  </div>
+
   <div id="gallery3" class="container variable-width js-flickity"
     data-flickity-options='{ "wrapAround": true }'>
     <div class="cell n1">1</div>
@@ -87,6 +96,12 @@ window.onload = function() {
   });
 
   var flky2 = window.flky2 = new Flickity( '#gallery2', {
+  });
+
+  var flky6 = window.flky6 = new Flickity( '#gallery6', {
+    wrapAround: true,
+    targetPosition: 0,
+    cursorPosition: 0
   });
 
   var flky4 = window.flky4 = new Flickity( '#gallery4', {
