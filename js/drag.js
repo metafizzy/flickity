@@ -91,9 +91,9 @@ proto.dragMove = function( movePoint, event, pointer ) {
   if ( !this.options.wrapAround ) {
     // slow drag
     var originBound = Math.max( -this.cells[0].target, this.dragStartPosition);
-    this.x = this.x > originBound ? ( this.x - originBound ) * 0.5 + originBound : this.x;
+    this.x = this.x > originBound ? ( this.x - originBound ) * 0.333 + originBound : this.x;
     var endBound = Math.min( -this.getLastCell().target, this.dragStartPosition );
-    this.x = this.x < endBound ? ( this.x - endBound ) * 0.5 + endBound : this.x;
+    this.x = this.x < endBound ? ( this.x - endBound ) * 0.333 + endBound : this.x;
   }
 
   this.previousDragMoveTime = this.dragMoveTime;
