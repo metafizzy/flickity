@@ -295,13 +295,13 @@ Flickity.prototype.dispatchEvent = function( type, event, args ) {
   this.emitEvent( type, emitArgs );
 
   if ( jQuery && this.$element ) {
-    // add namespace
     if ( event ) {
       // create jQuery event
       var $event = jQuery.Event( event );
       $event.type = type;
       this.$element.trigger( $event, args );
     } else {
+      // just trigger with type if no event available
       this.$element.trigger( type, args );
     }
   }

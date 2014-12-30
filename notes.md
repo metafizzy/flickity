@@ -48,3 +48,9 @@ videos
 <!-- wrapAround -->
 handling clicks vs. dragging
 right now, in development, is the best time
+
+
+## Watch
+
+check for property
+activate / deactivate as necessary
