@@ -173,7 +173,7 @@ proto.applySelectedAttraction = function() {
   }
   var cell = this.cells[ this.selectedIndex ];
   var wrap = this.options.wrapAround ?
-    this.slideableWidth * Math.floor( this.selectedWrapIndex / this.cells.length ) : 0;
+    this.slideableWidth * Math.floor( this.selectedIndex / this.cells.length ) : 0;
   var distance = ( cell.target + wrap ) * -1 - this.x;
   var force = distance * this.options.selectedAttraction;
   this.applyForce( force );

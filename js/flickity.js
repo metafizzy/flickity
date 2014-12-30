@@ -70,7 +70,6 @@ Flickity.prototype._create = function() {
   this.accel = 0;
 
   this.selectedIndex = 0;
-  this.selectedWrapIndex = 0;
   // how many frames slider has been in same position
   this.restingFrames = 0;
 
@@ -314,27 +313,32 @@ Flickity.prototype.dispatchEvent = function( type, event, args ) {
  * @param {Boolean} isWrap - will wrap-around to last/first if at the end
  */
 Flickity.prototype.select = function( index, isWrap ) {
+  // wrap position so slider is within normal area
+  if ( this.options.wrapAround ) {
+    if ( index < 0 ) {
+      this.x -= this.slideableWidth;
+    } else if ( index >= this.cells.length ) {
+      this.x += this.slideableWidth;
+    }
+  }
+
   if ( this.options.wrapAround || isWrap ) {
-    this.selectedWrapIndex = index;
     index = U.modulo( index, this.cells.length );
   }
 
   if ( this.cells[ index ] ) {
     this.selectedIndex = index;
-    if ( !this.options.wrapAround ) {
-      this.selectedWrapIndex = index;
-    }
     this.startAnimation();
     this.dispatchEvent('select');
   }
 };
 
 Flickity.prototype.previous = function( isWrap ) {
-  this.select( this.selectedWrapIndex - 1, isWrap );
+  this.select( this.selectedIndex - 1, isWrap );
 };
 
 Flickity.prototype.next = function( isWrap ) {
-  this.select( this.selectedWrapIndex + 1, isWrap );
+  this.select( this.selectedIndex + 1, isWrap );
 };
 
 Flickity.prototype.updatePrevNextButtons = function() {
@@ -362,7 +366,6 @@ Flickity.prototype.onresize = function() {
   // wrap values
   if ( this.options.wrapAround ) {
     var len = this.cells.length;
-    this.selectedWrapIndex = U.modulo( this.selectedWrapIndex, len );
     this.x = U.modulo( this.x, this.slideableWidth );
   }
   this.positionCells();

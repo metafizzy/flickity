@@ -116,7 +116,7 @@ proto.dragEnd = function( event, pointer ) {
     var restingX = this.getRestingPosition();
     this.isFreeScrolling = -restingX > this.cells[0].target &&
       -restingX < this.getLastCell().target;
-  } else if ( !this.options.freeScroll && index === this.selectedWrapIndex ) {
+  } else if ( !this.options.freeScroll && index === this.selectedIndex ) {
     // boost selection if selected index has not changed
     index = this.dragEndBoostSelect();
   }
@@ -154,7 +154,7 @@ proto.dragEndFlick = function() {
 proto.dragEndRestingSelect = function() {
   var restingX = this.getRestingPosition();
   // how far away from selected cell
-  var distance = Math.abs( this.getCellDistance( -restingX, this.selectedWrapIndex ) );
+  var distance = Math.abs( this.getCellDistance( -restingX, this.selectedIndex ) );
   // get closet resting going up and going down
   var positiveResting = this._getClosestResting( restingX, distance, 1 );
   var negativeResting = this._getClosestResting( restingX, distance, -1 );
@@ -173,7 +173,7 @@ proto.dragEndRestingSelect = function() {
  * @returns {Object} - { distance: {Number}, index: {Integer} }
  */
 proto._getClosestResting = function( restingX, distance, increment ) {
-  var index = this.selectedWrapIndex;
+  var index = this.selectedIndex;
   var minDistance = Infinity;
   while ( distance < minDistance ) {
     // measure distance to next cell
@@ -210,7 +210,7 @@ proto.getCellDistance = function( x, index ) {
 };
 
 proto.dragEndBoostSelect = function() {
-  var index = this.selectedWrapIndex;
+  var index = this.selectedIndex;
   var distance = this.getCellDistance( -this.x, index );
   if ( distance > 0 && this.velocity < -1 ) {
     // if moving towards the right, and positive velocity, and the next attractor

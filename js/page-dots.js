@@ -69,11 +69,6 @@ PageDots.prototype.onclick = function( event ) {
 
   this.parent.uiChange();
   var index = U.indexOf( this.dots, target );
-  // add wrap for closest cell in wrap-around
-  if ( this.parent.options.wrapAround ) {
-    var len = this.parent.cells.length;
-    index += Math.floor( this.parent.selectedWrapIndex / len ) * len;
-  }
   this.parent.select( index );
 };
 
