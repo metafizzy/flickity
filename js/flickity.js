@@ -332,6 +332,7 @@ Flickity.prototype.onresize = function() {
     this.x = U.modulo( this.x, this.slideableWidth );
   }
   this.positionCells();
+  this._getWrapShiftCells();
   this.positionSliderAtSelected();
 };
 
