@@ -224,13 +224,12 @@ Flickity.prototype._getWrapShiftCells = function() {
   }
   // before cells
   // initial gap
-  var gapX = this.cursorPosition - this.cells[0].target;
+  var gapX = this.cursorPosition;
   var cellIndex = this.cells.length - 1;
   this.beforeShiftCells = this._getGapCells( gapX, cellIndex, -1 );
   // after cells
   // ending gap between last cell and end of gallery viewport
-  gapX = ( this.size.innerWidth - this.cursorPosition ) -
-    this.getLastCell().size.width * ( 1 - this.options.targetPosition );
+  gapX = this.size.innerWidth - this.cursorPosition;
   // start cloning at first cell, working forwards
   this.afterShiftCells = this._getGapCells( gapX, 0, 1 );
 };

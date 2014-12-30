@@ -25,6 +25,9 @@ body {
   height: 200px;
   border: 0px solid white;
   background: #CCC;
+  font-size: 100px;
+  color: white;
+  font-weight: bold;
 }
 
 .cell:nth-child(6n) { background: hsl(0, 80%, 70%); }
@@ -49,10 +52,12 @@ body {
 .variable-width .cell {
   width: 20%;
   margin-right: 3%;
-  font-size: 100px;
-  color: white;
-  font-weight: bold;
 }
 
 .variable-width .cell.w2 { width: 30%; }
 .variable-width .cell.w3 { width: 40%; }
+
+.fixed-width .cell {
+  width: 200px;
+  margin-right: 20px;
+}
