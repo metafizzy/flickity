@@ -325,7 +325,7 @@ Flickity.prototype.uiChange = function() {
 
 // ----- resize ----- //
 
-Flickity.prototype.onresize = function() {
+Flickity.prototype.resize = function() {
   this.getSize();
   // wrap values
   if ( this.options.wrapAround ) {
@@ -334,6 +334,10 @@ Flickity.prototype.onresize = function() {
   this.positionCells();
   this._getWrapShiftCells();
   this.positionSliderAtSelected();
+};
+
+Flickity.prototype.onresize = function() {
+  this.resize();
 };
 
 U.debounceMethod( Flickity, 'onresize', 150 );
