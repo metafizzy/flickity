@@ -103,7 +103,6 @@ proto.dragMove = function( movePoint, event, pointer ) {
 
 proto.dragEnd = function( event, pointer ) {
   this.dragEndFlick();
-  var previousIndex = this.selectedWrapIndex;
   if ( this.options.freeScroll ) {
     this.isFreeScrolling = true;
   }
@@ -117,9 +116,9 @@ proto.dragEnd = function( event, pointer ) {
     var restingX = this.getRestingPosition();
     this.isFreeScrolling = -restingX > this.cells[0].target &&
       -restingX < this.getLastCell().target;
-  } else if ( !this.options.freeScroll && index === previousIndex ) {
+  } else if ( !this.options.freeScroll && index === this.selectedWrapIndex ) {
     // boost selection if selected index has not changed
-    index = this.dragEndBoostSelect( index );
+    index = this.dragEndBoostSelect();
   }
   // apply selection
   // TODO refactor this, selecting here feels weird
@@ -210,16 +209,17 @@ proto.getCellDistance = function( x, index ) {
   return x - ( cell.target + wrap );
 };
 
-proto.dragEndBoostSelect = function( index ) {
+proto.dragEndBoostSelect = function() {
+  var index = this.selectedWrapIndex;
   var distance = this.getCellDistance( -this.x, index );
-  if ( distance >= 0 && this.velocity < -1 ) {
+  if ( distance > 0 && this.velocity < -1 ) {
     // if moving towards the right, and positive velocity, and the next attractor
-    return this.selectedWrapIndex + 1;
-  } else if ( distance <= 0 && this.velocity > 1 ) {
+    return index + 1;
+  } else if ( distance < 0 && this.velocity > 1 ) {
     // if moving towards the left, and negative velocity, and previous attractor
-    return this.selectedWrapIndex - 1;
+    return index - 1;
   }
-  return this.selectedWrapIndex;
+  return index;
 };
 
 // ----- onclick ----- //
