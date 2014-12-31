@@ -147,6 +147,11 @@ Unipointer.prototype._pointerDown = function( event, pointer ) {
 
   this.isPointerDown = true;
 
+  // save pointer identifier to match up touch events
+  this.pointerIdentifier = pointer.pointerId !== undefined ?
+    // pointerId for pointer events, touch.indentifier for touch events
+    pointer.pointerId : pointer.identifier;
+
   // bind move and end events
   this._bindPostStartEvents({
     // get proper events to match start event
