@@ -320,6 +320,55 @@ Flickity.prototype.uiChange = function() {
   delete this.isFreeScrolling;
 };
 
+// -------------------------- add/remove -------------------------- //
+
+/**
+ * get Flickity.Cell, given an Element
+ * @param {Element} elem
+ * @returns {Flickity.Cell} item
+ */
+Flickity.prototype.getCell = function( elem ) {
+  // loop through cells to get the one that matches
+  for ( var i=0, len = this.cells.length; i < len; i++ ) {
+    var cell = this.cells[i];
+    if ( cell.element === elem ) {
+      return cell;
+    }
+  }
+};
+
+/**
+ * get collection of Flickity.Cells, given Elements
+ * @param {Element, Array, NodeList} elems
+ * @returns {Array} cells - Flickity.Cells
+ */
+Flickity.prototype.getCells = function( elems ) {
+  elems = U.makeArray( elems );
+  var cells = [];
+  for ( var i=0, len = elems.length; i < len; i++ ) {
+    var elem = elems[i];
+    var cell = this.getCell( elem );
+    if ( cell ) {
+      cells.push( cell );
+    }
+  }
+  return cells;
+};
+
+Flickity.prototype.remove = function( elems ) {
+  var cells = this.getCells( elems );
+  for ( var i=0, len = cells.length; i < len; i++ ) {
+    var cell = cells[i];
+    cell.remove();
+    // remove item from collection
+    U.removeFrom( cell, this.cells );
+  }
+
+  if ( cells.length ) {
+    // update stuff
+  }
+};
+
 // -------------------------- events -------------------------- //
 
 // ----- resize ----- //

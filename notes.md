@@ -20,11 +20,13 @@ tests
 requirejs
 CommonJS
 <!-- isOriginLeft: false -->
-wrapAround without clones
+<!-- wrapAround without clones -->
 <!-- Flickity.data -->
 
 <!-- isWrapAround -->
 <!-- IE8 button -->
+
+link clicks on mobile
 
 ## Feature requests
 
@@ -36,6 +38,13 @@ isGroupPaging
 lazy load
 add/remove: prepend, append, insert, remove
 scrollView-like: freeScroll, no wrapAround, bound to content, not to aligning cells
+
+## what happens when cells added/removed
+
+update prevNextButtons
+update selectedIndex
+update number of dots
+update shiftCells
 
 ## Check
 

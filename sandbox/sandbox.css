@@ -25,9 +25,6 @@ body {
   height: 200px;
   border: 0px solid white;
   background: #CCC;
-  font-size: 100px;
-  color: white;
-  font-weight: bold;
 }
 
 .cell:nth-child(6n) { background: hsl(0, 80%, 70%); }
@@ -60,4 +57,21 @@ body {
 .fixed-width .cell {
   width: 200px;
   margin-right: 20px;
+}
+
+/* ---- couning ---- */
+.counting {
+  counter-reset: cell;
+}
+
+.counting .cell:before {
+  counter-increment: cell;
+  content: counter(item);
+  display: block;
+  font-size: 100px;
+  color: white;
+  font-weight: bold;
+  position: absolute;
+  left: 10px;
+  top: 10px;
 }

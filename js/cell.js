@@ -41,6 +41,10 @@ Cell.prototype.wrapShift = function( shift ) {
   this.renderPosition( this.x + this.parent.slideableWidth * shift );
 };
 
+Cell.prototype.remove = function() {
+  this.element.parentNode.removeChild( this.element );
+};
+
 window.Cell = Cell;
 
 })( window );
