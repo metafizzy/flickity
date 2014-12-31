@@ -15,7 +15,8 @@
     "doc-ready": "~1.0.4"
   },
   "devDependencies": {
-    "jquery-bridget": "~1.1.0"
+    "jquery-bridget": "~1.1.0",
+    "qunit": "~1.16.0"
   },
   "moduleType": [
     "amd",
