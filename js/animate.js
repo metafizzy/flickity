@@ -77,6 +77,7 @@ proto.animate = function() {
 
 
 var transformProperty = getStyleProperty('transform');
+var is3d = !!getStyleProperty('perspective');
 
 proto.positionSlider = function() {
   var x = this.x;
@@ -96,7 +97,8 @@ proto.positionSlider = function() {
 
   if ( transformProperty ) {
     // TODO use 3D transform, then fallback to 2D when settled
-    this.slider.style[ transformProperty ] = 'translateX(' + value + ')';
+    this.slider.style[ transformProperty ] = is3d ?
+      'translate3d(' + value + ',0,0)' : 'translateX' + value + '()';
   } else {
     var side = this.getOriginSide();
     this.slider.style[ side ] = value;
