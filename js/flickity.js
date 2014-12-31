@@ -366,6 +366,20 @@ Flickity.prototype.remove = function( elems ) {
 
   if ( cells.length ) {
     // update stuff
+    this.cellChange();
+  }
+};
+
+// updates when cells are added or removed
+Flickity.prototype.cellChange = function() {
+  this.positionCells();
+  this._getWrapShiftCells();
+  // TODO cell is removed before the selected cell, adjust selectedIndex by -1
+  this.selectedIndex = Math.max( 0, Math.min( this.cells.length - 1, this.selectedIndex ) );
+  this.select( this.selectedIndex );
+  // update page dots
+  if ( this.pageDots ) {
+    this.pageDots.setDots();
   }
 };
 

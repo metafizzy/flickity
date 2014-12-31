@@ -21,19 +21,13 @@ PageDots.prototype._create = function() {
   // create dots, array of elementss
   this.dots = [];
 
-  for ( var i=0, len = this.parent.cells.length; i < len; i++ ) {
-    var dot = document.createElement('li');
-    dot.className = 'dot';
-    this.holder.appendChild( dot );
-    this.dots.push( dot );
-  }
-
-  this.update();
+  this.setDots();
+  this.updateSelected();
 
   // update on select
   var _this = this;
   this.onselect = function() {
-    _this.update();
+    _this.updateSelected();
   };
   this.parent.on( 'select', this.onselect );
 
@@ -42,7 +36,41 @@ PageDots.prototype._create = function() {
   this.parent.element.appendChild( this.holder );
 };
 
-PageDots.prototype.update = function() {
+PageDots.prototype.setDots = function() {
+  // get difference between number of cells and number of dots
+  var delta = this.parent.cells.length - this.dots.length;
+  if ( delta > 0 ) {
+    this.addDots( delta );
+  } else if ( delta < 0 ) {
+    this.removeDots( -delta );
+  }
+};
+
+PageDots.prototype.addDots = function( count ) {
+  var fragment = document.createDocumentFragment();
+  var newDots = [];
+  while ( count ) {
+    var dot = document.createElement('li');
+    dot.className = 'dot';
+    fragment.appendChild( dot );
+    newDots.push( dot );
+    count--;
+  }
+  this.holder.appendChild( fragment );
+  this.dots = this.dots.concat( newDots );
+};
+
+PageDots.prototype.removeDots = function( count ) {
+  // remove from this.dots collection
+  var removeDots = this.dots.splice( this.dots.length - count, count );
+  // remove from DOM
+  for ( var i=0, len = removeDots.length; i < len; i++ ) {
+    var dot = removeDots[i];
+    this.holder.removeChild( dot );
+  }
+};
+
+PageDots.prototype.updateSelected = function() {
   // remove selected class on previous
   if ( this.selectedDot ) {
     this.selectedDot.className = 'dot';
