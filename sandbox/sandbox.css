@@ -59,6 +59,17 @@ body {
   margin-right: 20px;
 }
 
+/* big number */
+.cell b {
+  display: block;
+  font-size: 100px;
+  color: white;
+  font-weight: bold;
+  position: absolute;
+  left: 10px;
+  top: 10px;
+}
+
 /* ---- couning ---- */
 .counting {
   counter-reset: cell;
@@ -66,7 +77,7 @@ body {
 
 .counting .cell:before {
   counter-increment: cell;
-  content: counter(item);
+  content: counter(cell);
   display: block;
   font-size: 100px;
   color: white;

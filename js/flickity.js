@@ -197,19 +197,26 @@ Flickity.prototype.getLastCell = function() {
   return this.cells[ this.cells.length - 1 ];
 };
 
-/**
- * @param {Array} cells - Array of Cells
- */
+// positions all cells
 Flickity.prototype.positionCells = function() {
-  var cellX = 0;
-  for ( var i=0, len = this.cells.length; i < len; i++ ) {
-    var cell = this.cells[i];
+  var cellX = this._positionCells( this.cells, 0 );
+  // keep track of cellX for wrap-around
+  this.slideableWidth = cellX;
+};
+
+/**
+ * position certain cells
+ * @param {Array} cells
+ * @param {Number} cellX - position of first cell
+ */
+Flickity.prototype._positionCells = function( cells, cellX ) {
+  for ( var i=0, len = cells.length; i < len; i++ ) {
+    var cell = cells[i];
     cell.getSize();
     cell.setPosition( cellX );
     cellX += cell.size.outerWidth;
   }
-  // keep track of cellX for wrap-around
-  this.slideableWidth = cellX;
+  return cellX;
 };
 
 Flickity.prototype.getSize = function() {
@@ -355,6 +362,57 @@ Flickity.prototype.getCells = function( elems ) {
   return cells;
 };
 
+// append cells to a document fragment
+function getCellsFragment( cells ) {
+  var fragment = document.createDocumentFragment();
+  for ( var i=0, len = cells.length; i < len; i++ ) {
+    var cell = cells[i];
+    fragment.appendChild( cell.element );
+  }
+  return fragment;
+}
+
+// append
+Flickity.prototype.append = function( elems ) {
+  var cells = this._makeCells( elems );
+  if ( !cells || !cells.length ) {
+    return;
+  }
+  // append to slider
+  var fragment = getCellsFragment( cells );
+  this.slider.appendChild( fragment );
+  // add to end of this.cells
+  this.cells = this.cells.concat( cells );
+  this.cellChange();
+};
+
+
+// prepend
+
+/**
+ * Insert cells
+ * @param {Element, Array, NodeList} elems
+ */
+Flickity.prototype.insert = function( elems, index ) {
+  var cells = this._makeCells( elems );
+  if ( !cells || !cells.length ) {
+    return;
+  }
+  // append to slider
+  var fragment = getCellsFragment( cells );
+  this.slider.appendChild( fragment );
+  // add to end of this.cells
+  this.cells = this.cells.concat( cells );
+  this.cellChange();
+
+};
+
+
+
+/**
+ * Remove cells
+ * @param {Element, Array, NodeList} elems
+ */
 Flickity.prototype.remove = function( elems ) {
   var cells = this.getCells( elems );
   for ( var i=0, len = cells.length; i < len; i++ ) {
