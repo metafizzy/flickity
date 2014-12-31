@@ -23,7 +23,7 @@
 
   <h1>add/remove cells</h1>
 
-  <div id="demo1">
+  <div id="demo1" class="demo">
     <div class="container variable-width">
       <div class="cell n1 w3"><b>1</b><button class="remove-button">&times;</button></div>
       <div class="cell n2"><b>2</b><button class="remove-button">&times;</button></div>
@@ -33,7 +33,9 @@
       <div class="cell n6 w2"><b>6</b><button class="remove-button">&times;</button></div>
     </div>
     <p>
-
+      <button class="prepend-button">Prepend</button>
+      <button class="insert-button">Insert</button>
+      <button class="append-button">Append</button>
     </p>
   </div>
 
@@ -78,7 +80,7 @@ function makeCell() {
   cell.appendChild( b );
   var removeButton = document.createElement('button');
   removeButton.className = 'remove-button';
-  utils.setText( removeButton, 'X' );
+  utils.setText( removeButton, '×' );
   cell.appendChild( removeButton );
   return cell;
 }
@@ -92,21 +94,48 @@ function getParent( elem, selector ) {
   }
 }
 
+function onContainerClick( event ) {
+  if ( event.target.className != 'remove-button' ) {
+    return;
+  }
+
+  //
+  var cellElement = getParent( event.target, '.cell' );
+  var container = getParent( event.target, '.container' );
+  var flkty = Flickity.data( container );
+  flkty.remove( cellElement );
+}
+
+function onPrependClick( event ) {
+  var demo = getParent( event.target, '.demo' );
+  var flkty = Flickity.data( demo.querySelector('.container') );
+  flkty.prepend([ makeCell(), makeCell(), makeCell() ]);
+}
+
+function onInsertClick( event ) {
+  var demo = getParent( event.target, '.demo' );
+  var flkty = Flickity.data( demo.querySelector('.container') );
+  flkty.insert([ makeCell(), makeCell(), makeCell() ], 3 );
+}
+
+function onAppendClick( event ) {
+  var demo = getParent( event.target, '.demo' );
+  var flkty = Flickity.data( demo.querySelector('.container') );
+  flkty.append([ makeCell(), makeCell(), makeCell() ]);
+}
+
 window.onload = function() {
 
   var flkty1 = window.flkty1 = new Flickity( '#demo1 .container' );
 
-  eventie.bind( document.querySelector('#demo1 .container'), 'click', function( event ) {
-    if ( event.target.className != 'remove-button' ) {
-      return;
-    }
-
-    //
-    var cellElement = getParent( event.target, '.cell' );
-    var container = getParent( event.target, '.container' );
-    var flkty = Flickity.data( container );
-    flkty.remove( cellElement );
-  });
+  var demos = document.querySelectorAll('.demo');
+  for ( var i=0, len = demos.length; i < len; i++ ) {
+    var demo = demos[i];
+    eventie.bind( demo.querySelector('.container'), 'click', onContainerClick );
+    eventie.bind( demo.querySelector('.prepend-button'), 'click', onPrependClick );
+    eventie.bind( demo.querySelector('.insert-button'), 'click', onInsertClick );
+    eventie.bind( demo.querySelector('.append-button'), 'click', onAppendClick );
+  }
 
 };
 
