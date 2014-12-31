@@ -6,14 +6,12 @@
 .flickity-prev-next-button {
   position: absolute;
   top: 50%;
-  width: 60px;
-  height: 60px;
+  width: 44px;
+  height: 44px;
   border: none;
   border-radius: 50%;
   background: white;
-  /* color & size if no SVG: IE8 and Android 2.3 */
-  color: #333;
-  font-size: 30px;
+  background: hsla(0, 0%, 100%, 0.75);
   /* vertically center */
   -webkit-transform: translateY(-50%);
       -ms-transform: translateY(-50%);
@@ -35,6 +33,12 @@
 
 .flickity-prev-next-button .arrow {
   fill: #333;
+}
+
+/* color & size if no SVG - IE8 and Android 2.3 */
+.flickity-prev-next-button.no-svg {
+  color: #333;
+  font-size: 26px;
 }
 
 /* ---- page dots ---- */

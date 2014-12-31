@@ -45,6 +45,7 @@ PrevNextButton.prototype._create = function() {
   } else {
     // SVG not supported, set button text
     this.setArrowText();
+    this.element.className += ' no-svg';
   }
 
   // update on select
