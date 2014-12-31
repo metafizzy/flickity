@@ -165,8 +165,8 @@ proto._shiftCells = function( cells, gap, shift ) {
 
 proto.updatePhysics = function() {
   this.velocity += this.accel;
-  this.velocity *= this.getFrictionFactor();
   this.x += this.velocity;
+  this.velocity *= this.getFrictionFactor();
   // reset acceleration
   this.accel = 0;
 };
@@ -180,19 +180,9 @@ proto.getFrictionFactor = function() {
 };
 
 
-var restingVelo = 0.07;
-
 proto.getRestingPosition = function() {
-  // little simulation where thing will rest
-  var velo = this.velocity;
-  var restX = this.x;
-  // TODO always using freeScrollFriction here is nice
-  var frictionF = this.getFrictionFactor();
-  while ( Math.abs( velo ) > restingVelo ) {
-    velo *= frictionF;
-    restX += velo;
-  }
-  return restX;
+  // my thanks to Steven Wittens, who simplified this math greatly
+  return this.x + this.velocity / ( 1 - this.getFrictionFactor() );
 };
 
 
