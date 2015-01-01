@@ -28,7 +28,7 @@ CommonJS
 
 link clicks on mobile
 <!-- don't use translate3d() when settled -->
-add selected class to cell
+<!-- add selected class to cell -->
 
 ## Feature requests
 

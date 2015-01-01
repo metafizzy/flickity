@@ -12,7 +12,8 @@
     "eventEmitter": "~4.2.11",
     "eventie": "~1.0.5",
     "get-style-property": "~1.0.4",
-    "doc-ready": "~1.0.4"
+    "doc-ready": "~1.0.4",
+    "classie": "~1.0.1"
   },
   "devDependencies": {
     "jquery-bridget": "~1.1.0",

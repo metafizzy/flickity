@@ -77,7 +77,7 @@ PageDots.prototype.updateSelected = function() {
   }
 
   this.selectedDot = this.dots[ this.parent.selectedIndex ];
-  this.selectedDot.className = 'dot selected';
+  this.selectedDot.className = 'dot is-selected';
 };
 
 // trigger handler methods for events

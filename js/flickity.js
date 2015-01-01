@@ -3,7 +3,7 @@
  * Touch responsive gallery
  */
 
-/*global EventEmitter: false, Cell: false, getSize: false, eventie: false, PrevNextButton: false, PageDots: false, Player: false */
+/*global EventEmitter: false, Cell: false, getSize: false, eventie: false, PrevNextButton: false, PageDots: false, Player: false, classie: false */
 
 ( function( window ) {
 
@@ -103,8 +103,8 @@ Flickity.prototype._create = function() {
     this.player.play();
   }
 
-  this.updatePrevNextButtons();
   this.positionSliderAtSelected();
+  this.select( this.selectedIndex );
 
   // events
   if ( this.options.draggable ) {
@@ -317,6 +317,7 @@ Flickity.prototype.select = function( index, isWrap ) {
 
   if ( this.cells[ index ] ) {
     this.selectedIndex = index;
+    this.setSelectedCell();
     this.startAnimation();
     this.dispatchEvent('select');
   }
@@ -337,6 +338,14 @@ Flickity.prototype.updatePrevNextButtons = function() {
   if ( this.nextButton ) {
     this.nextButton.update();
   }
+};
+
+Flickity.prototype.setSelectedCell = function() {
+  if ( this.selectedCell ) {
+    classie.remove( this.selectedCell.element, 'is-selected' );
+  }
+  this.selectedCell = this.cells[ this.selectedIndex ];
+  classie.add( this.selectedCell.element, 'is-selected' );
 };
 
 // on button clicks and ui changes
