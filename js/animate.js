@@ -161,6 +161,15 @@ proto._shiftCells = function( cells, gap, shift ) {
   }
 };
 
+proto._unshiftCells = function( cells ) {
+  if ( !cells || !cells.length ) {
+    return;
+  }
+  for ( var i=0, len = cells.length; i < len; i++ ) {
+    cells[i].wrapShift( 0 );
+  }
+};
+
 // -------------------------- physics -------------------------- //
 
 proto.updatePhysics = function() {
