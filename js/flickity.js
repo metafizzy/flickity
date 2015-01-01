@@ -456,7 +456,7 @@ Flickity.prototype.remove = function( elems ) {
 
   if ( cells.length ) {
     // update stuff
-    this.cellChange();
+    this.cellChange( 0, true );
   }
 };
 
@@ -469,14 +469,16 @@ Flickity.prototype.cellChange = function( index, isSkippingSizing ) {
   }
   this._positionCells( index );
   this._getWrapShiftCells();
-  // TODO cell is removed before the selected cell, adjust selectedIndex by -1
-  this.selectedIndex = Math.max( 0, Math.min( this.cells.length - 1, this.selectedIndex ) );
-  this.select( this.selectedIndex );
   // update page dots
   if ( this.pageDots ) {
     this.pageDots.setDots();
   }
-  // TODO update prev/next button
+  // TODO cell is removed before the selected cell, adjust selectedIndex by -1
+  this.selectedIndex = Math.max( 0, Math.min( this.cells.length - 1, this.selectedIndex ) );
+
+  if ( !this.options.freeScroll ) {
+    this.select( this.selectedIndex );
+  }
 };
 
 // -------------------------- events -------------------------- //
