@@ -199,24 +199,40 @@ Flickity.prototype.getLastCell = function() {
 
 // positions all cells
 Flickity.prototype.positionCells = function() {
-  var cellX = this._positionCells( this.cells, 0 );
+  // size all cells
+  this._sizeCells( this.cells );
+  // position all cells
+  this._positionCells( 0 );
+};
+
+/**
+ * position certain cells
+ * @param {Integer} index - which cell to start with
+ */
+Flickity.prototype._positionCells = function( index ) {
+  var cellX = 0;
+  if ( index > 0 ) {
+    var startCell = this.cells[ index - 1 ];
+    cellX = startCell.x + startCell.size.outerWidth;
+  }
+  for ( var len = this.cells.length; index < len; index++ ) {
+    var cell = this.cells[ index ];
+    cell.setPosition( cellX );
+    cellX += cell.size.outerWidth;
+  }
   // keep track of cellX for wrap-around
   this.slideableWidth = cellX;
 };
 
 /**
- * position certain cells
+ * cell.getSize() on multiple cells
  * @param {Array} cells
- * @param {Number} cellX - position of first cell
  */
-Flickity.prototype._positionCells = function( cells, cellX ) {
+Flickity.prototype._sizeCells = function( cells ) {
   for ( var i=0, len = cells.length; i < len; i++ ) {
     var cell = cells[i];
     cell.getSize();
-    cell.setPosition( cellX );
-    cellX += cell.size.outerWidth;
   }
-  return cellX;
 };
 
 Flickity.prototype.getSize = function() {
@@ -381,9 +397,12 @@ Flickity.prototype.append = function( elems ) {
   // append to slider
   var fragment = getCellsFragment( cells );
   this.slider.appendChild( fragment );
+  // index of newly appened cells
+  var index = this.cells.length;
   // add to end of this.cells
   this.cells = this.cells.concat( cells );
-  this.cellChange();
+  this._sizeCells( cells );
+  this.cellChange( index, true );
 };
 
 
@@ -402,7 +421,7 @@ Flickity.prototype.insert = function( elems, index ) {
   var insertCellElement = this.cells[ index ].element;
   this.slider.insertBefore( fragment, insertCellElement );
   // add to this.cells
-  if ( index == 0 ) {
+  if ( index === 0 ) {
     // prepend, add to start
     this.cells = cells.concat( this.cells );
   } else {
@@ -411,7 +430,8 @@ Flickity.prototype.insert = function( elems, index ) {
     this.cells = this.cells.concat( cells ).concat( endCells );
   }
 
-  this.cellChange();
+  this._sizeCells( cells );
+  this.cellChange( index, true );
 };
 
 // prepend
@@ -441,8 +461,13 @@ Flickity.prototype.remove = function( elems ) {
 };
 
 // updates when cells are added or removed
-Flickity.prototype.cellChange = function() {
-  this.positionCells();
+Flickity.prototype.cellChange = function( index, isSkippingSizing ) {
+  index = index || 0;
+  // size all cells if necessary
+  if ( !isSkippingSizing ) {
+    this._sizeCells( this.cells );
+  }
+  this._positionCells( index );
   this._getWrapShiftCells();
   // TODO cell is removed before the selected cell, adjust selectedIndex by -1
   this.selectedIndex = Math.max( 0, Math.min( this.cells.length - 1, this.selectedIndex ) );
@@ -451,6 +476,7 @@ Flickity.prototype.cellChange = function() {
   if ( this.pageDots ) {
     this.pageDots.setDots();
   }
+  // TODO update prev/next button
 };
 
 // -------------------------- events -------------------------- //

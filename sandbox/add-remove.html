@@ -24,13 +24,29 @@
   <h1>add/remove cells</h1>
 
   <div id="demo1" class="demo">
-    <div class="container variable-width">
+    <div class="container variable-width js-flickity">
       <div class="cell n1 w3"><b>1</b><button class="remove-button">&times;</button></div>
       <div class="cell n2"><b>2</b><button class="remove-button">&times;</button></div>
       <div class="cell n3 w3"><b>3</b><button class="remove-button">&times;</button></div>
       <div class="cell n4"><b>4</b><button class="remove-button">&times;</button></div>
       <div class="cell n5 w2"><b>5</b><button class="remove-button">&times;</button></div>
       <div class="cell n6 w2"><b>6</b><button class="remove-button">&times;</button></div>
+    </div>
+    <p>
+      <button class="prepend-button">Prepend</button>
+      <button class="insert-button">Insert</button>
+      <button class="append-button">Append</button>
+    </p>
+  </div>
+
+  <div id="demo1" class="demo">
+    <div class="container variable-width js-flickity"
+      data-flickity-options='{ "wrapAround": true, "freeScroll": true }'>
+      <div class="cell n6"><b>1</b><button class="remove-button">&times;</button></div>
+      <div class="cell n5 w2"><b>2</b><button class="remove-button">&times;</button></div>
+      <div class="cell n4"><b>3</b><button class="remove-button">&times;</button></div>
+      <div class="cell n3 w3"><b>4</b><button class="remove-button">&times;</button></div>
+      <div class="cell n2"><b>5</b><button class="remove-button">&times;</button></div>
     </div>
     <p>
       <button class="prepend-button">Prepend</button>
@@ -125,8 +141,6 @@ function onAppendClick( event ) {
 }
 
 window.onload = function() {
-
-  var flkty1 = window.flkty1 = new Flickity( '#demo1 .container' );
 
   var demos = document.querySelectorAll('.demo');
   for ( var i=0, len = demos.length; i < len; i++ ) {
