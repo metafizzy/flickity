@@ -105,8 +105,9 @@ proto.positionSlider = function() {
   var value = this.getPositionValue( x );
 
   if ( transformProperty ) {
-    // TODO use 3D transform, then fallback to 2D when settled
-    this.slider.style[ transformProperty ] = is3d ?
+    // use 3D tranforms for hardware acceleration on iOS
+    // but use 2D when settled, for better font-rendering
+    this.slider.style[ transformProperty ] = is3d && this.isAnimating ?
       'translate3d(' + value + ',0,0)' : 'translateX(' + value + ')';
   } else {
     var side = this.getOriginSide();
@@ -139,6 +140,10 @@ proto.settle = function( previousX ) {
   if ( this.restingFrames > 2 ) {
     this.isAnimating = false;
     delete this.isFreeScrolling;
+    // render position with translateX when settled
+    if ( is3d ) {
+      this.positionSlider();
+    }
     this.dispatchEvent('settle');
   }
 };

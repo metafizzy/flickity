@@ -27,6 +27,8 @@ CommonJS
 <!-- IE8 button -->
 
 link clicks on mobile
+<!-- don't use translate3d() when settled -->
+add selected class to cell
 
 ## Feature requests
 
