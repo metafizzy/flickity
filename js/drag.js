@@ -1,4 +1,4 @@
-/*global Unipointer: false*/
+/*global Unipointer: false, eventie: false */
 
 ( function( window ) {
 
@@ -19,6 +19,19 @@ function preventDefaultEvent( event ) {
 
 var proto = {};
 U.extend( proto, Unipointer.prototype );
+
+// --------------------------  -------------------------- //
+
+proto.bindDrag = function() {
+  if ( !this.options.draggable ) {
+    return;
+  }
+  this.handles = [ this.viewport ];
+  this.bindHandles();
+  // bind click handler
+  // TODO unbind click handler on destroy
+  eventie.bind( this.viewport, 'click', this );
+};
 
 // -------------------------- pointer events -------------------------- //
 

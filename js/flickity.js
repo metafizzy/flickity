@@ -106,16 +106,7 @@ Flickity.prototype._create = function() {
   this.select( this.selectedIndex );
 
   // events
-  if ( this.options.draggable ) {
-    this.handles = [ this.element ];
-    this.bindHandles();
-    // bind click handler
-    // TODO unbind click handler on destroy
-    for ( var i=0, len = this.handles.length; i < len; i++ ) {
-      var handle = this.handles[i];
-      eventie.bind( handle, 'click', this );
-    }
-  }
+  this.bindDrag();
 
   if ( this.options.resizeBound ) {
     eventie.bind( window, 'resize', this );
