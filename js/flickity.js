@@ -402,26 +402,8 @@ function getCellsFragment( cells ) {
   return fragment;
 }
 
-// append
-Flickity.prototype.append = function( elems ) {
-  var cells = this._makeCells( elems );
-  if ( !cells || !cells.length ) {
-    return;
-  }
-  // append to slider
-  var fragment = getCellsFragment( cells );
-  this.slider.appendChild( fragment );
-  // index of newly appened cells
-  var index = this.cells.length;
-  // add to end of this.cells
-  this.cells = this.cells.concat( cells );
-  this._sizeCells( cells );
-  this.cellChange( index, true );
-};
-
-
 /**
- * Insert cells
+ * Insert, prepend, or append cells
  * @param {Element, Array, NodeList} elems
  * @param {Integer} index
  */
@@ -430,14 +412,25 @@ Flickity.prototype.insert = function( elems, index ) {
   if ( !cells || !cells.length ) {
     return;
   }
-  // append to slider
+  // default to append
+  index = index === undefined ? this.cells.length : index;
+  // add cells with document fragment
   var fragment = getCellsFragment( cells );
-  var insertCellElement = this.cells[ index ].element;
-  this.slider.insertBefore( fragment, insertCellElement );
+  // append to slider
+  var isAppend = index === this.cells.length;
+  if ( isAppend ) {
+    this.slider.appendChild( fragment );
+  } else {
+    var insertCellElement = this.cells[ index ].element;
+    this.slider.insertBefore( fragment, insertCellElement );
+  }
   // add to this.cells
   if ( index === 0 ) {
     // prepend, add to start
     this.cells = cells.concat( this.cells );
+  } else if ( isAppend ) {
+    // append, add to end
+    this.cells = this.cells.concat( cells );
   } else {
     // insert in this.cells
     var endCells = this.cells.splice( index, this.cells.length - index );
@@ -448,12 +441,13 @@ Flickity.prototype.insert = function( elems, index ) {
   this.cellChange( index, true );
 };
 
-// prepend
+Flickity.prototype.append = function( elems ) {
+  this.insert( elems, this.cells.length );
+};
+
 Flickity.prototype.prepend = function( elems ) {
   this.insert( elems, 0 );
 };
-
-
 
 /**
  * Remove cells
