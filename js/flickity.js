@@ -211,7 +211,8 @@ Flickity.prototype.positionCells = function() {
  */
 Flickity.prototype._positionCells = function( index ) {
   // also measure maxCellHeight
-  this.maxCellHeight = this.maxCellHeight || 0;
+  // start 0 if positioning all cells
+  this.maxCellHeight = index ? this.maxCellHeight || 0 : 0;
   var cellX = 0;
   // get cellX
   if ( index > 0 ) {
