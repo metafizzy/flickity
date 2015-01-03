@@ -64,16 +64,16 @@ Flickity.prototype._create = function() {
   this.element.flickityGUID = id; // expando
   instances[ id ] = this; // associate via id
 
-  // variables
+  // initial physics properties
   this.x = 0;
   this.velocity = 0;
   this.accel = 0;
-
+  // initial properties
   this.selectedIndex = 0;
   // how many frames slider has been in same position
   this.restingFrames = 0;
 
-  this.element.className += ' flickity-enabled';
+  classie.add( this.element, 'flickity-enabled' );
   // create viewport element
   this.viewport = document.createElement('div');
   this.viewport.className = 'flickity-viewport';
@@ -100,6 +100,9 @@ Flickity.prototype._create = function() {
   this.player = new Player( this );
   if ( this.options.autoPlay ) {
     this.player.play();
+    // add hover listeners
+    eventie.bind( this.element, 'mouseenter', this );
+    // TODO add event for pointer enter
   }
 
   this.positionSliderAtSelected();
@@ -117,12 +120,6 @@ Flickity.prototype._create = function() {
     this.element.tabIndex = 0;
     // listen for key presses
     eventie.bind( this.element, 'keydown', this );
-  }
-
-  // add hover listeners
-  if ( this.options.autoPlay ) {
-    eventie.bind( this.element, 'mouseenter', this );
-    // TODO add event for pointer enter
   }
 
 };
