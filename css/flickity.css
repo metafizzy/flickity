@@ -1,6 +1,15 @@
 /* Flickity
 ------------------------- */
 
+.flickity-enabled {
+  position: relative;
+}
+
+.flickity-viewport {
+  overflow: hidden;
+  position: relative;
+}
+
 /* ---- previous/next buttons ---- */
 
 .flickity-prev-next-button {
@@ -46,7 +55,7 @@
 .flickity-page-dots {
   position: absolute;
   width: 100%;
-  bottom: 0px;
+  bottom: -30px;
   padding: 0;
   margin: 0;
   list-style: none;
@@ -57,7 +66,7 @@
   display: inline-block;
   width: 10px;
   height: 10px;
-  margin: 0 8px 8px;
+  margin: 0 8px;
   background: #333;
   border-radius: 50%;
   opacity: 0.25;

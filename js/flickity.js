@@ -73,11 +73,13 @@ Flickity.prototype._create = function() {
   // how many frames slider has been in same position
   this.restingFrames = 0;
 
-  // style element
-  this.element.style.position = 'relative';
-  this.element.style.overflow = 'hidden';
+  this.element.className += ' flickity-enabled';
+  // create viewport element
+  this.viewport = document.createElement('div');
+  this.viewport.className = 'flickity-viewport';
 
   this._createSlider();
+  this.element.appendChild( this.viewport );
 
   this.getSize();
 
@@ -85,8 +87,8 @@ Flickity.prototype._create = function() {
   this.reloadCells();
   // set height
   var firstCell = this.cells[0];
-  this.element.style.height = firstCell.size.outerHeight +
-    this.size.borderTopWidth + this.size.borderBottomWidth + 'px';
+  this.viewport.style.height = firstCell.size.outerHeight + 'px';
+
 
   // add prev/next buttons
   if ( this.options.prevNextButtons ) {
@@ -158,7 +160,7 @@ Flickity.prototype._createSlider = function() {
   while ( this.element.children.length ) {
     slider.appendChild( this.element.children[0] );
   }
-  this.element.appendChild( slider );
+  this.viewport.appendChild( slider );
   this.slider = slider;
 };
 

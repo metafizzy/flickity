@@ -11,7 +11,7 @@ body {
 
 .container {
   border: 1px solid;
-  margin-bottom: 20px;
+  margin-bottom: 50px;
 }
 
 .container:after {
