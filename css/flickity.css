@@ -5,6 +5,8 @@
   position: relative;
 }
 
+.flickity-enabled:focus { outline: none; }
+
 .flickity-viewport {
   overflow: hidden;
   position: relative;
