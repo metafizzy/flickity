@@ -25,7 +25,7 @@ CommonJS
 
 <!-- isWrapAround -->
 <!-- IE8 button -->
-set container height - use cells max height
+<!-- set container height - use cells max height -->
 simplify targetPosition and cursorPosition into one option
 link clicks on mobile
 <!-- don't use translate3d() when settled -->

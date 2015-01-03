@@ -85,10 +85,7 @@ Flickity.prototype._create = function() {
 
   // get cells from children
   this.reloadCells();
-  // set height
-  var firstCell = this.cells[0];
-  this.viewport.style.height = firstCell.size.outerHeight + 'px';
-
+  this.setContainerSize();
 
   // add prev/next buttons
   if ( this.options.prevNextButtons ) {
@@ -174,6 +171,7 @@ Flickity.prototype.reloadCells = function() {
   this.cells = this._makeCells( this.slider.children );
   this.positionCells( this.cells );
   this._getWrapShiftCells();
+  this.setContainerSize();
 };
 
 /**
@@ -212,7 +210,10 @@ Flickity.prototype.positionCells = function() {
  * @param {Integer} index - which cell to start with
  */
 Flickity.prototype._positionCells = function( index ) {
+  // also measure maxCellHeight
+  this.maxCellHeight = this.maxCellHeight || 0;
   var cellX = 0;
+  // get cellX
   if ( index > 0 ) {
     var startCell = this.cells[ index - 1 ];
     cellX = startCell.x + startCell.size.outerWidth;
@@ -221,6 +222,7 @@ Flickity.prototype._positionCells = function( index ) {
     var cell = this.cells[ index ];
     cell.setPosition( cellX );
     cellX += cell.size.outerWidth;
+    this.maxCellHeight = Math.max( cell.size.outerHeight, this.maxCellHeight );
   }
   // keep track of cellX for wrap-around
   this.slideableWidth = cellX;
@@ -240,6 +242,10 @@ Flickity.prototype._sizeCells = function( cells ) {
 Flickity.prototype.getSize = function() {
   this.size = getSize( this.element );
   this.cursorPosition = this.size.innerWidth * this.options.cursorPosition;
+};
+
+Flickity.prototype.setContainerSize = function() {
+  this.viewport.style.height = this.maxCellHeight + 'px';
 };
 
 Flickity.prototype._getWrapShiftCells = function() {
@@ -480,6 +486,7 @@ Flickity.prototype.cellChange = function( index, isSkippingSizing ) {
   }
   this._positionCells( index );
   this._getWrapShiftCells();
+  this.setContainerSize();
   // update page dots
   if ( this.pageDots ) {
     this.pageDots.setDots();
@@ -506,6 +513,7 @@ Flickity.prototype.resize = function() {
   }
   this.positionCells();
   this._getWrapShiftCells();
+  this.setContainerSize();
   this.positionSliderAtSelected();
 };
 
