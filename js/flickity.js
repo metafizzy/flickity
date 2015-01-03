@@ -267,6 +267,9 @@ Flickity.prototype._getGapCells = function( gapX, cellIndex, increment ) {
   var cells = [];
   while ( gapX >= 0 ) {
     var cell = this.cells[ cellIndex ];
+    if ( !cell ) {
+      break;
+    }
     cells.push( cell );
     cellIndex += increment;
     gapX -= cell.size.outerWidth;

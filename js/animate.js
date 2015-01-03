@@ -201,8 +201,8 @@ proto.getRestingPosition = function() {
 
 
 proto.applySelectedAttraction = function() {
-  // do not attract if pointer down
-  if ( this.isPointerDown || this.isFreeScrolling ) {
+  // do not attract if pointer down or no cells
+  if ( this.isPointerDown || this.isFreeScrolling || !this.cells.length ) {
     return;
   }
   var cell = this.cells[ this.selectedIndex ];
