@@ -25,7 +25,8 @@ CommonJS
 
 <!-- isWrapAround -->
 <!-- IE8 button -->
-
+set container height - use cells max height
+simplify targetPosition and cursorPosition into one option
 link clicks on mobile
 <!-- don't use translate3d() when settled -->
 <!-- add selected class to cell -->
@@ -38,15 +39,9 @@ watch for responsive, create/destroy as needed
 <!-- free scrolling, no alignment -->
 isGroupPaging
 lazy load
-add/remove: prepend, append, insert, remove
+<!-- add/remove: prepend, append, insert, remove -->
+animations for add/remove
 scrollView-like: freeScroll, no wrapAround, bound to content, not to aligning cells
-
-## what happens when cells added/removed
-
-update prevNextButtons
-update selectedIndex
-update number of dots
-update shiftCells
 
 ## Check
 
