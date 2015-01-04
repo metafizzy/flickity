@@ -153,7 +153,7 @@ proto.dragEndFlick = function() {
     return;
   }
   // set slider velocity
-  var timeDelta = ( new Date() ) - this.previousDragMoveTime;
+  var timeDelta = this.dragMoveTime - this.previousDragMoveTime;
   // 60 frames per second, ideally
   // TODO, velocity should be in pixels per millisecond
   // currently in pixels per frame
