@@ -72,6 +72,7 @@ Flickity.prototype._create = function() {
   this.selectedIndex = 0;
   // how many frames slider has been in same position
   this.restingFrames = 0;
+  this.originSide = this.options.rightToLeft ? 'right' : 'left';
 
   classie.add( this.element, 'flickity-enabled' );
   // create viewport element
@@ -139,18 +140,13 @@ Flickity.prototype._createSlider = function() {
   slider.className = 'flickity-slider';
   slider.style.position = 'absolute';
   slider.style.width = '100%';
-  var side = this.getOriginSide();
-  slider.style[ side ] = 0;
+  slider.style[ this.originSide ] = 0;
   // wrap child elements in slider
   while ( this.element.children.length ) {
     slider.appendChild( this.element.children[0] );
   }
   this.viewport.appendChild( slider );
   this.slider = slider;
-};
-
-Flickity.prototype.getOriginSide = function() {
-  return this.options.rightToLeft ? 'right' : 'left';
 };
 
 // goes through all children

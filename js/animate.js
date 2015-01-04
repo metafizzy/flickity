@@ -110,8 +110,7 @@ proto.positionSlider = function() {
     this.slider.style[ transformProperty ] = is3d && this.isAnimating ?
       'translate3d(' + value + ',0,0)' : 'translateX(' + value + ')';
   } else {
-    var side = this.getOriginSide();
-    this.slider.style[ side ] = value;
+    this.slider.style[ this.originSide ] = value;
   }
 };
 
