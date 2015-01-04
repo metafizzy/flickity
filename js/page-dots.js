@@ -33,7 +33,15 @@ PageDots.prototype._create = function() {
 
   eventie.bind( this.holder, 'click', this );
 
+  this.append();
+};
+
+PageDots.prototype.append = function() {
   this.parent.element.appendChild( this.holder );
+};
+
+PageDots.prototype.remove = function() {
+  this.parent.element.removeChild( this.holder );
 };
 
 PageDots.prototype.setDots = function() {

@@ -63,7 +63,15 @@ PrevNextButton.prototype._create = function() {
     _this.onclick();
   };
 
+  this.append();
+};
+
+PrevNextButton.prototype.append = function() {
   this.parent.element.appendChild( this.element );
+};
+
+PrevNextButton.prototype.remove = function() {
+  this.parent.element.removeChild( this.element );
 };
 
 PrevNextButton.prototype.createSVG = function() {

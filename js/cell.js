@@ -17,6 +17,13 @@ Cell.prototype.create = function() {
   this.shift = 0;
 };
 
+Cell.prototype.destroy = function() {
+  // reset style
+  this.element.style.position = '';
+  var side = this.parent.originSide;
+  this.element.style[ side ] = '';
+};
+
 Cell.prototype.getSize = function() {
   this.size = getSize( this.element );
 };

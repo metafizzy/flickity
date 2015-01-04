@@ -29,8 +29,16 @@ proto.bindDrag = function() {
   this.handles = [ this.viewport ];
   this.bindHandles();
   // bind click handler
-  // TODO unbind click handler on destroy
   eventie.bind( this.viewport, 'click', this );
+};
+
+proto.unbindDrag = function() {
+  if ( !this.options.draggable ) {
+    return;
+  }
+  this.bindHandles( false );
+  // unbind click handler
+  eventie.unbind( this.viewport, 'click', this );
 };
 
 // -------------------------- pointer events -------------------------- //

@@ -69,6 +69,7 @@ Flickity.prototype._create = function() {
   this.velocity = 0;
   this.accel = 0;
   // initial properties
+  this.isActive = true;
   this.selectedIndex = 0;
   // how many frames slider has been in same position
   this.restingFrames = 0;
@@ -298,6 +299,9 @@ Flickity.prototype.dispatchEvent = function( type, event, args ) {
  * @param {Boolean} isWrap - will wrap-around to last/first if at the end
  */
 Flickity.prototype.select = function( index, isWrap ) {
+  if ( !this.isActive ) {
+    return;
+  }
   // wrap position so slider is within normal area
   if ( this.options.wrapAround ) {
     if ( index < 0 ) {
@@ -544,6 +548,59 @@ Flickity.prototype.onmouseenter = function() {
 Flickity.prototype.onmouseleave = function() {
   this.player.unpause();
   eventie.unbind( this.element, 'mouseleave', this );
+};
+
+// -------------------------- destroy -------------------------- //
+
+// deactivate all Flickity functionality, but keep stuff available
+Flickity.prototype.deactivate = function() {
+  if ( !this.isActive ) {
+    return;
+  }
+  classie.remove( this.element, 'flickity-enabled' );
+  // destroy cells
+  for ( var i=0, len = this.cells.length; i < len; i++ ) {
+    var cell = this.cells[i];
+    cell.destroy();
+  }
+  // remove selected cell class
+  if ( this.selectedCell ) {
+    classie.remove( this.selectedCell.element, 'is-selected' );
+  }
+  this.element.removeChild( this.viewport );
+  // wrap child elements back into element
+  while ( this.slider.children.length ) {
+    this.element.appendChild( this.slider.children[0] );
+  }
+  // remove prev/next buttons
+  if ( this.prevButton ) {
+    this.prevButton.remove();
+  }
+  if ( this.nextButton ) {
+    this.nextButton.remove();
+  }
+  // remove page dots
+  if ( this.pageDots ) {
+    this.pageDots.remove();
+  }
+  this.player.stop();
+  // unbind events
+  this.unbindDrag();
+  if ( this.options.resizeBound ) {
+    eventie.unbind( window, 'resize', this );
+  }
+  if ( this.options.accessibility ) {
+    this.element.removeAttribute('tabIndex');
+    eventie.unbind( this.element, 'keydown', this );
+  }
+  // set flags
+  this.isActive = false;
+  this.isAnimating = false;
+};
+
+Flickity.prototype.destroy = function() {
+  this.deactivate();
+  delete instances[ this.guid ];
 };
 
 // -------------------------- prototype -------------------------- //
