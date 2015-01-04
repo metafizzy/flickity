@@ -131,7 +131,7 @@ proto.dragEnd = function( event, pointer ) {
       -restingX < this.getLastCell().target;
   } else if ( !this.options.freeScroll && index === this.selectedIndex ) {
     // boost selection if selected index has not changed
-    index = this.dragEndBoostSelect();
+    index += this.dragEndBoostSelect();
   }
   // apply selection
   // TODO refactor this, selecting here feels weird
@@ -223,16 +223,15 @@ proto.getCellDistance = function( x, index ) {
 };
 
 proto.dragEndBoostSelect = function() {
-  var index = this.selectedIndex;
-  var distance = this.getCellDistance( -this.x, index );
+  var distance = this.getCellDistance( -this.x, this.selectedIndex );
   if ( distance > 0 && this.velocity < -1 ) {
     // if moving towards the right, and positive velocity, and the next attractor
-    return index + 1;
+    return 1;
   } else if ( distance < 0 && this.velocity > 1 ) {
     // if moving towards the left, and negative velocity, and previous attractor
-    return index - 1;
+    return -1;
   }
-  return index;
+  return 0;
 };
 
 // ----- onclick ----- //
