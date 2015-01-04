@@ -92,7 +92,15 @@ Flickity.prototype._create = function() {
   }
   this.player = new Player( this );
 
-  this.activate();
+  if ( this.options.resizeBound || this.options.watch ) {
+    eventie.bind( window, 'resize', this );
+  }
+
+  if ( this.options.watch ) {
+    this.watch()
+  } else {
+    this.activate();
+  }
 };
 
 /**
@@ -141,10 +149,6 @@ Flickity.prototype.activate = function() {
 
   // events
   this.bindDrag();
-
-  if ( this.options.resizeBound ) {
-    eventie.bind( window, 'resize', this );
-  }
 
   if ( this.options.accessibility ) {
     // allow element to focusable
@@ -510,7 +514,17 @@ Flickity.prototype.cellChange = function( index, isSkippingSizing ) {
 
 // ----- resize ----- //
 
+Flickity.prototype.onresize = function() {
+  this.watch();
+  this.resize();
+};
+
+U.debounceMethod( Flickity, 'onresize', 150 );
+
 Flickity.prototype.resize = function() {
+  if ( !this.isActive ) {
+    return;
+  }
   this.getSize();
   // wrap values
   if ( this.options.wrapAround ) {
@@ -522,11 +536,19 @@ Flickity.prototype.resize = function() {
   this.positionSliderAtSelected();
 };
 
-Flickity.prototype.onresize = function() {
-  this.resize();
+// watches the :after property, activates/deactivates
+Flickity.prototype.watch = function() {
+  if ( !this.options.watch ) {
+    return;
+  }
+  var afterContent = getComputedStyle( this.element, ':after' ).content;
+  // activate if :after { content: 'flickity' }
+  if ( afterContent.indexOf('flickity') != -1 ) {
+    this.activate();
+  } else {
+    this.deactivate();
+  }
 };
-
-U.debounceMethod( Flickity, 'onresize', 150 );
 
 // ----- keydown ----- //
 
@@ -598,9 +620,6 @@ Flickity.prototype.deactivate = function() {
   this.player.stop();
   // unbind events
   this.unbindDrag();
-  if ( this.options.resizeBound ) {
-    eventie.unbind( window, 'resize', this );
-  }
   if ( this.options.accessibility ) {
     this.element.removeAttribute('tabIndex');
     eventie.unbind( this.element, 'keydown', this );
@@ -612,6 +631,9 @@ Flickity.prototype.deactivate = function() {
 
 Flickity.prototype.destroy = function() {
   this.deactivate();
+  if ( this.options.resizeBound || this.options.watch ) {
+    eventie.unbind( window, 'resize', this );
+  }
   delete instances[ this.guid ];
 };
 

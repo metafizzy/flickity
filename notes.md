@@ -6,7 +6,7 @@
 <!-- disable prev/next buttons when at end of cells -->
 <!-- pager dots -->
 <!-- click event - links, buttons, inputs -->
-destroy
+<!-- destroy -->
 <!-- only animate when moving -->
 <!-- add translate -->
 <!-- jQuery bridget -->
@@ -34,7 +34,7 @@ link clicks on mobile
 ## Feature requests
 
 <!-- keyboard events -->
-watch for responsive, create/destroy as needed
+<!-- watch for responsive, create/destroy as needed -->
 <!-- autoPlay -->
 <!-- free scrolling, no alignment -->
 isGroupPaging

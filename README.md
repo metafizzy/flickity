@@ -24,7 +24,7 @@ var flky = new Flickity( '.gallery', {
   accessibility: true,
   // enable keyboard navigation, pressing left & right keys
 
-  autoPlay: undefined
+  autoPlay: false,
   // advances to the next cell
   // if true, default is 3 seconds
   // or set time between advances in milliseconds
@@ -56,6 +56,10 @@ var flky = new Flickity( '.gallery', {
   targetPosition: 0.5,
   // decimal value 0 - 1, representing what part of cells should align to
   // 0 is beginning (left) of the cell, 1 is end (right)
+
+  watch: false,
+  // watches the :after property of the element
+  // activates if #element:after { content: 'flickity' }
 
   wrapAround: false
   // at end of cells, wraps-around to first for infinite scrolling
