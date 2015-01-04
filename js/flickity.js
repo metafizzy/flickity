@@ -410,12 +410,13 @@ Flickity.prototype.insert = function( elems, index ) {
   if ( !cells || !cells.length ) {
     return;
   }
+  var len = this.cells.length;
   // default to append
-  index = index === undefined ? this.cells.length : index;
+  index = index === undefined ? len : index;
   // add cells with document fragment
   var fragment = getCellsFragment( cells );
   // append to slider
-  var isAppend = index === this.cells.length;
+  var isAppend = index === len;
   if ( isAppend ) {
     this.slider.appendChild( fragment );
   } else {
@@ -431,7 +432,7 @@ Flickity.prototype.insert = function( elems, index ) {
     this.cells = this.cells.concat( cells );
   } else {
     // insert in this.cells
-    var endCells = this.cells.splice( index, this.cells.length - index );
+    var endCells = this.cells.splice( index, len - index );
     this.cells = this.cells.concat( cells ).concat( endCells );
   }
 
