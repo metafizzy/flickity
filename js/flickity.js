@@ -19,7 +19,7 @@ var animatePrototype = window.Flickity.animatePrototype;
 
 // globally unique identifiers
 var GUID = 0;
-// internal store of all Outlayer intances
+// internal store of all Flickity intances
 var instances = {};
 
 function Flickity( element, options ) {
@@ -59,8 +59,8 @@ Flickity.defaults = {
 U.extend( Flickity.prototype, EventEmitter.prototype );
 
 Flickity.prototype._create = function() {
-  // add id for Outlayer.data
-  var id = ++GUID;
+  // add id for Flickity.data
+  var id = this.guid = ++GUID;
   this.element.flickityGUID = id; // expando
   instances[ id ] = this; // associate via id
 
@@ -554,11 +554,15 @@ U.extend( Flickity.prototype, animatePrototype );
 // --------------------------  -------------------------- //
 
 /**
- * get Outlayer instance from element
+ * get Flickity instance from element
  * @param {Element} elem
- * @returns {Outlayer}
+ * @returns {Flickity}
  */
 Flickity.data = function( elem ) {
+  // get element if selector string
+  if ( typeof elem == 'string' ) {
+    elem = document.querySelector( elem );
+  }
   var id = elem && elem.flickityGUID;
   return id && instances[ id ];
 };
