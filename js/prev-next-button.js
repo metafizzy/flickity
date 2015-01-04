@@ -34,10 +34,13 @@ function PrevNextButton( direction, parent ) {
 PrevNextButton.prototype._create = function() {
   // properties
   this.isEnabled = true;
+  this.isPrevious = this.direction === -1;
+  var leftDirection = this.parent.options.rightToLeft ? 1 : -1;
+  this.isLeft = this.direction === leftDirection;
 
   this.element = document.createElement('button');
   this.element.className = 'flickity-prev-next-button';
-  this.element.className += this.direction === -1 ? ' previous' : ' next';
+  this.element.className += this.isPrevious ? ' previous' : ' next';
   // create arrow
   if ( supportsInlineSVG() ) {
     var svg = this.createSVG();
@@ -70,8 +73,7 @@ PrevNextButton.prototype.createSVG = function() {
   path.setAttribute( 'd', 'M 50,0 L 60,10 L 20,50 L 60,90 L 50,100 L 0,50 Z' );
   path.setAttribute( 'class', 'arrow' );
   // adjust arrow
-  var leftDirection = this.parent.options.rightToLeft ? 1 : -1;
-  var arrowTransform = this.direction === leftDirection ? 'translate(15,0)' :
+  var arrowTransform = this.isLeft ? 'translate(15,0)' :
     'translate(85,100) rotate(180)';
   path.setAttribute( 'transform', arrowTransform );
   svg.appendChild( path );
@@ -80,16 +82,8 @@ PrevNextButton.prototype.createSVG = function() {
 
 PrevNextButton.prototype.setArrowText = function() {
   var parentOptions = this.parent.options;
-  var previousArrowText = parentOptions.rightToLeft ?
-    parentOptions.rightArrowText : parentOptions.leftArrowText;
-  var nextArrowText = parentOptions.rightToLeft ?
-      parentOptions.leftArrowText : parentOptions.rightArrowText;
-  var arrowText = this.isPrevious() ? previousArrowText : nextArrowText;
+  var arrowText = this.isLeft ? parentOptions.leftArrowText : parentOptions.rightArrowText;
   utils.setText( this.element, arrowText );
-};
-
-PrevNextButton.prototype.isPrevious = function() {
-  return this.direction === -1;
 };
 
 PrevNextButton.prototype.onclick = function() {
@@ -97,7 +91,7 @@ PrevNextButton.prototype.onclick = function() {
     return;
   }
   this.parent.uiChange();
-  var method = this.isPrevious() ? 'previous' : 'next';
+  var method = this.isPrevious ? 'previous' : 'next';
   this.parent[ method ]();
 };
 
@@ -123,7 +117,7 @@ PrevNextButton.prototype.update = function() {
     return;
   }
   // index of first or last cell, if previous or next
-  var boundIndex = this.isPrevious() ? 0 : this.parent.cells.length - 1;
+  var boundIndex = this.isPrevious ? 0 : this.parent.cells.length - 1;
   var method = this.parent.selectedIndex === boundIndex ? 'disable' : 'enable';
   this[ method ]();
 };
