@@ -17,13 +17,8 @@ PageDots.prototype._create = function() {
   // create holder element
   this.holder = document.createElement('ol');
   this.holder.className = 'flickity-page-dots';
-
-  // create dots, array of elementss
+  // create dots, array of elements
   this.dots = [];
-
-  this.setDots();
-  this.updateSelected();
-
   // update on select
   var _this = this;
   this.onselect = function() {
@@ -32,15 +27,17 @@ PageDots.prototype._create = function() {
   this.parent.on( 'select', this.onselect );
 
   eventie.bind( this.holder, 'click', this );
-
-  this.append();
 };
 
-PageDots.prototype.append = function() {
+PageDots.prototype.activate = function() {
+  this.setDots();
+  this.updateSelected();
+  // add to DOM
   this.parent.element.appendChild( this.holder );
 };
 
-PageDots.prototype.remove = function() {
+PageDots.prototype.deactivate = function() {
+  // remove from DOM
   this.parent.element.removeChild( this.holder );
 };
 

@@ -15,6 +15,12 @@ var U = window.utils;
 var dragPrototype = window.Flickity.dragPrototype;
 var animatePrototype = window.Flickity.animatePrototype;
 
+function moveChildren( fromElem, toElem ) {
+  while ( fromElem.children.length ) {
+    toElem.appendChild( fromElem.children[0] );
+  }
+}
+
 // -------------------------- Flickity -------------------------- //
 
 // globally unique identifiers
@@ -63,43 +69,66 @@ Flickity.prototype._create = function() {
   var id = this.guid = ++GUID;
   this.element.flickityGUID = id; // expando
   instances[ id ] = this; // associate via id
-
+  // initial properties
+  this.selectedIndex = 0;
+  // how many frames slider has been in same position
+  this.restingFrames = 0;
   // initial physics properties
   this.x = 0;
   this.velocity = 0;
   this.accel = 0;
-  // initial properties
-  this.isActive = true;
-  this.selectedIndex = 0;
-  // how many frames slider has been in same position
-  this.restingFrames = 0;
   this.originSide = this.options.rightToLeft ? 'right' : 'left';
-
-  classie.add( this.element, 'flickity-enabled' );
-  // create viewport element
+  // create viewport & slider
   this.viewport = document.createElement('div');
   this.viewport.className = 'flickity-viewport';
-
   this._createSlider();
-  this.element.appendChild( this.viewport );
-
-  this.getSize();
-
-  // get cells from children
-  this.reloadCells();
-  this.setContainerSize();
-
-  // add prev/next buttons
+  // create prev/next buttons, page dots, and player
   if ( this.options.prevNextButtons ) {
     this.prevButton = new PrevNextButton( -1, this );
     this.nextButton = new PrevNextButton( 1, this );
   }
-
   if ( this.options.pageDots ) {
     this.pageDots = new PageDots( this );
   }
-
   this.player = new Player( this );
+
+  this.activate();
+};
+
+/**
+ * set options
+ * @param {Object} opts
+ */
+Flickity.prototype.option = function( opts ) {
+  U.extend( this.options, opts );
+};
+
+Flickity.prototype.activate = function() {
+  if ( this.isActive ) {
+    return;
+  }
+  this.isActive = true;
+  classie.add( this.element, 'flickity-enabled' );
+  // move children to slider
+  moveChildren( this.element, this.slider );
+  this.viewport.appendChild( this.slider );
+  this.element.appendChild( this.viewport );
+
+  this.getSize();
+  // get cells from children
+  this.reloadCells();
+  this.setContainerSize();
+  // activate prev/next buttons, page dots
+  if ( this.prevButton ) {
+    this.prevButton.activate();
+  }
+  if ( this.nextButton ) {
+    this.nextButton.activate();
+  }
+  if ( this.pageDots ) {
+    this.pageDots.activate();
+  }
+  // player
   if ( this.options.autoPlay ) {
     this.player.play();
     // add hover listeners
@@ -123,15 +152,6 @@ Flickity.prototype._create = function() {
     // listen for key presses
     eventie.bind( this.element, 'keydown', this );
   }
-
-};
-
-/**
- * set options
- * @param {Object} opts
- */
-Flickity.prototype.option = function( opts ) {
-  U.extend( this.options, opts );
 };
 
 // slider positions the cells
@@ -142,11 +162,6 @@ Flickity.prototype._createSlider = function() {
   slider.style.position = 'absolute';
   slider.style.width = '100%';
   slider.style[ this.originSide ] = 0;
-  // wrap child elements in slider
-  while ( this.element.children.length ) {
-    slider.appendChild( this.element.children[0] );
-  }
-  this.viewport.appendChild( slider );
   this.slider = slider;
 };
 
@@ -568,20 +583,17 @@ Flickity.prototype.deactivate = function() {
     classie.remove( this.selectedCell.element, 'is-selected' );
   }
   this.element.removeChild( this.viewport );
-  // wrap child elements back into element
-  while ( this.slider.children.length ) {
-    this.element.appendChild( this.slider.children[0] );
-  }
-  // remove prev/next buttons
+  // move child elements back into element
+  moveChildren( this.slider, this.element );
+  // deactivate prev/next buttons, page dots; stop player
   if ( this.prevButton ) {
-    this.prevButton.remove();
+    this.prevButton.deactivate();
   }
   if ( this.nextButton ) {
-    this.nextButton.remove();
+    this.nextButton.deactivate();
   }
-  // remove page dots
   if ( this.pageDots ) {
-    this.pageDots.remove();
+    this.pageDots.deactivate();
   }
   this.player.stop();
   // unbind events

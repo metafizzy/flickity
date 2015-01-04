@@ -63,14 +63,15 @@ PrevNextButton.prototype._create = function() {
     _this.onclick();
   };
 
-  this.append();
 };
 
-PrevNextButton.prototype.append = function() {
+PrevNextButton.prototype.activate = function() {
+  // add to DOM
   this.parent.element.appendChild( this.element );
 };
 
-PrevNextButton.prototype.remove = function() {
+PrevNextButton.prototype.deactivate = function() {
+  // remove from DOM
   this.parent.element.removeChild( this.element );
 };
 
