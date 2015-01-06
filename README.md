@@ -2,7 +2,11 @@
 
 _Touch, responsive, flickable galleries_
 
-I'm making a carousel/slider/gallery library!
+## Under development
+
+I'm making a carousel/slider/gallery library! It's still in its infancy and not ready for use. [Follow @metafizzyco on Twitter for updates and news on releases](https://twitter.com/metafizzyco).
+
+I'm blogging development at [metafizzy.co/blog](http://metafizzy.co/blog).
 
 ## Usage
 
