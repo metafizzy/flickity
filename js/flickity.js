@@ -97,7 +97,7 @@ Flickity.prototype._create = function() {
   }
 
   if ( this.options.watch ) {
-    this.watch()
+    this.watch();
   } else {
     this.activate();
   }
@@ -456,7 +456,7 @@ Flickity.prototype.insert = function( elems, index ) {
   }
 
   this._sizeCells( cells );
-  this.cellChange( index, true );
+  this._cellAddedRemoved( index );
 };
 
 Flickity.prototype.append = function( elems ) {
@@ -482,20 +482,12 @@ Flickity.prototype.remove = function( elems ) {
 
   if ( cells.length ) {
     // update stuff
-    this.cellChange( 0, true );
+    this._cellAddedRemoved( 0 );
   }
 };
 
 // updates when cells are added or removed
-Flickity.prototype.cellChange = function( index, isSkippingSizing ) {
-  index = index || 0;
-  // size all cells if necessary
-  if ( !isSkippingSizing ) {
-    this._sizeCells( this.cells );
-  }
-  this._positionCells( index );
-  this._getWrapShiftCells();
-  this.setContainerSize();
+Flickity.prototype._cellAddedRemoved = function( index ) {
   // update page dots
   if ( this.pageDots ) {
     this.pageDots.setDots();
@@ -503,6 +495,41 @@ Flickity.prototype.cellChange = function( index, isSkippingSizing ) {
   // TODO cell is removed before the selected cell, adjust selectedIndex by -1
   this.selectedIndex = Math.max( 0, Math.min( this.cells.length - 1, this.selectedIndex ) );
 
+  this.cellChange( index );
+};
+
+/**
+ * logic to be run after a cell's size changes
+ * @param {Element} elem - cell's element
+ */
+Flickity.prototype.cellSizeChange = function( elem ) {
+  var cell = this.getCell( elem );
+  if ( !cell ) {
+    return;
+  }
+  cell.getSize();
+
+  var index = U.indexOf( this.cells, cell );
+  this.cellChange( index );
+};
+
+/**
+ * logic any time a cell is changed: added, removed, or size changed
+ * @param {Integer} index - index of the changed cell, optional
+ */
+Flickity.prototype.cellChange = function( index ) {
+  // TODO maybe always size all cells unless isSkippingSizing
+  // size all cells if necessary
+  // if ( !isSkippingSizing ) {
+  //   this._sizeCells( this.cells );
+  // }
+
+  index = index || 0;
+
+  this._positionCells( index );
+  this._getWrapShiftCells();
+  this.setContainerSize();
+  // position slider
   if ( this.options.freeScroll ) {
     this.positionSlider();
   } else {

@@ -37,6 +37,7 @@ how to handle container height
 
 ## Feature requests
 
+take care of imagesLoaded in an option or something
 <!-- keyboard events -->
 <!-- watch for responsive, create/destroy as needed -->
 <!-- autoPlay -->

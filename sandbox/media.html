@@ -76,15 +76,7 @@ docReady( function() {
   var imgLoad = imagesLoaded('#image-gallery1');
   imgLoad.on( 'progress', function( instance, image ) {
     var flkty = Flickity.data('#image-gallery1');
-    // get cell element
-    var cell = flkty.getCell( image.img );
-    cell.getSize();
-    // do cell change logic
-    var index = utils.indexOf( flkty.cells, cell );
-    flkty._positionCells( index );
-    flkty._getWrapShiftCells();
-    flkty.setContainerSize();
-    flkty.select( flkty.selectedIndex );
+    flkty.cellSizeChange( image.img );
   });
 
 });
