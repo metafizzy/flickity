@@ -17,7 +17,8 @@
   },
   "devDependencies": {
     "jquery-bridget": "~1.1.0",
-    "qunit": "~1.16.0"
+    "qunit": "~1.16.0",
+    "imagesloaded": "~3.1.8"
   },
   "moduleType": [
     "amd",
