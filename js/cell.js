@@ -30,7 +30,9 @@ Cell.prototype.getSize = function() {
 
 Cell.prototype.setPosition = function( x ) {
   this.x = x;
-  this.target = x + this.size.width * this.parent.options.targetPosition;
+  var marginProperty = this.parent.originSide == 'left' ? 'marginLeft' : 'marginRight';
+  this.target = x + this.size[ marginProperty ] +
+    this.size.width * this.parent.options.targetPosition;
   this.renderPosition( x );
 };
 
