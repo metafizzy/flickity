@@ -15,6 +15,11 @@
     margin-right: 20px;
     max-height: 400px;
   }
+
+  #video-gallery1 .cell {
+    height: 300px;
+    width: auto;
+  }
   </style>
 
 </head>
@@ -23,8 +28,8 @@
   <h1>media</h1>
 
 
-  <div id="image-gallery1" class="container image-gallery variable-width js-flickity"
-    data-flickity-options='{ "wrapAround": true }'>
+  <div id="image-gallery1" class="container image-gallery js-flickity"
+    data-flickity-options='{ "wrapAround": false }'>
     <!-- images from unsplash.com -->
     <img src="http://i.imgur.com/r8p3Xgq.jpg" />
     <img src="http://i.imgur.com/q9zO6tw.jpg" />
@@ -37,12 +42,24 @@
     <img src="http://i.imgur.com/LkmcILl.jpg" />
   </div>
 
-  <div id="demo1" class="demo">
-    <p>
-      <button class="prepend-button">Prepend</button>
-      <button class="insert-button">Insert</button>
-      <button class="append-button">Append</button>
-    </p>
+  <div id="video-gallery1" class="container video-gallery js-flickity">
+    <div class="cell">
+      <iframe src="//player.vimeo.com/video/87701971" width="534" height="300" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe> <p><a href="http://vimeo.com/87701971">Yosemite HD II</a> from <a href="http://vimeo.com/projectyose">Project Yosemite</a> on <a href="https://vimeo.com">Vimeo</a>.</p>
+    </div>
+    <div class="cell">
+      <iframe width="400" height="300" src="//www.youtube.com/embed/MvUE4WUtChk" frameborder="0" allowfullscreen></iframe>
+    </div>
+    <div class="cell">
+      <iframe src="//player.vimeo.com/video/115014610" width="534" height="300" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe> <p><a href="http://vimeo.com/115014610">The Coast</a> from <a href="http://vimeo.com/nrsfilms">NRS Films</a> on <a href="https://vimeo.com">Vimeo</a>.</p>
+    </div>
+    <div class="cell">
+      <iframe width="400" height="300" src="//www.youtube.com/embed/TmQd6S9wXYQ" frameborder="0" allowfullscreen></iframe>
+    </div>
+
+    <div class="cell">
+      <iframe src="//player.vimeo.com/video/115680769" width="712" height="300" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe> <p><a href="http://vimeo.com/115680769">Quids In</a> from <a href="http://vimeo.com/nbnumeric">New Balance Numeric</a> on <a href="https://vimeo.com">Vimeo</a>.</p>
+    </div>
+
   </div>
 
   <!-- <div id="demo2" class="demo">
