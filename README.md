@@ -36,7 +36,7 @@ var flky = new Flickity( '.gallery', {
 
   cellAlign: 'center',
   // alignment of cells, 'center', 'left', or 'right'
-  // or a decimal 0-1, 0 is beginning (left) of gallery, 1 is end (right)
+  // or a decimal 0-1, 0 is beginning (left) of container, 1 is end (right)
 
   cellSelector: undefined,
   // specify selector for cell elements

@@ -12,6 +12,11 @@
   position: relative;
 }
 
+.flickity-slider {
+  position: absolute;
+  width: 100%;
+}
+
 /* ---- previous/next buttons ---- */
 
 .flickity-prev-next-button {

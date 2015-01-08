@@ -31,9 +31,9 @@ CommonJS
 <!-- check for centered margins, or left margins when left-to-right -->
 <!-- don't use translate3d() when settled -->
 <!-- add selected class to cell -->
-how to handle container height
+<!-- how to handle container height
   - set to height of item
-  - allow user to set with CSS
+  - allow user to set with CSS -->
 
 ## Feature requests
 

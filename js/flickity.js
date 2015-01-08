@@ -163,8 +163,6 @@ Flickity.prototype._createSlider = function() {
   // slider element does all the positioning
   var slider = document.createElement('div');
   slider.className = 'flickity-slider';
-  slider.style.position = 'absolute';
-  slider.style.width = '100%';
   slider.style[ this.originSide ] = 0;
   this.slider = slider;
 };
