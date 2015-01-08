@@ -12,6 +12,7 @@
 // utils
 var jQuery = window.jQuery;
 var U = window.utils;
+var imagesLoaded = window.imagesLoaded;
 var dragPrototype = window.Flickity.dragPrototype;
 var animatePrototype = window.Flickity.animatePrototype;
 var cellChangePrototype = window.Flickity.cellChangePrototype;
@@ -146,6 +147,8 @@ Flickity.prototype.activate = function() {
 
   this.positionSliderAtSelected();
   this.select( this.selectedIndex );
+
+  this.imagesLoaded();
 
   // events
   this.bindDrag();
@@ -394,6 +397,24 @@ Flickity.prototype.uiChange = function() {
   delete this.isFreeScrolling;
 };
 
+// -------------------------- images -------------------------- //
+
+// TODO move out this repo to avoid problems with imagesLoaded dependency
+Flickity.prototype.imagesLoaded = function() {
+  if ( !this.options.imagesLoaded || !imagesLoaded ) {
+    return;
+  }
+  var _this = this;
+  function onImagesLoadedProgress( instance, image ) {
+    // check if image is a cell
+    var cell = _this.getCell( image.img );
+    // otherwise get its parents
+    var cellElem = cell.element || U.getParent( image.img, '.flickity-slider > *' );
+    _this.cellSizeChange( cellElem );
+  }
+  imagesLoaded( this.slider ).on( 'progress', onImagesLoadedProgress );
+};
+
 // -------------------------- get cells -------------------------- //
 
 /**
@@ -562,7 +583,7 @@ U.extend( Flickity.prototype, dragPrototype );
 U.extend( Flickity.prototype, animatePrototype );
 U.extend( Flickity.prototype, cellChangePrototype );
 
-// --------------------------  -------------------------- //
+// -------------------------- extras -------------------------- //
 
 /**
  * get Flickity instance from element

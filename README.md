@@ -47,6 +47,10 @@ var flky = new Flickity( '.gallery', {
   friction: 0.2,
   // smaller number = easier to flick farther
 
+  imagesLoaded: false,
+  // if imagesLoaded is present, Flickity can re-position cells
+  // once images are loaded
+
   pixelPositioning: false,
   // sets positioning in pixels, rather than percentages
   // may be better for more precise positioning

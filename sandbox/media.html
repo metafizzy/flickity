@@ -30,7 +30,7 @@
 
 
   <div id="image-gallery1" class="container image-gallery js-flickity"
-    data-flickity-options='{ "wrapAround": false }'>
+    data-flickity-options='{ "wrapAround": false, "imagesLoaded": true }'>
     <!-- images from unsplash.com -->
     <img src="http://i.imgur.com/r8p3Xgq.jpg" />
     <img src="http://i.imgur.com/q9zO6tw.jpg" />
@@ -43,7 +43,7 @@
     <img src="http://i.imgur.com/LkmcILl.jpg" />
   </div>
 
-  <div id="video-gallery1" class="container video-gallery js-flickity">
+  <!-- <div id="video-gallery1" class="container video-gallery js-flickity">
     <div class="cell">
       <iframe src="//player.vimeo.com/video/87701971" width="534" height="300" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe> <p><a href="http://vimeo.com/87701971">Yosemite HD II</a> from <a href="http://vimeo.com/projectyose">Project Yosemite</a> on <a href="https://vimeo.com">Vimeo</a>.</p>
     </div>
@@ -61,7 +61,7 @@
       <iframe src="//player.vimeo.com/video/115680769" width="712" height="300" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe> <p><a href="http://vimeo.com/115680769">Quids In</a> from <a href="http://vimeo.com/nbnumeric">New Balance Numeric</a> on <a href="https://vimeo.com">Vimeo</a>.</p>
     </div>
 
-  </div>
+  </div> -->
 
   <!-- <div id="demo2" class="demo">
     <div class="container variable-width js-flickity"
@@ -92,11 +92,11 @@
 <script>
 docReady( function() {
 
-  var imgLoad = imagesLoaded('#image-gallery1');
+  // var imgLoad = imagesLoaded('#image-gallery1');
   var flkty1 = Flickity.data('#image-gallery1');
-  imgLoad.on( 'progress', function( instance, image ) {
-    flkty1.cellSizeChange( image.img );
-  });
+  // imgLoad.on( 'progress', function( instance, image ) {
+  //   flkty1.cellSizeChange( image.img );
+  // });
 
   flkty1.on( 'staticClick', function( event, pointer ) {
     console.log( event.target );

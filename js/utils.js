@@ -100,6 +100,17 @@ U.setText = ( function() {
   return setText;
 })();
 
+// ----- getParent ----- //
+
+U.getParent = function( elem, selector ) {
+  while ( elem != document.body ) {
+    elem = elem.parentNode;
+    if ( matchesSelector( elem, selector ) ) {
+      return elem;
+    }
+  }
+};
+
 // ----- filterFindElements ----- //
 
 U.filterFindElements = function( elems, selector ) {

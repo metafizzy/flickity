@@ -38,11 +38,12 @@ CommonJS
 move utils to its own repo
 move unipointer to its own repo
   try integrating Draggabilly with unipointer
+move imagesLoaded bit into its own package, most likely
 Grunt file for building dist
 
 ## Feature requests
 
-take care of imagesLoaded in an option or something
+<!-- take care of imagesLoaded in an option or something -->
 <!-- keyboard events -->
 <!-- watch for responsive, create/destroy as needed -->
 <!-- autoPlay -->
