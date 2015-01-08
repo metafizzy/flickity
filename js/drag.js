@@ -77,10 +77,8 @@ proto.pointerUp = function( event, pointer ) {
   if ( this.isDragging ) {
     this.dragEnd( event, pointer );
   } else {
-    // allow click in text input
-    if ( event.target.nodeName === 'INPUT' && event.target.type === 'text' ) {
-      event.target.focus();
-    }
+    // pointer didn't move enough for drag to start
+    this.staticClick( event, pointer );
   }
 };
 
@@ -250,6 +248,18 @@ proto.onclick = function( event ) {
     preventDefaultEvent( event );
   }
 };
+
+// ----- staticClick ----- //
+
+// triggered after pointer down & up with no/tiny movement
+proto.staticClick = function( event, pointer ) {
+  // allow click in text input
+  if ( event.target.nodeName === 'INPUT' && event.target.type === 'text' ) {
+    event.target.focus();
+  }
+  this.dispatchEvent( 'staticClick', event, [ pointer ] );
+};
+
 
 window.Flickity = window.Flickity || {};
 window.Flickity.dragPrototype = proto;

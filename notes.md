@@ -14,7 +14,7 @@
 <!-- HTML init -->
 <!-- events -->
   <!-- select -->
-  click
+  <!-- click -->
   <!-- settle - when slider settles at selected cell -->
 tests
 requirejs
@@ -47,6 +47,7 @@ lazy load
 <!-- add/remove: prepend, append, insert, remove -->
 animations for add/remove
 scrollView-like: freeScroll, no wrapAround, bound to content, not to aligning cells
+allow vertical scrolling on the page on mobile
 
 ## Check
 
