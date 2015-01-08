@@ -34,12 +34,12 @@ var flky = new Flickity( '.gallery', {
   // or set time between advances in milliseconds
   // i.e. `autoPlay: 1000` will advance every 1 second
 
+  cellAlign: 'center',
+  // alignment of cells, 'center', 'left', or 'right'
+  // or a decimal 0-1, 0 is beginning (left) of gallery, 1 is end (right)
+
   cellSelector: undefined,
   // specify selector for cell elements
-
-  cursorPosition: 0.5,
-  // decimal value 0 - 1, representing where cells should align to
-  // 0 is beginning (left) of gallery, 1 is end (right)
 
   draggable: true,
   // enables dragging & flicking
@@ -56,10 +56,6 @@ var flky = new Flickity( '.gallery', {
 
   resizeBound: true,
   // listens to window resize events to adjust size & positions
-
-  targetPosition: 0.5,
-  // decimal value 0 - 1, representing what part of cells should align to
-  // 0 is beginning (left) of the cell, 1 is end (right)
 
   watch: false,
   // watches the :after property of the element

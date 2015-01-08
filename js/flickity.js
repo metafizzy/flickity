@@ -50,13 +50,12 @@ Flickity.defaults = {
   accessibility: true,
   freeScrollFriction: 0.075, // friction when free-scrolling
   friction: 0.25, // friction when selecting
-  cursorPosition: 0.5,
+  cellAlign: 'center',
   draggable: true,
   pageDots: true,
   prevNextButtons: true,
   resizeBound: true,
   selectedAttraction: 0.025,
-  targetPosition: 0.5,
   leftArrowText: '←', // text for prev/next button when no SVG support
   rightArrowText: '→'
 };
@@ -246,7 +245,29 @@ Flickity.prototype._sizeCells = function( cells ) {
 
 Flickity.prototype.getSize = function() {
   this.size = getSize( this.element );
-  this.cursorPosition = this.size.innerWidth * this.options.cursorPosition;
+  this.setCellAlign();
+  this.cursorPosition = this.size.innerWidth * this.cellAlign;
+};
+
+var cellAlignShorthands = {
+  // cell align, then based on origin side
+  center: {
+    left: 0.5,
+    right: 0.5
+  },
+  left: {
+    left: 0,
+    right: 1
+  },
+  right: {
+    right: 0,
+    left: 1
+  }
+};
+
+Flickity.prototype.setCellAlign = function() {
+  var shorthand = cellAlignShorthands[ this.options.cellAlign ];
+  this.cellAlign = shorthand ? shorthand[ this.originSide ] : this.options.cellAlign;
 };
 
 Flickity.prototype.setContainerSize = function() {
