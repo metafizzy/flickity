@@ -43,15 +43,27 @@ proto.unbindDrag = function() {
 
 // -------------------------- pointer events -------------------------- //
 
+var allowTouchstartNodes = {
+  INPUT: true,
+  A: true,
+  BUTTON: true
+};
+
 proto.pointerDown = function( event, pointer ) {
-  preventDefaultEvent( event );
+  var targetNodeName = event.target.nodeName;
+  // HACK iOS, allow clicks on buttons, inputs, and links
+  var isTouchstart = event.type == 'touchstart';
+  var isTouchstartNode = allowTouchstartNodes[ targetNodeName ];
+  if ( !isTouchstart || ( isTouchstart && !isTouchstartNode ) ) {
+    preventDefaultEvent( event );
+  }
   // kludge to blur focused inputs in dragger
   var focused = document.activeElement;
   if ( focused && focused.blur && focused !== this.element ) {
     focused.blur();
   }
   // focus element, if its not an input
-  if ( this.options.accessibility && event.target.nodeName !== 'INPUT' ) {
+  if ( this.options.accessibility && targetNodeName != 'INPUT' ) {
     this.element.focus();
   }
   // stop if it was moving
