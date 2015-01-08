@@ -35,6 +35,11 @@ CommonJS
   - set to height of item
   - allow user to set with CSS -->
 
+move utils to its own repo
+move unipointer to its own repo
+  try integrating Draggabilly with unipointer
+Grunt file for building dist
+
 ## Feature requests
 
 take care of imagesLoaded in an option or something
@@ -51,7 +56,7 @@ allow vertical scrolling on the page on mobile
 
 ## Check
 
-images
+<!-- images -->
 videos
 <!-- dragEnd quadLimit on full-width cells -->
 
@@ -60,9 +65,3 @@ videos
 <!-- wrapAround -->
 handling clicks vs. dragging
 right now, in development, is the best time
-
-
-## Watch
-
-check for property
-activate / deactivate as necessary
