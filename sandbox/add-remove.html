@@ -123,21 +123,23 @@ function onContainerClick( event ) {
   flkty.remove( cellElement );
 }
 
+function getParentFlickity( elem ) {
+  var demo = getParent( elem, '.demo' );
+  return Flickity.data( demo.querySelector('.container') );
+}
+
 function onPrependClick( event ) {
-  var demo = getParent( event.target, '.demo' );
-  var flkty = Flickity.data( demo.querySelector('.container') );
+  var flkty = getParentFlickity( event.target );
   flkty.prepend([ makeCell(), makeCell(), makeCell() ]);
 }
 
 function onInsertClick( event ) {
-  var demo = getParent( event.target, '.demo' );
-  var flkty = Flickity.data( demo.querySelector('.container') );
+  var flkty = getParentFlickity( event.target );
   flkty.insert([ makeCell(), makeCell(), makeCell() ], 3 );
 }
 
 function onAppendClick( event ) {
-  var demo = getParent( event.target, '.demo' );
-  var flkty = Flickity.data( demo.querySelector('.container') );
+  var flkty = getParentFlickity( event.target );
   flkty.append([ makeCell(), makeCell(), makeCell() ]);
 }
 
