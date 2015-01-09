@@ -32,11 +32,7 @@ var GUID = 0;
 var instances = {};
 
 function Flickity( element, options ) {
-  // use element as selector string
-  if ( typeof element === 'string' ) {
-    element = document.querySelector( element );
-  }
-  this.element = element;
+  this.element = U.getQueryElement( element );
   // add jQuery
   if ( jQuery ) {
     this.$element = jQuery( this.element );
@@ -498,7 +494,7 @@ var supportsConditionalCSS = ( function() {
     document.head.appendChild( style );
     var afterContent = getComputedStyle( document.body, '::after' ).content;
     // check if able to get ::after content
-    var supports = afterContent.indexOf('foo') != -1;
+    supports = afterContent.indexOf('foo') != -1;
     document.head.removeChild( style );
     return supports;
   };
@@ -625,10 +621,7 @@ U.extend( Flickity.prototype, cellChangePrototype );
  * @returns {Flickity}
  */
 Flickity.data = function( elem ) {
-  // get element if selector string
-  if ( typeof elem == 'string' ) {
-    elem = document.querySelector( elem );
-  }
+  elem = U.getQueryElement( elem );
   var id = elem && elem.flickityGUID;
   return id && instances[ id ];
 };

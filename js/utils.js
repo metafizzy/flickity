@@ -111,6 +111,16 @@ U.getParent = function( elem, selector ) {
   }
 };
 
+// ----- getQueryElement ----- //
+
+// use element as selector string
+U.getQueryElement = function( elem ) {
+  if ( typeof elem == 'string' ) {
+    return document.querySelector( elem );
+  }
+  return elem;
+};
+
 // ----- filterFindElements ----- //
 
 U.filterFindElements = function( elems, selector ) {
