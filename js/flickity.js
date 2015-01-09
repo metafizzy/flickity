@@ -384,11 +384,15 @@ Flickity.prototype.updatePrevNextButtons = function() {
 };
 
 Flickity.prototype.setSelectedCell = function() {
+  this._removeSelectedCellClass();
+  this.selectedCell = this.cells[ this.selectedIndex ];
+  classie.add( this.selectedCell.element, 'is-selected' );
+};
+
+Flickity.prototype._removeSelectedCellClass = function() {
   if ( this.selectedCell ) {
     classie.remove( this.selectedCell.element, 'is-selected' );
   }
-  this.selectedCell = this.cells[ this.selectedIndex ];
-  classie.add( this.selectedCell.element, 'is-selected' );
 };
 
 // on button clicks and ui changes
@@ -573,10 +577,7 @@ Flickity.prototype.deactivate = function() {
     var cell = this.cells[i];
     cell.destroy();
   }
-  // remove selected cell class
-  if ( this.selectedCell ) {
-    classie.remove( this.selectedCell.element, 'is-selected' );
-  }
+  this._removeSelectedCellClass();
   this.element.removeChild( this.viewport );
   // move child elements back into element
   moveChildren( this.slider, this.element );
