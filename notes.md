@@ -65,4 +65,5 @@ videos
 
 <!-- wrapAround -->
 handling clicks vs. dragging
-right now, in development, is the best time
+watch functionality, using conditional CSS
+<!-- right now, in development, is the best time -->

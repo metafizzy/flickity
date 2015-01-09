@@ -62,8 +62,10 @@ var flky = new Flickity( '.gallery', {
   // listens to window resize events to adjust size & positions
 
   watch: false,
-  // watches the :after property of the element
-  // activates if #element:after { content: 'flickity' }
+  // watches the content of ::after of the element
+  // activates if #element::after { content: 'flickity' }
+  // IE8 and Android 2.3 do not support watching ::after
+  // set watch: 'fallbackOn' to enable for these browsers
 
   wrapAround: false
   // at end of cells, wraps-around to first for infinite scrolling

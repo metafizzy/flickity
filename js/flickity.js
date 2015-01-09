@@ -12,6 +12,7 @@
 // utils
 var jQuery = window.jQuery;
 var U = window.utils;
+var getComputedStyle = window.getComputedStyle;
 var imagesLoaded = window.imagesLoaded;
 var dragPrototype = window.Flickity.dragPrototype;
 var animatePrototype = window.Flickity.animatePrototype;
@@ -476,12 +477,44 @@ Flickity.prototype.resize = function() {
   this.positionSliderAtSelected();
 };
 
+var supportsConditionalCSS = ( function() {
+  var supports;
+  return function checkSupport() {
+    if ( supports !== undefined ) {
+      return supports;
+    }
+    if ( !getComputedStyle ) {
+      supports = false;
+      return;
+    }
+    // style body's ::after and check that
+    var style = document.createElement('style');
+    var cssText = document.createTextNode('body::after { content: "foo"; display: none; }');
+    style.appendChild( cssText );
+    document.head.appendChild( style );
+    var afterContent = getComputedStyle( document.body, '::after' ).content;
+    // check if able to get ::after content
+    var supports = afterContent.indexOf('foo') != -1;
+    document.head.removeChild( style );
+    return supports;
+  };
+})();
+
 // watches the :after property, activates/deactivates
 Flickity.prototype.watch = function() {
-  if ( !this.options.watch ) {
+  var watchOption = this.options.watch;
+  if ( !watchOption ) {
     return;
   }
-  var afterContent = getComputedStyle( this.element, ':after' ).content;
+  var supports = supportsConditionalCSS();
+  if ( !supports ) {
+    // activate if watch option is fallbackOn
+    var method = watchOption == 'fallbackOn' ? 'activate' : 'deactivate';
+    this[ method ]();
+    return;
+  }
+
+  var afterContent = getComputedStyle( this.element, '::after' ).content;
   // activate if :after { content: 'flickity' }
   if ( afterContent.indexOf('flickity') != -1 ) {
     this.activate();
