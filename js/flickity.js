@@ -221,14 +221,22 @@ Flickity.prototype._positionCells = function( index ) {
     var startCell = this.cells[ index - 1 ];
     cellX = startCell.x + startCell.size.outerWidth;
   }
-  for ( var len = this.cells.length; index < len; index++ ) {
-    var cell = this.cells[ index ];
+  var cell;
+  for ( var len = this.cells.length, i=index; i < len; i++ ) {
+    cell = this.cells[i];
     cell.setPosition( cellX );
     cellX += cell.size.outerWidth;
     this.maxCellHeight = Math.max( cell.size.outerHeight, this.maxCellHeight );
   }
   // keep track of cellX for wrap-around
   this.slideableWidth = cellX;
+  // set fit-content cell target
+  if ( this.options.fitContent && !this.options.wrapAround ) {
+    for ( i=index ; i < len; i++ ) {
+      cell = this.cells[i];
+      this.setFitContentCellTarget( cell );
+    }
+  }
 };
 
 /**
@@ -267,6 +275,19 @@ var cellAlignShorthands = {
 Flickity.prototype.setCellAlign = function() {
   var shorthand = cellAlignShorthands[ this.options.cellAlign ];
   this.cellAlign = shorthand ? shorthand[ this.originSide ] : this.options.cellAlign;
+};
+
+Flickity.prototype.setFitContentCellTarget = function( cell ) {
+  // origin fit
+  cell.target = Math.max( cell.target, this.cursorPosition );
+  // end fit
+  var lastCell = this.getLastCell();
+  var endMargin = this.options.rightToLeft ? 'marginLeft' : 'marginRight';
+  var contentWidth = this.slideableWidth - lastCell.size[ endMargin ];
+  var endLimit = contentWidth - this.size.innerWidth * ( 1 - this.cellAlign );
+  // console.log( ~~target, ~~endLimit, contentWidth,  this.size.innerWidth * ( 1 - this.cellAlign ) );
+  cell.target = Math.min( cell.target, endLimit );
+  console.log( cell.target );
 };
 
 Flickity.prototype.setContainerSize = function() {
