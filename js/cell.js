@@ -30,10 +30,14 @@ Cell.prototype.getSize = function() {
 
 Cell.prototype.setPosition = function( x ) {
   this.x = x;
-  var marginProperty = this.parent.originSide == 'left' ? 'marginLeft' : 'marginRight';
-  this.target = x + this.size[ marginProperty ] +
-    this.size.width * this.parent.cellAlign;
+  this.setDefaultTarget();
   this.renderPosition( x );
+};
+
+Cell.prototype.setDefaultTarget = function() {
+  var marginProperty = this.parent.originSide == 'left' ? 'marginLeft' : 'marginRight';
+  this.target = this.x + this.size[ marginProperty ] +
+    this.size.width * this.parent.cellAlign;
 };
 
 Cell.prototype.renderPosition = function( x ) {

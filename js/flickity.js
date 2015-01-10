@@ -326,6 +326,8 @@ Flickity.prototype._containCells = function() {
   // contain each cell target
   for ( var i=0, len = this.cells.length; i < len; i++ ) {
     var cell = this.cells[i];
+    // reset default target
+    cell.setDefaultTarget();
     cell.target = Math.max( cell.target, this.cursorPosition );
     cell.target = Math.min( cell.target, endLimit );
   }
