@@ -41,6 +41,11 @@ var flky = new Flickity( '.gallery', {
   cellSelector: undefined,
   // specify selector for cell elements
 
+  contain: false,
+  // will contain cells to container
+  // so no excess scroll at beginning or end
+  // has no effect if wrapAround is enabled
+
   draggable: true,
   // enables dragging & flicking
 

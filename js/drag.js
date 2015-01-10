@@ -206,7 +206,7 @@ proto.dragEndRestingSelect = function() {
 proto._getClosestResting = function( restingX, distance, increment ) {
   var index = this.selectedIndex;
   var minDistance = Infinity;
-  var condition = this.options.fitContent && !this.options.wrapAround ?
+  var condition = this.options.contain && !this.options.wrapAround ?
     // if fit-content, keep going if distance is equal to minDistance
     function( d, md ) { return d <= md; } : function( d, md ) { return d < md; };
   while ( condition( distance, minDistance ) ) {

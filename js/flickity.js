@@ -230,13 +230,8 @@ Flickity.prototype._positionCells = function( index ) {
   }
   // keep track of cellX for wrap-around
   this.slideableWidth = cellX;
-  // set fit-content cell target
-  if ( this.options.fitContent && !this.options.wrapAround ) {
-    for ( i=index ; i < len; i++ ) {
-      cell = this.cells[i];
-      this.setFitContentCellTarget( cell );
-    }
-  }
+  // contain cell target
+  this._containCells();
 };
 
 /**
@@ -277,17 +272,6 @@ Flickity.prototype.setCellAlign = function() {
   this.cellAlign = shorthand ? shorthand[ this.originSide ] : this.options.cellAlign;
 };
 
-Flickity.prototype.setFitContentCellTarget = function( cell ) {
-  // origin fit
-  cell.target = Math.max( cell.target, this.cursorPosition );
-  // end fit
-  var lastCell = this.getLastCell();
-  var endMargin = this.options.rightToLeft ? 'marginLeft' : 'marginRight';
-  var contentWidth = this.slideableWidth - lastCell.size[ endMargin ];
-  var endLimit = contentWidth - this.size.innerWidth * ( 1 - this.cellAlign );
-  cell.target = Math.min( cell.target, endLimit );
-};
-
 Flickity.prototype.setContainerSize = function() {
   this.viewport.style.height = this.maxCellHeight + 'px';
 };
@@ -326,6 +310,28 @@ Flickity.prototype._getGapCells = function( gapX, cellIndex, increment ) {
   }
   return cells;
 };
+
+// ----- contain ----- //
+
+// contain cell targets so no excess sliding
+Flickity.prototype._containCells = function() {
+  if ( !this.options.contain || this.options.wrapAround ) {
+    return;
+  }
+  // end limit
+  var lastCell = this.getLastCell();
+  var endMargin = this.options.rightToLeft ? 'marginLeft' : 'marginRight';
+  var contentWidth = this.slideableWidth - lastCell.size[ endMargin ];
+  var endLimit = contentWidth - this.size.innerWidth * ( 1 - this.cellAlign );
+  // contain each cell target
+  for ( var i=0, len = this.cells.length; i < len; i++ ) {
+    var cell = this.cells[i];
+    cell.target = Math.max( cell.target, this.cursorPosition );
+    cell.target = Math.min( cell.target, endLimit );
+  }
+};
+
+// -----  ----- //
 
 /**
  * emits events via eventEmitter and jQuery events
