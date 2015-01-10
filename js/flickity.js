@@ -48,7 +48,7 @@ function Flickity( element, options ) {
 Flickity.defaults = {
   accessibility: true,
   freeScrollFriction: 0.075, // friction when free-scrolling
-  friction: 0.25, // friction when selecting
+  friction: 0.28, // friction when selecting
   cellAlign: 'center',
   draggable: true,
   pageDots: true,
