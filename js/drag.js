@@ -206,7 +206,10 @@ proto.dragEndRestingSelect = function() {
 proto._getClosestResting = function( restingX, distance, increment ) {
   var index = this.selectedIndex;
   var minDistance = Infinity;
-  while ( distance < minDistance ) {
+  var condition = this.options.fitContent && !this.options.wrapAround ?
+    // if fit-content, keep going if distance is equal to minDistance
+    function( d, md ) { return d <= md; } : function( d, md ) { return d < md; };
+  while ( condition( distance, minDistance ) ) {
     // measure distance to next cell
     index += increment;
     minDistance = distance;

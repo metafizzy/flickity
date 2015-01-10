@@ -285,9 +285,7 @@ Flickity.prototype.setFitContentCellTarget = function( cell ) {
   var endMargin = this.options.rightToLeft ? 'marginLeft' : 'marginRight';
   var contentWidth = this.slideableWidth - lastCell.size[ endMargin ];
   var endLimit = contentWidth - this.size.innerWidth * ( 1 - this.cellAlign );
-  // console.log( ~~target, ~~endLimit, contentWidth,  this.size.innerWidth * ( 1 - this.cellAlign ) );
   cell.target = Math.min( cell.target, endLimit );
-  console.log( cell.target );
 };
 
 Flickity.prototype.setContainerSize = function() {
