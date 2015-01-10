@@ -96,7 +96,7 @@ PageDots.prototype.handleEvent = function( event ) {
 PageDots.prototype.onclick = function( event ) {
   var target = event.target;
   // only care about dot clicks
-  if ( target.nodeName !== 'LI' ) {
+  if ( target.nodeName != 'LI' ) {
     return;
   }
 

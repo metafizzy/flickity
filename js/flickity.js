@@ -427,7 +427,7 @@ Flickity.prototype.getCell = function( elem ) {
   // loop through cells to get the one that matches
   for ( var i=0, len = this.cells.length; i < len; i++ ) {
     var cell = this.cells[i];
-    if ( cell.element === elem ) {
+    if ( cell.element == elem ) {
       return cell;
     }
   }
@@ -529,16 +529,16 @@ Flickity.prototype.watch = function() {
 Flickity.prototype.onkeydown = function( event ) {
   // only work if element is in focus
   if ( !this.options.accessibility ||
-    ( document.activeElement && document.activeElement !== this.element ) ) {
+    ( document.activeElement && document.activeElement != this.element ) ) {
     return;
   }
 
-  if ( event.keyCode === 37 ) {
+  if ( event.keyCode == 37 ) {
     // go left
     var leftMethod = this.options.rightToLeft ? 'next' : 'previous';
     this.uiChange();
     this[ leftMethod ]();
-  } else if ( event.keyCode === 39 ) {
+  } else if ( event.keyCode == 39 ) {
     // go right
     var rightMethod = this.options.rightToLeft ? 'previous' : 'next';
     this.uiChange();

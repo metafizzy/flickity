@@ -59,7 +59,7 @@ proto.pointerDown = function( event, pointer ) {
   }
   // kludge to blur focused inputs in dragger
   var focused = document.activeElement;
-  if ( focused && focused.blur && focused !== this.element ) {
+  if ( focused && focused.blur && focused != this.element ) {
     focused.blur();
   }
   // focus element, if its not an input
@@ -147,7 +147,7 @@ proto.dragEnd = function( event, pointer ) {
     var restingX = this.getRestingPosition();
     this.isFreeScrolling = -restingX > this.cells[0].target &&
       -restingX < this.getLastCell().target;
-  } else if ( !this.options.freeScroll && index === this.selectedIndex ) {
+  } else if ( !this.options.freeScroll && index == this.selectedIndex ) {
     // boost selection if selected index has not changed
     index += this.dragEndBoostSelect();
   }
@@ -266,7 +266,7 @@ proto.onclick = function( event ) {
 // triggered after pointer down & up with no/tiny movement
 proto.staticClick = function( event, pointer ) {
   // allow click in text input
-  if ( event.target.nodeName === 'INPUT' && event.target.type === 'text' ) {
+  if ( event.target.nodeName == 'INPUT' && event.target.type == 'text' ) {
     event.target.focus();
   }
   this.dispatchEvent( 'staticClick', event, [ pointer ] );

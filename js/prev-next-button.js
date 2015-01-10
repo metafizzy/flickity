@@ -34,9 +34,9 @@ function PrevNextButton( direction, parent ) {
 PrevNextButton.prototype._create = function() {
   // properties
   this.isEnabled = true;
-  this.isPrevious = this.direction === -1;
+  this.isPrevious = this.direction == -1;
   var leftDirection = this.parent.options.rightToLeft ? 1 : -1;
-  this.isLeft = this.direction === leftDirection;
+  this.isLeft = this.direction == leftDirection;
 
   this.element = document.createElement('button');
   this.element.className = 'flickity-prev-next-button';
@@ -127,7 +127,7 @@ PrevNextButton.prototype.update = function() {
   }
   // index of first or last cell, if previous or next
   var boundIndex = this.isPrevious ? 0 : this.parent.cells.length - 1;
-  var method = this.parent.selectedIndex === boundIndex ? 'disable' : 'enable';
+  var method = this.parent.selectedIndex == boundIndex ? 'disable' : 'enable';
   this[ method ]();
 };
 

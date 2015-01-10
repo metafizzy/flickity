@@ -34,7 +34,7 @@ proto.insert = function( elems, index ) {
   // add cells with document fragment
   var fragment = getCellsFragment( cells );
   // append to slider
-  var isAppend = index === len;
+  var isAppend = index == len;
   if ( isAppend ) {
     this.slider.appendChild( fragment );
   } else {

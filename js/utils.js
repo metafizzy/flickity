@@ -30,7 +30,7 @@ U.modulo = function( num, div ) {
   
 var objToString = Object.prototype.toString;
 U.isArray = function( obj ) {
-  return objToString.call( obj ) === '[object Array]';
+  return objToString.call( obj ) == '[object Array]';
 };
 
 // ----- makeArray ----- //
@@ -41,7 +41,7 @@ U.makeArray = function( obj ) {
   if ( U.isArray( obj ) ) {
     // use object if already an array
     ary = obj;
-  } else if ( obj && typeof obj.length === 'number' ) {
+  } else if ( obj && typeof obj.length == 'number' ) {
     // convert nodeList to array
     for ( var i=0, len = obj.length; i < len; i++ ) {
       ary.push( obj[i] );
@@ -71,7 +71,7 @@ U.indexOf = Array.prototype.indexOf ? function( ary, obj ) {
 
 U.removeFrom = function( obj, ary ) {
   var index = U.indexOf( ary, obj );
-  if ( index !== -1 ) {
+  if ( index != -1 ) {
     ary.splice( index, 1 );
   }
 };
@@ -79,13 +79,13 @@ U.removeFrom = function( obj, ary ) {
 // ----- isElement ----- //
 
 // http://stackoverflow.com/a/384380/182183
-U.isElement = ( typeof HTMLElement === 'function' || typeof HTMLElement === 'object' ) ?
+U.isElement = ( typeof HTMLElement == 'function' || typeof HTMLElement == 'object' ) ?
   function isElementDOM2( obj ) {
     return obj instanceof HTMLElement;
   } :
   function isElementQuirky( obj ) {
-    return obj && typeof obj === 'object' &&
-      obj.nodeType === 1 && typeof obj.nodeName === 'string';
+    return obj && typeof obj == 'object' &&
+      obj.nodeType == 1 && typeof obj.nodeName == 'string';
   };
 
 // ----- setText ----- //

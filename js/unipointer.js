@@ -24,7 +24,7 @@ Unipointer.prototype.handleEvent = function( event ) {
 Unipointer.prototype.getTouch = function( touches ) {
   for ( var i=0, len = touches.length; i < len; i++ ) {
     var touch = touches[i];
-    if ( touch.identifier === this.pointerIdentifier ) {
+    if ( touch.identifier == this.pointerIdentifier ) {
       return touch;
     }
   }
@@ -95,7 +95,7 @@ var isIE8 = 'attachEvent' in document.documentElement;
 // IE8 only
 var disableImgOndragstart = !isIE8 ? noop : function( handle ) {
 
-  if ( handle.nodeName === 'IMG' ) {
+  if ( handle.nodeName == 'IMG' ) {
     handle.ondragstart = noDragStart;
   }
 
@@ -199,7 +199,7 @@ Unipointer.prototype.onmousemove = function( event ) {
 
 Unipointer.prototype.onMSPointerMove =
 Unipointer.prototype.onpointermove = function( event ) {
-  if ( event.pointerId === this.pointerIdentifier ) {
+  if ( event.pointerId == this.pointerIdentifier ) {
     this._pointerMove( event, event );
   }
 };
@@ -231,7 +231,7 @@ Unipointer.prototype.onmouseup = function( event ) {
 
 Unipointer.prototype.onMSPointerUp =
 Unipointer.prototype.onpointerup = function( event ) {
-  if ( event.pointerId === this.pointerIdentifier ) {
+  if ( event.pointerId == this.pointerIdentifier ) {
     this._pointerUp( event, event );
   }
 };
@@ -268,7 +268,7 @@ Unipointer.prototype.pointerUp = noop;
 
 Unipointer.prototype.onMSPointerCancel =
 Unipointer.prototype.onpointercancel = function( event ) {
-  if ( event.pointerId === this.pointerIdentifier ) {
+  if ( event.pointerId == this.pointerIdentifier ) {
     this._pointerUp( event, event );
   }
 };
