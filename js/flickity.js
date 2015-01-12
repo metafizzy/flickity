@@ -47,15 +47,21 @@ function Flickity( element, options ) {
 
 Flickity.defaults = {
   accessibility: true,
+  // autoPlay: undefined,
   freeScrollFriction: 0.075, // friction when free-scrolling
   friction: 0.28, // friction when selecting
   cellAlign: 'center',
+  // cellSelector: undefined,
+  // contain: false,
   draggable: true,
   // initialIndex: 0,
+  // imagesLoaded: false,
   percentPosition: true,
   pageDots: true,
   prevNextButtons: true,
   resizeBound: true,
+  // watch: false,
+  // wrapAround: false,
   selectedAttraction: 0.025,
   leftArrowText: '←', // text for prev/next button when no SVG support
   rightArrowText: '→'
