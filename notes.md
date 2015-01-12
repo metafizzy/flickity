@@ -54,6 +54,7 @@ lazy load
 animations for add/remove
 <!-- scrollView-like: freeScroll, no wrapAround, bound to content, not to aligning cells -->
 allow vertical scrolling on the page on mobile
+disable animation on imagesLoaded loading
 
 ## Check
 

@@ -36,6 +36,10 @@
     "node_modules",
     "bower_components",
     "test",
-    "tests"
+    "tests",
+    "sandbox",
+    "package.json",
+    "Gruntfile.js",
+    "notes.md"
   ]
 }
