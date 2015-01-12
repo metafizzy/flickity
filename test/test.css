@@ -1,0 +1,17 @@
+body {
+  font-family: sans-serif;
+  color: #333;
+}
+
+.gallery {
+  border: 1px solid;
+  width: 400px;
+}
+
+.gallery .cell {
+  width: 100%;
+  height: 100px;
+  background: #F09;
+  font-size: 40px;
+  color: white;
+}
