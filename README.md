@@ -56,9 +56,10 @@ var flky = new Flickity( '.gallery', {
   // if imagesLoaded is present, Flickity can re-position cells
   // once images are loaded
 
-  pixelPositioning: false,
-  // sets positioning in pixels, rather than percentages
-  // may be better for more precise positioning
+  percentPosition: true,
+  // sets positioning in percent values, rather than pixels
+  // Enable if items have percent widths
+  // Disable if items have pixel widths, like images
 
   prevNextButtons: true,
   // creates and enables buttons to click to previous & next cells

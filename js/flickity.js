@@ -51,6 +51,7 @@ Flickity.defaults = {
   friction: 0.28, // friction when selecting
   cellAlign: 'center',
   draggable: true,
+  percentPosition: true,
   pageDots: true,
   prevNextButtons: true,
   resizeBound: true,
