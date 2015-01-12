@@ -56,6 +56,9 @@ var flky = new Flickity( '.gallery', {
   // if imagesLoaded is present, Flickity can re-position cells
   // once images are loaded
 
+  initialIndex: 0,
+  // zero-based index of the initial selected cell
+
   percentPosition: true,
   // sets positioning in percent values, rather than pixels
   // Enable if items have percent widths

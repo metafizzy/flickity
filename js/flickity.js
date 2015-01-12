@@ -51,6 +51,7 @@ Flickity.defaults = {
   friction: 0.28, // friction when selecting
   cellAlign: 'center',
   draggable: true,
+  // initialIndex: 0,
   percentPosition: true,
   pageDots: true,
   prevNextButtons: true,
@@ -69,7 +70,7 @@ Flickity.prototype._create = function() {
   this.element.flickityGUID = id; // expando
   instances[ id ] = this; // associate via id
   // initial properties
-  this.selectedIndex = 0;
+  this.selectedIndex = this.options.initialIndex || 0;
   // how many frames slider has been in same position
   this.restingFrames = 0;
   // initial physics properties
