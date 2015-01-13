@@ -24,6 +24,6 @@ body {
 #position-cells.percent-margin .cell { margin: 0 2%; }
 #position-cells.pixel-margin .cell { margin: 0 10px; }
 
-/*#drag { position: fixed; top: 0;}*/
+/*#drag-wrap-around { position: fixed; top: 0;}*/
 
-#drag .cell { margin-right: 5%; }
+.drag .cell { margin-right: 5%; }
