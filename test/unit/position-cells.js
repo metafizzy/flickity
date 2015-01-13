@@ -35,7 +35,7 @@ test( 'position cells', function() {
   // .cell { margin: 0 2%; }
   classie.add( flkty.element, 'percent-margin' );
   flkty.positionCells();
-  ok( checkCellPositions( flkty, [ 0, 44, 73, 137, 181, 245 ] ), 'percent cell position' );
+  ok( checkCellPositions( flkty, [ 0, 44, 73, 137, 181, 245 ] ), 'percent cell position with margin' );
   classie.remove( flkty.element, 'percent-margin' );
   // pixel-based position
   flkty.options.percentPosition = false;
@@ -44,11 +44,7 @@ test( 'position cells', function() {
   // pixel margin, { margin: 0 10px; }
   classie.add( flkty.element, 'pixel-margin' );
   flkty.positionCells();
-  ok( checkCellPositions( flkty, [ 0, 180, 300, 560, 740, 1000 ] ), 'pixel cell position' );
-  
-  // w2, w1, w3, w2, w3, w1
-  // w1 = 25% 100px; w2 = 40%, 160px; w3 = 60%, 240px
-  
+  ok( checkCellPositions( flkty, [ 0, 180, 300, 560, 740, 1000 ] ), 'pixel cell position with margin' );
 
 });
 

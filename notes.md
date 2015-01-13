@@ -59,8 +59,8 @@ disable animation on imagesLoaded loading
 ## Test
 
 
-positioning with different cell widths
-contain
+<!-- positioning with different cell widths -->
+<!-- contain -->
 autoPlay & Player
 PrevNextButton
 PageDots

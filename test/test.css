@@ -17,9 +17,9 @@ body {
   color: white;
 }
 
-#position-cells .cell { width: 25%; } /* 100px */
-#position-cells .cell.width2 { width: 40%; background: #F90; } /* 160px */
-#position-cells .cell.width3 { width: 60%; background: #09F; } /* 240px */
+.variable-width .cell { width: 25%; } /* 100px */
+.variable-width .cell.width2 { width: 40%; background: #F90; } /* 160px */
+.variable-width .cell.width3 { width: 60%; background: #09F; } /* 240px */
 
 #position-cells.percent-margin .cell { margin: 0 2%; }
 #position-cells.pixel-margin .cell { margin: 0 10px; }
