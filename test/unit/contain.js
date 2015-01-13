@@ -1,8 +1,6 @@
-( function() {
-
-'use strict';
-
 test( 'contain', function() {
+
+  'use strict';
 
   var flkty = new Flickity( '#contain', {
     contain: true
@@ -21,5 +19,3 @@ test( 'contain', function() {
   equal( Math.round( -endLimit ), Math.round( flkty.x ), 'selected at 5, position right edge' );
 
 });
-
-})();
