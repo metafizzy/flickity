@@ -13,6 +13,7 @@
 var jQuery = window.jQuery;
 var U = window.utils;
 var getComputedStyle = window.getComputedStyle;
+var console = window.console;
 var imagesLoaded = window.imagesLoaded;
 var dragPrototype = window.Flickity.dragPrototype;
 var animatePrototype = window.Flickity.animatePrototype;
@@ -32,7 +33,14 @@ var GUID = 0;
 var instances = {};
 
 function Flickity( element, options ) {
-  this.element = U.getQueryElement( element );
+  var queryElement = U.getQueryElement( element );
+  if ( !queryElement ) {
+    if ( console ) {
+      console.error( 'Bad element for Flickity: ' + ( queryElement || element ) );
+    }
+    return;
+  }
+  this.element = queryElement;
   // add jQuery
   if ( jQuery ) {
     this.$element = jQuery( this.element );
