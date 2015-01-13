@@ -91,58 +91,39 @@ test( 'drag', function( assert ) {
 
   var doNextDragTest = getDoNextDragTest( done );
 
+  function getDragTest( args ) {
+    args = utils.extend( args, {
+      assert: assert,
+      flickity: flkty,
+      callback: doNextDragTest
+    });
+    return getFakeDragTest( args );
+  }
+
   dragTests = [
-    // drag to 2nd cell
-    function() {
-      flkty.once( 'select', function() {
-        equal( flkty.selectedIndex, 1, 'selected 2nd cell' );
-      });
-      flkty.once( 'settle', function() {
-        equal( Math.round( -flkty.x ), Math.round( flkty.cells[1].target ), 'settled at 2nd cell' );
-        doNextDragTest();
-      });
-      fakeDrag( flkty, [ 0, -10, -20 ] );
-    },
-    // drag back to 1st cell
-    function() {
-      flkty.once( 'select', function() {
-        equal( flkty.selectedIndex, 0, 'selected 1st cell' );
-      });
-      flkty.once( 'settle', function() {
-        equal( Math.round( -flkty.x ), Math.round( flkty.cells[0].target ), 'settled at 1st cell' );
-        doNextDragTest();
-      });
-      fakeDrag( flkty, [ 0, 10, 20 ] );
-    },
-    // big flick to to 3rd cell
-    function() {
-      flkty.once( 'select', function() {
-        equal( flkty.selectedIndex, 2, 'big flick to to 3rd cell' );
-      });
-      flkty.once( 'settle', function() {
-        equal( Math.round( -flkty.x ), Math.round( flkty.cells[2].target ), 'settled at 3rd cell' );
-        doNextDragTest();
-      });
-      fakeDrag( flkty, [ 0, -10, -100 ] );
-    },
-    // drag and try to flick past 6th cell
-    function() {
-      flkty.once( 'select', function() {
-        equal( flkty.selectedIndex, 5, 'drag and try to flick past last cell' );
-      });
-      flkty.once( 'settle', function() {
-        equal( Math.round( -flkty.x ), Math.round( flkty.cells[5].target ), 'settled at last cell' );
-        doNextDragTest();
-      });
-      fakeDrag( flkty, [ 0, -10, -50, -77, -100, -125, -150, -175, -250, -350 ] );
-    }
+    getDragTest({
+      message: 'drag to 2nd cell',
+      index: 1,
+      dragPositions: [ 0, -10, -20 ]
+    }),
+    getDragTest({
+      message: 'drag back to 1st cell',
+      index: 0,
+      dragPositions: [ 0, 10, 20 ]
+    }),
+    getDragTest({
+      message: 'big flick to 3rd cell',
+      index: 2,
+      dragPositions: [ 0, -10, -100 ]
+    }),
+    getDragTest({
+      message: 'drag and try to flick past 6th cell',
+      index: 5,
+      dragPositions: [ 0, -10, -50, -77, -100, -125, -150, -175, -250, -350 ]
+    })
   ];
 
-
-
-  // trigger async
-  // triggering immediately causes bug
-  setTimeout( doNextDragTest );
+  doNextDragTest();
 
 });
 
@@ -175,15 +156,16 @@ test( 'drag with wrapAround', function( assert ) {
       message: 'drag to first cell via wrap-around',
       index: 0,
       dragPositions: [ 0, -10, -20 ]
+    }),
+    getDragTest({
+      message: 'big flick to 5th cell via wrap-around',
+      index: 4,
+      dragPositions: [ 0, 10, 100 ]
     })
   ];
 
-  // trigger async
-  setTimeout( doNextDragTest );
+  doNextDragTest()
 
 });
 
-
 })();
-
-

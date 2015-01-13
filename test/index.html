@@ -32,6 +32,11 @@
   <script src="../js/animate.js"></script>
   <script src="../js/cell-change.js"></script>
   <script src="../js/flickity.js"></script>
+  <!-- turn off accessibility for these tests
+    was causing bugs with dragging tests -->
+  <script>
+    Flickity.defaults.accessibility = false;
+  </script>
   <!-- unit tests -->
   <script src="unit/init.js"></script>
   <script src="unit/position-cells.js"></script>
@@ -76,6 +81,7 @@
     <div class="cell">6</div>
   </div>
 
+  <h2>drag</h2>
   <div id="drag" class="gallery variable-width drag">
     <div class="cell">1</div>
     <div class="cell">2</div>
@@ -85,6 +91,7 @@
     <div class="cell">6</div>
   </div>
 
+  <h2>drag wrapAround</h2>
   <div id="drag-wrap-around" class="gallery variable-width drag">
     <div class="cell">1</div>
     <div class="cell">2</div>
