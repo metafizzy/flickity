@@ -116,6 +116,23 @@ test( 'drag', function( assert ) {
       index: 2,
       dragPositions: [ 0, -10, -100 ]
     }),
+    // minimal movement to trigger static click
+    function() {
+      flkty.once( 'staticClick', function() {
+        ok( true, 'staticClick fired on non-drag');
+        equal( flkty.selectedIndex, 2, 'selected index still at 2 after click' );
+        doNextDragTest();
+      });
+      fakeDrag( flkty, [ 0, 1, 0, -2, -1 ] );
+    },
+    // move out then back to where it started
+    function() {
+      flkty.once( 'settle', function() {
+        equal( flkty.selectedIndex, 2, 'move out then back. same cell' );
+        doNextDragTest();
+      });
+      fakeDrag( flkty, [ 0, 10, 20, 30, 20 ] );
+    },
     getDragTest({
       message: 'drag and try to flick past 6th cell',
       index: 5,
@@ -164,7 +181,7 @@ test( 'drag with wrapAround', function( assert ) {
     })
   ];
 
-  doNextDragTest()
+  doNextDragTest();
 
 });
 

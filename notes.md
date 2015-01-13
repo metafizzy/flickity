@@ -70,9 +70,9 @@ wrapAround
 watch
 imagesLoaded
 
-dragging
-  staticClick
-  move back to selected cell
+<!-- dragging -->
+  <!-- staticClick -->
+  <!-- move back to selected cell -->
   <!-- flick to 1 cells left, right -->
   <!-- flick to 2 cells left, right -->
   <!-- flick past left end, right -->
