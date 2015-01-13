@@ -6,6 +6,8 @@
   "unused": true,
   "predef": {   
     "Flickity": false,
+    "matchesSelector": false,
+    "classie": false,
 
     "asyncTest": false,
     "deepEqual": false,

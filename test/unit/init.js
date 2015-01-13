@@ -4,6 +4,8 @@
 
 module('Flickity');
 
+var utils = window.utils;
+
 test( 'init', function() {
 
   var elem = document.querySelector('#init');

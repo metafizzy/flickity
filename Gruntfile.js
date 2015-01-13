@@ -5,8 +5,14 @@ module.exports = function( grunt ) {
   grunt.initConfig({
 
     jshint: {
-      source: [ 'js/**/*.js'  ],
-      options: grunt.file.readJSON('.jshintrc')
+      source: {
+        src: [ 'js/**/*.js'  ],
+        options: grunt.file.readJSON('.jshintrc')
+      },
+      test: {
+        src: [ 'test/unit/*.js'  ],
+        options: grunt.file.readJSON('test/.jshintrc')
+      }
     },
 
     concat: {
