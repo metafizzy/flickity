@@ -56,6 +56,35 @@ animations for add/remove
 allow vertical scrolling on the page on mobile
 disable animation on imagesLoaded loading
 
+## Test
+
+
+positioning with different cell widths
+contain
+autoPlay & Player
+PrevNextButton
+PageDots
+cellAlign
+wrapAround
+  getWrapCells
+watch
+imagesLoaded
+
+dragging
+  staticClick
+  move back to selected cell
+  flick to 1 cells left, right
+  flick to 2 cells left, right
+  flick past left end, right
+
+resize
+
+prepend
+insert
+append
+remove
+
+
 ## Check
 
 <!-- images -->
@@ -66,5 +95,7 @@ videos
 
 <!-- wrapAround -->
 handling clicks vs. dragging
-watch functionality, using conditional CSS
+HTML init
+lots of files
+<!-- watch functionality, using conditional CSS -->
 <!-- right now, in development, is the best time -->

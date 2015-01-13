@@ -6,6 +6,7 @@ body {
 .gallery {
   border: 1px solid;
   width: 400px;
+  margin-bottom: 40px;
 }
 
 .gallery .cell {
@@ -15,3 +16,10 @@ body {
   font-size: 40px;
   color: white;
 }
+
+#position-cells .cell { width: 25%; } /* 100px */
+#position-cells .cell.width2 { width: 40%; background: #F90; } /* 160px */
+#position-cells .cell.width3 { width: 60%; background: #09F; } /* 240px */
+
+#position-cells.percent-margin .cell { margin: 0 2%; }
+#position-cells.pixel-margin .cell { margin: 0 10px; }
