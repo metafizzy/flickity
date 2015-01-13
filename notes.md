@@ -61,9 +61,9 @@ disable animation on imagesLoaded loading
 
 <!-- positioning with different cell widths -->
 <!-- contain -->
-autoPlay & Player
-PrevNextButton
-PageDots
+<!-- autoPlay & Player -->
+<!-- PrevNextButton -->
+<!-- PageDots -->
 cellAlign
 wrapAround
   getWrapCells
