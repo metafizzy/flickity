@@ -68,7 +68,7 @@ Flickity.defaults = {
   pageDots: true,
   prevNextButtons: true,
   resizeBound: true,
-  // watch: false,
+  // watching: false,
   // wrapAround: false,
   selectedAttraction: 0.025,
   leftArrowText: '←', // text for prev/next button when no SVG support
@@ -106,15 +106,16 @@ Flickity.prototype._create = function() {
   }
   this.player = new Player( this );
 
-  if ( this.options.resizeBound || this.options.watch ) {
+  if ( this.options.resizeBound || this.options.watching ) {
     eventie.bind( window, 'resize', this );
   }
 
-  if ( this.options.watch ) {
-    this.watch();
+  if ( this.options.watching ) {
+    this.watchActivate();
   } else {
     this.activate();
   }
+
 };
 
 /**
@@ -499,7 +500,7 @@ Flickity.prototype.getCells = function( elems ) {
 // ----- resize ----- //
 
 Flickity.prototype.onresize = function() {
-  this.watch();
+  this.watchActivate();
   this.resize();
 };
 
@@ -544,8 +545,8 @@ var supportsConditionalCSS = ( function() {
 })();
 
 // watches the :after property, activates/deactivates
-Flickity.prototype.watch = function() {
-  var watchOption = this.options.watch;
+Flickity.prototype.watchActivate = function() {
+  var watchOption = this.options.watching;
   if ( !watchOption ) {
     return;
   }

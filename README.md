@@ -70,7 +70,7 @@ var flky = new Flickity( '.gallery', {
   resizeBound: true,
   // listens to window resize events to adjust size & positions
 
-  watch: false,
+  watching: false,
   // watches the content of ::after of the element
   // activates if #element::after { content: 'flickity' }
   // IE8 and Android 2.3 do not support watching ::after
