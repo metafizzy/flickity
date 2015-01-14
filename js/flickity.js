@@ -316,7 +316,7 @@ Flickity.prototype._getWrapShiftCells = function() {
 Flickity.prototype._getGapCells = function( gapX, cellIndex, increment ) {
   // keep adding cells until the cover the initial gap
   var cells = [];
-  while ( gapX >= 0 ) {
+  while ( gapX > 0 ) {
     var cell = this.cells[ cellIndex ];
     if ( !cell ) {
       break;

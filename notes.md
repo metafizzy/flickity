@@ -66,7 +66,7 @@ disable animation on imagesLoaded loading
 <!-- PageDots -->
 cellAlign
 wrapAround
-  getWrapCells
+  <!-- getWrapCells -->
 watch
 imagesLoaded
 
