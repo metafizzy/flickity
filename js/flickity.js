@@ -531,13 +531,13 @@ var supportsConditionalCSS = ( function() {
       supports = false;
       return;
     }
-    // style body's ::after and check that
+    // style body's :after and check that
     var style = document.createElement('style');
-    var cssText = document.createTextNode('body::after { content: "foo"; display: none; }');
+    var cssText = document.createTextNode('body:after { content: "foo"; display: none; }');
     style.appendChild( cssText );
     document.head.appendChild( style );
-    var afterContent = getComputedStyle( document.body, '::after' ).content;
-    // check if able to get ::after content
+    var afterContent = getComputedStyle( document.body, ':after' ).content;
+    // check if able to get :after content
     supports = afterContent.indexOf('foo') != -1;
     document.head.removeChild( style );
     return supports;
@@ -558,7 +558,7 @@ Flickity.prototype.watchActivate = function() {
     return;
   }
 
-  var afterContent = getComputedStyle( this.element, '::after' ).content;
+  var afterContent = getComputedStyle( this.element, ':after' ).content;
   // activate if :after { content: 'flickity' }
   if ( afterContent.indexOf('flickity') != -1 ) {
     this.activate();
