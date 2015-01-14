@@ -8,6 +8,7 @@
     "Flickity": false,
     "matchesSelector": false,
     "classie": false,
+    "docReady": false,
 
     "asyncTest": false,
     "deepEqual": false,

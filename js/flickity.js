@@ -521,7 +521,7 @@ Flickity.prototype.resize = function() {
   this.positionSliderAtSelected();
 };
 
-var supportsConditionalCSS = ( function() {
+var supportsConditionalCSS = Flickity.supportsConditionalCSS = ( function() {
   var supports;
   return function checkSupport() {
     if ( supports !== undefined ) {

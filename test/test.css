@@ -27,3 +27,8 @@ body {
 /*#drag-wrap-around { position: fixed; top: 0;}*/
 
 .drag .cell { margin-right: 5%; }
+
+#watch.has-after:after {
+  content: 'flickity';
+  display: none;
+}

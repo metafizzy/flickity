@@ -67,7 +67,7 @@ disable animation on imagesLoaded loading
 cellAlign
 wrapAround
   <!-- getWrapCells -->
-watch
+<!-- watch -->
 imagesLoaded
 
 <!-- dragging -->
