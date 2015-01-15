@@ -45,7 +45,7 @@
   } else {
     // browser global
     var _Flickity = window.Flickity;
-    console.log( _Flickity );
+
     window.Flickity = factory(
       window,
       window.classie,

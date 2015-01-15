@@ -2,8 +2,6 @@ test( 'prev-next-buttons', function() {
 
   'use strict';
 
-  var utils = window.utils;
-
   var elem = document.querySelector('#page-dots');
   var flkty = new Flickity( elem );
 
