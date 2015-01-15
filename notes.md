@@ -84,7 +84,7 @@ insert
 append
 remove -->
 
-destroy
+<!-- destroy -->
 
 
 ## Check

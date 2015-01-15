@@ -648,6 +648,7 @@ Flickity.prototype.destroy = function() {
   if ( this.options.resizeBound || this.options.watch ) {
     eventie.unbind( window, 'resize', this );
   }
+  delete this.element.flickityGUID;
   delete instances[ this.guid ];
 };
 
