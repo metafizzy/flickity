@@ -3,21 +3,77 @@
  * Touch responsive gallery
  */
 
-/*global EventEmitter: false, Cell: false, getSize: false, eventie: false, PrevNextButton: false, PageDots: false, Player: false, classie: false */
+( function( window, factory ) {
+  'use strict';
+  // universal module definition
 
-( function( window ) {
+  if ( typeof define == 'function' && define.amd ) {
+    // AMD
+    define( [
+      'classie/classie',
+      'eventEmitter/EventEmitter',
+      'eventie/eventie',
+      'get-size/get-size',
+      './utils',
+      './cell',
+      './prev-next-button',
+      './page-dots',
+      './player',
+      './drag',
+      './animate',
+      './cell-change'
+    ], function( classie, EventEmitter, eventie, getSize, U, Cell, PrevNextButton, PageDots, Player, dragPrototype, animatePrototype, cellChangePrototype ) {
+      return factory( window, classie, EventEmitter, eventie, getSize, U, Cell, PrevNextButton, PageDots, Player, dragPrototype, animatePrototype, cellChangePrototype );
+    });
+  } else if ( typeof exports == 'object' ) {
+    // CommonJS
+    module.exports = factory(
+      window,
+      require('desandro-classie'),
+      require('wolfy87-eventemitter'),
+      require('eventie'),
+      require('get-size'),
+      require('./utils'),
+      require('./cell'),
+      require('./prev-next-button'),
+      require('./page-dots'),
+      require('./player'),
+      require('./drag'),
+      require('./animate'),
+      require('./cell-change')
+    );
+  } else {
+    // browser global
+    var _Flickity = window.Flickity;
+    console.log( _Flickity );
+    window.Flickity = factory(
+      window,
+      window.classie,
+      window.EventEmitter,
+      window.eventie,
+      window.getSize,
+      window.utils,
+      _Flickity.Cell,
+      _Flickity.PrevNextButton,
+      _Flickity.PageDots,
+      _Flickity.Player,
+      _Flickity.dragPrototype,
+      _Flickity.animatePrototype,
+      _Flickity.cellChangePrototype
+    );
+  }
+
+}( window, function factory( window, classie, EventEmitter, eventie, getSize,
+  U, Cell, PrevNextButton, PageDots, Player, dragPrototype, animatePrototype,
+  cellChangePrototype ) {
 
 'use strict';
 
-// utils
+// vars
 var jQuery = window.jQuery;
-var U = window.utils;
 var getComputedStyle = window.getComputedStyle;
 var console = window.console;
 var imagesLoaded = window.imagesLoaded;
-var dragPrototype = window.Flickity.dragPrototype;
-var animatePrototype = window.Flickity.animatePrototype;
-var cellChangePrototype = window.Flickity.cellChangePrototype;
 
 function moveChildren( fromElem, toElem ) {
   while ( fromElem.children.length ) {
@@ -677,6 +733,12 @@ if ( jQuery && jQuery.bridget ) {
   jQuery.bridget( 'flickity', Flickity );
 }
 
-window.Flickity = Flickity;
+// make classes accessible
+Flickity.Cell = Cell;
+Flickity.PrevNextButton = PrevNextButton;
+Flickity.PageDots = PageDots;
+Flickity.Player = Player;
 
-})( window );
+return Flickity;
+
+}));

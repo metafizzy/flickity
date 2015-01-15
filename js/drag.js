@@ -1,10 +1,38 @@
-/*global Unipointer: false, eventie: false */
+( function( window, factory ) {
+  'use strict';
+  // universal module definition
 
-( function( window ) {
+  if ( typeof define == 'function' && define.amd ) {
+    // AMD
+    define( [
+      'unipointer/unipointer',
+      'eventie/eventie',
+      './utils'
+    ], function( Unipointer, eventie, utils ) {
+      return factory( window, Unipointer, eventie, utils );
+    });
+  } else if ( typeof exports == 'object' ) {
+    // CommonJS
+    module.exports = factory(
+      window,
+      require('unipointer'),
+      require('eventie'),
+      require('./utils')
+    );
+  } else {
+    // browser global
+    window.Flickity = window.Flickity || {};
+    window.Flickity.dragPrototype = factory(
+      window,
+      window.Unipointer,
+      window.eventie,
+      window.utils
+    );
+  }
+
+}( window, function factory( window, Unipointer, eventie, U ) {
 
 'use strict';
-
-var U = window.utils;
 
 // handle IE8 prevent default
 function preventDefaultEvent( event ) {
@@ -275,8 +303,8 @@ proto.staticClick = function( event, pointer ) {
   this.dispatchEvent( 'staticClick', event, [ pointer ] );
 };
 
+// -----  ----- //
 
-window.Flickity = window.Flickity || {};
-window.Flickity.dragPrototype = proto;
+return proto;
 
-})( window );
+}));

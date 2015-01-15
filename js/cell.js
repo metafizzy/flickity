@@ -1,6 +1,30 @@
-/*global getSize: false */
+( function( window, factory ) {
+  'use strict';
+  // universal module definition
 
-( function( window ) {
+  if ( typeof define == 'function' && define.amd ) {
+    // AMD
+    define( [
+      'get-size/get-size'
+    ], function( getSize ) {
+      return factory( window, getSize );
+    });
+  } else if ( typeof exports == 'object' ) {
+    // CommonJS
+    module.exports = factory(
+      window,
+      require('get-size')
+    );
+  } else {
+    // browser global
+    window.Flickity = window.Flickity || {};
+    window.Flickity.Cell = factory(
+      window,
+      window.getSize
+    );
+  }
+
+}( window, function factory( window, getSize ) {
 
 'use strict';
 
@@ -58,6 +82,6 @@ Cell.prototype.remove = function() {
   this.element.parentNode.removeChild( this.element );
 };
 
-window.Cell = Cell;
+return Cell;
 
-})( window );
+}));

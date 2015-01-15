@@ -1,12 +1,37 @@
-/*global eventie: false */
+( function( window, factory ) {
+  'use strict';
+  // universal module definition
+
+  if ( typeof define == 'function' && define.amd ) {
+    // AMD
+    define( [
+      'eventie/eventie',
+      './utils'
+    ], function( eventie, utils ) {
+      return factory( window, eventie, utils );
+    });
+  } else if ( typeof exports == 'object' ) {
+    // CommonJS
+    module.exports = factory(
+      window,
+      require('eventie'),
+      require('./utils')
+    );
+  } else {
+    // browser global
+    window.Flickity = window.Flickity || {};
+    window.Flickity.PageDots = factory(
+      window,
+      window.eventie,
+      window.utils
+    );
+  }
+
+}( window, function factory( window, eventie, U ) {
 
 // -------------------------- PageDots -------------------------- //
 
-( function( window ) {
-
 'use strict';
-
-var U = window.utils;
 
 function PageDots( parent ) {
   this.parent = parent;
@@ -105,6 +130,6 @@ PageDots.prototype.onclick = function( event ) {
   this.parent.select( index );
 };
 
-window.PageDots = PageDots;
+return PageDots;
 
-})( window );
+}));

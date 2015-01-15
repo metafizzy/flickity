@@ -1,8 +1,32 @@
-/*global utils: false */
-
 // -------------------------- prev/next button -------------------------- //
 
-( function( window ) {
+( function( window, factory ) {
+  'use strict';
+  // universal module definition
+
+  if ( typeof define == 'function' && define.amd ) {
+    // AMD
+    define( [
+      './utils'
+    ], function( utils ) {
+      return factory( window, utils );
+    });
+  } else if ( typeof exports == 'object' ) {
+    // CommonJS
+    module.exports = factory(
+      window,
+      require('./utils')
+    );
+  } else {
+    // browser global
+    window.Flickity = window.Flickity || {};
+    window.Flickity.PrevNextButton = factory(
+      window,
+      window.utils
+    );
+  }
+
+}( window, function factory( window, utils ) {
 
 'use strict';
 
@@ -131,6 +155,6 @@ PrevNextButton.prototype.update = function() {
   this[ method ]();
 };
 
-window.PrevNextButton = PrevNextButton;
+return PrevNextButton;
 
-})( window );
+}));

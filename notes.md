@@ -16,7 +16,7 @@
   <!-- select -->
   <!-- click -->
   <!-- settle - when slider settles at selected cell -->
-tests
+<!-- tests -->
 requirejs
 CommonJS
 <!-- isOriginLeft: false -->
@@ -34,6 +34,8 @@ CommonJS
 <!-- how to handle container height
   - set to height of item
   - allow user to set with CSS -->
+
+rename updatePhysics to integratePhysics
 
 move utils to its own repo
 move unipointer to its own repo

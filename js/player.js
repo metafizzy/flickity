@@ -1,4 +1,20 @@
-( function( window ) {
+( function( window, factory ) {
+  'use strict';
+  // universal module definition
+
+  if ( typeof define == 'function' && define.amd ) {
+    // AMD
+    define( factory() );
+  } else if ( typeof exports == 'object' ) {
+    // CommonJS
+    module.exports = factory();
+  } else {
+    // browser global
+    window.Flickity = window.Flickity || {};
+    window.Flickity.Player = factory();
+  }
+
+}( window, function factory() {
 
 'use strict';
 
@@ -56,6 +72,6 @@ Player.prototype.unpause = function() {
   }
 };
 
-window.Player = Player;
+return Player;
 
-})( window );
+}));
