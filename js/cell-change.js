@@ -1,8 +1,32 @@
-( function( window ) {
+( function( window, factory ) {
+  'use strict';
+  // universal module definition
+
+  if ( typeof define == 'function' && define.amd ) {
+    // AMD
+    define( [
+      './utils'
+    ], function( utils ) {
+      return factory( window, utils );
+    });
+  } else if ( typeof exports == 'object' ) {
+    // CommonJS
+    module.exports = factory(
+      window,
+      require('./utils')
+    );
+  } else {
+    // browser global
+    window.Flickity = window.Flickity || {};
+    window.Flickity.cellChangePrototype = factory(
+      window,
+      window.utils
+    );
+  }
+
+})( window, function factory( window, U ) {
 
 'use strict';
-
-var U = window.utils;
 
 // append cells to a document fragment
 function getCellsFragment( cells ) {
@@ -138,7 +162,6 @@ proto.cellChange = function( index ) {
 
 // -----  ----- //
 
-window.Flickity = window.Flickity || {};
-window.Flickity.cellChangePrototype = proto;
+return proto;
 
-})( window );
+});

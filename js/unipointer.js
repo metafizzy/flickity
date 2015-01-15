@@ -1,6 +1,29 @@
-/*global eventie: false*/
+( function( window, factory ) {
+  'use strict';
+  // universal module definition
 
-( function( window ) {
+  if ( typeof define == 'function' && define.amd ) {
+    // AMD
+    define( [
+      'eventie/eventie'
+    ], function( eventie ) {
+      return factory( window, eventie );
+    });
+  } else if ( typeof exports == 'object' ) {
+    // CommonJS
+    module.exports = factory(
+      window,
+      require('eventie')
+    );
+  } else {
+    // browser global
+    window.Unipointer = factory(
+      window,
+      window.eventie
+    );
+  }
+
+}( window, function factory( window, eventie ) {
 
 'use strict';
 
@@ -295,6 +318,6 @@ Unipointer.setPointerPoint = function( point, pointer ) {
 
 // -----  ----- //
 
-window.Unipointer = Unipointer;
+return Unipointer;
 
-})( window );
+}));

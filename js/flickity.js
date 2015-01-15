@@ -3,20 +3,77 @@
  * Touch responsive gallery
  */
 
-/*global EventEmitter: false, Cell: false, getSize: false, eventie: false, PrevNextButton: false, PageDots: false, Player: false, classie: false */
+( function( window, factory ) {
+  'use strict';
+  // universal module definition
 
-( function( window ) {
+  if ( typeof define == 'function' && define.amd ) {
+    // AMD
+    define( [
+      'classie/classie',
+      'eventEmitter/EventEmitter',
+      'eventie/eventie',
+      'get-size/get-size',
+      './utils',
+      './cell',
+      './prev-next-button',
+      './page-dots',
+      './player',
+      './drag',
+      './animate',
+      './cell-change'
+    ], function( classie, EventEmitter, eventie, getSize, U, Cell, PrevNextButton, PageDots, Player, dragPrototype, animatePrototype, cellChangePrototype ) {
+      return factory( window, classie, EventEmitter, eventie, getSize, U, Cell, PrevNextButton, PageDots, Player, dragPrototype, animatePrototype, cellChangePrototype );
+    });
+  } else if ( typeof exports == 'object' ) {
+    // CommonJS
+    module.exports = factory(
+      window,
+      require('desandro-classie'),
+      require('wolfy87-eventemitter'),
+      require('eventie'),
+      require('get-size'),
+      require('./utils'),
+      require('./cell'),
+      require('./prev-next-button'),
+      require('./page-dots'),
+      require('./player'),
+      require('./drag'),
+      require('./animate'),
+      require('./cell-change')
+    );
+  } else {
+    // browser global
+    var _Flickity = window.Flickity;
+    console.log( _Flickity );
+    window.Flickity = factory(
+      window,
+      window.classie,
+      window.EventEmitter,
+      window.eventie,
+      window.getSize,
+      window.utils,
+      _Flickity.Cell,
+      _Flickity.PrevNextButton,
+      _Flickity.PageDots,
+      _Flickity.Player,
+      _Flickity.dragPrototype,
+      _Flickity.animatePrototype,
+      _Flickity.cellChangePrototype
+    );
+  }
+
+}( window, function factory( window, classie, EventEmitter, eventie, getSize,
+  U, Cell, PrevNextButton, PageDots, Player, dragPrototype, animatePrototype,
+  cellChangePrototype ) {
 
 'use strict';
 
-// utils
+// vars
 var jQuery = window.jQuery;
-var U = window.utils;
 var getComputedStyle = window.getComputedStyle;
+var console = window.console;
 var imagesLoaded = window.imagesLoaded;
-var dragPrototype = window.Flickity.dragPrototype;
-var animatePrototype = window.Flickity.animatePrototype;
-var cellChangePrototype = window.Flickity.cellChangePrototype;
 
 function moveChildren( fromElem, toElem ) {
   while ( fromElem.children.length ) {
@@ -32,7 +89,14 @@ var GUID = 0;
 var instances = {};
 
 function Flickity( element, options ) {
-  this.element = U.getQueryElement( element );
+  var queryElement = U.getQueryElement( element );
+  if ( !queryElement ) {
+    if ( console ) {
+      console.error( 'Bad element for Flickity: ' + ( queryElement || element ) );
+    }
+    return;
+  }
+  this.element = queryElement;
   // add jQuery
   if ( jQuery ) {
     this.$element = jQuery( this.element );
@@ -47,13 +111,21 @@ function Flickity( element, options ) {
 
 Flickity.defaults = {
   accessibility: true,
+  // autoPlay: undefined,
   freeScrollFriction: 0.075, // friction when free-scrolling
   friction: 0.28, // friction when selecting
   cellAlign: 'center',
+  // cellSelector: undefined,
+  // contain: false,
   draggable: true,
+  // initialIndex: 0,
+  // imagesLoaded: false,
+  percentPosition: true,
   pageDots: true,
   prevNextButtons: true,
   resizeBound: true,
+  // watching: false,
+  // wrapAround: false,
   selectedAttraction: 0.025,
   leftArrowText: '←', // text for prev/next button when no SVG support
   rightArrowText: '→'
@@ -68,7 +140,7 @@ Flickity.prototype._create = function() {
   this.element.flickityGUID = id; // expando
   instances[ id ] = this; // associate via id
   // initial properties
-  this.selectedIndex = 0;
+  this.selectedIndex = this.options.initialIndex || 0;
   // how many frames slider has been in same position
   this.restingFrames = 0;
   // initial physics properties
@@ -90,15 +162,16 @@ Flickity.prototype._create = function() {
   }
   this.player = new Player( this );
 
-  if ( this.options.resizeBound || this.options.watch ) {
+  if ( this.options.resizeBound || this.options.watching ) {
     eventie.bind( window, 'resize', this );
   }
 
-  if ( this.options.watch ) {
-    this.watch();
+  if ( this.options.watching ) {
+    this.watchActivate();
   } else {
     this.activate();
   }
+
 };
 
 /**
@@ -299,7 +372,7 @@ Flickity.prototype._getWrapShiftCells = function() {
 Flickity.prototype._getGapCells = function( gapX, cellIndex, increment ) {
   // keep adding cells until the cover the initial gap
   var cells = [];
-  while ( gapX >= 0 ) {
+  while ( gapX > 0 ) {
     var cell = this.cells[ cellIndex ];
     if ( !cell ) {
       break;
@@ -483,7 +556,7 @@ Flickity.prototype.getCells = function( elems ) {
 // ----- resize ----- //
 
 Flickity.prototype.onresize = function() {
-  this.watch();
+  this.watchActivate();
   this.resize();
 };
 
@@ -504,7 +577,7 @@ Flickity.prototype.resize = function() {
   this.positionSliderAtSelected();
 };
 
-var supportsConditionalCSS = ( function() {
+var supportsConditionalCSS = Flickity.supportsConditionalCSS = ( function() {
   var supports;
   return function checkSupport() {
     if ( supports !== undefined ) {
@@ -514,13 +587,13 @@ var supportsConditionalCSS = ( function() {
       supports = false;
       return;
     }
-    // style body's ::after and check that
+    // style body's :after and check that
     var style = document.createElement('style');
-    var cssText = document.createTextNode('body::after { content: "foo"; display: none; }');
+    var cssText = document.createTextNode('body:after { content: "foo"; display: none; }');
     style.appendChild( cssText );
     document.head.appendChild( style );
-    var afterContent = getComputedStyle( document.body, '::after' ).content;
-    // check if able to get ::after content
+    var afterContent = getComputedStyle( document.body, ':after' ).content;
+    // check if able to get :after content
     supports = afterContent.indexOf('foo') != -1;
     document.head.removeChild( style );
     return supports;
@@ -528,8 +601,8 @@ var supportsConditionalCSS = ( function() {
 })();
 
 // watches the :after property, activates/deactivates
-Flickity.prototype.watch = function() {
-  var watchOption = this.options.watch;
+Flickity.prototype.watchActivate = function() {
+  var watchOption = this.options.watching;
   if ( !watchOption ) {
     return;
   }
@@ -541,7 +614,7 @@ Flickity.prototype.watch = function() {
     return;
   }
 
-  var afterContent = getComputedStyle( this.element, '::after' ).content;
+  var afterContent = getComputedStyle( this.element, ':after' ).content;
   // activate if :after { content: 'flickity' }
   if ( afterContent.indexOf('flickity') != -1 ) {
     this.activate();
@@ -631,6 +704,7 @@ Flickity.prototype.destroy = function() {
   if ( this.options.resizeBound || this.options.watch ) {
     eventie.unbind( window, 'resize', this );
   }
+  delete this.element.flickityGUID;
   delete instances[ this.guid ];
 };
 
@@ -659,6 +733,12 @@ if ( jQuery && jQuery.bridget ) {
   jQuery.bridget( 'flickity', Flickity );
 }
 
-window.Flickity = Flickity;
+// make classes accessible
+Flickity.Cell = Cell;
+Flickity.PrevNextButton = PrevNextButton;
+Flickity.PageDots = PageDots;
+Flickity.Player = Player;
 
-})( window );
+return Flickity;
+
+}));

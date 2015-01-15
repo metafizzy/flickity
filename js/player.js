@@ -1,4 +1,22 @@
-( function( window ) {
+( function( window, factory ) {
+  'use strict';
+  // universal module definition
+
+  if ( typeof define == 'function' && define.amd ) {
+    // AMD
+    define( function() {
+      return factory();
+    });
+  } else if ( typeof exports == 'object' ) {
+    // CommonJS
+    module.exports = factory();
+  } else {
+    // browser global
+    window.Flickity = window.Flickity || {};
+    window.Flickity.Player = factory();
+  }
+
+}( window, function factory() {
 
 'use strict';
 
@@ -7,17 +25,27 @@ function Player( parent ) {
   this.parent = parent;
 }
 
+// start play
 Player.prototype.play = function() {
   this.isPlaying = true;
   // playing kills pauses
   delete this.isPaused;
-  var _this = this;
+  // start ticking
+  this.tick();
+};
+
+Player.prototype.tick = function() {
+  // do not tick if paused or not playing
+  if ( !this.isPlaying || this.isPaused ) {
+    return;
+  }
   var time = this.parent.options.autoPlay;
   // default to 3 seconds
   time = typeof time == 'number' ? time : 3000;
+  var _this = this;
   this.timeout = setTimeout( function() {
     _this.parent.next( true );
-    _this.play();
+    _this.tick();
   }, time );
 };
 
@@ -46,6 +74,6 @@ Player.prototype.unpause = function() {
   }
 };
 
-window.Player = Player;
+return Player;
 
-})( window );
+}));

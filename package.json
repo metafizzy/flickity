@@ -3,8 +3,14 @@
   "version": "0.0.0",
   "description": "Touch, responsive, flickable galleries",
   "main": "js/flickity.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+  "dependencies": {
+    "desandro-classie": "~1.0.1",
+    "desandro-matches-selector": "~1.0.2",
+    "doc-ready": "~1.0.3",
+    "eventie": "~1.0.6",
+    "get-size": "~1.2.2",
+    "desandro-get-style-property": "~1.0.4",
+    "wolfy87-eventemitter": "~4.2.11"
   },
   "devDependencies": {
     "grunt": "^0.4.5",
@@ -12,6 +18,9 @@
     "grunt-contrib-jshint": "^0.10.0",
     "gulp": "^3.8.10",
     "gulp-jshint": "^1.9.0"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
     "type": "git",

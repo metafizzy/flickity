@@ -56,9 +56,13 @@ var flky = new Flickity( '.gallery', {
   // if imagesLoaded is present, Flickity can re-position cells
   // once images are loaded
 
-  pixelPositioning: false,
-  // sets positioning in pixels, rather than percentages
-  // may be better for more precise positioning
+  initialIndex: 0,
+  // zero-based index of the initial selected cell
+
+  percentPosition: true,
+  // sets positioning in percent values, rather than pixels
+  // Enable if items have percent widths
+  // Disable if items have pixel widths, like images
 
   prevNextButtons: true,
   // creates and enables buttons to click to previous & next cells
@@ -66,10 +70,10 @@ var flky = new Flickity( '.gallery', {
   resizeBound: true,
   // listens to window resize events to adjust size & positions
 
-  watch: false,
-  // watches the content of ::after of the element
-  // activates if #element::after { content: 'flickity' }
-  // IE8 and Android 2.3 do not support watching ::after
+  watching: false,
+  // watches the content of :after of the element
+  // activates if #element:after { content: 'flickity' }
+  // IE8 and Android 2.3 do not support watching :after
   // set watch: 'fallbackOn' to enable for these browsers
 
   wrapAround: false

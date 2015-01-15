@@ -1,0 +1,171 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width" />
+
+  <title>Flickity tests</title>
+
+  <link rel="stylesheet" href="../bower_components/qunit/qunit/qunit.css" media="screen" />
+  <link rel="stylesheet" href="test.css" media="screen" />
+  <link rel="stylesheet" href="../css/flickity.css" media="screen" />
+
+  <script src="../bower_components/qunit/qunit/qunit.js"></script>
+
+  <!-- dependencies -->
+  <script src="../bower_components/get-style-property/get-style-property.js"></script>
+  <script src="../bower_components/get-size/get-size.js"></script>
+  <script src="../bower_components/matches-selector/matches-selector.js"></script>
+  <script src="../bower_components/eventEmitter/EventEmitter.js"></script>
+  <script src="../bower_components/eventie/eventie.js"></script>
+  <script src="../bower_components/doc-ready/doc-ready.js"></script>
+  <script src="../bower_components/classie/classie.js"></script>
+  <script src="../bower_components/imagesloaded/imagesloaded.js"></script>
+  <!-- Flickity source -->
+  <script src="../js/utils.js"></script>
+  <script src="../js/unipointer.js"></script>
+  <script src="../js/cell.js"></script>
+  <script src="../js/prev-next-button.js"></script>
+  <script src="../js/page-dots.js"></script>
+  <script src="../js/player.js"></script>
+  <script src="../js/drag.js"></script>
+  <script src="../js/animate.js"></script>
+  <script src="../js/cell-change.js"></script>
+  <script src="../js/flickity.js"></script>
+  <!-- turn off accessibility for these tests
+    was causing bugs with dragging tests -->
+  <script>
+    Flickity.defaults.accessibility = false;
+  </script>
+  <!-- unit tests -->
+  <script src="unit/init.js"></script>
+  <script src="unit/position-cells.js"></script>
+  <script src="unit/contain.js"></script>
+  <!-- drag tests are buggy. moved to drag.html -->
+  <!-- <script src="unit/drag.js"></script> -->
+  <script src="unit/auto-play.js"></script>
+  <script src="unit/prev-next-buttons.js"></script>
+  <script src="unit/page-dots.js"></script>
+  <script src="unit/get-wrap-cells.js"></script>
+  <script src="unit/watch.js"></script>
+  <script src="unit/resize.js"></script>
+  <script src="unit/add-remove-cells.js"></script>
+  <script src="unit/destroy.js"></script>
+
+</head>
+<body>
+
+  <div id="qunit"></div>
+
+  <h2>Init</h2>
+
+  <div id="init" class="gallery">
+    <div class="cell">1</div>
+    <div class="cell">2</div>
+    <div class="cell">3</div>
+    <div class="cell">4</div>
+    <div class="cell">5</div>
+    <div class="cell">6</div>
+  </div>
+
+  <h2>position cells</h2>
+
+  <div id="position-cells" class="gallery variable-width">
+    <div class="cell width2">1</div>
+    <div class="cell">2</div>
+    <div class="cell width3">3</div>
+    <div class="cell width2">4</div>
+    <div class="cell width3">5</div>
+    <div class="cell">6</div>
+  </div>
+
+  <h2>contain</h2>
+
+  <div id="contain" class="gallery variable-width">
+    <div class="cell">1</div>
+    <div class="cell">2</div>
+    <div class="cell width3">3</div>
+    <div class="cell width2">4</div>
+    <div class="cell">5</div>
+    <div class="cell">6</div>
+  </div>
+
+  <h2>auto-play</h2>
+  <div id="auto-play" class="gallery">
+    <div class="cell">1</div>
+    <div class="cell">2</div>
+    <div class="cell">3</div>
+  </div>
+
+  <h2>prev/next buttons</h2>
+  <div id="prev-next-buttons" class="gallery">
+    <div class="cell">1</div>
+    <div class="cell">2</div>
+    <div class="cell">3</div>
+    <div class="cell">4</div>
+    <div class="cell">5</div>
+    <div class="cell">6</div>
+  </div>
+
+  <h2>page dots</h2>
+  <div id="page-dots" class="gallery">
+    <div class="cell">1</div>
+    <div class="cell">2</div>
+    <div class="cell">3</div>
+    <div class="cell">4</div>
+    <div class="cell">5</div>
+    <div class="cell">6</div>
+  </div>
+
+  <h2>getWrapCells</h2>
+  <div id="get-wrap-cells" class="gallery variable-width">
+    <div class="cell">1</div>
+    <div class="cell">2</div>
+    <div class="cell">3</div>
+    <div class="cell">4</div>
+    <div class="cell">5</div>
+    <div class="cell">6</div>
+  </div>
+
+  <h2>watch</h2>
+  <div id="watch" class="gallery">
+    <div class="cell">1</div>
+    <div class="cell">2</div>
+    <div class="cell">3</div>
+    <div class="cell">4</div>
+    <div class="cell">5</div>
+    <div class="cell">6</div>
+  </div>
+
+  <h2>resize</h2>
+  <div id="resize" class="gallery">
+    <div class="cell">1</div>
+    <div class="cell">2</div>
+    <div class="cell">3</div>
+    <div class="cell">4</div>
+    <div class="cell">5</div>
+    <div class="cell">6</div>
+  </div>
+
+  <h2>add/remove-cells</h2>
+  <div id="add-remove-cells" class="gallery variable-width">
+    <div class="cell">1</div>
+    <div class="cell">2</div>
+    <div class="cell">3</div>
+    <div class="cell">4</div>
+    <div class="cell">5</div>
+    <div class="cell">6</div>
+  </div>
+
+  <h2>destroy</h2>
+  <div id="destroy" class="gallery">
+    <div class="cell">1</div>
+    <div class="cell">2</div>
+    <div class="cell">3</div>
+    <div class="cell">4</div>
+    <div class="cell">5</div>
+    <div class="cell">6</div>
+  </div>
+
+</body>
+</html>

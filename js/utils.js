@@ -2,9 +2,35 @@
  * utils
  */
 
-/*global matchesSelector: false, docReady: false */
+( function( window, factory ) {
+  'use strict';
+  // universal module definition
 
-( function( window ) {
+  if ( typeof define == 'function' && define.amd ) {
+    // AMD
+    define( [
+      'doc-ready/doc-ready',
+      'matches-selector/matches-selector'
+    ], function( docReady, matchesSelector ) {
+      return factory( window, docReady, matchesSelector );
+    });
+  } else if ( typeof exports == 'object' ) {
+    // CommonJS
+    module.exports = factory(
+      window,
+      require('doc-ready'),
+      require('desandro-matches-selector')
+    );
+  } else {
+    // browser global
+    window.utils = factory(
+      window,
+      window.docReady,
+      window.matchesSelector
+    );
+  }
+
+}( window, function factory( window, docReady, matchesSelector ) {
 
 'use strict';
 
@@ -226,6 +252,6 @@ U.htmlInit = function( WidgetClass, namespace ) {
 
 // -----  ----- //
 
-window.utils = U;
+return U;
 
-})( window );
+}));

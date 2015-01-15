@@ -1,10 +1,35 @@
-/*global getStyleProperty: false */
+( function( window, factory ) {
+  'use strict';
+  // universal module definition
 
-( function( window ) {
+  if ( typeof define == 'function' && define.amd ) {
+    // AMD
+    define( [
+      'get-style-property/get-style-property',
+      './utils'
+    ], function( getStyleProperty, utils ) {
+      return factory( window, getStyleProperty, utils );
+    });
+  } else if ( typeof exports == 'object' ) {
+    // CommonJS
+    module.exports = factory(
+      window,
+      require('desandro-get-style-property'),
+      require('./utils')
+    );
+  } else {
+    // browser global
+    window.Flickity = window.Flickity || {};
+    window.Flickity.animatePrototype = factory(
+      window,
+      window.getStyleProperty,
+      window.utils
+    );
+  }
+
+}( window, function factory( window, getStyleProperty, U ) {
 
 'use strict';
-
-var U = window.utils;
 
 // -------------------------- requestAnimationFrame -------------------------- //
 
@@ -121,12 +146,12 @@ proto.positionSliderAtSelected = function() {
 };
 
 proto.getPositionValue = function( position ) {
-  if ( this.options.pixelPositioning ) {
-    // pixel positioning
-    return Math.round( position ) + 'px';
-  } else {
+  if ( this.options.percentPosition ) {
     // percent position, round to 2 digits, like 12.34%
     return ( Math.round( ( position / this.size.innerWidth ) * 10000 ) * 0.01 )+ '%';
+  } else {
+    // pixel positioning
+    return Math.round( position ) + 'px';
   }
 };
 
@@ -212,7 +237,6 @@ proto.applySelectedAttraction = function() {
   this.applyForce( force );
 };
 
-window.Flickity = window.Flickity || {};
-window.Flickity.animatePrototype = proto;
+return proto;
 
-})( window );
+}));
