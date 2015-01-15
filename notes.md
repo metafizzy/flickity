@@ -79,10 +79,10 @@ imagesLoaded
 
 <!-- resize -->
 
-prepend
+<!-- prepend
 insert
 append
-remove
+remove -->
 
 destroy
 
