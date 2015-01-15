@@ -4,7 +4,9 @@
 
   if ( typeof define == 'function' && define.amd ) {
     // AMD
-    define( factory() );
+    define( function() {
+      return factory();
+    });
   } else if ( typeof exports == 'object' ) {
     // CommonJS
     module.exports = factory();

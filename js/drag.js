@@ -5,7 +5,7 @@
   if ( typeof define == 'function' && define.amd ) {
     // AMD
     define( [
-      'unipointer/unipointer',
+      './unipointer',
       'eventie/eventie',
       './utils'
     ], function( Unipointer, eventie, utils ) {
@@ -15,7 +15,7 @@
     // CommonJS
     module.exports = factory(
       window,
-      require('unipointer'),
+      require('./unipointer'),
       require('eventie'),
       require('./utils')
     );
