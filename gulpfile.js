@@ -35,3 +35,42 @@ gulp.task( 'concat:js', function() {
     .pipe( concat('flickity.pkgd.js') )
     .pipe( gulp.dest('dist/') );
 });
+
+
+// requirejs
+var rjs = require('gulp-r');
+
+gulp.task( 'requirejs', function() {
+  gulp.src('js/*.js')
+    .pipe( rjs({
+      baseUrl: '../js'
+    }) )
+  // gulp.src('')
+    // .pipe( rjs({
+    //   baseUrl: 'bower_components',
+    //   include: [
+    //     'jquery-bridget/jquery.bridget',
+    //     'flickity/js/flickity'
+    //   ],
+    //   paths: {
+    //     flickity: '../',
+    //     jquery: 'empty:'
+    //   }
+    // }) )
+    .pipe( gulp.dest('dist/rjs') );
+});
+
+
+var amdOptimize = require('amd-optimize');
+
+gulp.task( 'opt', function() {
+  amdOptimize.src( '../js/flickity', {
+    baseUrl: 'bower_components',
+    include: [
+      'jquery-bridget/jquery.bridget'
+    ],
+    preserveComments: true
+  })
+    .pipe( concat('flickity.opt.js') )
+    .pipe( gulp.dest('dist') );
+});
