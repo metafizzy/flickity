@@ -18,8 +18,11 @@
     "grunt-contrib-jshint": "^0.10.0",
     "gulp": "^3.8.10",
     "gulp-jshint": "^1.9.0",
-    "gulp-r": "^1.1.2",
-    "amd-optimize": "^0.4.3"
+    "gulp-rename": "^1.2.0",
+    "gulp-util": "^3.0.2",
+    "through2": "^0.6.3",
+    "requirejs": "^2.1.15",
+    "chalk": "^0.5.1"
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
