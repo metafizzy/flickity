@@ -72,7 +72,7 @@ function rjsOptimize( options ) {
 
     options.out = function( text ) {
       var outFile = new gutil.File({
-        path: file.relative,
+        path: '.',
         contents: new Buffer( text )
       });
       cb( null, outFile );
@@ -91,7 +91,9 @@ function rjsOptimize( options ) {
 var rename = require('gulp-rename');
 
 gulp.task( 'requirejs', function() {
-  gulp.src('js/flickity.js')
+  // HACK src is not needed
+  // should refactor rjsOptimize to produce src
+  gulp.src('')
     .pipe( rjsOptimize({
       baseUrl: 'bower_components',
       optimize: 'none',
