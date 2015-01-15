@@ -77,12 +77,14 @@ imagesLoaded
   <!-- flick to 2 cells left, right -->
   <!-- flick past left end, right -->
 
-resize
+<!-- resize -->
 
 prepend
 insert
 append
 remove
+
+destroy
 
 
 ## Check
