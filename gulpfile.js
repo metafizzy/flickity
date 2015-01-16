@@ -97,10 +97,12 @@ gulp.task( 'requirejs', function() {
       baseUrl: 'bower_components',
       optimize: 'none',
       include: [
+        'jquery-bridget/jquery.bridget',
         'flickity/js/flickity'
       ],
       paths: {
-        flickity: '../'
+        flickity: '../',
+        jquery: 'empty:'
       }
     }) )
     // remove named module
