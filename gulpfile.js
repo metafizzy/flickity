@@ -72,7 +72,7 @@ function rjsOptimize( options ) {
 
     options.out = function( text ) {
       var outFile = new gutil.File({
-        path: '.',
+        path: file.relative,
         contents: new Buffer( text )
       });
       cb( null, outFile );
@@ -89,11 +89,14 @@ function rjsOptimize( options ) {
 }
 
 var rename = require('gulp-rename');
+var replace = require('gulp-replace');
 
 gulp.task( 'requirejs', function() {
+  // regex for requireJS definition
+  var reDefinition = /define\(\s*'flickity\/js\/flickity',\s*\[[\'\/\w\.,\-\s]+\]/i;
   // HACK src is not needed
   // should refactor rjsOptimize to produce src
-  gulp.src('')
+  gulp.src('js/flickity.js')
     .pipe( rjsOptimize({
       baseUrl: 'bower_components',
       optimize: 'none',
@@ -103,6 +106,15 @@ gulp.task( 'requirejs', function() {
       paths: {
         flickity: '../'
       }
+    }) )
+    // remove named module
+    // get RequireJS definition
+    .pipe( replace( reDefinition, function( definition ) {
+      // remove named module
+      return definition.replace( "'flickity/js/flickity',", '')
+        // add name modules to dependencies
+        // ./animate -> packery/js/animate
+        .replace( /'.\//g, "'flickity/js/" );
     }) )
     .pipe( rename('flickity.grjs.js') )
     .pipe( gulp.dest('dist') );
