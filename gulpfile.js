@@ -92,7 +92,7 @@ gulp.task( 'requirejs', function() {
   var banner = getBanner();
   // HACK src is not needed
   // should refactor rjsOptimize to produce src
-  gulp.src('js/flickity.js')
+  return gulp.src('js/flickity.js')
     .pipe( rjsOptimize({
       baseUrl: 'bower_components',
       optimize: 'none',
@@ -116,7 +116,7 @@ gulp.task( 'requirejs', function() {
     }) )
     // add banner
     .pipe( addBanner( banner ) )
-    .pipe( rename('flickity.grjs.js') )
+    .pipe( rename('flickity.pkgd.js') )
     .pipe( gulp.dest('dist') );
 });
 
@@ -125,18 +125,17 @@ gulp.task( 'requirejs', function() {
 
 var uglify = require('gulp-uglify');
 
-gulp.task( 'uglify', function() {
+gulp.task( 'uglify', [ 'requirejs' ], function() {
   var banner = getBanner();
-  gulp.src('dist/flickity.grjs.js')
+  gulp.src('dist/flickity.pkgd.js')
     .pipe( uglify() )
     // add banner
     .pipe( addBanner( banner ) )
-    .pipe( rename('flickity.grjs.min.js') )
+    .pipe( rename('flickity.pkgd.min.js') )
     .pipe( gulp.dest('dist') );
 });
 
 gulp.task( 'default', [
   'hint',
-  'requirejs',
   'uglify'
 ]);
