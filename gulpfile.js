@@ -7,8 +7,13 @@ var gulp = require('gulp');
 
 var jshint = require('gulp-jshint');
 
-gulp.task( 'jshint', function() {
-  return gulp.src('js/**/*.js')
+gulp.task( 'hint', function() {
+  // source
+  gulp.src('js/**/*.js')
+    .pipe( jshint() )
+    .pipe( jshint.reporter('default') );
+  // tests
+  gulp.src('test/unit/*.js')
     .pipe( jshint() )
     .pipe( jshint.reporter('default') );
 });
@@ -129,7 +134,7 @@ gulp.task( 'uglify', function() {
 });
 
 gulp.task( 'default', [
-  'jshint',
+  'hint',
   'requirejs',
   'uglify'
 ]);
