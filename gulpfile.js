@@ -1,7 +1,10 @@
 /*jshint node: true, strict: false */
 
+var fs = require('fs');
 var gulp = require('gulp');
-var concat = require('gulp-concat');
+
+// ----- jshint ----- //
+
 var jshint = require('gulp-jshint');
 
 gulp.task( 'jshint', function() {
@@ -9,33 +12,6 @@ gulp.task( 'jshint', function() {
     .pipe( jshint() )
     .pipe( jshint.reporter('default') );
 });
-
-gulp.task( 'concat:js', function() {
-  gulp.src([
-    // dependencies
-    'bower_components/get-style-property/get-style-property.js',
-    'bower_components/get-size/get-size.js',
-    'bower_components/matches-selector/matches-selector.js',
-    'bower_components/eventEmitter/EventEmitter.js',
-    'bower_components/eventie/eventie.js',
-    'bower_components/doc-ready/doc-ready.js',
-    'bower_components/classie/classie.js',
-    // source
-    'js/utils.js',
-    'js/unipointer.js',
-    'js/cell.js',
-    'js/prev-next-button.js',
-    'js/page-dots.js',
-    'js/player.js',
-    'js/drag.js',
-    'js/animate.js',
-    'js/cell-change.js',
-    'js/flickity.js'
-  ])
-    .pipe( concat('flickity.pkgd.js') )
-    .pipe( gulp.dest('dist/') );
-});
-
 
 // -------------------------- RequireJS makes pkgd -------------------------- //
 
@@ -91,9 +67,24 @@ function rjsOptimize( options ) {
 var rename = require('gulp-rename');
 var replace = require('gulp-replace');
 
+// regex for banner comment
+var reBannerComment = new RegExp('^\\s*(?:\\/\\*[\\s\\S]*?\\*\\/)\\s*');
+
+function getBanner() {
+  var src = fs.readFileSync( 'js/flickity.js', 'utf8' );
+  var matches = src.match( reBannerComment );
+  var banner = matches[0].replace( 'Flickity', 'Flickity PACKAGED' );
+  return banner;
+}
+
+function addBanner( str ) {
+  return replace( /^/, str );
+}
+
 gulp.task( 'requirejs', function() {
   // regex for requireJS definition
   var reDefinition = /define\(\s*'flickity\/js\/flickity',\s*\[[\'\/\w\.,\-\s]+\]/i;
+  var banner = getBanner();
   // HACK src is not needed
   // should refactor rjsOptimize to produce src
   gulp.src('js/flickity.js')
@@ -116,6 +107,29 @@ gulp.task( 'requirejs', function() {
         // ./animate -> packery/js/animate
         .replace( /'.\//g, "'flickity/js/" );
     }) )
+    // add banner
+    .pipe( addBanner( banner ) )
     .pipe( rename('flickity.grjs.js') )
     .pipe( gulp.dest('dist') );
 });
+
+
+// ----- uglify ----- //
+
+var uglify = require('gulp-uglify');
+
+gulp.task( 'uglify', function() {
+  var banner = getBanner();
+  gulp.src('dist/flickity.grjs.js')
+    .pipe( uglify() )
+    // add banner
+    .pipe( addBanner( banner ) )
+    .pipe( rename('flickity.grjs.min.js') )
+    .pipe( gulp.dest('dist') );
+});
+
+gulp.task( 'default', [
+  'jshint',
+  'requirejs',
+  'uglify'
+]);
