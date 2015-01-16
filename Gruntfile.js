@@ -2,6 +2,14 @@
 
 module.exports = function( grunt ) {
 
+  var banner = ( function() {
+    var src = grunt.file.read('js/flickity.js');
+    var re = new RegExp('^\\s*(?:\\/\\*[\\s\\S]*?\\*\\/)\\s*');
+    var matches = src.match( re );
+    var banner = matches[0].replace( 'Flickity', 'Flickity PACKAGED' );
+    return banner;
+  })();
+
   grunt.initConfig({
 
     jshint: {
@@ -15,40 +23,51 @@ module.exports = function( grunt ) {
       }
     },
 
-    concat: {
+    requirejs: {
       pkgd: {
-        dest: 'dist/flickity.pkgd.js',
-        src: [
-          // dependencies
-          'bower_components/get-style-property/get-style-property.js',
-          'bower_components/get-size/get-size.js',
-          'bower_components/matches-selector/matches-selector.js',
-          'bower_components/eventEmitter/EventEmitter.js',
-          'bower_components/eventie/eventie.js',
-          'bower_components/doc-ready/doc-ready.js',
-          'bower_components/classie/classie.js',
-          // source
-          'js/utils.js',
-          'js/unipointer.js',
-          'js/cell.js',
-          'js/prev-next-button.js',
-          'js/page-dots.js',
-          'js/player.js',
-          'js/drag.js',
-          'js/animate.js',
-          'js/cell-change.js',
-          'js/flickity.js'
-        ]
-      } 
+        options: {
+          baseUrl: 'bower_components',
+          include: [
+            'jquery-bridget/jquery.bridget',
+            'flickity/js/flickity'
+          ],
+          out: 'dist/flickity.pkgd.js',
+          optimize: 'none',
+          paths: {
+            flickity: '../',
+            jquery: 'empty:'
+          },
+          wrap: {
+            start: banner
+          }
+        }
+      }
     }
+
   });
 
   grunt.loadNpmTasks('grunt-contrib-jshint');
-  grunt.loadNpmTasks('grunt-contrib-concat');
+  grunt.loadNpmTasks('grunt-contrib-requirejs');
+
+  grunt.registerTask( 'pkgd-edit', function() {
+    var outFile = grunt.config.get('requirejs.pkgd.options.out');
+    var contents = grunt.file.read( outFile );
+    // get requireJS definition code
+    var definitionRE = /define\(\s*'flickity\/js\/flickity',\s*\[[\'\/\w\.,\-\s]+\]/i;
+    var definition = contents.match( definitionRE )[0];
+    // remove name module
+    var fixDefinition = definition.replace( "'flickity/js/flickity',", '' )
+      // ./animate -> flickity/js/animate
+      .replace( /'.\//g, "'flickity/js/" );
+    contents = contents.replace( definition, fixDefinition );
+    grunt.file.write( outFile, contents );
+    grunt.log.writeln( 'Edited ' + outFile );
+  });
 
   grunt.registerTask( 'default', [
     'jshint',
-    'concat'
+    'requirejs',
+    'pkgd-edit'
   ]);
 
 };

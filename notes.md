@@ -17,8 +17,8 @@
   <!-- click -->
   <!-- settle - when slider settles at selected cell -->
 <!-- tests -->
-requirejs
-CommonJS
+<!-- requirejs -->
+<!-- CommonJS -->
 <!-- isOriginLeft: false -->
 <!-- wrapAround without clones -->
 <!-- Flickity.data -->
