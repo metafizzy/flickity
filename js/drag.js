@@ -103,6 +103,7 @@ proto.pointerDown = function( event, pointer ) {
   this.pointerDownPoint = Unipointer.getPointerPoint( pointer );
   // stop auto play
   this.player.stop();
+  classie.add( this.element, 'is-pointer-down' );
 };
 
 proto.pointerMove = function( event, pointer ) {
@@ -123,6 +124,7 @@ proto.pointerUp = function( event, pointer ) {
     // pointer didn't move enough for drag to start
     this.staticClick( event, pointer );
   }
+  classie.remove( this.element, 'is-pointer-down' );
 };
 
 // -------------------------- dragging -------------------------- //
@@ -134,7 +136,6 @@ proto.dragStart = function( event, pointer ) {
   this.startAnimation();
   // prevent clicks
   this.isPreventingClicks = true;
-  classie.add( this.element, 'is-dragging' );
   this.dispatchEvent( 'dragStart', event, [ pointer ] );
 };
 
@@ -194,7 +195,6 @@ proto.dragEnd = function( event, pointer ) {
     delete _this.isPreventingClicks;
   });
 
-  classie.remove( this.element, 'is-dragging' );
   this.dispatchEvent( 'dragEnd', event, [ pointer ] );
 };
 

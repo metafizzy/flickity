@@ -3,6 +3,13 @@
 
 .flickity-enabled {
   position: relative;
+  cursor: -webkit-grab;
+  cursor: grab;
+}
+
+.flickity-enabled.is-pointer-down {
+  cursor: -webkit-grabbing;
+  cursor: grabbing;
 }
 
 .flickity-enabled:focus { outline: none; }
