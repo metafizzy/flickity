@@ -103,7 +103,7 @@ proto.pointerDown = function( event, pointer ) {
   this.pointerDownPoint = Unipointer.getPointerPoint( pointer );
   // stop auto play
   this.player.stop();
-  classie.add( this.element, 'is-pointer-down' );
+  classie.add( this.viewport, 'is-pointer-down' );
 };
 
 proto.pointerMove = function( event, pointer ) {
@@ -124,7 +124,7 @@ proto.pointerUp = function( event, pointer ) {
     // pointer didn't move enough for drag to start
     this.staticClick( event, pointer );
   }
-  classie.remove( this.element, 'is-pointer-down' );
+  classie.remove( this.viewport, 'is-pointer-down' );
 };
 
 // -------------------------- dragging -------------------------- //
