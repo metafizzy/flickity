@@ -28,6 +28,7 @@
   border-radius: 50%;
   background: white;
   background: hsla(0, 0%, 100%, 0.75);
+  cursor: pointer;
   /* vertically center */
   -webkit-transform: translateY(-50%);
       -ms-transform: translateY(-50%);
@@ -37,7 +38,10 @@
 .flickity-prev-next-button.previous { left: 10px; }
 .flickity-prev-next-button.next { right: 10px; }
 
-.flickity-prev-next-button:disabled { opacity: 0.3; }
+.flickity-prev-next-button:disabled {
+  opacity: 0.3;
+  cursor: auto;
+}
 
 .flickity-prev-next-button svg {
   position: absolute;
