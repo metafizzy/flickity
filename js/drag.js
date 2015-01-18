@@ -6,6 +6,7 @@
     // AMD
     define( [
       './unipointer',
+      'classie/classie',
       'eventie/eventie',
       './utils'
     ], function( Unipointer, eventie, utils ) {
@@ -16,6 +17,7 @@
     module.exports = factory(
       window,
       require('./unipointer'),
+      require('desandro-classie'),
       require('eventie'),
       require('./utils')
     );
@@ -25,12 +27,13 @@
     window.Flickity.dragPrototype = factory(
       window,
       window.Unipointer,
+      window.classie,
       window.eventie,
       window.utils
     );
   }
 
-}( window, function factory( window, Unipointer, eventie, U ) {
+}( window, function factory( window, Unipointer, classie, eventie, U ) {
 
 'use strict';
 
@@ -131,6 +134,7 @@ proto.dragStart = function( event, pointer ) {
   this.startAnimation();
   // prevent clicks
   this.isPreventingClicks = true;
+  classie.add( this.element, 'is-dragging' );
   this.dispatchEvent( 'dragStart', event, [ pointer ] );
 };
 
@@ -190,6 +194,7 @@ proto.dragEnd = function( event, pointer ) {
     delete _this.isPreventingClicks;
   });
 
+  classie.remove( this.element, 'is-dragging' );
   this.dispatchEvent( 'dragEnd', event, [ pointer ] );
 };
 
