@@ -49,6 +49,10 @@ var flky = new Flickity( '.gallery', {
   draggable: true,
   // enables dragging & flicking
 
+  freeScroll: false,
+  // enables content to be freely scrolled and flicked
+  // without aligning cells
+
   friction: 0.2,
   // smaller number = easier to flick farther
 
@@ -67,10 +71,13 @@ var flky = new Flickity( '.gallery', {
   prevNextButtons: true,
   // creates and enables buttons to click to previous & next cells
 
+  pageDots: true,
+  // create and enable page dots
+
   resizeBound: true,
   // listens to window resize events to adjust size & positions
 
-  watching: false,
+  watchCSS: false,
   // watches the content of :after of the element
   // activates if #element:after { content: 'flickity' }
   // IE8 and Android 2.3 do not support watching :after

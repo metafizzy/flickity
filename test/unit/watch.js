@@ -8,13 +8,13 @@ docReady( function() {
 
       var elem = document.querySelector('#watch');
       var flkty = new Flickity( elem, {
-        watching: true
+        watchCSS: true
       });
 
       ok( !flkty.isActive, 'not active without :after' );
       // add :after via CSS class
       classie.add( elem, 'has-after' );
-      flkty.watchActivate();
+      flkty.watchCSS();
       ok( flkty.isActive, 'active with :after' );
     });
 
@@ -24,13 +24,13 @@ docReady( function() {
 
       var elem = document.querySelector('#watch');
       var flkty = new Flickity( elem, {
-        watching: true
+        watchCSS: true
       });
 
-      ok( !flkty.isActive, 'fallback not active, watching: true' );
-      flkty.options.watching = 'fallbackOn';
-      flkty.watchActivate();
-      ok( flkty.isActive, 'active with watching: "fallbackOn" ');
+      ok( !flkty.isActive, 'fallback not active, watchCSS: true' );
+      flkty.options.watchCSS = 'fallbackOn';
+      flkty.watchCSS();
+      ok( flkty.isActive, 'active with watchCSS: "fallbackOn" ');
     });
 
   }
