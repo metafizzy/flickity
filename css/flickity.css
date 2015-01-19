@@ -78,6 +78,7 @@
   margin: 0;
   list-style: none;
   text-align: center;
+  line-height: 1;
 }
 
 .flickity-page-dots .dot {
