@@ -1,9 +1,6 @@
 {
   "name": "flickity",
-  "version": "0.0.0",
-  "authors": [
-    "David DeSandro <desandrocodes@gmail.com>"
-  ],
+  "version": "0.1.0",
   "description": "Touch responsive gallery",
   "main": [
     "js/flickity.js",
@@ -33,6 +30,9 @@
     "carousel",
     "touch"
   ],
+  "authors": [
+    "Metafizzy"
+  ],
   "license": "GPL",
   "ignore": [
     "**/.*",
@@ -44,6 +44,7 @@
     "package.json",
     "Gruntfile.js",
     "gulpfile.js",
+    "changelog.md",
     "notes.md"
   ]
 }

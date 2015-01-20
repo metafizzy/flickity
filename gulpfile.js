@@ -135,7 +135,13 @@ gulp.task( 'uglify', [ 'requirejs' ], function() {
     .pipe( gulp.dest('dist') );
 });
 
+gulp.task( 'copy-css', function() {
+  gulp.src('css/flickity.css')
+    .pipe( gulp.dest('dist') );
+});
+
 gulp.task( 'default', [
   'hint',
-  'uglify'
+  'uglify',
+  'copy-css'
 ]);

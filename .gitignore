@@ -1,4 +1,3 @@
 bower_components/
 node_modules/
-dist/
 browserify/bundle.js
