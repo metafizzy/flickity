@@ -1,6 +1,7 @@
 /*!
- * Flickity
- * Touch responsive gallery
+ * Flickity v0.0.0
+ * Touch, responsive, flickable galleries
+ * http://flickity.metafizzy.co
  */
 
 ( function( window, factory ) {

@@ -5,7 +5,10 @@
     "David DeSandro <desandrocodes@gmail.com>"
   ],
   "description": "Touch responsive gallery",
-  "main": "src/flickity.js",
+  "main": [
+    "js/flickity.js",
+    "css/flickity.css"
+  ],
   "dependencies": {
     "get-size": "~1.2.2",
     "matches-selector": "~1.0.2",
@@ -40,6 +43,7 @@
     "sandbox",
     "package.json",
     "Gruntfile.js",
+    "gulpfile.js",
     "notes.md"
   ]
 }

@@ -2,9 +2,21 @@
 
 _Touch, responsive, flickable galleries_
 
+[flickity.metafizzy.co](http://flickity.metafizzy.co)
+
+## Beta testing
+
+Help make Flickity better for it’s v1.0 release. Try out Flickity and provide any feedback. We'll send you some Metafizzy stickers for helping us out.
+
+Did it work as expected? What trouble did you run into? Is there something else you'd like? Bugs, feature requests, questions — we're happy to hear it all.
+
++ Submit an [issue on GitHub](https://github.com/metafizzy/flickity/issues)
++ Email [yo@metafizzy.co](mailto:yo@metafizzy.co?subject=Flickity beta feedback)
++ Tweet [@metafizzyco](https://twitter.com/metafizzyco)
+
 ## Under development
 
-I'm making a carousel/slider/gallery library! It's still in its infancy and not ready for use. [Follow @metafizzyco on Twitter for updates and news on releases](https://twitter.com/metafizzyco).
+I'm making a carousel/slider/gallery library! [Follow @metafizzyco on Twitter for updates and news on releases](https://twitter.com/metafizzyco).
 
 I'm blogging development at [metafizzy.co/blog](http://metafizzy.co/blog).
 
@@ -93,3 +105,6 @@ var flky = new Flickity( '.gallery', {
 
 Flickity is currently in development, v0. It is licensed GPL v3. With v1, Flickity will be dual-licensed: GPL, and a commercial license that exempts GPL.
 
+---
+
+By [Metafizzy](http://metafizzy.co)
