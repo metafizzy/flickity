@@ -5,20 +5,20 @@
   if ( typeof define == 'function' && define.amd ) {
     // AMD
     define( [
-      './unipointer',
       'classie/classie',
       'eventie/eventie',
+      'unidragger/unidragger',
       './utils'
-    ], function( Unipointer, eventie, utils ) {
-      return factory( window, Unipointer, eventie, utils );
+    ], function( classie, eventie, Unidragger, utils ) {
+      return factory( window, classie, eventie, Unidragger, utils );
     });
   } else if ( typeof exports == 'object' ) {
     // CommonJS
     module.exports = factory(
       window,
-      require('./unipointer'),
       require('desandro-classie'),
       require('eventie'),
+      require('unidragger'),
       require('./utils')
     );
   } else {
@@ -26,21 +26,21 @@
     window.Flickity = window.Flickity || {};
     window.Flickity.dragPrototype = factory(
       window,
-      window.Unipointer,
       window.classie,
       window.eventie,
+      window.Unidragger,
       window.utils
     );
   }
 
-}( window, function factory( window, Unipointer, classie, eventie, U ) {
+}( window, function factory( window, classie, eventie, Unidragger, U ) {
 
 'use strict';
 
 // -------------------------- drag prototype -------------------------- //
 
 var proto = {};
-U.extend( proto, Unipointer.prototype );
+U.extend( proto, Unidragger.prototype );
 
 // --------------------------  -------------------------- //
 

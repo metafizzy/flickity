@@ -10,7 +10,8 @@
     "eventie": "~1.0.6",
     "get-size": "~1.2.2",
     "desandro-get-style-property": "~1.0.4",
-    "wolfy87-eventemitter": "~4.2.11"
+    "wolfy87-eventemitter": "~4.2.11",
+    "unidragger": "~0.1.0"
   },
   "devDependencies": {
     "gulp": "^3.8.10",
