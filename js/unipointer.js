@@ -31,6 +31,15 @@
 
 function noop() {}
 
+// handle IE8 prevent default
+function preventDefaultEvent( event ) {
+  if ( event.preventDefault ) {
+    event.preventDefault();
+  } else {
+    event.returnValue = false;
+  }
+}
+
 // -------------------------- Unipointer -------------------------- //
 
 function Unipointer() {}
@@ -157,6 +166,12 @@ var postStartEvents = {
   MSPointerDown: [ 'MSPointerMove', 'MSPointerUp', 'MSPointerCancel' ]
 };
 
+var allowTouchstartNodes = {
+  INPUT: true,
+  A: true,
+  BUTTON: true
+};
+
 /**
  * pointer start
  * @param {Event} event
@@ -169,11 +184,29 @@ Unipointer.prototype._pointerDown = function( event, pointer ) {
   }
 
   this.isPointerDown = true;
-
   // save pointer identifier to match up touch events
   this.pointerIdentifier = pointer.pointerId !== undefined ?
     // pointerId for pointer events, touch.indentifier for touch events
     pointer.pointerId : pointer.identifier;
+  // track to see when dragging starts
+  this.pointerDownPoint = Unipointer.getPointerPoint( pointer );
+
+  var targetNodeName = event.target.nodeName;
+  // HACK iOS, allow clicks on buttons, inputs, and links
+  var isTouchstart = event.type == 'touchstart';
+  var isTouchstartNode = allowTouchstartNodes[ targetNodeName ];
+  if ( !isTouchstart || ( isTouchstart && !isTouchstartNode ) ) {
+    preventDefaultEvent( event );
+  }
+  // kludge to blur focused inputs in dragger
+  var focused = document.activeElement;
+  if ( focused && focused.blur && focused != this.element ) {
+    focused.blur();
+  }
+  // focus element, if its not an input
+  if ( this.options.accessibility && targetNodeName != 'INPUT' ) {
+    this.element.focus();
+  }
 
   // bind move and end events
   this._bindPostStartEvents({
@@ -184,10 +217,11 @@ Unipointer.prototype._pointerDown = function( event, pointer ) {
   });
 
   this.pointerDown( event, pointer );
-  this.emitEvent( 'pointerDown', [ this, event, pointer ] );
 };
 
-Unipointer.prototype.pointerDown = noop;
+Unipointer.prototype.pointerDown = function( event, pointer ) {
+  this.emitEvent( 'pointerDown', [ this, event, pointer ] );
+};
 
 // ----- bind/unbind ----- //
 
@@ -240,11 +274,27 @@ Unipointer.prototype.ontouchmove = function( event ) {
  * @param {Event or Touch} pointer
  */
 Unipointer.prototype._pointerMove = function( event, pointer ) {
-  this.pointerMove( event, pointer );
-  this.emitEvent( 'pointerMove', [ this, event, pointer ] );
+  var movePoint = Unipointer.getPointerPoint( pointer );
+  var moveVector = {
+    x: movePoint.x - this.pointerDownPoint.x,
+    y: movePoint.y - this.pointerDownPoint.y
+  };
+  // function to check if pointer has moved far enough to start drag
+  var hasDragStarted = this.hasDragStarted || function( moveVector ) {
+    return Math.abs( moveVector.x ) > 3 || Math.abs( moveVector.x ) > 3;
+  };
+  // start drag
+  if ( !this.isDragging && hasDragStarted( moveVector ) ) {
+    this._dragStart( event, pointer );
+  }
+
+  this.pointerMove( event, pointer, moveVector );
+  this._dragMove( event, pointer, moveVector );
 };
 
-Unipointer.prototype.pointerMove = noop;
+Unipointer.prototype.pointerMove = function( event, pointer, moveVector ) {
+  this.emitEvent( 'pointerMove', [ this, event, pointer, moveVector ] );
+};
 
 // ----- end event ----- //
 
@@ -279,11 +329,19 @@ Unipointer.prototype._pointerUp = function( event, pointer ) {
   // remove events
   this._unbindPostStartEvents();
 
+  if ( this.isDragging ) {
+    this._dragEnd( event, pointer );
+  } else {
+    // pointer didn't move enough for drag to start
+    this._staticClick( event, pointer );
+  }
+
   this.pointerUp( event, pointer );
-  this.emitEvent( 'pointerUp', [ this, event, pointer ] );
 };
 
-Unipointer.prototype.pointerUp = noop;
+Unipointer.prototype.pointerUp = function( event, pointer ) {
+  this.emitEvent( 'pointerUp', [ this, event, pointer ] );
+};
 
 // ----- cancel event ----- //
 
@@ -299,6 +357,71 @@ Unipointer.prototype.onpointercancel = function( event ) {
 Unipointer.prototype.ontouchcancel = function( event ) {
   var touch = this.getTouch( event.changedTouches );
   this._pointerUp( event, touch );
+};
+
+// -------------------------- drag -------------------------- //
+
+// dragStart
+Unipointer.prototype._dragStart = function( event, pointer ) {
+  this.isDragging = true;
+  this.dragStartPoint = Unipointer.getPointerPoint( pointer );
+  // prevent clicks
+  this.isPreventingClicks = true;
+
+  this.dragStart( event, pointer );
+};
+
+Unipointer.prototype.dragStart = function( event, pointer ) {
+  this.emitEvent( 'dragStart', [ this, event, pointer ] );
+};
+
+// dragMove
+Unipointer.prototype._dragMove = function( event, pointer, moveVector ) {
+  // do not drag if not dragging yet
+  if ( !this.isDragging ) {
+    return;
+  }
+
+  this.dragMove( event, pointer, moveVector );
+};
+
+Unipointer.prototype.dragMove = function( event, pointer, moveVector ) {
+  this.emitEvent( 'dragMove', [ this, event, pointer, moveVector ] );
+};
+
+// dragEnd
+Unipointer.prototype._dragEnd = function( event, pointer ) {
+  // set flags
+  this.isDragging = false;
+  this.dragEnd( event, pointer );
+};
+
+Unipointer.prototype.dragEnd = function( event, pointer ) {
+  this.emitEvent( 'dragEnd', [ this, event, pointer ] );
+};
+
+// ----- onclick ----- //
+
+// handle all clicks and prevent clicks when dragging
+Unipointer.prototype.onclick = function( event ) {
+  if ( this.isPreventingClicks ) {
+    preventDefaultEvent( event );
+  }
+};
+
+// ----- staticClick ----- //
+
+// triggered after pointer down & up with no/tiny movement
+Unipointer.prototype._staticClick = function( event, pointer ) {
+  // allow click in text input
+  if ( event.target.nodeName == 'INPUT' && event.target.type == 'text' ) {
+    event.target.focus();
+  }
+  this.staticClick( event, pointer );
+};
+
+Unipointer.prototype.staticClick = function( event, pointer ) {
+  this.emitEvent( 'staticClick', [ this, event, pointer ] );
 };
 
 // -----  ----- //

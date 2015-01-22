@@ -37,15 +37,6 @@
 
 'use strict';
 
-// handle IE8 prevent default
-function preventDefaultEvent( event ) {
-  if ( event.preventDefault ) {
-    event.preventDefault();
-  } else {
-    event.returnValue = false;
-  }
-}
-
 // -------------------------- drag prototype -------------------------- //
 
 var proto = {};
@@ -74,80 +65,36 @@ proto.unbindDrag = function() {
 
 // -------------------------- pointer events -------------------------- //
 
-var allowTouchstartNodes = {
-  INPUT: true,
-  A: true,
-  BUTTON: true
-};
-
 proto.pointerDown = function( event, pointer ) {
-  var targetNodeName = event.target.nodeName;
-  // HACK iOS, allow clicks on buttons, inputs, and links
-  var isTouchstart = event.type == 'touchstart';
-  var isTouchstartNode = allowTouchstartNodes[ targetNodeName ];
-  if ( !isTouchstart || ( isTouchstart && !isTouchstartNode ) ) {
-    preventDefaultEvent( event );
-  }
-  // kludge to blur focused inputs in dragger
-  var focused = document.activeElement;
-  if ( focused && focused.blur && focused != this.element ) {
-    focused.blur();
-  }
-  // focus element, if its not an input
-  if ( this.options.accessibility && targetNodeName != 'INPUT' ) {
-    this.element.focus();
-  }
   // stop if it was moving
   this.velocity = 0;
-  // track to see when dragging starts
-  this.pointerDownPoint = Unipointer.getPointerPoint( pointer );
   // stop auto play
   this.player.stop();
   classie.add( this.viewport, 'is-pointer-down' );
+  this.dispatchEvent( 'pointerDown', event, [ pointer ] );
 };
 
-proto.pointerMove = function( event, pointer ) {
-  var movePoint = Unipointer.getPointerPoint( pointer );
-  var dragMove = movePoint.x - this.pointerDownPoint.x;
-  // start drag
-  if ( !this.isDragging && Math.abs( dragMove ) > 3 ) {
-    this.dragStart( event, pointer );
-  }
-
-  this.dragMove( movePoint, event, pointer );
+proto.pointerMove = function( event, pointer, moveVector ) {
+  this.dispatchEvent( 'pointerMove', event, [ pointer, moveVector ] );
 };
 
 proto.pointerUp = function( event, pointer ) {
-  if ( this.isDragging ) {
-    this.dragEnd( event, pointer );
-  } else {
-    // pointer didn't move enough for drag to start
-    this.staticClick( event, pointer );
-  }
   classie.remove( this.viewport, 'is-pointer-down' );
+  this.dispatchEvent( 'pointerUp', event, [ pointer ] );
 };
 
 // -------------------------- dragging -------------------------- //
 
 proto.dragStart = function( event, pointer ) {
-  this.isDragging = true;
-  this.dragStartPoint = Unipointer.getPointerPoint( pointer );
   this.dragStartPosition = this.x;
   this.startAnimation();
-  // prevent clicks
-  this.isPreventingClicks = true;
   this.dispatchEvent( 'dragStart', event, [ pointer ] );
 };
 
-proto.dragMove = function( movePoint, event, pointer ) {
-  // do not drag if not dragging yet
-  if ( !this.isDragging ) {
-    return;
-  }
-
+proto.dragMove = function( event, pointer, moveVector ) {
   this.previousDragX = this.x;
 
-  var movedX = movePoint.x - this.dragStartPoint.x;
+  var movedX = moveVector.x;
   // reverse if right-to-left
   var direction = this.options.rightToLeft ? -1 : 1;
   this.x = this.dragStartPosition + movedX * direction;
@@ -162,7 +109,7 @@ proto.dragMove = function( movePoint, event, pointer ) {
 
   this.previousDragMoveTime = this.dragMoveTime;
   this.dragMoveTime = new Date();
-  this.dispatchEvent( 'dragMove', event, [ pointer ] );
+  this.dispatchEvent( 'dragMove', event, [ pointer, moveVector ] );
 };
 
 proto.dragEnd = function( event, pointer ) {
@@ -187,8 +134,6 @@ proto.dragEnd = function( event, pointer ) {
   // apply selection
   // TODO refactor this, selecting here feels weird
   this.select( index );
-  // set flags
-  this.isDragging = false;
   // re-enable clicking async
   var _this = this;
   setTimeout( function() {
@@ -288,23 +233,9 @@ proto.dragEndBoostSelect = function() {
   return 0;
 };
 
-// ----- onclick ----- //
-
-// handle all clicks and prevent clicks when dragging
-proto.onclick = function( event ) {
-  if ( this.isPreventingClicks ) {
-    preventDefaultEvent( event );
-  }
-};
-
 // ----- staticClick ----- //
 
-// triggered after pointer down & up with no/tiny movement
 proto.staticClick = function( event, pointer ) {
-  // allow click in text input
-  if ( event.target.nodeName == 'INPUT' && event.target.type == 'text' ) {
-    event.target.focus();
-  }
   this.dispatchEvent( 'staticClick', event, [ pointer ] );
 };
 
