@@ -50,8 +50,6 @@ proto.bindDrag = function() {
   }
   this.handles = [ this.viewport ];
   this.bindHandles();
-  // bind click handler
-  eventie.bind( this.viewport, 'click', this );
 };
 
 proto.unbindDrag = function() {
@@ -59,8 +57,6 @@ proto.unbindDrag = function() {
     return;
   }
   this.bindHandles( false );
-  // unbind click handler
-  eventie.unbind( this.viewport, 'click', this );
 };
 
 // -------------------------- pointer events -------------------------- //
@@ -134,12 +130,6 @@ proto.dragEnd = function( event, pointer ) {
   // apply selection
   // TODO refactor this, selecting here feels weird
   this.select( index );
-  // re-enable clicking async
-  var _this = this;
-  setTimeout( function() {
-    delete _this.isPreventingClicks;
-  });
-
   this.dispatchEvent( 'dragEnd', event, [ pointer ] );
 };
 

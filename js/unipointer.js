@@ -80,9 +80,12 @@ Unipointer.prototype.bindHandles = function( isBind ) {
   }
   // munge isBind, default to true
   isBind = isBind === undefined ? true : !!isBind;
+  var bindMethod = isBind ? 'bind' : 'unbind';
   for ( var i=0, len = this.handles.length; i < len; i++ ) {
     var handle = this.handles[i];
     binder.call( this, handle, isBind );
+    // click handler, for preventing clicks
+    eventie[ bindMethod ]( handle, 'click', this );
   }
 };
 
@@ -268,6 +271,10 @@ Unipointer.prototype.ontouchmove = function( event ) {
   }
 };
 
+var hasDragStartedDefault = Unipointer.hasDragStartedDefault = function( moveVector ) {
+  return Math.abs( moveVector.x ) > 3 || Math.abs( moveVector.y ) > 3;
+};
+
 /**
  * drag move
  * @param {Event} event
@@ -280,9 +287,7 @@ Unipointer.prototype._pointerMove = function( event, pointer ) {
     y: movePoint.y - this.pointerDownPoint.y
   };
   // function to check if pointer has moved far enough to start drag
-  var hasDragStarted = this.hasDragStarted || function( moveVector ) {
-    return Math.abs( moveVector.x ) > 3 || Math.abs( moveVector.x ) > 3;
-  };
+  var hasDragStarted = this.hasDragStarted || hasDragStartedDefault;
   // start drag
   if ( !this.isDragging && hasDragStarted( moveVector ) ) {
     this._dragStart( event, pointer );
@@ -393,6 +398,12 @@ Unipointer.prototype.dragMove = function( event, pointer, moveVector ) {
 Unipointer.prototype._dragEnd = function( event, pointer ) {
   // set flags
   this.isDragging = false;
+  // re-enable clicking async
+  var _this = this;
+  setTimeout( function() {
+    delete _this.isPreventingClicks;
+  });
+
   this.dragEnd( event, pointer );
 };
 
