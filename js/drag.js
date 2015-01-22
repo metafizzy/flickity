@@ -56,7 +56,11 @@ proto.unbindDrag = function() {
   if ( !this.options.draggable ) {
     return;
   }
-  this.bindHandles( false );
+  this.unbindHandles();
+};
+
+proto.hasDragStarted = function( moveVector ) {
+  return Math.abs( moveVector.x ) > 3;
 };
 
 // -------------------------- pointer events -------------------------- //

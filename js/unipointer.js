@@ -64,12 +64,19 @@ Unipointer.prototype.getTouch = function( touches ) {
 
 // ----- bind start ----- //
 
-// works as unbinder, as you can .bindHandles( false ) to unbind
+Unipointer.prototype.bindHandles = function() {
+  this._bindHandles( true );
+};
+
+Unipointer.prototype.unbindHandles = function() {
+  this._bindHandles( false );
+};
 
 /**
+ * works as unbinder, as you can .bindHandles( false ) to unbind
  * @param {Boolean} isBind - will unbind if falsey
  */
-Unipointer.prototype.bindHandles = function( isBind ) {
+Unipointer.prototype._bindHandles = function( isBind ) {
   var binder;
   if ( window.navigator.pointerEnabled ) {
     binder = this.bindPointer;
@@ -80,12 +87,9 @@ Unipointer.prototype.bindHandles = function( isBind ) {
   }
   // munge isBind, default to true
   isBind = isBind === undefined ? true : !!isBind;
-  var bindMethod = isBind ? 'bind' : 'unbind';
   for ( var i=0, len = this.handles.length; i < len; i++ ) {
     var handle = this.handles[i];
     binder.call( this, handle, isBind );
-    // click handler, for preventing clicks
-    eventie[ bindMethod ]( handle, 'click', this );
   }
 };
 
