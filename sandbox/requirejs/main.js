@@ -1,7 +1,7 @@
 /*jshint strict: false */
 /*global requirejs: false*/
 
-/*
+// /*
 // bower components
 requirejs.config({
   baseUrl: '../../bower_components'
@@ -12,7 +12,7 @@ requirejs( [ '../js/flickity' ], function( Flickity ) {
 });
 // */
 
-// /*
+/*
 // pkgd
 requirejs( [
   '../../dist/flickity.pkgd.js'

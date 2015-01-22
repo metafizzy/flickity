@@ -4,7 +4,7 @@
 
 module('Flickity');
 
-var utils = window.utils;
+var utils = window.fizzyUIUtils;
 
 test( 'init', function() {
 

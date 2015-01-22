@@ -2,7 +2,7 @@
 
 'use strict';
 
-var utils = window.utils;
+var utils = window.fizzyUIUtils;
 
 function noop() {}
 

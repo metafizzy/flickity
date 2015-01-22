@@ -39,7 +39,7 @@ contain doesn't boost from 1 to 2
 
 rename updatePhysics to integratePhysics
 
-move utils to its own repo
+<!-- move utils to its own repo -->
 <!-- move unipointer to its own repo -->
   <!-- try integrating Draggabilly with unipointer -->
 move imagesLoaded bit into its own package, most likely

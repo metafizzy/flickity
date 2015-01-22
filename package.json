@@ -11,7 +11,8 @@
     "get-size": "~1.2.2",
     "desandro-get-style-property": "~1.0.4",
     "wolfy87-eventemitter": "~4.2.11",
-    "unidragger": "~0.1.0"
+    "unidragger": "~0.1.0",
+    "fizzy-ui-utils": "^0.1.0"
   },
   "devDependencies": {
     "gulp": "^3.8.10",

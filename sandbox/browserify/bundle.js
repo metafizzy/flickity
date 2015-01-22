@@ -7,7 +7,7 @@
     // AMD
     define( [
       'get-style-property/get-style-property',
-      './utils'
+      'fizzy-ui-utils/utils'
     ], function( getStyleProperty, utils ) {
       return factory( window, getStyleProperty, utils );
     });
@@ -16,7 +16,7 @@
     module.exports = factory(
       window,
       require('desandro-get-style-property'),
-      require('./utils')
+      require('fizzy-ui-utils')
     );
   } else {
     // browser global
@@ -24,11 +24,11 @@
     window.Flickity.animatePrototype = factory(
       window,
       window.getStyleProperty,
-      window.utils
+      window.fizzyUIUtils
     );
   }
 
-}( window, function factory( window, getStyleProperty, U ) {
+}( window, function factory( window, getStyleProperty, utils ) {
 
 'use strict';
 
@@ -118,7 +118,7 @@ proto.positionSlider = function() {
   var x = this.x;
   // wrap position around
   if ( this.options.wrapAround ) {
-    x = U.modulo( x, this.slideableWidth );
+    x = utils.modulo( x, this.slideableWidth );
     x = x - this.slideableWidth;
     this.shiftWrapCells( x );
   }
@@ -242,7 +242,7 @@ return proto;
 
 }));
 
-},{"./utils":10,"desandro-get-style-property":12}],2:[function(require,module,exports){
+},{"desandro-get-style-property":10,"fizzy-ui-utils":15}],2:[function(require,module,exports){
 ( function( window, factory ) {
   'use strict';
   // universal module definition
@@ -250,7 +250,7 @@ return proto;
   if ( typeof define == 'function' && define.amd ) {
     // AMD
     define( [
-      './utils'
+      'fizzy-ui-utils/utils'
     ], function( utils ) {
       return factory( window, utils );
     });
@@ -258,18 +258,18 @@ return proto;
     // CommonJS
     module.exports = factory(
       window,
-      require('./utils')
+      require('fizzy-ui-utils')
     );
   } else {
     // browser global
     window.Flickity = window.Flickity || {};
     window.Flickity.cellChangePrototype = factory(
       window,
-      window.utils
+      window.fizzyUIUtils
     );
   }
 
-})( window, function factory( window, U ) {
+})( window, function factory( window, utils ) {
 
 'use strict';
 
@@ -345,7 +345,7 @@ proto.remove = function( elems ) {
     var cell = cells[i];
     cell.remove();
     // remove item from collection
-    U.removeFrom( cell, this.cells );
+    utils.removeFrom( cell, this.cells );
   }
 
   if ( cells.length ) {
@@ -377,7 +377,7 @@ proto.cellSizeChange = function( elem ) {
   }
   cell.getSize();
 
-  var index = U.indexOf( this.cells, cell );
+  var index = utils.indexOf( this.cells, cell );
   this.cellChange( index );
 };
 
@@ -411,7 +411,7 @@ return proto;
 
 });
 
-},{"./utils":10}],3:[function(require,module,exports){
+},{"fizzy-ui-utils":15}],3:[function(require,module,exports){
 ( function( window, factory ) {
   'use strict';
   // universal module definition
@@ -500,7 +500,7 @@ return Cell;
 
 }));
 
-},{"get-size":17}],4:[function(require,module,exports){
+},{"get-size":16}],4:[function(require,module,exports){
 ( function( window, factory ) {
   'use strict';
   // universal module definition
@@ -508,48 +508,42 @@ return Cell;
   if ( typeof define == 'function' && define.amd ) {
     // AMD
     define( [
-      './unipointer',
+      'classie/classie',
       'eventie/eventie',
-      './utils'
-    ], function( Unipointer, eventie, utils ) {
-      return factory( window, Unipointer, eventie, utils );
+      'unidragger/unidragger',
+      'fizzy-ui-utils/utils'
+    ], function( classie, eventie, Unidragger, utils ) {
+      return factory( window, classie, eventie, Unidragger, utils );
     });
   } else if ( typeof exports == 'object' ) {
     // CommonJS
     module.exports = factory(
       window,
-      require('./unipointer'),
+      require('desandro-classie'),
       require('eventie'),
-      require('./utils')
+      require('unidragger'),
+      require('fizzy-ui-utils')
     );
   } else {
     // browser global
     window.Flickity = window.Flickity || {};
     window.Flickity.dragPrototype = factory(
       window,
-      window.Unipointer,
+      window.classie,
       window.eventie,
-      window.utils
+      window.Unidragger,
+      window.fizzyUIUtils
     );
   }
 
-}( window, function factory( window, Unipointer, eventie, U ) {
+}( window, function factory( window, classie, eventie, Unidragger, utils ) {
 
 'use strict';
-
-// handle IE8 prevent default
-function preventDefaultEvent( event ) {
-  if ( event.preventDefault ) {
-    event.preventDefault();
-  } else {
-    event.returnValue = false;
-  }
-}
 
 // -------------------------- drag prototype -------------------------- //
 
 var proto = {};
-U.extend( proto, Unipointer.prototype );
+utils.extend( proto, Unidragger.prototype );
 
 // --------------------------  -------------------------- //
 
@@ -559,93 +553,51 @@ proto.bindDrag = function() {
   }
   this.handles = [ this.viewport ];
   this.bindHandles();
-  // bind click handler
-  eventie.bind( this.viewport, 'click', this );
 };
 
 proto.unbindDrag = function() {
   if ( !this.options.draggable ) {
     return;
   }
-  this.bindHandles( false );
-  // unbind click handler
-  eventie.unbind( this.viewport, 'click', this );
+  this.unbindHandles();
+};
+
+proto.hasDragStarted = function( moveVector ) {
+  return Math.abs( moveVector.x ) > 3;
 };
 
 // -------------------------- pointer events -------------------------- //
 
-var allowTouchstartNodes = {
-  INPUT: true,
-  A: true,
-  BUTTON: true
-};
-
 proto.pointerDown = function( event, pointer ) {
-  var targetNodeName = event.target.nodeName;
-  // HACK iOS, allow clicks on buttons, inputs, and links
-  var isTouchstart = event.type == 'touchstart';
-  var isTouchstartNode = allowTouchstartNodes[ targetNodeName ];
-  if ( !isTouchstart || ( isTouchstart && !isTouchstartNode ) ) {
-    preventDefaultEvent( event );
-  }
-  // kludge to blur focused inputs in dragger
-  var focused = document.activeElement;
-  if ( focused && focused.blur && focused != this.element ) {
-    focused.blur();
-  }
-  // focus element, if its not an input
-  if ( this.options.accessibility && targetNodeName != 'INPUT' ) {
-    this.element.focus();
-  }
   // stop if it was moving
   this.velocity = 0;
-  // track to see when dragging starts
-  this.pointerDownPoint = Unipointer.getPointerPoint( pointer );
   // stop auto play
   this.player.stop();
+  classie.add( this.viewport, 'is-pointer-down' );
+  this.dispatchEvent( 'pointerDown', event, [ pointer ] );
 };
 
-proto.pointerMove = function( event, pointer ) {
-  var movePoint = Unipointer.getPointerPoint( pointer );
-  var dragMove = movePoint.x - this.pointerDownPoint.x;
-  // start drag
-  if ( !this.isDragging && Math.abs( dragMove ) > 3 ) {
-    this.dragStart( event, pointer );
-  }
-
-  this.dragMove( movePoint, event, pointer );
+proto.pointerMove = function( event, pointer, moveVector ) {
+  this.dispatchEvent( 'pointerMove', event, [ pointer, moveVector ] );
 };
 
 proto.pointerUp = function( event, pointer ) {
-  if ( this.isDragging ) {
-    this.dragEnd( event, pointer );
-  } else {
-    // pointer didn't move enough for drag to start
-    this.staticClick( event, pointer );
-  }
+  classie.remove( this.viewport, 'is-pointer-down' );
+  this.dispatchEvent( 'pointerUp', event, [ pointer ] );
 };
 
 // -------------------------- dragging -------------------------- //
 
 proto.dragStart = function( event, pointer ) {
-  this.isDragging = true;
-  this.dragStartPoint = Unipointer.getPointerPoint( pointer );
   this.dragStartPosition = this.x;
   this.startAnimation();
-  // prevent clicks
-  this.isPreventingClicks = true;
   this.dispatchEvent( 'dragStart', event, [ pointer ] );
 };
 
-proto.dragMove = function( movePoint, event, pointer ) {
-  // do not drag if not dragging yet
-  if ( !this.isDragging ) {
-    return;
-  }
-
+proto.dragMove = function( event, pointer, moveVector ) {
   this.previousDragX = this.x;
 
-  var movedX = movePoint.x - this.dragStartPoint.x;
+  var movedX = moveVector.x;
   // reverse if right-to-left
   var direction = this.options.rightToLeft ? -1 : 1;
   this.x = this.dragStartPosition + movedX * direction;
@@ -660,7 +612,7 @@ proto.dragMove = function( movePoint, event, pointer ) {
 
   this.previousDragMoveTime = this.dragMoveTime;
   this.dragMoveTime = new Date();
-  this.dispatchEvent( 'dragMove', event, [ pointer ] );
+  this.dispatchEvent( 'dragMove', event, [ pointer, moveVector ] );
 };
 
 proto.dragEnd = function( event, pointer ) {
@@ -685,14 +637,6 @@ proto.dragEnd = function( event, pointer ) {
   // apply selection
   // TODO refactor this, selecting here feels weird
   this.select( index );
-  // set flags
-  this.isDragging = false;
-  // re-enable clicking async
-  var _this = this;
-  setTimeout( function() {
-    delete _this.isPreventingClicks;
-  });
-
   this.dispatchEvent( 'dragEnd', event, [ pointer ] );
 };
 
@@ -764,7 +708,7 @@ proto._getClosestResting = function( restingX, distance, increment ) {
  */
 proto.getCellDistance = function( x, index ) {
   var len = this.cells.length;
-  var cellIndex = this.options.wrapAround ? U.modulo( index, len ) : index;
+  var cellIndex = this.options.wrapAround ? utils.modulo( index, len ) : index;
   var cell = this.cells[ cellIndex ];
   if ( !cell ) {
     return null;
@@ -786,23 +730,9 @@ proto.dragEndBoostSelect = function() {
   return 0;
 };
 
-// ----- onclick ----- //
-
-// handle all clicks and prevent clicks when dragging
-proto.onclick = function( event ) {
-  if ( this.isPreventingClicks ) {
-    preventDefaultEvent( event );
-  }
-};
-
 // ----- staticClick ----- //
 
-// triggered after pointer down & up with no/tiny movement
 proto.staticClick = function( event, pointer ) {
-  // allow click in text input
-  if ( event.target.nodeName == 'INPUT' && event.target.type == 'text' ) {
-    event.target.focus();
-  }
   this.dispatchEvent( 'staticClick', event, [ pointer ] );
 };
 
@@ -812,10 +742,12 @@ return proto;
 
 }));
 
-},{"./unipointer":9,"./utils":10,"eventie":16}],5:[function(require,module,exports){
+},{"desandro-classie":9,"eventie":14,"fizzy-ui-utils":15,"unidragger":18}],5:[function(require,module,exports){
 /*!
- * Flickity
- * Touch responsive gallery
+ * Flickity v0.1.0
+ * Touch, responsive, flickable galleries
+ * http://flickity.metafizzy.co
+ * Copyright 2015 Metafizzy
  */
 
 ( function( window, factory ) {
@@ -829,7 +761,7 @@ return proto;
       'eventEmitter/EventEmitter',
       'eventie/eventie',
       'get-size/get-size',
-      './utils',
+      'fizzy-ui-utils/utils',
       './cell',
       './prev-next-button',
       './page-dots',
@@ -837,8 +769,8 @@ return proto;
       './drag',
       './animate',
       './cell-change'
-    ], function( classie, EventEmitter, eventie, getSize, U, Cell, PrevNextButton, PageDots, Player, dragPrototype, animatePrototype, cellChangePrototype ) {
-      return factory( window, classie, EventEmitter, eventie, getSize, U, Cell, PrevNextButton, PageDots, Player, dragPrototype, animatePrototype, cellChangePrototype );
+    ], function( classie, EventEmitter, eventie, getSize, utils, Cell, PrevNextButton, PageDots, Player, dragPrototype, animatePrototype, cellChangePrototype ) {
+      return factory( window, classie, EventEmitter, eventie, getSize, utils, Cell, PrevNextButton, PageDots, Player, dragPrototype, animatePrototype, cellChangePrototype );
     });
   } else if ( typeof exports == 'object' ) {
     // CommonJS
@@ -848,7 +780,7 @@ return proto;
       require('wolfy87-eventemitter'),
       require('eventie'),
       require('get-size'),
-      require('./utils'),
+      require('fizzy-ui-utils'),
       require('./cell'),
       require('./prev-next-button'),
       require('./page-dots'),
@@ -860,14 +792,14 @@ return proto;
   } else {
     // browser global
     var _Flickity = window.Flickity;
-    console.log( _Flickity );
+
     window.Flickity = factory(
       window,
       window.classie,
       window.EventEmitter,
       window.eventie,
       window.getSize,
-      window.utils,
+      window.fizzyUIUtils,
       _Flickity.Cell,
       _Flickity.PrevNextButton,
       _Flickity.PageDots,
@@ -879,7 +811,7 @@ return proto;
   }
 
 }( window, function factory( window, classie, EventEmitter, eventie, getSize,
-  U, Cell, PrevNextButton, PageDots, Player, dragPrototype, animatePrototype,
+  utils, Cell, PrevNextButton, PageDots, Player, dragPrototype, animatePrototype,
   cellChangePrototype ) {
 
 'use strict';
@@ -904,7 +836,7 @@ var GUID = 0;
 var instances = {};
 
 function Flickity( element, options ) {
-  var queryElement = U.getQueryElement( element );
+  var queryElement = utils.getQueryElement( element );
   if ( !queryElement ) {
     if ( console ) {
       console.error( 'Bad element for Flickity: ' + ( queryElement || element ) );
@@ -917,7 +849,7 @@ function Flickity( element, options ) {
     this.$element = jQuery( this.element );
   }
   // options
-  this.options = U.extend( {}, this.constructor.defaults );
+  this.options = utils.extend( {}, this.constructor.defaults );
   this.option( options );
 
   // kick things off
@@ -939,7 +871,7 @@ Flickity.defaults = {
   pageDots: true,
   prevNextButtons: true,
   resizeBound: true,
-  // watching: false,
+  // watcCSS: false,
   // wrapAround: false,
   selectedAttraction: 0.025,
   leftArrowText: '←', // text for prev/next button when no SVG support
@@ -947,7 +879,7 @@ Flickity.defaults = {
 };
 
 // inherit EventEmitter
-U.extend( Flickity.prototype, EventEmitter.prototype );
+utils.extend( Flickity.prototype, EventEmitter.prototype );
 
 Flickity.prototype._create = function() {
   // add id for Flickity.data
@@ -977,12 +909,12 @@ Flickity.prototype._create = function() {
   }
   this.player = new Player( this );
 
-  if ( this.options.resizeBound || this.options.watching ) {
+  if ( this.options.resizeBound || this.options.watchCSS ) {
     eventie.bind( window, 'resize', this );
   }
 
-  if ( this.options.watching ) {
-    this.watchActivate();
+  if ( this.options.watchCSS ) {
+    this.watchCSS();
   } else {
     this.activate();
   }
@@ -994,7 +926,7 @@ Flickity.prototype._create = function() {
  * @param {Object} opts
  */
 Flickity.prototype.option = function( opts ) {
-  U.extend( this.options, opts );
+  utils.extend( this.options, opts );
 };
 
 Flickity.prototype.activate = function() {
@@ -1070,7 +1002,7 @@ Flickity.prototype.reloadCells = function() {
  * @returns {Array} items - collection of new Flickity Cells
  */
 Flickity.prototype._makeCells = function( elems ) {
-  var cellElems = U.filterFindElements( elems, this.options.cellSelector );
+  var cellElems = utils.filterFindElements( elems, this.options.cellSelector );
 
   // create new Flickity for collection
   var cells = [];
@@ -1266,7 +1198,7 @@ Flickity.prototype.select = function( index, isWrap ) {
   }
 
   if ( this.options.wrapAround || isWrap ) {
-    index = U.modulo( index, this.cells.length );
+    index = utils.modulo( index, this.cells.length );
   }
 
   if ( this.cells[ index ] ) {
@@ -1325,7 +1257,7 @@ Flickity.prototype.imagesLoaded = function() {
     // check if image is a cell
     var cell = _this.getCell( image.img );
     // otherwise get its parents
-    var cellElem = cell.element || U.getParent( image.img, '.flickity-slider > *' );
+    var cellElem = cell.element || utils.getParent( image.img, '.flickity-slider > *' );
     _this.cellSizeChange( cellElem );
   }
   imagesLoaded( this.slider ).on( 'progress', onImagesLoadedProgress );
@@ -1354,7 +1286,7 @@ Flickity.prototype.getCell = function( elem ) {
  * @returns {Array} cells - Flickity.Cells
  */
 Flickity.prototype.getCells = function( elems ) {
-  elems = U.makeArray( elems );
+  elems = utils.makeArray( elems );
   var cells = [];
   for ( var i=0, len = elems.length; i < len; i++ ) {
     var elem = elems[i];
@@ -1371,11 +1303,11 @@ Flickity.prototype.getCells = function( elems ) {
 // ----- resize ----- //
 
 Flickity.prototype.onresize = function() {
-  this.watchActivate();
+  this.watchCSS();
   this.resize();
 };
 
-U.debounceMethod( Flickity, 'onresize', 150 );
+utils.debounceMethod( Flickity, 'onresize', 150 );
 
 Flickity.prototype.resize = function() {
   if ( !this.isActive ) {
@@ -1384,7 +1316,7 @@ Flickity.prototype.resize = function() {
   this.getSize();
   // wrap values
   if ( this.options.wrapAround ) {
-    this.x = U.modulo( this.x, this.slideableWidth );
+    this.x = utils.modulo( this.x, this.slideableWidth );
   }
   this.positionCells();
   this._getWrapShiftCells();
@@ -1416,8 +1348,8 @@ var supportsConditionalCSS = Flickity.supportsConditionalCSS = ( function() {
 })();
 
 // watches the :after property, activates/deactivates
-Flickity.prototype.watchActivate = function() {
-  var watchOption = this.options.watching;
+Flickity.prototype.watchCSS = function() {
+  var watchOption = this.options.watchCSS;
   if ( !watchOption ) {
     return;
   }
@@ -1525,9 +1457,9 @@ Flickity.prototype.destroy = function() {
 
 // -------------------------- prototype -------------------------- //
 
-U.extend( Flickity.prototype, dragPrototype );
-U.extend( Flickity.prototype, animatePrototype );
-U.extend( Flickity.prototype, cellChangePrototype );
+utils.extend( Flickity.prototype, dragPrototype );
+utils.extend( Flickity.prototype, animatePrototype );
+utils.extend( Flickity.prototype, cellChangePrototype );
 
 // -------------------------- extras -------------------------- //
 
@@ -1537,12 +1469,12 @@ U.extend( Flickity.prototype, cellChangePrototype );
  * @returns {Flickity}
  */
 Flickity.data = function( elem ) {
-  elem = U.getQueryElement( elem );
+  elem = utils.getQueryElement( elem );
   var id = elem && elem.flickityGUID;
   return id && instances[ id ];
 };
 
-U.htmlInit( Flickity, 'flickity' );
+utils.htmlInit( Flickity, 'flickity' );
 
 if ( jQuery && jQuery.bridget ) {
   jQuery.bridget( 'flickity', Flickity );
@@ -1558,7 +1490,7 @@ return Flickity;
 
 }));
 
-},{"./animate":1,"./cell":3,"./cell-change":2,"./drag":4,"./page-dots":6,"./player":7,"./prev-next-button":8,"./utils":10,"desandro-classie":11,"eventie":16,"get-size":17,"wolfy87-eventemitter":19}],6:[function(require,module,exports){
+},{"./animate":1,"./cell":3,"./cell-change":2,"./drag":4,"./page-dots":6,"./player":7,"./prev-next-button":8,"desandro-classie":9,"eventie":14,"fizzy-ui-utils":15,"get-size":16,"wolfy87-eventemitter":19}],6:[function(require,module,exports){
 ( function( window, factory ) {
   'use strict';
   // universal module definition
@@ -1567,7 +1499,7 @@ return Flickity;
     // AMD
     define( [
       'eventie/eventie',
-      './utils'
+      'fizzy-ui-utils/utils'
     ], function( eventie, utils ) {
       return factory( window, eventie, utils );
     });
@@ -1576,7 +1508,7 @@ return Flickity;
     module.exports = factory(
       window,
       require('eventie'),
-      require('./utils')
+      require('fizzy-ui-utils')
     );
   } else {
     // browser global
@@ -1584,11 +1516,11 @@ return Flickity;
     window.Flickity.PageDots = factory(
       window,
       window.eventie,
-      window.utils
+      window.fizzyUIUtils
     );
   }
 
-}( window, function factory( window, eventie, U ) {
+}( window, function factory( window, eventie, utils ) {
 
 // -------------------------- PageDots -------------------------- //
 
@@ -1687,7 +1619,7 @@ PageDots.prototype.onclick = function( event ) {
   }
 
   this.parent.uiChange();
-  var index = U.indexOf( this.dots, target );
+  var index = utils.indexOf( this.dots, target );
   this.parent.select( index );
 };
 
@@ -1695,7 +1627,7 @@ return PageDots;
 
 }));
 
-},{"./utils":10,"eventie":16}],7:[function(require,module,exports){
+},{"eventie":14,"fizzy-ui-utils":15}],7:[function(require,module,exports){
 ( function( window, factory ) {
   'use strict';
   // universal module definition
@@ -1786,7 +1718,7 @@ return Player;
   if ( typeof define == 'function' && define.amd ) {
     // AMD
     define( [
-      './utils'
+      'fizzy-ui-utils/utils'
     ], function( utils ) {
       return factory( window, utils );
     });
@@ -1794,14 +1726,14 @@ return Player;
     // CommonJS
     module.exports = factory(
       window,
-      require('./utils')
+      require('fizzy-ui-utils')
     );
   } else {
     // browser global
     window.Flickity = window.Flickity || {};
     window.Flickity.PrevNextButton = factory(
       window,
-      window.utils
+      window.fizzyUIUtils
     );
   }
 
@@ -1938,591 +1870,7 @@ return PrevNextButton;
 
 }));
 
-},{"./utils":10}],9:[function(require,module,exports){
-( function( window, factory ) {
-  'use strict';
-  // universal module definition
-
-  if ( typeof define == 'function' && define.amd ) {
-    // AMD
-    define( [
-      'eventie/eventie'
-    ], function( eventie ) {
-      return factory( window, eventie );
-    });
-  } else if ( typeof exports == 'object' ) {
-    // CommonJS
-    module.exports = factory(
-      window,
-      require('eventie')
-    );
-  } else {
-    // browser global
-    window.Unipointer = factory(
-      window,
-      window.eventie
-    );
-  }
-
-}( window, function factory( window, eventie ) {
-
-'use strict';
-
-// -----  ----- //
-
-function noop() {}
-
-// -------------------------- Unipointer -------------------------- //
-
-function Unipointer() {}
-
-// trigger handler methods for events
-Unipointer.prototype.handleEvent = function( event ) {
-  var method = 'on' + event.type;
-  if ( this[ method ] ) {
-    this[ method ]( event );
-  }
-};
-
-// returns the touch that we're keeping track of
-Unipointer.prototype.getTouch = function( touches ) {
-  for ( var i=0, len = touches.length; i < len; i++ ) {
-    var touch = touches[i];
-    if ( touch.identifier == this.pointerIdentifier ) {
-      return touch;
-    }
-  }
-};
-
-// ----- bind start ----- //
-
-// works as unbinder, as you can .bindHandles( false ) to unbind
-
-/**
- * @param {Boolean} isBind - will unbind if falsey
- */
-Unipointer.prototype.bindHandles = function( isBind ) {
-  var binder;
-  if ( window.navigator.pointerEnabled ) {
-    binder = this.bindPointer;
-  } else if ( window.navigator.msPointerEnabled ) {
-    binder = this.bindMSPointer;
-  } else {
-    binder = this.bindMouseTouch;
-  }
-  // munge isBind, default to true
-  isBind = isBind === undefined ? true : !!isBind;
-  for ( var i=0, len = this.handles.length; i < len; i++ ) {
-    var handle = this.handles[i];
-    binder.call( this, handle, isBind );
-  }
-};
-
-Unipointer.prototype.bindPointer = function( handle, isBind ) {
-  // W3C Pointer Events, IE11. See https://coderwall.com/p/mfreca
-  var bindMethod = isBind ? 'bind' : 'unbind';
-  eventie[ bindMethod ]( handle, 'pointerdown', this );
-  // disable scrolling on the element
-  handle.style.touchAction = isBind ? 'none' : '';
-};
-
-Unipointer.prototype.bindMSPointer = function( handle, isBind ) {
-  // IE10 Pointer Events
-  var bindMethod = isBind ? 'bind' : 'unbind';
-  eventie[ bindMethod ]( handle, 'MSPointerDown', this );
-  // disable scrolling on the element
-  handle.style.msTouchAction = isBind ? 'none' : '';
-};
-
-Unipointer.prototype.bindMouseTouch = function( handle, isBind ) {
-  // listen for both, for devices like Chrome Pixel
-  //   which has touch and mouse events
-  var bindMethod = isBind ? 'bind' : 'unbind';
-  eventie[ bindMethod ]( handle, 'mousedown', this );
-  eventie[ bindMethod ]( handle, 'touchstart', this );
-  // TODO re-enable img.ondragstart when unbinding
-  if ( isBind ) {
-    disableImgOndragstart( handle );
-  }
-};
-
-// remove default dragging interaction on all images in IE8
-// IE8 does its own drag thing on images, which messes stuff up
-
-function noDragStart() {
-  return false;
-}
-
-// TODO replace this with a IE8 test
-var isIE8 = 'attachEvent' in document.documentElement;
-
-// IE8 only
-var disableImgOndragstart = !isIE8 ? noop : function( handle ) {
-
-  if ( handle.nodeName == 'IMG' ) {
-    handle.ondragstart = noDragStart;
-  }
-
-  var images = handle.querySelectorAll('img');
-  for ( var i=0, len = images.length; i < len; i++ ) {
-    var img = images[i];
-    img.ondragstart = noDragStart;
-  }
-};
-
-// ----- start event ----- //
-
-Unipointer.prototype.onmousedown = function( event ) {
-  // dismiss clicks from right or middle buttons
-  var button = event.button;
-  if ( button && ( button !== 0 && button !== 1 ) ) {
-    return;
-  }
-  this._pointerDown( event, event );
-};
-
-Unipointer.prototype.ontouchstart = function( event ) {
-  this._pointerDown( event, event.changedTouches[0] );
-};
-
-Unipointer.prototype.onMSPointerDown =
-Unipointer.prototype.onpointerdown = function( event ) {
-  this._pointerDown( event, event );
-};
-
-// hash of events to be bound after start event
-var postStartEvents = {
-  mousedown: [ 'mousemove', 'mouseup' ],
-  touchstart: [ 'touchmove', 'touchend', 'touchcancel' ],
-  pointerdown: [ 'pointermove', 'pointerup', 'pointercancel' ],
-  MSPointerDown: [ 'MSPointerMove', 'MSPointerUp', 'MSPointerCancel' ]
-};
-
-/**
- * pointer start
- * @param {Event} event
- * @param {Event or Touch} pointer
- */
-Unipointer.prototype._pointerDown = function( event, pointer ) {
-  // dismiss other pointers
-  if ( this.isPointerDown ) {
-    return;
-  }
-
-  this.isPointerDown = true;
-
-  // save pointer identifier to match up touch events
-  this.pointerIdentifier = pointer.pointerId !== undefined ?
-    // pointerId for pointer events, touch.indentifier for touch events
-    pointer.pointerId : pointer.identifier;
-
-  // bind move and end events
-  this._bindPostStartEvents({
-    // get proper events to match start event
-    events: postStartEvents[ event.type ],
-    // IE8 needs to be bound to document
-    node: event.preventDefault ? window : document
-  });
-
-  this.pointerDown( event, pointer );
-  this.emitEvent( 'pointerDown', [ this, event, pointer ] );
-};
-
-Unipointer.prototype.pointerDown = noop;
-
-// ----- bind/unbind ----- //
-
-Unipointer.prototype._bindPostStartEvents = function( args ) {
-  for ( var i=0, len = args.events.length; i < len; i++ ) {
-    var event = args.events[i];
-    eventie.bind( args.node, event, this );
-  }
-  // save these arguments
-  this._boundPointerEvents = args;
-};
-
-Unipointer.prototype._unbindPostStartEvents = function() {
-  var args = this._boundPointerEvents;
-  // IE8 can trigger dragEnd twice, check for _boundEvents
-  if ( !args || !args.events ) {
-    return;
-  }
-
-  for ( var i=0, len = args.events.length; i < len; i++ ) {
-    var event = args.events[i];
-    eventie.unbind( args.node, event, this );
-  }
-  delete this._boundPointerEvents;
-};
-
-// ----- move event ----- //
-
-Unipointer.prototype.onmousemove = function( event ) {
-  this._pointerMove( event, event );
-};
-
-Unipointer.prototype.onMSPointerMove =
-Unipointer.prototype.onpointermove = function( event ) {
-  if ( event.pointerId == this.pointerIdentifier ) {
-    this._pointerMove( event, event );
-  }
-};
-
-Unipointer.prototype.ontouchmove = function( event ) {
-  var touch = this.getTouch( event.changedTouches );
-  if ( touch ) {
-    this._pointerMove( event, touch );
-  }
-};
-
-/**
- * drag move
- * @param {Event} event
- * @param {Event or Touch} pointer
- */
-Unipointer.prototype._pointerMove = function( event, pointer ) {
-  this.pointerMove( event, pointer );
-  this.emitEvent( 'pointerMove', [ this, event, pointer ] );
-};
-
-Unipointer.prototype.pointerMove = noop;
-
-// ----- end event ----- //
-
-Unipointer.prototype.onmouseup = function( event ) {
-  this._pointerUp( event, event );
-};
-
-Unipointer.prototype.onMSPointerUp =
-Unipointer.prototype.onpointerup = function( event ) {
-  if ( event.pointerId == this.pointerIdentifier ) {
-    this._pointerUp( event, event );
-  }
-};
-
-Unipointer.prototype.ontouchend = function( event ) {
-  var touch = this.getTouch( event.changedTouches );
-  if ( touch ) {
-    this._pointerUp( event, touch );
-  }
-};
-
-/**
- * drag end
- * @param {Event} event
- * @param {Event or Touch} pointer
- */
-Unipointer.prototype._pointerUp = function( event, pointer ) {
-  this.isPointerDown = false;
-
-  delete this.pointerIdentifier;
-
-  // remove events
-  this._unbindPostStartEvents();
-
-  this.pointerUp( event, pointer );
-  this.emitEvent( 'pointerUp', [ this, event, pointer ] );
-};
-
-Unipointer.prototype.pointerUp = noop;
-
-// ----- cancel event ----- //
-
-// coerce to end event
-
-Unipointer.prototype.onMSPointerCancel =
-Unipointer.prototype.onpointercancel = function( event ) {
-  if ( event.pointerId == this.pointerIdentifier ) {
-    this._pointerUp( event, event );
-  }
-};
-
-Unipointer.prototype.ontouchcancel = function( event ) {
-  var touch = this.getTouch( event.changedTouches );
-  this._pointerUp( event, touch );
-};
-
-// -----  ----- //
-
-Unipointer.getPointerPoint = function( pointer ) {
-  return {
-    x: pointer.pageX !== undefined ? pointer.pageX : pointer.clientX,
-    y: pointer.pageY !== undefined ? pointer.pageY : pointer.clientY
-  };
-};
-
-// fix for IE8
-Unipointer.setPointerPoint = function( point, pointer ) {
-  point.x = pointer.pageX !== undefined ? pointer.pageX : pointer.clientX;
-  point.y = pointer.pageY !== undefined ? pointer.pageY : pointer.clientY;
-};
-
-// -----  ----- //
-
-return Unipointer;
-
-}));
-
-},{"eventie":16}],10:[function(require,module,exports){
-/**
- * utils
- */
-
-( function( window, factory ) {
-  'use strict';
-  // universal module definition
-
-  if ( typeof define == 'function' && define.amd ) {
-    // AMD
-    define( [
-      'doc-ready/doc-ready',
-      'matches-selector/matches-selector'
-    ], function( docReady, matchesSelector ) {
-      return factory( window, docReady, matchesSelector );
-    });
-  } else if ( typeof exports == 'object' ) {
-    // CommonJS
-    module.exports = factory(
-      window,
-      require('doc-ready'),
-      require('desandro-matches-selector')
-    );
-  } else {
-    // browser global
-    window.utils = factory(
-      window,
-      window.docReady,
-      window.matchesSelector
-    );
-  }
-
-}( window, function factory( window, docReady, matchesSelector ) {
-
-'use strict';
-
-var U = {};
-
-// ----- extend ----- //
-
-// extends objects
-U.extend = function( a, b ) {
-  for ( var prop in b ) {
-    a[ prop ] = b[ prop ];
-  }
-  return a;
-};
-
-// ----- modulo ----- //
-
-U.modulo = function( num, div ) {
-  return ( ( num % div ) + div ) % div;
-};
-
-// ----- isArray ----- //
-  
-var objToString = Object.prototype.toString;
-U.isArray = function( obj ) {
-  return objToString.call( obj ) == '[object Array]';
-};
-
-// ----- makeArray ----- //
-
-// turn element or nodeList into an array
-U.makeArray = function( obj ) {
-  var ary = [];
-  if ( U.isArray( obj ) ) {
-    // use object if already an array
-    ary = obj;
-  } else if ( obj && typeof obj.length == 'number' ) {
-    // convert nodeList to array
-    for ( var i=0, len = obj.length; i < len; i++ ) {
-      ary.push( obj[i] );
-    }
-  } else {
-    // array of single index
-    ary.push( obj );
-  }
-  return ary;
-};
-
-// ----- indexOf ----- //
-
-// index of helper cause IE8
-U.indexOf = Array.prototype.indexOf ? function( ary, obj ) {
-    return ary.indexOf( obj );
-  } : function( ary, obj ) {
-    for ( var i=0, len = ary.length; i < len; i++ ) {
-      if ( ary[i] === obj ) {
-        return i;
-      }
-    }
-    return -1;
-  };
-
-// ----- removeFrom ----- //
-
-U.removeFrom = function( obj, ary ) {
-  var index = U.indexOf( ary, obj );
-  if ( index != -1 ) {
-    ary.splice( index, 1 );
-  }
-};
-
-// ----- isElement ----- //
-
-// http://stackoverflow.com/a/384380/182183
-U.isElement = ( typeof HTMLElement == 'function' || typeof HTMLElement == 'object' ) ?
-  function isElementDOM2( obj ) {
-    return obj instanceof HTMLElement;
-  } :
-  function isElementQuirky( obj ) {
-    return obj && typeof obj == 'object' &&
-      obj.nodeType == 1 && typeof obj.nodeName == 'string';
-  };
-
-// ----- setText ----- //
-
-U.setText = ( function() {
-  var setTextProperty;
-  function setText( elem, text ) {
-    // only check setTextProperty once
-    setTextProperty = setTextProperty || ( document.documentElement.textContent !== undefined ? 'textContent' : 'innerText' );
-    elem[ setTextProperty ] = text;
-  }
-  return setText;
-})();
-
-// ----- getParent ----- //
-
-U.getParent = function( elem, selector ) {
-  while ( elem != document.body ) {
-    elem = elem.parentNode;
-    if ( matchesSelector( elem, selector ) ) {
-      return elem;
-    }
-  }
-};
-
-// ----- getQueryElement ----- //
-
-// use element as selector string
-U.getQueryElement = function( elem ) {
-  if ( typeof elem == 'string' ) {
-    return document.querySelector( elem );
-  }
-  return elem;
-};
-
-// ----- filterFindElements ----- //
-
-U.filterFindElements = function( elems, selector ) {
-  // make array of elems
-  elems = U.makeArray( elems );
-  var ffElems = [];
-
-  for ( var i=0, len = elems.length; i < len; i++ ) {
-    var elem = elems[i];
-    // check that elem is an actual element
-    if ( !U.isElement( elem ) ) {
-      continue;
-    }
-    // filter & find items if we have a selector
-    if ( selector ) {
-      // filter siblings
-      if ( matchesSelector( elem, selector ) ) {
-        ffElems.push( elem );
-      }
-      // find children
-      var childElems = elem.querySelectorAll( selector );
-      // concat childElems to filterFound array
-      for ( var j=0, jLen = childElems.length; j < jLen; j++ ) {
-        ffElems.push( childElems[j] );
-      }
-    } else {
-      ffElems.push( elem );
-    }
-  }
-
-  return ffElems;
-};
-
-// ----- debounceMethod ----- //
-
-U.debounceMethod = function( _class, methodName, threshold ) {
-  // original method
-  var method = _class.prototype[ methodName ];
-  var timeoutName = methodName + 'Timeout';
-
-  _class.prototype[ methodName ] = function() {
-    var timeout = this[ timeoutName ];
-    if ( timeout ) {
-      clearTimeout( timeout );
-    }
-    var args = arguments;
-
-    var _this = this;
-    this[ timeoutName ] = setTimeout( function() {
-      method.apply( _this, args );
-      delete _this[ timeoutName ];
-    }, threshold || 100 );
-  };
-};
-
-// ----- htmlInit ----- //
-
-var jQuery = window.jQuery;
-
-// http://jamesroberts.name/blog/2010/02/22/string-functions-for-javascript-trim-to-camel-case-to-dashed-and-to-underscore/
-function toDashed( str ) {
-  return str.replace( /(.)([A-Z])/g, function( match, $1, $2 ) {
-    return $1 + '-' + $2;
-  }).toLowerCase();
-}
-
-
-/**
- * allow user to initialize classes via .js-namespace class
- * htmlInit( Widget, 'widgetName' )
- * options are parsed from data-namespace-option attribute
- */
-U.htmlInit = function( WidgetClass, namespace ) {
-  docReady( function() {
-    var dashedNamespace = toDashed( namespace );
-    var elems = document.querySelectorAll( '.js-' + dashedNamespace );
-    var dataAttr = 'data-' + dashedNamespace + '-options';
-
-    for ( var i=0, len = elems.length; i < len; i++ ) {
-      var elem = elems[i];
-      var attr = elem.getAttribute( dataAttr );
-      var options;
-      try {
-        options = attr && JSON.parse( attr );
-      } catch ( error ) {
-        // log error, do not initialize
-        if ( console ) {
-          console.error( 'Error parsing ' + dataAttr + ' on ' +
-            elem.nodeName.toLowerCase() + ( elem.id ? '#' + elem.id : '' ) + ': ' +
-            error );
-        }
-        continue;
-      }
-      // initialize
-      var instance = new WidgetClass( elem, options );
-      // make available via $().data('layoutname')
-      if ( jQuery ) {
-        jQuery.data( elem, namespace, instance );
-      }
-    }
-  });
-};
-
-// -----  ----- //
-
-return U;
-
-}));
-
-},{"desandro-matches-selector":13,"doc-ready":14}],11:[function(require,module,exports){
+},{"fizzy-ui-utils":15}],9:[function(require,module,exports){
 /*!
  * classie v1.0.1
  * class helper functions
@@ -2609,7 +1957,7 @@ if ( typeof define === 'function' && define.amd ) {
 
 })( window );
 
-},{}],12:[function(require,module,exports){
+},{}],10:[function(require,module,exports){
 /*!
  * getStyleProperty v1.0.4
  * original by kangax
@@ -2666,7 +2014,7 @@ if ( typeof define === 'function' && define.amd ) {
 
 })( window );
 
-},{}],13:[function(require,module,exports){
+},{}],11:[function(require,module,exports){
 /**
  * matchesSelector v1.0.2
  * matchesSelector( element, '.selector' )
@@ -2771,7 +2119,7 @@ if ( typeof define === 'function' && define.amd ) {
 
 })( Element.prototype );
 
-},{}],14:[function(require,module,exports){
+},{}],12:[function(require,module,exports){
 /*!
  * docReady v1.0.3
  * Cross browser DOMContentLoaded event emitter
@@ -2845,7 +2193,7 @@ if ( typeof define === 'function' && define.amd ) {
 
 })( window );
 
-},{"eventie":15}],15:[function(require,module,exports){
+},{"eventie":13}],13:[function(require,module,exports){
 /*!
  * eventie v1.0.6
  * event binding helper
@@ -2929,9 +2277,272 @@ if ( typeof define === 'function' && define.amd ) {
 
 })( window );
 
-},{}],16:[function(require,module,exports){
-module.exports=require(15)
-},{"/Users/dave/projects/flickity/node_modules/doc-ready/node_modules/eventie/eventie.js":15}],17:[function(require,module,exports){
+},{}],14:[function(require,module,exports){
+module.exports=require(13)
+},{"/Users/dave/projects/flickity/node_modules/doc-ready/node_modules/eventie/eventie.js":13}],15:[function(require,module,exports){
+/**
+ * Fizzy UI utils v0.1.0
+ * MIT license
+ */
+
+/*jshint browser: true, undef: true, unused: true, strict: true */
+
+( function( window, factory ) {
+  /*global define: false, module: false, require: false */
+  'use strict';
+  // universal module definition
+
+  if ( typeof define == 'function' && define.amd ) {
+    // AMD
+    define( [
+      'doc-ready/doc-ready',
+      'matches-selector/matches-selector'
+    ], function( docReady, matchesSelector ) {
+      return factory( window, docReady, matchesSelector );
+    });
+  } else if ( typeof exports == 'object' ) {
+    // CommonJS
+    module.exports = factory(
+      window,
+      require('doc-ready'),
+      require('desandro-matches-selector')
+    );
+  } else {
+    // browser global
+    window.fizzyUIUtils = factory(
+      window,
+      window.docReady,
+      window.matchesSelector
+    );
+  }
+
+}( window, function factory( window, docReady, matchesSelector ) {
+
+'use strict';
+
+var utils = {};
+
+// ----- extend ----- //
+
+// extends objects
+utils.extend = function( a, b ) {
+  for ( var prop in b ) {
+    a[ prop ] = b[ prop ];
+  }
+  return a;
+};
+
+// ----- modulo ----- //
+
+utils.modulo = function( num, div ) {
+  return ( ( num % div ) + div ) % div;
+};
+
+// ----- isArray ----- //
+  
+var objToString = Object.prototype.toString;
+utils.isArray = function( obj ) {
+  return objToString.call( obj ) == '[object Array]';
+};
+
+// ----- makeArray ----- //
+
+// turn element or nodeList into an array
+utils.makeArray = function( obj ) {
+  var ary = [];
+  if ( utils.isArray( obj ) ) {
+    // use object if already an array
+    ary = obj;
+  } else if ( obj && typeof obj.length == 'number' ) {
+    // convert nodeList to array
+    for ( var i=0, len = obj.length; i < len; i++ ) {
+      ary.push( obj[i] );
+    }
+  } else {
+    // array of single index
+    ary.push( obj );
+  }
+  return ary;
+};
+
+// ----- indexOf ----- //
+
+// index of helper cause IE8
+utils.indexOf = Array.prototype.indexOf ? function( ary, obj ) {
+    return ary.indexOf( obj );
+  } : function( ary, obj ) {
+    for ( var i=0, len = ary.length; i < len; i++ ) {
+      if ( ary[i] === obj ) {
+        return i;
+      }
+    }
+    return -1;
+  };
+
+// ----- removeFrom ----- //
+
+utils.removeFrom = function( obj, ary ) {
+  var index = utils.indexOf( ary, obj );
+  if ( index != -1 ) {
+    ary.splice( index, 1 );
+  }
+};
+
+// ----- isElement ----- //
+
+// http://stackoverflow.com/a/384380/182183
+utils.isElement = ( typeof HTMLElement == 'function' || typeof HTMLElement == 'object' ) ?
+  function isElementDOM2( obj ) {
+    return obj instanceof HTMLElement;
+  } :
+  function isElementQuirky( obj ) {
+    return obj && typeof obj == 'object' &&
+      obj.nodeType == 1 && typeof obj.nodeName == 'string';
+  };
+
+// ----- setText ----- //
+
+utils.setText = ( function() {
+  var setTextProperty;
+  function setText( elem, text ) {
+    // only check setTextProperty once
+    setTextProperty = setTextProperty || ( document.documentElement.textContent !== undefined ? 'textContent' : 'innerText' );
+    elem[ setTextProperty ] = text;
+  }
+  return setText;
+})();
+
+// ----- getParent ----- //
+
+utils.getParent = function( elem, selector ) {
+  while ( elem != document.body ) {
+    elem = elem.parentNode;
+    if ( matchesSelector( elem, selector ) ) {
+      return elem;
+    }
+  }
+};
+
+// ----- getQueryElement ----- //
+
+// use element as selector string
+utils.getQueryElement = function( elem ) {
+  if ( typeof elem == 'string' ) {
+    return document.querySelector( elem );
+  }
+  return elem;
+};
+
+// ----- filterFindElements ----- //
+
+utils.filterFindElements = function( elems, selector ) {
+  // make array of elems
+  elems = utils.makeArray( elems );
+  var ffElems = [];
+
+  for ( var i=0, len = elems.length; i < len; i++ ) {
+    var elem = elems[i];
+    // check that elem is an actual element
+    if ( !utils.isElement( elem ) ) {
+      continue;
+    }
+    // filter & find items if we have a selector
+    if ( selector ) {
+      // filter siblings
+      if ( matchesSelector( elem, selector ) ) {
+        ffElems.push( elem );
+      }
+      // find children
+      var childElems = elem.querySelectorAll( selector );
+      // concat childElems to filterFound array
+      for ( var j=0, jLen = childElems.length; j < jLen; j++ ) {
+        ffElems.push( childElems[j] );
+      }
+    } else {
+      ffElems.push( elem );
+    }
+  }
+
+  return ffElems;
+};
+
+// ----- debounceMethod ----- //
+
+utils.debounceMethod = function( _class, methodName, threshold ) {
+  // original method
+  var method = _class.prototype[ methodName ];
+  var timeoutName = methodName + 'Timeout';
+
+  _class.prototype[ methodName ] = function() {
+    var timeout = this[ timeoutName ];
+    if ( timeout ) {
+      clearTimeout( timeout );
+    }
+    var args = arguments;
+
+    var _this = this;
+    this[ timeoutName ] = setTimeout( function() {
+      method.apply( _this, args );
+      delete _this[ timeoutName ];
+    }, threshold || 100 );
+  };
+};
+
+// ----- htmlInit ----- //
+
+var jQuery = window.jQuery;
+
+// http://jamesroberts.name/blog/2010/02/22/string-functions-for-javascript-trim-to-camel-case-to-dashed-and-to-underscore/
+function toDashed( str ) {
+  return str.replace( /(.)([A-Z])/g, function( match, $1, $2 ) {
+    return $1 + '-' + $2;
+  }).toLowerCase();
+}
+
+var console = window.console;
+/**
+ * allow user to initialize classes via .js-namespace class
+ * htmlInit( Widget, 'widgetName' )
+ * options are parsed from data-namespace-option attribute
+ */
+utils.htmlInit = function( WidgetClass, namespace ) {
+  docReady( function() {
+    var dashedNamespace = toDashed( namespace );
+    var elems = document.querySelectorAll( '.js-' + dashedNamespace );
+    var dataAttr = 'data-' + dashedNamespace + '-options';
+
+    for ( var i=0, len = elems.length; i < len; i++ ) {
+      var elem = elems[i];
+      var attr = elem.getAttribute( dataAttr );
+      var options;
+      try {
+        options = attr && JSON.parse( attr );
+      } catch ( error ) {
+        // log error, do not initialize
+        if ( console ) {
+          console.error( 'Error parsing ' + dataAttr + ' on ' +
+            elem.nodeName.toLowerCase() + ( elem.id ? '#' + elem.id : '' ) + ': ' +
+            error );
+        }
+        continue;
+      }
+      // initialize
+      var instance = new WidgetClass( elem, options );
+      // make available via $().data('layoutname')
+      if ( jQuery ) {
+        jQuery.data( elem, namespace, instance );
+      }
+    }
+  });
+};
+
+// -----  ----- //
+
+return utils;
+
+}));
+
+},{"desandro-matches-selector":11,"doc-ready":12}],16:[function(require,module,exports){
 /*!
  * getSize v1.2.2
  * measure size of elements
@@ -3183,9 +2794,475 @@ if ( typeof define === 'function' && define.amd ) {
 
 })( window );
 
-},{"desandro-get-style-property":18}],18:[function(require,module,exports){
-module.exports=require(12)
-},{"/Users/dave/projects/flickity/node_modules/desandro-get-style-property/get-style-property.js":12}],19:[function(require,module,exports){
+},{"desandro-get-style-property":17}],17:[function(require,module,exports){
+module.exports=require(10)
+},{"/Users/dave/projects/flickity/node_modules/desandro-get-style-property/get-style-property.js":10}],18:[function(require,module,exports){
+/*!
+ * Unidragger v0.1.0
+ * Draggable base class
+ * MIT license
+ */
+
+/*jshint browser: true, unused: true, undef: true, strict: true */
+
+( function( window, factory ) {
+  /*global define: false, module: false, require: false */
+  'use strict';
+  // universal module definition
+
+  if ( typeof define == 'function' && define.amd ) {
+    // AMD
+    define( [
+      'eventie/eventie'
+    ], function( eventie ) {
+      return factory( window, eventie );
+    });
+  } else if ( typeof exports == 'object' ) {
+    // CommonJS
+    module.exports = factory(
+      window,
+      require('eventie')
+    );
+  } else {
+    // browser global
+    window.Unidragger = factory(
+      window,
+      window.eventie
+    );
+  }
+
+}( window, function factory( window, eventie ) {
+
+'use strict';
+
+// -----  ----- //
+
+function noop() {}
+
+// handle IE8 prevent default
+function preventDefaultEvent( event ) {
+  if ( event.preventDefault ) {
+    event.preventDefault();
+  } else {
+    event.returnValue = false;
+  }
+}
+
+// -------------------------- Unidragger -------------------------- //
+
+function Unidragger() {}
+
+// trigger handler methods for events
+Unidragger.prototype.handleEvent = function( event ) {
+  var method = 'on' + event.type;
+  if ( this[ method ] ) {
+    this[ method ]( event );
+  }
+};
+
+// returns the touch that we're keeping track of
+Unidragger.prototype.getTouch = function( touches ) {
+  for ( var i=0, len = touches.length; i < len; i++ ) {
+    var touch = touches[i];
+    if ( touch.identifier == this.pointerIdentifier ) {
+      return touch;
+    }
+  }
+};
+
+// ----- bind start ----- //
+
+Unidragger.prototype.bindHandles = function() {
+  this._bindHandles( true );
+};
+
+Unidragger.prototype.unbindHandles = function() {
+  this._bindHandles( false );
+};
+
+/**
+ * works as unbinder, as you can .bindHandles( false ) to unbind
+ * @param {Boolean} isBind - will unbind if falsey
+ */
+Unidragger.prototype._bindHandles = function( isBind ) {
+  var binder;
+  if ( window.navigator.pointerEnabled ) {
+    binder = this.bindPointer;
+  } else if ( window.navigator.msPointerEnabled ) {
+    binder = this.bindMSPointer;
+  } else {
+    binder = this.bindMouseTouch;
+  }
+  // munge isBind, default to true
+  isBind = isBind === undefined ? true : !!isBind;
+  for ( var i=0, len = this.handles.length; i < len; i++ ) {
+    var handle = this.handles[i];
+    binder.call( this, handle, isBind );
+  }
+};
+
+Unidragger.prototype.bindPointer = function( handle, isBind ) {
+  // W3C Pointer Events, IE11. See https://coderwall.com/p/mfreca
+  var bindMethod = isBind ? 'bind' : 'unbind';
+  eventie[ bindMethod ]( handle, 'pointerdown', this );
+  // disable scrolling on the element
+  handle.style.touchAction = isBind ? 'none' : '';
+};
+
+Unidragger.prototype.bindMSPointer = function( handle, isBind ) {
+  // IE10 Pointer Events
+  var bindMethod = isBind ? 'bind' : 'unbind';
+  eventie[ bindMethod ]( handle, 'MSPointerDown', this );
+  // disable scrolling on the element
+  handle.style.msTouchAction = isBind ? 'none' : '';
+};
+
+Unidragger.prototype.bindMouseTouch = function( handle, isBind ) {
+  // listen for both, for devices like Chrome Pixel
+  //   which has touch and mouse events
+  var bindMethod = isBind ? 'bind' : 'unbind';
+  eventie[ bindMethod ]( handle, 'mousedown', this );
+  eventie[ bindMethod ]( handle, 'touchstart', this );
+  // TODO re-enable img.ondragstart when unbinding
+  if ( isBind ) {
+    disableImgOndragstart( handle );
+  }
+};
+
+// remove default dragging interaction on all images in IE8
+// IE8 does its own drag thing on images, which messes stuff up
+
+function noDragStart() {
+  return false;
+}
+
+// TODO replace this with a IE8 test
+var isIE8 = 'attachEvent' in document.documentElement;
+
+// IE8 only
+var disableImgOndragstart = !isIE8 ? noop : function( handle ) {
+
+  if ( handle.nodeName == 'IMG' ) {
+    handle.ondragstart = noDragStart;
+  }
+
+  var images = handle.querySelectorAll('img');
+  for ( var i=0, len = images.length; i < len; i++ ) {
+    var img = images[i];
+    img.ondragstart = noDragStart;
+  }
+};
+
+// ----- start event ----- //
+
+Unidragger.prototype.onmousedown = function( event ) {
+  // dismiss clicks from right or middle buttons
+  var button = event.button;
+  if ( button && ( button !== 0 && button !== 1 ) ) {
+    return;
+  }
+  this._pointerDown( event, event );
+};
+
+Unidragger.prototype.ontouchstart = function( event ) {
+  this._pointerDown( event, event.changedTouches[0] );
+};
+
+Unidragger.prototype.onMSPointerDown =
+Unidragger.prototype.onpointerdown = function( event ) {
+  this._pointerDown( event, event );
+};
+
+// hash of events to be bound after start event
+var postStartEvents = {
+  mousedown: [ 'mousemove', 'mouseup' ],
+  touchstart: [ 'touchmove', 'touchend', 'touchcancel' ],
+  pointerdown: [ 'pointermove', 'pointerup', 'pointercancel' ],
+  MSPointerDown: [ 'MSPointerMove', 'MSPointerUp', 'MSPointerCancel' ]
+};
+
+var allowTouchstartNodes = {
+  INPUT: true,
+  A: true,
+  BUTTON: true
+};
+
+/**
+ * pointer start
+ * @param {Event} event
+ * @param {Event or Touch} pointer
+ */
+Unidragger.prototype._pointerDown = function( event, pointer ) {
+  // dismiss other pointers
+  if ( this.isPointerDown ) {
+    return;
+  }
+
+  this.isPointerDown = true;
+  // save pointer identifier to match up touch events
+  this.pointerIdentifier = pointer.pointerId !== undefined ?
+    // pointerId for pointer events, touch.indentifier for touch events
+    pointer.pointerId : pointer.identifier;
+  // track to see when dragging starts
+  this.pointerDownPoint = Unidragger.getPointerPoint( pointer );
+
+  var targetNodeName = event.target.nodeName;
+  // HACK iOS, allow clicks on buttons, inputs, and links
+  var isTouchstart = event.type == 'touchstart';
+  var isTouchstartNode = allowTouchstartNodes[ targetNodeName ];
+  if ( !isTouchstart || ( isTouchstart && !isTouchstartNode ) ) {
+    preventDefaultEvent( event );
+  }
+  // kludge to blur focused inputs in dragger
+  var focused = document.activeElement;
+  if ( focused && focused.blur && focused != this.element ) {
+    focused.blur();
+  }
+  // focus element, if its not an input
+  if ( this.options.accessibility && targetNodeName != 'INPUT' ) {
+    this.element.focus();
+  }
+
+  // bind move and end events
+  this._bindPostStartEvents({
+    // get proper events to match start event
+    events: postStartEvents[ event.type ],
+    // IE8 needs to be bound to document
+    node: event.preventDefault ? window : document
+  });
+
+  this.pointerDown( event, pointer );
+};
+
+Unidragger.prototype.pointerDown = function( event, pointer ) {
+  this.emitEvent( 'pointerDown', [ this, event, pointer ] );
+};
+
+// ----- bind/unbind ----- //
+
+Unidragger.prototype._bindPostStartEvents = function( args ) {
+  for ( var i=0, len = args.events.length; i < len; i++ ) {
+    var event = args.events[i];
+    eventie.bind( args.node, event, this );
+  }
+  // save these arguments
+  this._boundPointerEvents = args;
+};
+
+Unidragger.prototype._unbindPostStartEvents = function() {
+  var args = this._boundPointerEvents;
+  // IE8 can trigger dragEnd twice, check for _boundEvents
+  if ( !args || !args.events ) {
+    return;
+  }
+
+  for ( var i=0, len = args.events.length; i < len; i++ ) {
+    var event = args.events[i];
+    eventie.unbind( args.node, event, this );
+  }
+  delete this._boundPointerEvents;
+};
+
+// ----- move event ----- //
+
+Unidragger.prototype.onmousemove = function( event ) {
+  this._pointerMove( event, event );
+};
+
+Unidragger.prototype.onMSPointerMove =
+Unidragger.prototype.onpointermove = function( event ) {
+  if ( event.pointerId == this.pointerIdentifier ) {
+    this._pointerMove( event, event );
+  }
+};
+
+Unidragger.prototype.ontouchmove = function( event ) {
+  var touch = this.getTouch( event.changedTouches );
+  if ( touch ) {
+    this._pointerMove( event, touch );
+  }
+};
+
+var hasDragStartedDefault = Unidragger.hasDragStartedDefault = function( moveVector ) {
+  return Math.abs( moveVector.x ) > 3 || Math.abs( moveVector.y ) > 3;
+};
+
+/**
+ * drag move
+ * @param {Event} event
+ * @param {Event or Touch} pointer
+ */
+Unidragger.prototype._pointerMove = function( event, pointer ) {
+  var movePoint = Unidragger.getPointerPoint( pointer );
+  var moveVector = {
+    x: movePoint.x - this.pointerDownPoint.x,
+    y: movePoint.y - this.pointerDownPoint.y
+  };
+  // function to check if pointer has moved far enough to start drag
+  var hasDragStarted = this.hasDragStarted || hasDragStartedDefault;
+  // start drag
+  if ( !this.isDragging && hasDragStarted( moveVector ) ) {
+    this._dragStart( event, pointer );
+  }
+
+  this.pointerMove( event, pointer, moveVector );
+  this._dragMove( event, pointer, moveVector );
+};
+
+Unidragger.prototype.pointerMove = function( event, pointer, moveVector ) {
+  this.emitEvent( 'pointerMove', [ this, event, pointer, moveVector ] );
+};
+
+// ----- end event ----- //
+
+Unidragger.prototype.onmouseup = function( event ) {
+  this._pointerUp( event, event );
+};
+
+Unidragger.prototype.onMSPointerUp =
+Unidragger.prototype.onpointerup = function( event ) {
+  if ( event.pointerId == this.pointerIdentifier ) {
+    this._pointerUp( event, event );
+  }
+};
+
+Unidragger.prototype.ontouchend = function( event ) {
+  var touch = this.getTouch( event.changedTouches );
+  if ( touch ) {
+    this._pointerUp( event, touch );
+  }
+};
+
+/**
+ * drag end
+ * @param {Event} event
+ * @param {Event or Touch} pointer
+ */
+Unidragger.prototype._pointerUp = function( event, pointer ) {
+  this.isPointerDown = false;
+
+  delete this.pointerIdentifier;
+
+  // remove events
+  this._unbindPostStartEvents();
+
+  if ( this.isDragging ) {
+    this._dragEnd( event, pointer );
+  } else {
+    // pointer didn't move enough for drag to start
+    this._staticClick( event, pointer );
+  }
+
+  this.pointerUp( event, pointer );
+};
+
+Unidragger.prototype.pointerUp = function( event, pointer ) {
+  this.emitEvent( 'pointerUp', [ this, event, pointer ] );
+};
+
+// ----- cancel event ----- //
+
+// coerce to end event
+
+Unidragger.prototype.onMSPointerCancel =
+Unidragger.prototype.onpointercancel = function( event ) {
+  if ( event.pointerId == this.pointerIdentifier ) {
+    this._pointerUp( event, event );
+  }
+};
+
+Unidragger.prototype.ontouchcancel = function( event ) {
+  var touch = this.getTouch( event.changedTouches );
+  this._pointerUp( event, touch );
+};
+
+// -------------------------- drag -------------------------- //
+
+// dragStart
+Unidragger.prototype._dragStart = function( event, pointer ) {
+  this.isDragging = true;
+  this.dragStartPoint = Unidragger.getPointerPoint( pointer );
+  // prevent clicks
+  this.isPreventingClicks = true;
+
+  this.dragStart( event, pointer );
+};
+
+Unidragger.prototype.dragStart = function( event, pointer ) {
+  this.emitEvent( 'dragStart', [ this, event, pointer ] );
+};
+
+// dragMove
+Unidragger.prototype._dragMove = function( event, pointer, moveVector ) {
+  // do not drag if not dragging yet
+  if ( !this.isDragging ) {
+    return;
+  }
+
+  this.dragMove( event, pointer, moveVector );
+};
+
+Unidragger.prototype.dragMove = function( event, pointer, moveVector ) {
+  this.emitEvent( 'dragMove', [ this, event, pointer, moveVector ] );
+};
+
+// dragEnd
+Unidragger.prototype._dragEnd = function( event, pointer ) {
+  // set flags
+  this.isDragging = false;
+  // re-enable clicking async
+  var _this = this;
+  setTimeout( function() {
+    delete _this.isPreventingClicks;
+  });
+
+  this.dragEnd( event, pointer );
+};
+
+Unidragger.prototype.dragEnd = function( event, pointer ) {
+  this.emitEvent( 'dragEnd', [ this, event, pointer ] );
+};
+
+// ----- onclick ----- //
+
+// handle all clicks and prevent clicks when dragging
+Unidragger.prototype.onclick = function( event ) {
+  if ( this.isPreventingClicks ) {
+    preventDefaultEvent( event );
+  }
+};
+
+// ----- staticClick ----- //
+
+// triggered after pointer down & up with no/tiny movement
+Unidragger.prototype._staticClick = function( event, pointer ) {
+  // allow click in text input
+  if ( event.target.nodeName == 'INPUT' && event.target.type == 'text' ) {
+    event.target.focus();
+  }
+  this.staticClick( event, pointer );
+};
+
+Unidragger.prototype.staticClick = function( event, pointer ) {
+  this.emitEvent( 'staticClick', [ this, event, pointer ] );
+};
+
+// -----  ----- //
+
+Unidragger.getPointerPoint = function( pointer ) {
+  return {
+    x: pointer.pageX !== undefined ? pointer.pageX : pointer.clientX,
+    y: pointer.pageY !== undefined ? pointer.pageY : pointer.clientY
+  };
+};
+
+// -----  ----- //
+
+return Unidragger;
+
+}));
+
+},{"eventie":14}],19:[function(require,module,exports){
 /*!
  * EventEmitter v4.2.11 - git.io/ee
  * Unlicense - http://unlicense.org/

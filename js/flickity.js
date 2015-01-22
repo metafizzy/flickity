@@ -16,7 +16,7 @@
       'eventEmitter/EventEmitter',
       'eventie/eventie',
       'get-size/get-size',
-      './utils',
+      'fizzy-ui-utils/utils',
       './cell',
       './prev-next-button',
       './page-dots',
@@ -24,8 +24,8 @@
       './drag',
       './animate',
       './cell-change'
-    ], function( classie, EventEmitter, eventie, getSize, U, Cell, PrevNextButton, PageDots, Player, dragPrototype, animatePrototype, cellChangePrototype ) {
-      return factory( window, classie, EventEmitter, eventie, getSize, U, Cell, PrevNextButton, PageDots, Player, dragPrototype, animatePrototype, cellChangePrototype );
+    ], function( classie, EventEmitter, eventie, getSize, utils, Cell, PrevNextButton, PageDots, Player, dragPrototype, animatePrototype, cellChangePrototype ) {
+      return factory( window, classie, EventEmitter, eventie, getSize, utils, Cell, PrevNextButton, PageDots, Player, dragPrototype, animatePrototype, cellChangePrototype );
     });
   } else if ( typeof exports == 'object' ) {
     // CommonJS
@@ -35,7 +35,7 @@
       require('wolfy87-eventemitter'),
       require('eventie'),
       require('get-size'),
-      require('./utils'),
+      require('fizzy-ui-utils'),
       require('./cell'),
       require('./prev-next-button'),
       require('./page-dots'),
@@ -54,7 +54,7 @@
       window.EventEmitter,
       window.eventie,
       window.getSize,
-      window.utils,
+      window.fizzyUIUtils,
       _Flickity.Cell,
       _Flickity.PrevNextButton,
       _Flickity.PageDots,
@@ -66,7 +66,7 @@
   }
 
 }( window, function factory( window, classie, EventEmitter, eventie, getSize,
-  U, Cell, PrevNextButton, PageDots, Player, dragPrototype, animatePrototype,
+  utils, Cell, PrevNextButton, PageDots, Player, dragPrototype, animatePrototype,
   cellChangePrototype ) {
 
 'use strict';
@@ -91,7 +91,7 @@ var GUID = 0;
 var instances = {};
 
 function Flickity( element, options ) {
-  var queryElement = U.getQueryElement( element );
+  var queryElement = utils.getQueryElement( element );
   if ( !queryElement ) {
     if ( console ) {
       console.error( 'Bad element for Flickity: ' + ( queryElement || element ) );
@@ -104,7 +104,7 @@ function Flickity( element, options ) {
     this.$element = jQuery( this.element );
   }
   // options
-  this.options = U.extend( {}, this.constructor.defaults );
+  this.options = utils.extend( {}, this.constructor.defaults );
   this.option( options );
 
   // kick things off
@@ -134,7 +134,7 @@ Flickity.defaults = {
 };
 
 // inherit EventEmitter
-U.extend( Flickity.prototype, EventEmitter.prototype );
+utils.extend( Flickity.prototype, EventEmitter.prototype );
 
 Flickity.prototype._create = function() {
   // add id for Flickity.data
@@ -181,7 +181,7 @@ Flickity.prototype._create = function() {
  * @param {Object} opts
  */
 Flickity.prototype.option = function( opts ) {
-  U.extend( this.options, opts );
+  utils.extend( this.options, opts );
 };
 
 Flickity.prototype.activate = function() {
@@ -257,7 +257,7 @@ Flickity.prototype.reloadCells = function() {
  * @returns {Array} items - collection of new Flickity Cells
  */
 Flickity.prototype._makeCells = function( elems ) {
-  var cellElems = U.filterFindElements( elems, this.options.cellSelector );
+  var cellElems = utils.filterFindElements( elems, this.options.cellSelector );
 
   // create new Flickity for collection
   var cells = [];
@@ -453,7 +453,7 @@ Flickity.prototype.select = function( index, isWrap ) {
   }
 
   if ( this.options.wrapAround || isWrap ) {
-    index = U.modulo( index, this.cells.length );
+    index = utils.modulo( index, this.cells.length );
   }
 
   if ( this.cells[ index ] ) {
@@ -512,7 +512,7 @@ Flickity.prototype.imagesLoaded = function() {
     // check if image is a cell
     var cell = _this.getCell( image.img );
     // otherwise get its parents
-    var cellElem = cell.element || U.getParent( image.img, '.flickity-slider > *' );
+    var cellElem = cell.element || utils.getParent( image.img, '.flickity-slider > *' );
     _this.cellSizeChange( cellElem );
   }
   imagesLoaded( this.slider ).on( 'progress', onImagesLoadedProgress );
@@ -541,7 +541,7 @@ Flickity.prototype.getCell = function( elem ) {
  * @returns {Array} cells - Flickity.Cells
  */
 Flickity.prototype.getCells = function( elems ) {
-  elems = U.makeArray( elems );
+  elems = utils.makeArray( elems );
   var cells = [];
   for ( var i=0, len = elems.length; i < len; i++ ) {
     var elem = elems[i];
@@ -562,7 +562,7 @@ Flickity.prototype.onresize = function() {
   this.resize();
 };
 
-U.debounceMethod( Flickity, 'onresize', 150 );
+utils.debounceMethod( Flickity, 'onresize', 150 );
 
 Flickity.prototype.resize = function() {
   if ( !this.isActive ) {
@@ -571,7 +571,7 @@ Flickity.prototype.resize = function() {
   this.getSize();
   // wrap values
   if ( this.options.wrapAround ) {
-    this.x = U.modulo( this.x, this.slideableWidth );
+    this.x = utils.modulo( this.x, this.slideableWidth );
   }
   this.positionCells();
   this._getWrapShiftCells();
@@ -712,9 +712,9 @@ Flickity.prototype.destroy = function() {
 
 // -------------------------- prototype -------------------------- //
 
-U.extend( Flickity.prototype, dragPrototype );
-U.extend( Flickity.prototype, animatePrototype );
-U.extend( Flickity.prototype, cellChangePrototype );
+utils.extend( Flickity.prototype, dragPrototype );
+utils.extend( Flickity.prototype, animatePrototype );
+utils.extend( Flickity.prototype, cellChangePrototype );
 
 // -------------------------- extras -------------------------- //
 
@@ -724,12 +724,12 @@ U.extend( Flickity.prototype, cellChangePrototype );
  * @returns {Flickity}
  */
 Flickity.data = function( elem ) {
-  elem = U.getQueryElement( elem );
+  elem = utils.getQueryElement( elem );
   var id = elem && elem.flickityGUID;
   return id && instances[ id ];
 };
 
-U.htmlInit( Flickity, 'flickity' );
+utils.htmlInit( Flickity, 'flickity' );
 
 if ( jQuery && jQuery.bridget ) {
   jQuery.bridget( 'flickity', Flickity );

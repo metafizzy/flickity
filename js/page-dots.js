@@ -6,7 +6,7 @@
     // AMD
     define( [
       'eventie/eventie',
-      './utils'
+      'fizzy-ui-utils/utils'
     ], function( eventie, utils ) {
       return factory( window, eventie, utils );
     });
@@ -15,7 +15,7 @@
     module.exports = factory(
       window,
       require('eventie'),
-      require('./utils')
+      require('fizzy-ui-utils')
     );
   } else {
     // browser global
@@ -23,11 +23,11 @@
     window.Flickity.PageDots = factory(
       window,
       window.eventie,
-      window.utils
+      window.fizzyUIUtils
     );
   }
 
-}( window, function factory( window, eventie, U ) {
+}( window, function factory( window, eventie, utils ) {
 
 // -------------------------- PageDots -------------------------- //
 
@@ -126,7 +126,7 @@ PageDots.prototype.onclick = function( event ) {
   }
 
   this.parent.uiChange();
-  var index = U.indexOf( this.dots, target );
+  var index = utils.indexOf( this.dots, target );
   this.parent.select( index );
 };
 

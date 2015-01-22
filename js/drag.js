@@ -8,7 +8,7 @@
       'classie/classie',
       'eventie/eventie',
       'unidragger/unidragger',
-      './utils'
+      'fizzy-ui-utils/utils'
     ], function( classie, eventie, Unidragger, utils ) {
       return factory( window, classie, eventie, Unidragger, utils );
     });
@@ -19,7 +19,7 @@
       require('desandro-classie'),
       require('eventie'),
       require('unidragger'),
-      require('./utils')
+      require('fizzy-ui-utils')
     );
   } else {
     // browser global
@@ -29,18 +29,18 @@
       window.classie,
       window.eventie,
       window.Unidragger,
-      window.utils
+      window.fizzyUIUtils
     );
   }
 
-}( window, function factory( window, classie, eventie, Unidragger, U ) {
+}( window, function factory( window, classie, eventie, Unidragger, utils ) {
 
 'use strict';
 
 // -------------------------- drag prototype -------------------------- //
 
 var proto = {};
-U.extend( proto, Unidragger.prototype );
+utils.extend( proto, Unidragger.prototype );
 
 // --------------------------  -------------------------- //
 
@@ -205,7 +205,7 @@ proto._getClosestResting = function( restingX, distance, increment ) {
  */
 proto.getCellDistance = function( x, index ) {
   var len = this.cells.length;
-  var cellIndex = this.options.wrapAround ? U.modulo( index, len ) : index;
+  var cellIndex = this.options.wrapAround ? utils.modulo( index, len ) : index;
   var cell = this.cells[ cellIndex ];
   if ( !cell ) {
     return null;

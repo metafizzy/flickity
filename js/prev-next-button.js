@@ -7,7 +7,7 @@
   if ( typeof define == 'function' && define.amd ) {
     // AMD
     define( [
-      './utils'
+      'fizzy-ui-utils/utils'
     ], function( utils ) {
       return factory( window, utils );
     });
@@ -15,14 +15,14 @@
     // CommonJS
     module.exports = factory(
       window,
-      require('./utils')
+      require('fizzy-ui-utils')
     );
   } else {
     // browser global
     window.Flickity = window.Flickity || {};
     window.Flickity.PrevNextButton = factory(
       window,
-      window.utils
+      window.fizzyUIUtils
     );
   }
 

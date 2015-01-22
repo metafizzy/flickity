@@ -6,7 +6,7 @@
     // AMD
     define( [
       'get-style-property/get-style-property',
-      './utils'
+      'fizzy-ui-utils/utils'
     ], function( getStyleProperty, utils ) {
       return factory( window, getStyleProperty, utils );
     });
@@ -15,7 +15,7 @@
     module.exports = factory(
       window,
       require('desandro-get-style-property'),
-      require('./utils')
+      require('fizzy-ui-utils')
     );
   } else {
     // browser global
@@ -23,11 +23,11 @@
     window.Flickity.animatePrototype = factory(
       window,
       window.getStyleProperty,
-      window.utils
+      window.fizzyUIUtils
     );
   }
 
-}( window, function factory( window, getStyleProperty, U ) {
+}( window, function factory( window, getStyleProperty, utils ) {
 
 'use strict';
 
@@ -117,7 +117,7 @@ proto.positionSlider = function() {
   var x = this.x;
   // wrap position around
   if ( this.options.wrapAround ) {
-    x = U.modulo( x, this.slideableWidth );
+    x = utils.modulo( x, this.slideableWidth );
     x = x - this.slideableWidth;
     this.shiftWrapCells( x );
   }
