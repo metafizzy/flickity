@@ -42,7 +42,7 @@
 <!-- move utils to its own repo -->
 <!-- move unipointer to its own repo -->
   <!-- try integrating Draggabilly with unipointer -->
-move imagesLoaded bit into its own package, most likely
+<!-- move imagesLoaded bit into its own package, most likely -->
 <!-- Grunt file for building dist -->
 
 ## Feature requests

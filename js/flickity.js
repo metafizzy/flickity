@@ -75,7 +75,8 @@
 var jQuery = window.jQuery;
 var getComputedStyle = window.getComputedStyle;
 var console = window.console;
-var imagesLoaded = window.imagesLoaded;
+
+function noop() {}
 
 function moveChildren( fromElem, toElem ) {
   while ( fromElem.children.length ) {
@@ -502,21 +503,9 @@ Flickity.prototype.uiChange = function() {
 
 // -------------------------- images -------------------------- //
 
-// TODO move out this repo to avoid problems with imagesLoaded dependency
-Flickity.prototype.imagesLoaded = function() {
-  if ( !this.options.imagesLoaded || !imagesLoaded ) {
-    return;
-  }
-  var _this = this;
-  function onImagesLoadedProgress( instance, image ) {
-    // check if image is a cell
-    var cell = _this.getCell( image.img );
-    // otherwise get its parents
-    var cellElem = cell.element || utils.getParent( image.img, '.flickity-slider > *' );
-    _this.cellSizeChange( cellElem );
-  }
-  imagesLoaded( this.slider ).on( 'progress', onImagesLoadedProgress );
-};
+// handled in a separate package, but included with flickity.pkgd.js
+// https://github.com/metafizzy/flickity-imagesloaded
+Flickity.prototype.imagesLoaded = noop;
 
 // -------------------------- get cells -------------------------- //
 

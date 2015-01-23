@@ -87,8 +87,6 @@ function addBanner( str ) {
 }
 
 gulp.task( 'requirejs', function() {
-  // regex for requireJS definition
-  var reDefinition = /define\(\s*'flickity\/js\/flickity',\s*\[[\'\/\w\.,\-\s]+\]/i;
   var banner = getBanner();
   // HACK src is not needed
   // should refactor rjsOptimize to produce src
@@ -98,7 +96,8 @@ gulp.task( 'requirejs', function() {
       optimize: 'none',
       include: [
         'jquery-bridget/jquery.bridget',
-        'flickity/js/flickity'
+        'flickity/js/flickity',
+        'flickity-imagesloaded/flickity-imagesloaded'
       ],
       paths: {
         flickity: '../',
@@ -106,14 +105,7 @@ gulp.task( 'requirejs', function() {
       }
     }) )
     // remove named module
-    // get RequireJS definition
-    .pipe( replace( reDefinition, function( definition ) {
-      // remove named module
-      return definition.replace( "'flickity/js/flickity',", '')
-        // add name modules to dependencies
-        // ./animate -> packery/js/animate
-        .replace( /'.\//g, "'flickity/js/" );
-    }) )
+    .pipe( replace( "'flickity-imagesloaded/flickity-imagesloaded',", '' ) )
     // add banner
     .pipe( addBanner( banner ) )
     .pipe( rename('flickity.pkgd.js') )
