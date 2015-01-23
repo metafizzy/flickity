@@ -65,7 +65,22 @@ proto.hasDragStarted = function( moveVector ) {
 
 // -------------------------- pointer events -------------------------- //
 
+var touchStartEvents = {
+  touchstart: true,
+  MSPointerDown: true
+};
+
 proto.pointerDown = function( event, pointer ) {
+  // kludge to blur focused inputs in dragger
+  var focused = document.activeElement;
+  if ( focused && focused.blur && focused != this.element ) {
+    focused.blur();
+  }
+  // focus element, if not touch, and its not an input
+  if ( this.options.accessibility && !touchStartEvents[ event.type ] &&
+      event.target.nodeName != 'INPUT' ) {
+    this.element.focus();
+  }
   // stop if it was moving
   this.velocity = 0;
   // stop auto play
