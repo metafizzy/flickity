@@ -88,7 +88,7 @@ proto.animate = function() {
 
   var previousX = this.x;
 
-  this.updatePhysics();
+  this.integratePhysics();
   this.positionSlider();
   this.settle( previousX );
   // animate next frame
@@ -201,7 +201,7 @@ proto._unshiftCells = function( cells ) {
 
 // -------------------------- physics -------------------------- //
 
-proto.updatePhysics = function() {
+proto.integratePhysics = function() {
   this.velocity += this.accel;
   this.x += this.velocity;
   this.velocity *= this.getFrictionFactor();
