@@ -68,9 +68,6 @@ proto.hasDragStarted = function( moveVector ) {
 proto.pointerDown = function( event, pointer ) {
   // stop if it was moving
   this.velocity = 0;
-
-  this.touchVerticalScrollStart( event, pointer );
-
   // stop auto play
   this.player.stop();
   classie.add( this.viewport, 'is-pointer-down' );
@@ -78,11 +75,12 @@ proto.pointerDown = function( event, pointer ) {
 };
 
 proto.pointerMove = function( event, pointer, moveVector ) {
-  this.touchVerticalScrollMove( event, pointer );
+  this.touchVerticalScrollMove( event, pointer, moveVector );
   this.dispatchEvent( 'pointerMove', event, [ pointer, moveVector ] );
 };
 
 proto.pointerUp = function( event, pointer ) {
+  delete this.isTouchScrolling;
   classie.remove( this.viewport, 'is-pointer-down' );
   this.dispatchEvent( 'pointerUp', event, [ pointer ] );
 };
@@ -90,10 +88,6 @@ proto.pointerUp = function( event, pointer ) {
 // -------------------------- vertical scroll -------------------------- //
 
 var touchScrollEvents = {
-  // start events
-  // mousedown: true,
-  touchstart: true,
-  MSPointerDown: true,
   // move events
   // mousemove: true,
   touchmove: true,
@@ -106,17 +100,20 @@ function getPointerWindowY( pointer ) {
   return pointerPoint.y - window.pageYOffset;
 }
 
-proto.touchVerticalScrollStart = function( event, pointer ) {
+proto.touchVerticalScrollMove = function( event, pointer, moveVector ) {
   if ( !this.options.touchVerticalScroll || !touchScrollEvents[ event.type ] ) {
     return;
   }
-  // scroll & pointerY when started
-  this.startScrollY = window.pageYOffset;
-  this.pointerWindowStartY = getPointerWindowY( pointer );
-};
-
-proto.touchVerticalScrollMove = function( event, pointer ) {
-  if ( !this.options.touchVerticalScroll || !touchScrollEvents[ event.type ] ) {
+  // don't start vertical scrolling until pointer has moved 16 pixels in a direction
+  if ( !this.isTouchScrolling && Math.abs( moveVector.y ) > 16 ) {
+    // start touch vertical scrolling
+    // scroll & pointerY when started
+    this.startScrollY = window.pageYOffset;
+    this.pointerWindowStartY = getPointerWindowY( pointer );
+    // start scroll animation
+    this.isTouchScrolling = true;
+  }
+  if ( !this.isTouchScrolling ) {
     return;
   }
   // scroll window
