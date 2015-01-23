@@ -164,6 +164,10 @@ proto.dragEndRestingSelect = function() {
   // use closer resting for wrap-around
   var index = positiveResting.distance < negativeResting.distance ?
     positiveResting.index : negativeResting.index;
+  // for contain, force boost if delta is not greater than 1
+  if ( this.options.contain && !this.options.wrapAround ) {
+    index = Math.abs( index - this.selectedIndex ) <= 1 ? this.selectedIndex : index;
+  }
   return index;
 };
 
@@ -179,7 +183,7 @@ proto._getClosestResting = function( restingX, distance, increment ) {
   var index = this.selectedIndex;
   var minDistance = Infinity;
   var condition = this.options.contain && !this.options.wrapAround ?
-    // if fit-content, keep going if distance is equal to minDistance
+    // if contain, keep going if distance is equal to minDistance
     function( d, md ) { return d <= md; } : function( d, md ) { return d < md; };
   while ( condition( distance, minDistance ) ) {
     // measure distance to next cell

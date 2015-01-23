@@ -35,7 +35,7 @@
   - set to height of item
   - allow user to set with CSS -->
 
-contain doesn't boost from 1 to 2
+<!-- contain doesn't boost from 1 to 2 -->
 
 <!-- rename updatePhysics to integratePhysics -->
 
