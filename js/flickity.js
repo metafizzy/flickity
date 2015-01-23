@@ -127,6 +127,7 @@ Flickity.defaults = {
   pageDots: true,
   prevNextButtons: true,
   resizeBound: true,
+  touchVerticalScroll: true,
   // watcCSS: false,
   // wrapAround: false,
   selectedAttraction: 0.025,

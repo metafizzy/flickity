@@ -68,6 +68,9 @@ proto.hasDragStarted = function( moveVector ) {
 proto.pointerDown = function( event, pointer ) {
   // stop if it was moving
   this.velocity = 0;
+
+  this.touchVerticalScrollStart( event, pointer );
+
   // stop auto play
   this.player.stop();
   classie.add( this.viewport, 'is-pointer-down' );
@@ -75,12 +78,51 @@ proto.pointerDown = function( event, pointer ) {
 };
 
 proto.pointerMove = function( event, pointer, moveVector ) {
+  this.touchVerticalScrollMove( event, pointer );
   this.dispatchEvent( 'pointerMove', event, [ pointer, moveVector ] );
 };
 
 proto.pointerUp = function( event, pointer ) {
   classie.remove( this.viewport, 'is-pointer-down' );
   this.dispatchEvent( 'pointerUp', event, [ pointer ] );
+};
+
+// -------------------------- vertical scroll -------------------------- //
+
+var touchScrollEvents = {
+  // start events
+  // mousedown: true,
+  touchstart: true,
+  MSPointerDown: true,
+  // move events
+  // mousemove: true,
+  touchmove: true,
+  MSPointerMove: true
+};
+
+// position of pointer, relative to window
+function getPointerWindowY( pointer ) {
+  var pointerPoint = Unidragger.getPointerPoint( pointer );
+  return pointerPoint.y - window.pageYOffset;
+}
+
+proto.touchVerticalScrollStart = function( event, pointer ) {
+  if ( !this.options.touchVerticalScroll || !touchScrollEvents[ event.type ] ) {
+    return;
+  }
+  // scroll & pointerY when started
+  this.startScrollY = window.pageYOffset;
+  this.pointerWindowStartY = getPointerWindowY( pointer );
+};
+
+proto.touchVerticalScrollMove = function( event, pointer ) {
+  if ( !this.options.touchVerticalScroll || !touchScrollEvents[ event.type ] ) {
+    return;
+  }
+  // scroll window
+  var scrollDelta = this.pointerWindowStartY - getPointerWindowY( pointer );
+  var scrollY = this.startScrollY + scrollDelta;
+  window.scroll( window.pageXOffset, scrollY );
 };
 
 // -------------------------- dragging -------------------------- //
