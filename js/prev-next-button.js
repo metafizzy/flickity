@@ -88,8 +88,11 @@ PrevNextButton.prototype._create = function() {
   // listen to tap event
   function onTap() {
     _this.onTap.apply( _this, arguments );
-  };
+  }
   this.tapListener = new TapListener( this.element, onTap );
+  this.tapListener.onPointerDown = function( event, pointer ) {
+    _this.parent.onChildUIPointerDown( event, pointer );
+  };
 
 };
 

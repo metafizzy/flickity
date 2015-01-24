@@ -652,6 +652,13 @@ Flickity.prototype.onmouseleave = function() {
   eventie.unbind( this.element, 'mouseleave', this );
 };
 
+// ----- onChildUIPointerDown ----- //
+
+Flickity.prototype.onChildUIPointerDown = function( event ) {
+  event.preventDefault();
+  this.pointerDownFocus( event );
+};
+
 // -------------------------- destroy -------------------------- //
 
 // deactivate all Flickity functionality, but keep stuff available

@@ -65,10 +65,6 @@ proto.hasDragStarted = function( moveVector ) {
 
 // -------------------------- pointer events -------------------------- //
 
-var touchStartEvents = {
-  touchstart: true,
-  MSPointerDown: true
-};
 
 proto.pointerDown = function( event, pointer ) {
   // kludge to blur focused inputs in dragger
@@ -76,17 +72,26 @@ proto.pointerDown = function( event, pointer ) {
   if ( focused && focused.blur && focused != this.element ) {
     focused.blur();
   }
-  // focus element, if not touch, and its not an input
-  if ( this.options.accessibility && !touchStartEvents[ event.type ] &&
-      event.target.nodeName != 'INPUT' ) {
-    this.element.focus();
-  }
+  this.pointerDownFocus( event );
   // stop if it was moving
   this.velocity = 0;
   // stop auto play
   this.player.stop();
   classie.add( this.viewport, 'is-pointer-down' );
   this.dispatchEvent( 'pointerDown', event, [ pointer ] );
+};
+
+var touchStartEvents = {
+  touchstart: true,
+  MSPointerDown: true
+};
+
+proto.pointerDownFocus = function( event ) {
+  // focus element, if not touch, and its not an input
+  if ( this.options.accessibility && !touchStartEvents[ event.type ] &&
+      event.target.nodeName != 'INPUT' ) {
+    this.element.focus();
+  }
 };
 
 proto.pointerMove = function( event, pointer, moveVector ) {

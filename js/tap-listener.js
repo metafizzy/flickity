@@ -134,11 +134,6 @@ TapListener.prototype.pointerDown = function( event, pointer ) {
     return;
   }
 
-  // prevent iOS from doing psuedo-clicks
-  if ( event.type == 'touchstart' ) {
-    event.preventDefault();
-  }
-
   this.isPointerDown = true;
   // save pointer identifier to match up touch events
   this.pointerIdentifier = pointer.pointerId !== undefined ?
@@ -152,6 +147,11 @@ TapListener.prototype.pointerDown = function( event, pointer ) {
     // IE8 needs to be bound to document
     node: event.preventDefault ? window : document
   });
+
+  // HACK, should emit pointerDown event
+  if ( this.onPointerDown ) {
+    this.onPointerDown( event, pointer );
+  }
 };
 
 // ----- bind/unbind ----- //
