@@ -1,5 +1,7 @@
 ## To do
 
+Make Unipointer class to power TapListener and Unidragger
+
 ## Feature requests
 
 isGroupPaging
