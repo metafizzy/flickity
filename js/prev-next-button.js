@@ -7,14 +7,16 @@
   if ( typeof define == 'function' && define.amd ) {
     // AMD
     define( [
+      './tap-listener',
       'fizzy-ui-utils/utils'
-    ], function( utils ) {
-      return factory( window, utils );
+    ], function( TapListener, utils ) {
+      return factory( window, TapListener, utils );
     });
   } else if ( typeof exports == 'object' ) {
     // CommonJS
     module.exports = factory(
       window,
+      require('./tap-listener'),
       require('fizzy-ui-utils')
     );
   } else {
@@ -22,11 +24,12 @@
     window.Flickity = window.Flickity || {};
     window.Flickity.PrevNextButton = factory(
       window,
+      window.TapListener,
       window.fizzyUIUtils
     );
   }
 
-}( window, function factory( window, utils ) {
+}( window, function factory( window, TapListener, utils ) {
 
 'use strict';
 
@@ -82,10 +85,11 @@ PrevNextButton.prototype._create = function() {
   };
   this.parent.on( 'cellSelect', this.onselect );
 
-  // listen to click event
-  this.element.onclick = function() {
-    _this.onclick();
+  // listen to tap event
+  function onTap() {
+    _this.onTap.apply( _this, arguments );
   };
+  this.tapListener = new TapListener( this.element, onTap );
 
 };
 
@@ -119,7 +123,7 @@ PrevNextButton.prototype.setArrowText = function() {
   utils.setText( this.element, arrowText );
 };
 
-PrevNextButton.prototype.onclick = function() {
+PrevNextButton.prototype.onTap = function() {
   if ( !this.isEnabled ) {
     return;
   }
@@ -153,6 +157,11 @@ PrevNextButton.prototype.update = function() {
   var boundIndex = this.isPrevious ? 0 : this.parent.cells.length - 1;
   var method = this.parent.selectedIndex == boundIndex ? 'disable' : 'enable';
   this[ method ]();
+};
+
+PrevNextButton.prototype.destroy = function() {
+  this.deactivate();
+  this.tapListener.destroy();
 };
 
 return PrevNextButton;

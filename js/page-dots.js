@@ -6,6 +6,7 @@
     // AMD
     define( [
       'eventie/eventie',
+      './tap-listener',
       'fizzy-ui-utils/utils'
     ], function( eventie, utils ) {
       return factory( window, eventie, utils );
@@ -15,6 +16,7 @@
     module.exports = factory(
       window,
       require('eventie'),
+      require('./tap-listener'),
       require('fizzy-ui-utils')
     );
   } else {
@@ -23,11 +25,12 @@
     window.Flickity.PageDots = factory(
       window,
       window.eventie,
+      window.TapListener,
       window.fizzyUIUtils
     );
   }
 
-}( window, function factory( window, eventie, utils ) {
+}( window, function factory( window, eventie, TapListener, utils ) {
 
 // -------------------------- PageDots -------------------------- //
 
@@ -51,7 +54,12 @@ PageDots.prototype._create = function() {
   };
   this.parent.on( 'cellSelect', this.onselect );
 
-  eventie.bind( this.holder, 'click', this );
+
+  // listen to tap event
+  function onTap() {
+    _this.onTap.apply( _this, arguments );
+  }
+  this.tapListener = new TapListener( this.holder, onTap );
 };
 
 PageDots.prototype.activate = function() {
@@ -118,7 +126,7 @@ PageDots.prototype.handleEvent = function( event ) {
   }
 };
 
-PageDots.prototype.onclick = function( event ) {
+PageDots.prototype.onTap = function( event ) {
   var target = event.target;
   // only care about dot clicks
   if ( target.nodeName != 'LI' ) {

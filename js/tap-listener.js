@@ -1,3 +1,8 @@
+/*!
+ * Tap listener
+ * listens to taps
+ */
+
 ( function( window, factory ) {
   'use strict';
   // universal module definition
@@ -5,8 +10,7 @@
   if ( typeof define == 'function' && define.amd ) {
     // AMD
     define( [
-      'eventie/eventie',
-      'fizzy-ui-utils/utils'
+      'eventie/eventie'
     ], function( eventie, utils ) {
       return factory( window, eventie, utils );
     });
@@ -14,37 +18,48 @@
     // CommonJS
     module.exports = factory(
       window,
-      require('eventie'),
-      require('fizzy-ui-utils')
+      require('eventie')
     );
   } else {
     // browser global
-    window.pointerTap = factory(
+    window.TapListener = factory(
       window,
-      window.eventie,
-      window.fizzyUIUtils
+      window.eventie
     );
   }
 
-}( window, function factory( window, eventie, utils ) {
+}( window, function factory( window, eventie ) {
 
 'use strict';
 
-// --------------------------  -------------------------- //
+function getPointerPoint( pointer ) {
+  return {
+    x: pointer.pageX !== undefined ? pointer.pageX : pointer.clientX,
+    y: pointer.pageY !== undefined ? pointer.pageY : pointer.clientY
+  };
+}
 
-// --------------------------  -------------------------- //
+// --------------------------  TapListener -------------------------- //
 
 function TapListener( elem, callback ) {
   this.element = elem;
   this.callback = callback;
-  this._bindStart( true );
+  this.bindStartEvent();
 }
+
+TapListener.prototype.bindStartEvent = function() {
+  this._bindStartEvent( true );
+};
+
+TapListener.prototype.unbindStartEvent = function() {
+  this._bindStartEvent( false );
+};
 
 /**
  * works as unbinder, as you can ._bindStart( false ) to unbind
  * @param {Boolean} isBind - will unbind if falsey
  */
-TapListener.prototype._bindStart = function( isBind ) {
+TapListener.prototype._bindStartEvent = function( isBind ) {
   // munge isBind, default to true
   isBind = isBind === undefined ? true : !!isBind;
   var bindMethod = isBind ? 'bind' : 'unbind';
@@ -88,24 +103,24 @@ TapListener.prototype.onmousedown = function( event ) {
   if ( button && ( button !== 0 && button !== 1 ) ) {
     return;
   }
-  this._pointerDown( event, event );
+  this.pointerDown( event, event );
 };
 
 TapListener.prototype.ontouchstart = function( event ) {
-  this._pointerDown( event, event.changedTouches[0] );
+  this.pointerDown( event, event.changedTouches[0] );
 };
 
 TapListener.prototype.onMSPointerDown =
 TapListener.prototype.onpointerdown = function( event ) {
-  this._pointerDown( event, event );
+  this.pointerDown( event, event );
 };
 
 // hash of events to be bound after start event
 var postStartEvents = {
-  mousedown: [ 'mousemove', 'mouseup' ],
-  touchstart: [ 'touchmove', 'touchend', 'touchcancel' ],
-  pointerdown: [ 'pointermove', 'pointerup', 'pointercancel' ],
-  MSPointerDown: [ 'MSPointerMove', 'MSPointerUp', 'MSPointerCancel' ]
+  mousedown: [ 'mouseup' ],
+  touchstart: [ 'touchend', 'touchcancel' ],
+  pointerdown: [ 'pointerup', 'pointercancel' ],
+  MSPointerDown: [ 'MSPointerUp', 'MSPointerCancel' ]
 };
 
 /**
@@ -113,7 +128,7 @@ var postStartEvents = {
  * @param {Event} event
  * @param {Event or Touch} pointer
  */
-TapListener.prototype._pointerDown = function( event, pointer ) {
+TapListener.prototype.pointerDown = function( event, pointer ) {
   // dismiss other pointers
   if ( this.isPointerDown ) {
     return;
@@ -124,14 +139,13 @@ TapListener.prototype._pointerDown = function( event, pointer ) {
     event.preventDefault();
   }
 
-  // console.log('pointer down');
   this.isPointerDown = true;
   // save pointer identifier to match up touch events
   this.pointerIdentifier = pointer.pointerId !== undefined ?
     // pointerId for pointer events, touch.indentifier for touch events
     pointer.pointerId : pointer.identifier;
 
-  // bind move and end events
+  // bind end and cancel events
   this._bindPostStartEvents({
     // get proper events to match start event
     events: postStartEvents[ event.type ],
@@ -165,57 +179,23 @@ TapListener.prototype._unbindPostStartEvents = function() {
   delete this._boundPointerEvents;
 };
 
-// ----- move event ----- //
-
-TapListener.prototype.onmousemove = function( event ) {
-  this._pointerMove( event, event );
-};
-
-TapListener.prototype.onMSPointerMove =
-TapListener.prototype.onpointermove = function( event ) {
-  if ( event.pointerId == this.pointerIdentifier ) {
-    this._pointerMove( event, event );
-  }
-};
-
-TapListener.prototype.ontouchmove = function( event ) {
-  var touch = this.getTouch( event.changedTouches );
-  if ( touch ) {
-    this._pointerMove( event, touch );
-  }
-};
-
-/**
- * drag move
- * @param {Event} event
- * @param {Event or Touch} pointer
- */
-TapListener.prototype._pointerMove = function( event, pointer ) {
-  // var movePoint = getPointerPoint( pointer );
-  // var moveVector = {
-  //   x: movePoint.x - this.pointerDownPoint.x,
-  //   y: movePoint.y - this.pointerDownPoint.y
-  // };
-  // TODO detect if pointer has moved outside or inside element
-};
-
 // ----- end event ----- //
 
 TapListener.prototype.onmouseup = function( event ) {
-  this._pointerUp( event, event );
+  this.pointerUp( event, event );
 };
 
 TapListener.prototype.onMSPointerUp =
 TapListener.prototype.onpointerup = function( event ) {
   if ( event.pointerId == this.pointerIdentifier ) {
-    this._pointerUp( event, event );
+    this.pointerUp( event, event );
   }
 };
 
 TapListener.prototype.ontouchend = function( event ) {
   var touch = this.getTouch( event.changedTouches );
   if ( touch ) {
-    this._pointerUp( event, touch );
+    this.pointerUp( event, touch );
   }
 };
 
@@ -224,18 +204,20 @@ TapListener.prototype.ontouchend = function( event ) {
  * @param {Event} event
  * @param {Event or Touch} pointer
  */
-TapListener.prototype._pointerUp = function( event, pointer ) {
+TapListener.prototype.pointerUp = function( event, pointer ) {
   this.pointerDone();
   // console.log('pointer up');
   var pointerPoint = getPointerPoint( pointer );
   var boundingRect = this.element.getBoundingClientRect();
-  var isInside = pointerPoint.x >= boundingRect.left &&
-    pointerPoint.x <= boundingRect.right &&
-    pointerPoint.y >= boundingRect.top &&
-    pointerPoint.y <= boundingRect.bottom;
-
+  var scrollX = window.pageXOffset;
+  var scrollY = window.pageYOffset;
+  var isInside = pointerPoint.x >= boundingRect.left + scrollX &&
+    pointerPoint.x <= boundingRect.right + scrollX &&
+    pointerPoint.y >= boundingRect.top + scrollY &&
+    pointerPoint.y <= boundingRect.bottom + scrollY;
   // trigger callback if pointer is inside element
   if ( isInside ) {
+    // console.log( event.target );
     this.callback.call( this.element, event, pointer );
   }
 };
@@ -248,7 +230,6 @@ TapListener.prototype.pointerDone = function() {
   // remove events
   this._unbindPostStartEvents();
 };
-
 
 // ----- cancel event ----- //
 
@@ -266,28 +247,15 @@ TapListener.prototype.ontouchcancel = function( event ) {
   }
 };
 
+// ----- destroy ----- //
 
-// -----  ----- //
-
-var pointerTap = {};
-
-pointerTap.bind = function( elem, callback ) {
-  new TapListener( elem, callback );
+TapListener.prototype.destroy = function() {
+  this.pointerDone();
+  this.unbindStartEvent();
 };
 
 // -----  ----- //
 
-function getPointerPoint( pointer ) {
-  return {
-    x: pointer.pageX !== undefined ? pointer.pageX : pointer.clientX,
-    y: pointer.pageY !== undefined ? pointer.pageY : pointer.clientY
-  };
-}
-
-window.TapListener = TapListener;
-
-return pointerTap;
-
-
+return TapListener;
 
 }));
