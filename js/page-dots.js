@@ -49,7 +49,7 @@ PageDots.prototype._create = function() {
   this.onselect = function() {
     _this.updateSelected();
   };
-  this.parent.on( 'select', this.onselect );
+  this.parent.on( 'cellSelect', this.onselect );
 
   eventie.bind( this.holder, 'click', this );
 };

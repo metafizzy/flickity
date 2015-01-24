@@ -462,7 +462,7 @@ Flickity.prototype.select = function( index, isWrap ) {
     this.selectedIndex = index;
     this.setSelectedCell();
     this.startAnimation();
-    this.dispatchEvent('select');
+    this.dispatchEvent('cellSelect');
   }
 };
 

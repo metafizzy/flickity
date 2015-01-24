@@ -80,7 +80,7 @@ PrevNextButton.prototype._create = function() {
   this.onselect = function() {
     _this.update();
   };
-  this.parent.on( 'select', this.onselect );
+  this.parent.on( 'cellSelect', this.onselect );
 
   // listen to click event
   this.element.onclick = function() {
