@@ -57,7 +57,6 @@ TapListener.prototype.unbindStartEvent = function() {
  * @param {Event or Touch} pointer
  */
 TapListener.prototype.pointerUp = function( event, pointer ) {
-  // console.log('pointer up');
   var pointerPoint = Unipointer.getPointerPoint( pointer );
   var boundingRect = this.element.getBoundingClientRect();
   var scrollX = window.pageXOffset;

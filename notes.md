@@ -1,6 +1,6 @@
 ## To do
 
-Make Unipointer class to power TapListener and Unidragger
+Move TapListener class to its own repo
 
 ## Feature requests
 
