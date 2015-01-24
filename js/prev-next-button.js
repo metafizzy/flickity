@@ -90,9 +90,9 @@ PrevNextButton.prototype._create = function() {
     _this.onTap.apply( _this, arguments );
   }
   this.tapListener = new TapListener( this.element, onTap );
-  this.tapListener.onPointerDown = function( event, pointer ) {
+  this.tapListener.on( 'pointerDown', function( tapLsntr, event, pointer ) {
     _this.parent.onChildUIPointerDown( event, pointer );
-  };
+  });
 
 };
 
