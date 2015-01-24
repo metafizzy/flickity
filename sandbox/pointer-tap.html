@@ -1,0 +1,47 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width" />
+
+  <title>pointer tap</title>
+
+  <style>
+  .button1 {
+    width: 200px;
+    height: 100px;
+    background: red;
+  }
+  
+  p { margin: 5px 0;}
+  </style>
+
+</head>
+<body>
+
+  <h1>pointer tap</h1>
+
+<div class="button1"></div>
+
+<script src="../bower_components/get-style-property/get-style-property.js"></script>
+<script src="../bower_components/get-size/get-size.js"></script>
+<script src="../bower_components/eventEmitter/EventEmitter.js"></script>
+<script src="../bower_components/eventie/eventie.js"></script>
+<script src="../bower_components/fizzy-ui-utils/utils.js"></script>
+
+<script src="../js/pointer-tap.js"></script>
+
+<script>
+window.onload = function() {
+
+  new TapListener( document.querySelector('.button1'), function() {
+    var p = document.createElement('p');
+    fizzyUIUtils.setText( p, 'TAP' );
+    document.body.appendChild( p );
+  });
+
+};
+</script>
+
+</body>
+</html>
