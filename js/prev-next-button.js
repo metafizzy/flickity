@@ -68,17 +68,19 @@ PrevNextButton.prototype._create = function() {
   var leftDirection = this.parent.options.rightToLeft ? 1 : -1;
   this.isLeft = this.direction == leftDirection;
 
-  this.element = document.createElement('button');
-  this.element.className = 'flickity-prev-next-button';
-  this.element.className += this.isPrevious ? ' previous' : ' next';
+  var element = this.element = document.createElement('button');
+  element.className = 'flickity-prev-next-button';
+  element.className += this.isPrevious ? ' previous' : ' next';
+  // prevent button from submitting form http://stackoverflow.com/a/10836076/182183
+  element.type = 'button';
   // create arrow
   if ( supportsInlineSVG() ) {
     var svg = this.createSVG();
-    this.element.appendChild( svg );
+    element.appendChild( svg );
   } else {
     // SVG not supported, set button text
     this.setArrowText();
-    this.element.className += ' no-svg';
+    element.className += ' no-svg';
   }
   // update on select
   var _this = this;
