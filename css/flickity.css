@@ -42,6 +42,14 @@
           transform: translateY(-50%);
 }
 
+.flickity-prev-next-button:focus {
+  outline: none;
+}
+
+.flickity-prev-next-button:hover {
+  background: white;
+}
+
 .flickity-prev-next-button.previous { left: 10px; }
 .flickity-prev-next-button.next { right: 10px; }
 
