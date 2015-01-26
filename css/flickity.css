@@ -42,8 +42,7 @@
           transform: translateY(-50%);
 }
 
-.flickity-prev-next-button:active, 
-.flickity-prev-next-button:hover {
+.flickity-prev-next-button:focus {
   outline: none;
 }
 
