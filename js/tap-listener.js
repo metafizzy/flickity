@@ -34,21 +34,26 @@
 
 // --------------------------  TapListener -------------------------- //
 
-function TapListener( elem, callback ) {
-  this.element = elem;
-  this.callback = callback;
-  this.bindStartEvent();
-}
+function TapListener() {}
 
 // inherit Unipointer & EventEmitter
 TapListener.prototype = new Unipointer();
 
-TapListener.prototype.bindStartEvent = function() {
-  this._bindStartEvent( this.element, true );
+/**
+ * bind tap event to element
+ * @param {Element} elem
+ */
+TapListener.prototype.bindTap = function( elem ) {
+  if ( this.element ) {
+    this.unbindTap();
+  }
+  this.element = elem;
+  this._bindStartEvent( elem, true );
 };
 
-TapListener.prototype.unbindStartEvent = function() {
-  this._bindStartEvent( this.element, false );
+TapListener.prototype.unbindTap = function() {
+  this._bindStartEvent( this.element, true );
+  delete this.element;
 };
 
 /**
@@ -67,14 +72,13 @@ TapListener.prototype.pointerUp = function( event, pointer ) {
     pointerPoint.y <= boundingRect.bottom + scrollY;
   // trigger callback if pointer is inside element
   if ( isInside ) {
-    // console.log( event.target );
-    this.callback.call( this.element, event, pointer );
+    this.emitEvent( 'tap', [ this, event, pointer ] );
   }
 };
 
 TapListener.prototype.destroy = function() {
   this.pointerDone();
-  this.unbindStartEvent();
+  this.unbindTap();
 };
 
 // -----  ----- //

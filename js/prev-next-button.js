@@ -77,23 +77,22 @@ PrevNextButton.prototype._create = function() {
     this.setArrowText();
     this.element.className += ' no-svg';
   }
-
   // update on select
   var _this = this;
   this.onselect = function() {
     _this.update();
   };
   this.parent.on( 'cellSelect', this.onselect );
-
-  // listen to tap event
-  function onTap() {
+  // tap
+  var tapListener = this.tapListener = new TapListener();
+  tapListener.bindTap( this.element );
+  tapListener.on( 'tap', function onTap() {
     _this.onTap.apply( _this, arguments );
-  }
-  this.tapListener = new TapListener( this.element, onTap );
-  this.tapListener.on( 'pointerDown', function( tapLsntr, event, pointer ) {
-    _this.parent.onChildUIPointerDown( event, pointer );
   });
-
+  // pointerDown
+  tapListener.on( 'pointerDown', function onPointerDown( button, event ) {
+    _this.parent.onChildUIPointerDown( event );
+  });
 };
 
 PrevNextButton.prototype.activate = function() {
@@ -162,6 +161,7 @@ PrevNextButton.prototype.update = function() {
   this[ method ]();
 };
 
+// TODO destroy prev/nextButton in flickity.destroy
 PrevNextButton.prototype.destroy = function() {
   this.deactivate();
   this.tapListener.destroy();

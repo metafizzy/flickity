@@ -53,15 +53,15 @@ PageDots.prototype._create = function() {
     _this.updateSelected();
   };
   this.parent.on( 'cellSelect', this.onselect );
-
-
-  // listen to tap event
-  function onTap() {
+  // tap
+  var tapListener = this.tapListener = new TapListener();
+  tapListener.bindTap( this.holder );
+  tapListener.on( 'tap', function onTap() {
     _this.onTap.apply( _this, arguments );
-  }
-  this.tapListener = new TapListener( this.holder, onTap );
-  this.tapListener.on( 'pointerDown', function( tapLsntr, event, pointer ) {
-    _this.parent.onChildUIPointerDown( event, pointer );
+  });
+  // pointerDown
+  tapListener.on( 'pointerDown', function onPointerDown( button, event ) {
+    _this.parent.onChildUIPointerDown( event );
   });
 };
 
@@ -129,7 +129,7 @@ PageDots.prototype.handleEvent = function( event ) {
   }
 };
 
-PageDots.prototype.onTap = function( event ) {
+PageDots.prototype.onTap = function( instance, event ) {
   var target = event.target;
   // only care about dot clicks
   if ( target.nodeName != 'LI' ) {
@@ -139,6 +139,12 @@ PageDots.prototype.onTap = function( event ) {
   this.parent.uiChange();
   var index = utils.indexOf( this.dots, target );
   this.parent.select( index );
+};
+
+// TODO destroy pageDots in flickity.destroy
+PageDots.prototype.destroy = function() {
+  this.tapListener.destroy();
+  this.deactivate();
 };
 
 return PageDots;

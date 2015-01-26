@@ -84,6 +84,15 @@ function moveChildren( fromElem, toElem ) {
   }
 }
 
+// handle IE8 prevent default
+function preventDefaultEvent( event ) {
+  if ( event.preventDefault ) {
+    event.preventDefault();
+  } else {
+    event.returnValue = false;
+  }
+}
+
 // -------------------------- Flickity -------------------------- //
 
 // globally unique identifiers
@@ -655,7 +664,7 @@ Flickity.prototype.onmouseleave = function() {
 // ----- onChildUIPointerDown ----- //
 
 Flickity.prototype.onChildUIPointerDown = function( event ) {
-  event.preventDefault();
+  preventDefaultEvent( event );
   this.pointerDownFocus( event );
 };
 
