@@ -7,15 +7,17 @@
   if ( typeof define == 'function' && define.amd ) {
     // AMD
     define( [
+      'eventie/eventie',
       './tap-listener',
       'fizzy-ui-utils/utils'
-    ], function( TapListener, utils ) {
-      return factory( window, TapListener, utils );
+    ], function( eventie, TapListener, utils ) {
+      return factory( window, eventie, TapListener, utils );
     });
   } else if ( typeof exports == 'object' ) {
     // CommonJS
     module.exports = factory(
       window,
+      require('eventie'),
       require('./tap-listener'),
       require('fizzy-ui-utils')
     );
@@ -24,12 +26,13 @@
     window.Flickity = window.Flickity || {};
     window.Flickity.PrevNextButton = factory(
       window,
+      window.eventie,
       window.TapListener,
       window.fizzyUIUtils
     );
   }
 
-}( window, function factory( window, TapListener, utils ) {
+}( window, function factory( window, eventie, TapListener, utils ) {
 
 'use strict';
 
@@ -85,7 +88,6 @@ PrevNextButton.prototype._create = function() {
   this.parent.on( 'cellSelect', this.onselect );
   // tap
   var tapListener = this.tapListener = new TapListener();
-  tapListener.bindTap( this.element );
   tapListener.on( 'tap', function onTap() {
     _this.onTap.apply( _this, arguments );
   });
@@ -96,6 +98,9 @@ PrevNextButton.prototype._create = function() {
 };
 
 PrevNextButton.prototype.activate = function() {
+  this.tapListener.bindTap( this.element );
+  // click events from keyboard
+  eventie.bind( this.element, 'click', this );
   // add to DOM
   this.parent.element.appendChild( this.element );
 };
@@ -103,6 +108,9 @@ PrevNextButton.prototype.activate = function() {
 PrevNextButton.prototype.deactivate = function() {
   // remove from DOM
   this.parent.element.removeChild( this.element );
+  this.tapListener.destroy();
+  // click events from keyboard
+  eventie.unbind( this.element, 'click', this );
 };
 
 PrevNextButton.prototype.createSVG = function() {
@@ -134,6 +142,18 @@ PrevNextButton.prototype.onTap = function() {
   this.parent[ method ]();
 };
 
+PrevNextButton.prototype.handleEvent = utils.handleEvent;
+
+PrevNextButton.prototype.onclick = function() {
+  // only allow clicks from keyboard
+  var focused = document.activeElement;
+  if ( focused && focused == this.element ) {
+    this.onTap();
+  }
+};
+
+// -----  ----- //
+
 PrevNextButton.prototype.enable = function() {
   if ( this.isEnabled ) {
     return;
@@ -161,10 +181,8 @@ PrevNextButton.prototype.update = function() {
   this[ method ]();
 };
 
-// TODO destroy prev/nextButton in flickity.destroy
 PrevNextButton.prototype.destroy = function() {
   this.deactivate();
-  this.tapListener.destroy();
 };
 
 return PrevNextButton;

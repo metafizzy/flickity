@@ -1,6 +1,7 @@
 ## To do
 
 Move TapListener class to its own repo
+update utils with handleEvent
 
 ## Feature requests
 

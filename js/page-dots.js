@@ -68,7 +68,6 @@ PageDots.prototype.activate = function() {
   this.setDots();
   this.updateSelected();
   this.tapListener.bindTap( this.holder );
-  eventie.bind( this.holder, 'click', this );
   // add to DOM
   this.parent.element.appendChild( this.holder );
 };
@@ -77,7 +76,6 @@ PageDots.prototype.deactivate = function() {
   // remove from DOM
   this.parent.element.removeChild( this.holder );
   this.tapListener.destroy();
-  eventie.unbind( this.holder, 'click', this );
 };
 
 PageDots.prototype.setDots = function() {
@@ -124,14 +122,6 @@ PageDots.prototype.updateSelected = function() {
   this.selectedDot.className = 'dot is-selected';
 };
 
-// trigger handler methods for events
-PageDots.prototype.handleEvent = function( event ) {
-  var method = 'on' + event.type;
-  if ( this[ method ] ) {
-    this[ method ]( event );
-  }
-};
-
 PageDots.prototype.onTap = function( instance, event ) {
   var target = event.target;
   // only care about dot clicks
@@ -142,10 +132,6 @@ PageDots.prototype.onTap = function( instance, event ) {
   this.parent.uiChange();
   var index = utils.indexOf( this.dots, target );
   this.parent.select( index );
-};
-
-PageDots.prototype.onclick = function( event ) {
-  this.onTap( null, event );
 };
 
 PageDots.prototype.destroy = function() {

@@ -27,7 +27,8 @@ test( 'prev-next-buttons', function() {
   flkty.select( 2 );
   equal( getSelectedDotIndex(), 2, '3rd dot is selected' );
 
-  dotsElems[4].click();
-  equal( flkty.selectedIndex, 4, 'clicking dot selects cell' );
+  // fake tap
+  flkty.pageDots.onTap( null, { target: dotsElems[4] });
+  equal( flkty.selectedIndex, 4, 'tap dot selects cell' );
 
 });
