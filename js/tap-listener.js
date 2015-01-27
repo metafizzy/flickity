@@ -56,6 +56,7 @@ TapListener.prototype.unbindTap = function() {
   delete this.element;
 };
 
+var isPageOffset = window.pageYOffset !== undefined;
 /**
  * pointer up
  * @param {Event} event
@@ -64,8 +65,8 @@ TapListener.prototype.unbindTap = function() {
 TapListener.prototype.pointerUp = function( event, pointer ) {
   var pointerPoint = Unipointer.getPointerPoint( pointer );
   var boundingRect = this.element.getBoundingClientRect();
-  var scrollX = window.pageXOffset;
-  var scrollY = window.pageYOffset;
+  var scrollX = isPageOffset ? window.pageXOffset : document.body.scrollLeft;
+  var scrollY = isPageOffset ? window.pageYOffset : document.body.scrollTop;
   var isInside = pointerPoint.x >= boundingRect.left + scrollX &&
     pointerPoint.x <= boundingRect.right + scrollX &&
     pointerPoint.y >= boundingRect.top + scrollY &&
