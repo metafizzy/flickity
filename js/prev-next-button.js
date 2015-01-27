@@ -72,7 +72,7 @@ PrevNextButton.prototype._create = function() {
   element.className = 'flickity-prev-next-button';
   element.className += this.isPrevious ? ' previous' : ' next';
   // prevent button from submitting form http://stackoverflow.com/a/10836076/182183
-  element.type = 'button';
+  element.setAttribute( 'type', 'button' );
   // create arrow
   if ( supportsInlineSVG() ) {
     var svg = this.createSVG();
