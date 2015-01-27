@@ -1,5 +1,4 @@
 test( 'prev-next-buttons', function() {
-
   'use strict';
 
   var elem = document.querySelector('#prev-next-buttons');
@@ -12,6 +11,12 @@ test( 'prev-next-buttons', function() {
   equal( flkty.prevButton.element, prevElem, 'previous button element matches prevButton.element' );
   equal( flkty.nextButton.element, nextElem, 'next button element matches nextButton.element' );
   ok( prevElem.disabled, 'previous button is disabled at first index' );
+
+  var isIE8 = 'attachEvent' in window;
+  // cannot focus disabled button in IE8
+  if ( isIE8 ) {
+    prevElem.disabled = false;
+  }
   prevElem.focus();
   prevElem.click();
   equal( flkty.selectedIndex, 0, 'selectedIndex still at 0' );
