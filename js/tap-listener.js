@@ -44,14 +44,15 @@ TapListener.prototype = new Unipointer();
  * @param {Element} elem
  */
 TapListener.prototype.bindTap = function( elem ) {
-  if ( this.element ) {
-    this.unbindTap();
-  }
+  this.unbindTap();
   this.element = elem;
   this._bindStartEvent( elem, true );
 };
 
 TapListener.prototype.unbindTap = function() {
+  if ( !this.element ) {
+    return;
+  }
   this._bindStartEvent( this.element, true );
   delete this.element;
 };
