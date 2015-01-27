@@ -20,6 +20,19 @@ I'm making a carousel/slider/gallery library! [Follow @metafizzyco on Twitter fo
 
 I'm blogging development at [metafizzy.co/blog](http://metafizzy.co/blog).
 
+## Install
+
+### Download
+
++ JavaScript: [flickity.pkgd.js](https://github.com/metafizzy/flickity/raw/master/dist/flickity.pkgd.js) uncompressed or [flickity.pkgd.min.js](https://github.com/metafizzy/flickity/raw/master/dist/flickity.pkgd.min.js) minified
++ CSS: [flickity.css](https://github.com/metafizzy/flickity/raw/master/dist/flickity.css)
+
+### Package managers
+
+Bower: `bower install flickity --save`
+
+npm: `npm install flickity --save`
+
 ## Usage
 
 Flickity works with a container element and a set of child cell elements
