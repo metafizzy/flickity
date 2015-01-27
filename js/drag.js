@@ -203,12 +203,15 @@ proto.dragEndFlick = function() {
   }
   // set slider velocity
   var timeDelta = this.dragMoveTime - this.previousDragMoveTime;
-  // 60 frames per second, ideally
-  // TODO, velocity should be in pixels per millisecond
-  // currently in pixels per frame
-  timeDelta /= 1000 / 60;
-  var xDelta = this.x - this.previousDragX;
-  this.velocity = xDelta / timeDelta;
+  // prevent divide by 0, if dragMove & dragEnd happened at same time
+  if ( timeDelta ) {
+    // 60 frames per second, ideally
+    // TODO, velocity should be in pixels per millisecond
+    // currently in pixels per frame
+    timeDelta /= 1000 / 60;
+    var xDelta = this.x - this.previousDragX;
+    this.velocity = xDelta / timeDelta;
+  }
   // reset
   delete this.previousDragX;
 };
