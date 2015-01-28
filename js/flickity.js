@@ -201,6 +201,9 @@ Flickity.prototype.activate = function() {
   }
   this.isActive = true;
   classie.add( this.element, 'flickity-enabled' );
+  if ( this.options.rightToLeft ) {
+    classie.add( this.element, 'flickity-rtl' );
+  }
   // move children to slider
   moveChildren( this.element, this.slider );
   this.viewport.appendChild( this.slider );
@@ -676,6 +679,7 @@ Flickity.prototype.deactivate = function() {
     return;
   }
   classie.remove( this.element, 'flickity-enabled' );
+  classie.remove( this.element, 'flickity-rtl' );
   // destroy cells
   for ( var i=0, len = this.cells.length; i < len; i++ ) {
     var cell = this.cells[i];
