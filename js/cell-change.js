@@ -24,7 +24,7 @@
     );
   }
 
-})( window, function factory( window, utils ) {
+}( window, function factory( window, utils ) {
 
 'use strict';
 
@@ -164,4 +164,4 @@ proto.cellChange = function( index ) {
 
 return proto;
 
-});
+}));
