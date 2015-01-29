@@ -78,9 +78,10 @@ var console = window.console;
 
 function noop() {}
 
-function moveChildren( fromElem, toElem ) {
-  while ( fromElem.children.length ) {
-    toElem.appendChild( fromElem.children[0] );
+function moveElements( elems, toElem ) {
+  elems = utils.makeArray( elems );
+  while ( elems.length ) {
+    toElem.appendChild( elems.shift() );
   }
 }
 
@@ -208,8 +209,10 @@ Flickity.prototype.activate = function() {
   if ( this.options.rightToLeft ) {
     classie.add( this.element, 'flickity-rtl' );
   }
-  // move children to slider
-  moveChildren( this.element, this.slider );
+
+  // move initial cell elements so they can be loaded as cells
+  var cellElems = this._filterFindCellElements( this.element.children );
+  moveElements( cellElems, this.slider );
   this.viewport.appendChild( this.slider );
   this.element.appendChild( this.viewport );
 
@@ -260,6 +263,10 @@ Flickity.prototype._createSlider = function() {
   this.slider = slider;
 };
 
+Flickity.prototype._filterFindCellElements = function( elems ) {
+  return utils.filterFindElements( elems, this.options.cellSelector );
+};
+
 // goes through all children
 Flickity.prototype.reloadCells = function() {
   // collection of item elements
@@ -275,7 +282,7 @@ Flickity.prototype.reloadCells = function() {
  * @returns {Array} items - collection of new Flickity Cells
  */
 Flickity.prototype._makeCells = function( elems ) {
-  var cellElems = utils.filterFindElements( elems, this.options.cellSelector );
+  var cellElems = this._filterFindCellElements( elems );
 
   // create new Flickity for collection
   var cells = [];
@@ -775,7 +782,7 @@ Flickity.prototype.deactivate = function() {
   this._removeSelectedCellClass();
   this.element.removeChild( this.viewport );
   // move child elements back into element
-  moveChildren( this.slider, this.element );
+  moveElements( this.slider.children, this.element );
   // deactivate prev/next buttons, page dots; stop player
   if ( this.prevButton ) {
     this.prevButton.deactivate();

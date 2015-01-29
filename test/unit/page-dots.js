@@ -1,4 +1,4 @@
-test( 'prev-next-buttons', function() {
+test( 'pageDots', function() {
 
   'use strict';
 
