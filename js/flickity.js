@@ -140,6 +140,7 @@ Flickity.defaults = {
   // watcCSS: false,
   // wrapAround: false,
   selectedAttraction: 0.025,
+  // sync: undefined,
   leftArrowText: '←', // text for prev/next button when no SVG support
   rightArrowText: '→'
 };
@@ -178,6 +179,9 @@ Flickity.prototype._create = function() {
   if ( this.options.resizeBound || this.options.watchCSS ) {
     eventie.bind( window, 'resize', this );
   }
+  // sync
+  this.syncers = {};
+  this._initSync();
 
   if ( this.options.watchCSS ) {
     this.watchCSS();
@@ -419,6 +423,89 @@ Flickity.prototype._containCells = function() {
     cell.setDefaultTarget();
     cell.target = Math.max( cell.target, this.cursorPosition );
     cell.target = Math.min( cell.target, endLimit );
+  }
+};
+
+// ----- sync ----- //
+
+/**
+ * sync
+ * @param {Element} or {String} elem
+ */
+Flickity.prototype.sync = function( elem ) {
+  elem = utils.getQueryElement( elem );
+  var companion = Flickity.data( elem );
+  if ( !companion ) {
+    return;
+  }
+  // two hearts, that beat as one
+  this._syncCompanion( companion );
+  companion._syncCompanion( this );
+};
+
+// initial sync in _create()
+Flickity.prototype._initSync = function() {
+  // HACK do async, give time for other flickity to be initalized
+  var _this = this;
+  setTimeout( function initSyncCompanion() {
+    _this.sync( _this.options.sync );
+  });
+};
+
+/**
+ * @param {Flickity} companion
+ */
+Flickity.prototype._syncCompanion = function( companion ) {
+  var _this = this;
+  function syncListener() {
+    var index = _this.selectedIndex;
+    // do not select if already selected, prevent infinite loop
+    if ( companion.selectedIndex != index ) {
+      companion.select( index );
+    }
+  }
+  this.on( 'cellSelect', syncListener );
+  // keep track of all synced flickities
+  // hold on to listener to unsync
+  this.syncers[ companion.guid ] = syncListener;
+};
+
+/**
+ * unsync
+ * @param {Element} or {String} elem
+ */
+Flickity.prototype.unsync = function( elem ) {
+  elem = utils.getQueryElement( elem );
+  var companion = Flickity.data( elem );
+  this._unsync( companion );
+};
+
+/**
+ * @param {Flickity} companion
+ */
+Flickity.prototype._unsync = function( companion ) {
+  if ( !companion ) {
+    return;
+  }
+  // I love you but I've chosen darkness
+  this._unsyncCompanion( companion );
+  companion._unsyncCompanion( this );
+};
+
+/**
+ * @param {Flickity} companion
+ */
+Flickity.prototype._unsyncCompanion = function( companion ) {
+  var id = companion.guid;
+  var syncer = this.syncers[ id ];
+  this.off( 'cellSelect', syncer );
+  delete this.syncers[ id ];
+};
+
+Flickity.prototype.unsyncAll = function() {
+  for ( var id in this.syncers ) {
+    var companion = instances[ id ];
+    this._unsync( companion );
   }
 };
 
@@ -716,6 +803,7 @@ Flickity.prototype.destroy = function() {
   if ( this.options.resizeBound || this.options.watch ) {
     eventie.unbind( window, 'resize', this );
   }
+  this.unsyncAll();
   delete this.element.flickityGUID;
   delete instances[ this.guid ];
 };

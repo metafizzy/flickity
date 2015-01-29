@@ -102,6 +102,14 @@ var flky = new Flickity( '.gallery', {
   resizeBound: true,
   // listens to window resize events to adjust size & positions
 
+  rightToLeft: false,
+  // enables right-to-left layout
+
+  sync: undefined,
+  // use to sync flickities together
+  // set selector string `sync: '#gallery-b'`
+  // set element `sync: document.querySelector('#gallery-b')`
+
   watchCSS: false,
   // watches the content of :after of the element
   // activates if #element:after { content: 'flickity' }
