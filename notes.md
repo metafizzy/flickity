@@ -1,8 +1,10 @@
 ## To do
 
 contain includes left margin but not right margin
-Move TapListener class to its own repo
-update utils with handleEvent
+release TapListener class to its own repo
+update & release fizzyUIUtils with handleEvent
+update & release flickity-imagesloaded
+update & release unidragger
 test empty Flickity
 
 ## Feature requests
@@ -16,7 +18,6 @@ disable animation on imagesLoaded loading
 
 cellAlign
 wrapAround
-imagesLoaded
 
 ## Check
 

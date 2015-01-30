@@ -349,6 +349,11 @@ Flickity.prototype._sizeCells = function( cells ) {
   }
 };
 
+Flickity.prototype.reposition = function() {
+  this.positionCells();
+  this.positionSliderAtSelected();
+};
+
 Flickity.prototype.getSize = function() {
   this.size = getSize( this.element );
   this.setCellAlign();
