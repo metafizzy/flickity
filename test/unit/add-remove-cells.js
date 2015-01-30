@@ -31,21 +31,28 @@ test( 'add/remove cells', function() {
   var cellElem = makeCellElem();
   flkty.prepend( cellElem );
   checkCellElem( cellElem, 0, 'prepended' );
+  equal( flkty.selectedIndex, 1, 'selectedIndex +1 after prepend' );
   // append cell element
   cellElem = makeCellElem();
   flkty.append( cellElem );
   var lastIndex = flkty.cells.length - 1;
   checkCellElem( cellElem, lastIndex, 'appended' );
+  equal( flkty.selectedIndex, 1, 'selectedIndex same after prepend' );
   // insert single cell element
-  cellElem = makeCellElem();
+  cellElem = makeCellElem(); // this one gets removed first
+  flkty.select( 2 );
   flkty.insert( cellElem, 2 );
   checkCellElem( cellElem, 2, 'single inserted' );
+  equal( flkty.selectedIndex, 3, 'selectedIndex +1 after insert before' );
+  flkty.insert( makeCellElem(), 4 );
+  equal( flkty.selectedIndex, 3, 'selectedIndex same after insert before' );
   // insert multiple cell elements
   var cellElems = [ makeCellElem(), makeCellElem(), makeCellElem() ];
-  flkty.insert( cellElems, 4 );
-  checkCellElem( cellElems[0], 4, 'first multiple inserted' );
-  checkCellElem( cellElems[1], 5, 'second multiple inserted' );
-  checkCellElem( cellElems[2], 6, 'third multiple inserted' );
+  flkty.insert( cellElems, 3 );
+  checkCellElem( cellElems[0], 3, 'first multiple inserted' );
+  checkCellElem( cellElems[1], 4, 'second multiple inserted' );
+  checkCellElem( cellElems[2], 5, 'third multiple inserted' );
+  equal( flkty.selectedIndex, 6, 'selectedIndex +6 after 3 insert before' );
 
   function checkCellPositions() {
     var isGap = false;
@@ -64,12 +71,15 @@ test( 'add/remove cells', function() {
   flkty.remove( cellElem );
   equal( len - sliderElem.children.length, 1, 'element removed from DOM' );
   equal( len - flkty.cells.length, 1, 'cell removed' );
+  equal( flkty.selectedIndex, 5, 'selectedIndex -1 after remove before' );
   checkCellPositions();
   // remove multiple
   len = flkty.cells.length;
+  flkty.select( 4 );
   flkty.remove([ cellElems[2], cellElems[0], cellElems[1] ]);
   equal( len - sliderElem.children.length, 3, 'elements removed from DOM' );
   equal( len - flkty.cells.length, 3, 'cells removed' );
+  equal( flkty.selectedIndex, 2, 'selectedIndex -2 after 2 removed before' );
   checkCellPositions();
 
 });

@@ -79,7 +79,9 @@ proto.insert = function( elems, index ) {
   }
 
   this._sizeCells( cells );
-  this._cellAddedRemoved( index );
+
+  var selectedIndexDelta = index > this.selectedIndex ? 0 : cells.length;
+  this._cellAddedRemoved( index, selectedIndexDelta );
 };
 
 proto.append = function( elems ) {
@@ -96,8 +98,17 @@ proto.prepend = function( elems ) {
  */
 proto.remove = function( elems ) {
   var cells = this.getCells( elems );
-  for ( var i=0, len = cells.length; i < len; i++ ) {
-    var cell = cells[i];
+  var selectedIndexDelta = 0;
+  var i, len, cell;
+  // calculate selectedIndexDelta, easier if done in seperate loop
+  for ( i=0, len = cells.length; i < len; i++ ) {
+    cell = cells[i];
+    var wasBefore = utils.indexOf( this.cells, cell ) < this.selectedIndex;
+    selectedIndexDelta -= wasBefore ? 1 : 0;
+  }
+
+  for ( i=0, len = cells.length; i < len; i++ ) {
+    cell = cells[i];
     cell.remove();
     // remove item from collection
     utils.removeFrom( cell, this.cells );
@@ -105,20 +116,21 @@ proto.remove = function( elems ) {
 
   if ( cells.length ) {
     // update stuff
-    this._cellAddedRemoved( 0 );
+    this._cellAddedRemoved( 0, selectedIndexDelta );
   }
 };
 
 // updates when cells are added or removed
-proto._cellAddedRemoved = function( index ) {
+proto._cellAddedRemoved = function( changedCellIndex, selectedIndexDelta ) {
   // update page dots
   if ( this.pageDots ) {
     this.pageDots.setDots();
   }
-  // TODO cell is removed before the selected cell, adjust selectedIndex by -1
+  selectedIndexDelta = selectedIndexDelta || 0;
+  this.selectedIndex += selectedIndexDelta;
   this.selectedIndex = Math.max( 0, Math.min( this.cells.length - 1, this.selectedIndex ) );
 
-  this.cellChange( index );
+  this.cellChange( changedCellIndex );
 };
 
 /**
@@ -138,24 +150,25 @@ proto.cellSizeChange = function( elem ) {
 
 /**
  * logic any time a cell is changed: added, removed, or size changed
- * @param {Integer} index - index of the changed cell, optional
+ * @param {Integer} changedCellIndex - index of the changed cell, optional
  */
-proto.cellChange = function( index ) {
+proto.cellChange = function( changedCellIndex ) {
   // TODO maybe always size all cells unless isSkippingSizing
   // size all cells if necessary
   // if ( !isSkippingSizing ) {
   //   this._sizeCells( this.cells );
   // }
 
-  index = index || 0;
+  changedCellIndex = changedCellIndex || 0;
 
-  this._positionCells( index );
+  this._positionCells( changedCellIndex );
   this._getWrapShiftCells();
   this.setContainerSize();
   // position slider
   if ( this.options.freeScroll ) {
     this.positionSlider();
   } else {
+    this.positionSliderAtSelected();
     this.select( this.selectedIndex );
   }
 };
