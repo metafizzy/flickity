@@ -37,6 +37,15 @@
 
 'use strict';
 
+// handle IE8 prevent default
+function preventDefaultEvent( event ) {
+  if ( event.preventDefault ) {
+    event.preventDefault();
+  } else {
+    event.returnValue = false;
+  }
+}
+
 // -------------------------- drag prototype -------------------------- //
 
 var proto = {};
@@ -65,8 +74,17 @@ proto.hasDragStarted = function( moveVector ) {
 
 // -------------------------- pointer events -------------------------- //
 
-
 proto.pointerDown = function( event, pointer ) {
+  // track to see when dragging starts
+  this.pointerDownPoint = Unidragger.getPointerPoint( pointer );
+
+  var targetNodeName = event.target.nodeName;
+  // HACK iOS, allow clicks on buttons, inputs, and links
+  var isTouchstartNode = event.type == 'touchstart' &&
+    Unidragger.allowTouchstartNodes[ targetNodeName ];
+  if ( !isTouchstartNode ) {
+    preventDefaultEvent( event );
+  }
   // kludge to blur focused inputs in dragger
   var focused = document.activeElement;
   if ( focused && focused.blur && focused != this.element ) {
@@ -78,6 +96,8 @@ proto.pointerDown = function( event, pointer ) {
   // stop auto play
   this.player.stop();
   classie.add( this.viewport, 'is-pointer-down' );
+  // bind move and end events
+  this._bindPostStartEvents( event );
   this.dispatchEvent( 'pointerDown', event, [ pointer ] );
 };
 
@@ -94,12 +114,31 @@ proto.pointerDownFocus = function( event ) {
   }
 };
 
-proto.pointerMove = function( event, pointer, moveVector ) {
+proto.pointerMove = function( event, pointer ) {
+  var movePoint = Unidragger.getPointerPoint( pointer );
+  var moveVector = {
+    x: movePoint.x - this.pointerDownPoint.x,
+    y: movePoint.y - this.pointerDownPoint.y
+  };
+  // start drag if pointer has moved far enough to start drag
+  if ( !this.isDragging && this.hasDragStarted( moveVector ) ) {
+    this._dragStart( event, pointer );
+  }
+
   this.touchVerticalScrollMove( event, pointer, moveVector );
+  this._dragMove( event, pointer, moveVector );
+
   this.dispatchEvent( 'pointerMove', event, [ pointer, moveVector ] );
 };
 
 proto.pointerUp = function( event, pointer ) {
+  if ( this.isDragging ) {
+    this._dragEnd( event, pointer );
+  } else {
+    // pointer didn't move enough for drag to start
+    this._staticClick( event, pointer );
+  }
+
   delete this.isTouchScrolling;
   classie.remove( this.viewport, 'is-pointer-down' );
   this.dispatchEvent( 'pointerUp', event, [ pointer ] );
