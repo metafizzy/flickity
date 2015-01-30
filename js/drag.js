@@ -82,7 +82,8 @@ proto.pointerDown = function( event, pointer ) {
   // HACK iOS, allow clicks on buttons, inputs, and links
   var isTouchstartNode = event.type == 'touchstart' &&
     Unidragger.allowTouchstartNodes[ targetNodeName ];
-  if ( !isTouchstartNode ) {
+  // do not preventDefault on <select> or touchstart nodes
+  if ( targetNodeName != 'SELECT' && !isTouchstartNode ) {
     preventDefaultEvent( event );
   }
   // kludge to blur focused inputs in dragger
@@ -106,10 +107,15 @@ var touchStartEvents = {
   MSPointerDown: true
 };
 
+var focusNodes = {
+  INPUT: true,
+  SELECT: true
+};
+
 proto.pointerDownFocus = function( event ) {
-  // focus element, if not touch, and its not an input
+  // focus element, if not touch, and its not an input or select
   if ( this.options.accessibility && !touchStartEvents[ event.type ] &&
-      event.target.nodeName != 'INPUT' ) {
+      !focusNodes[ event.target.nodeName ] ) {
     this.element.focus();
   }
 };
