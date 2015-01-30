@@ -10,11 +10,14 @@
 .flickity-viewport {
   overflow: hidden;
   position: relative;
+}
+
+.flickity-viewport.is-draggable {
   cursor: -webkit-grab;
   cursor: grab;
 }
 
-.flickity-viewport.is-pointer-down {
+.flickity-viewport.is-draggable.is-pointer-down {
   cursor: -webkit-grabbing;
   cursor: grabbing;
 }

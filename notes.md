@@ -1,5 +1,6 @@
 ## To do
 
+contain includes left margin but not right margin
 Move TapListener class to its own repo
 update utils with handleEvent
 

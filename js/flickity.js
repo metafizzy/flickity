@@ -165,7 +165,8 @@ Flickity.prototype._create = function() {
   this.originSide = this.options.rightToLeft ? 'right' : 'left';
   // create viewport & slider
   this.viewport = document.createElement('div');
-  this.viewport.className = 'flickity-viewport';
+  this.viewport.className = 'flickity-viewport' +
+    ( this.options.draggable ? ' is-draggable' : '' );
   this._createSlider();
   // create prev/next buttons, page dots, and player
   if ( this.options.prevNextButtons ) {
@@ -206,6 +207,9 @@ Flickity.prototype.activate = function() {
   }
   this.isActive = true;
   classie.add( this.element, 'flickity-enabled' );
+  if ( this.options.draggable ) {
+    classie.add( this.element, 'flickity-draggable' );
+  }
   if ( this.options.rightToLeft ) {
     classie.add( this.element, 'flickity-rtl' );
   }
