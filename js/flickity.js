@@ -601,7 +601,8 @@ Flickity.prototype.updatePrevNextButtons = function() {
 Flickity.prototype.setSelectedCell = function() {
   this._removeSelectedCellClass();
   this.selectedCell = this.cells[ this.selectedIndex ];
-  classie.add( this.selectedCell.element, 'is-selected' );
+  this.selectedElement = this.selectedCell.element;
+  classie.add( this.selectedElement, 'is-selected' );
 };
 
 Flickity.prototype._removeSelectedCellClass = function() {
