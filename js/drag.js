@@ -110,10 +110,10 @@ proto.pointerMove = function( event, pointer ) {
 };
 
 proto.pointerUp = function( event, pointer ) {
-  this._dragPointerUp( event, pointer );
   delete this.isTouchScrolling;
   classie.remove( this.viewport, 'is-pointer-down' );
   this.dispatchEvent( 'pointerUp', event, [ pointer ] );
+  this._dragPointerUp( event, pointer );
 };
 
 // -------------------------- vertical scroll -------------------------- //
