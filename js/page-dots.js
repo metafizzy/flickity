@@ -52,7 +52,7 @@ PageDots.prototype._create = function() {
   this.onselect = function() {
     _this.updateSelected();
   };
-  this.parent.on( 'cellSelect', this.onselect );
+  this.parent.on( 'select', this.onselect );
   // tap
   var tapListener = this.tapListener = new TapListener();
   tapListener.on( 'tap', function onTap() {

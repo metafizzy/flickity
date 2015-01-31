@@ -480,7 +480,7 @@ Flickity.prototype._syncCompanion = function( companion ) {
       companion.select( index );
     }
   }
-  this.on( 'cellSelect', syncListener );
+  this.on( 'select', syncListener );
   // keep track of all synced flickities
   // hold on to listener to unsync
   this.syncers[ companion.guid ] = syncListener;
@@ -514,7 +514,7 @@ Flickity.prototype._unsync = function( companion ) {
 Flickity.prototype._unsyncCompanion = function( companion ) {
   var id = companion.guid;
   var syncer = this.syncers[ id ];
-  this.off( 'cellSelect', syncer );
+  this.off( 'select', syncer );
   delete this.syncers[ id ];
 };
 
@@ -541,7 +541,7 @@ Flickity.prototype.dispatchEvent = function( type, event, args ) {
     if ( event ) {
       // create jQuery event
       var $event = jQuery.Event( event );
-      $event.type = type;
+      $event.type = type + '.flickity';
       this.$element.trigger( $event, args );
     } else {
       // just trigger with type if no event available
@@ -577,7 +577,7 @@ Flickity.prototype.select = function( index, isWrap ) {
     this.selectedIndex = index;
     this.setSelectedCell();
     this.startAnimation();
-    this.dispatchEvent('cellSelect');
+    this.dispatchEvent('select');
   }
 };
 

@@ -1,11 +1,14 @@
 ## To do
 
+getSelectedElement
+getCellElements
 contain includes left margin but not right margin
+test empty Flickity
+
 release TapListener class to its own repo
 update & release fizzyUIUtils with handleEvent
 update & release flickity-imagesloaded
 update & release unidragger
-test empty Flickity
 
 ## Feature requests
 
