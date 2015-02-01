@@ -99,7 +99,7 @@ var flky = new Flickity( '.gallery', {
   pageDots: true,
   // create and enable page dots
 
-  resizeBound: true,
+  resize: true,
   // listens to window resize events to adjust size & positions
 
   rightToLeft: false,

@@ -136,7 +136,7 @@ Flickity.defaults = {
   percentPosition: true,
   pageDots: true,
   prevNextButtons: true,
-  resizeBound: true,
+  resize: true,
   touchVerticalScroll: true,
   // watcCSS: false,
   // wrapAround: false,
@@ -178,8 +178,9 @@ Flickity.prototype._create = function() {
   }
   this.player = new Player( this );
 
-  if ( this.options.resizeBound || this.options.watchCSS ) {
+  if ( this.options.resize || this.options.watchCSS ) {
     eventie.bind( window, 'resize', this );
+    this.isResizeBound = true;
   }
   // sync
   this.syncers = {};
@@ -817,7 +818,7 @@ Flickity.prototype.deactivate = function() {
 
 Flickity.prototype.destroy = function() {
   this.deactivate();
-  if ( this.options.resizeBound || this.options.watch ) {
+  if ( this.isResizeBound ) {
     eventie.unbind( window, 'resize', this );
   }
   this.unsyncAll();
