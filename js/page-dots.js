@@ -6,16 +6,18 @@
     // AMD
     define( [
       'eventie/eventie',
+      './flickity',
       './tap-listener',
       'fizzy-ui-utils/utils'
-    ], function( eventie, utils ) {
-      return factory( window, eventie, utils );
+    ], function( eventie, Flickity, TapListener, utils ) {
+      return factory( window, eventie, Flickity, TapListener, utils );
     });
   } else if ( typeof exports == 'object' ) {
     // CommonJS
     module.exports = factory(
       window,
       require('eventie'),
+      require('./flickity'),
       require('./tap-listener'),
       require('fizzy-ui-utils')
     );
@@ -25,12 +27,13 @@
     window.Flickity.PageDots = factory(
       window,
       window.eventie,
+      window.Flickity,
       window.TapListener,
       window.fizzyUIUtils
     );
   }
 
-}( window, function factory( window, eventie, TapListener, utils ) {
+}( window, function factory( window, eventie, Flickity, TapListener, utils ) {
 
 // -------------------------- PageDots -------------------------- //
 
@@ -40,6 +43,8 @@ function PageDots( parent ) {
   this.parent = parent;
   this._create();
 }
+
+PageDots.prototype = new TapListener();
 
 PageDots.prototype._create = function() {
   // create holder element
@@ -54,20 +59,17 @@ PageDots.prototype._create = function() {
   };
   this.parent.on( 'select', this.onselect );
   // tap
-  var tapListener = this.tapListener = new TapListener();
-  tapListener.on( 'tap', function onTap() {
-    _this.onTap.apply( _this, arguments );
-  });
+  this.on( 'tap', this.onTap );
   // pointerDown
-  tapListener.on( 'pointerDown', function onPointerDown( button, event ) {
-    _this.parent.onChildUIPointerDown( event );
+  this.on( 'pointerDown', function onPointerDown( button, event ) {
+    _this.parent.childUIPointerDown( event );
   });
 };
 
 PageDots.prototype.activate = function() {
   this.setDots();
   this.updateSelected();
-  this.tapListener.bindTap( this.holder );
+  this.bindTap( this.holder );
   // add to DOM
   this.parent.element.appendChild( this.holder );
 };
@@ -75,7 +77,7 @@ PageDots.prototype.activate = function() {
 PageDots.prototype.deactivate = function() {
   // remove from DOM
   this.parent.element.removeChild( this.holder );
-  this.tapListener.destroy();
+  TapListener.destroy.call( this );
 };
 
 PageDots.prototype.setDots = function() {
@@ -137,6 +139,46 @@ PageDots.prototype.onTap = function( instance, event ) {
 PageDots.prototype.destroy = function() {
   this.deactivate();
 };
+
+Flickity.PageDots = PageDots;
+
+// -------------------------- Flickity -------------------------- //
+
+utils.extend( Flickity.defaults, {
+  pageDots: true
+});
+
+Flickity.createMethods.push('_createPageDots');
+
+var FlickityProto = {};
+
+FlickityProto._createPageDots = function() {
+  if ( !this.options.pageDots ) {
+    return;
+  }
+  this.pageDots = new PageDots( this );
+  this.on( 'activate', this.activatePageDots );
+  this.on( 'deactivate', this.deactivatePageDots );
+  this.on( 'destroy', this.destroyPageDots );
+};
+
+FlickityProto.activatePageDots = function() {
+  this.pageDots.activate();
+};
+
+FlickityProto.deactivatePageDots = function() {
+  this.pageDots.deactivate();
+};
+
+FlickityProto.destroyPageDots = function() {
+  this.pageDots.destroy();
+};
+
+utils.extend( Flickity.prototype, FlickityProto );
+
+// -----  ----- //
+
+Flickity.PageDots = PageDots;
 
 return PageDots;
 

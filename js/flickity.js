@@ -192,9 +192,6 @@ Flickity.prototype.activate = function() {
   this.reloadCells();
   this.setContainerSize();
 
-  this.positionSliderAtSelected();
-  this.select( this.selectedIndex );
-
   if ( this.options.accessibility ) {
     // allow element to focusable
     this.element.tabIndex = 0;
@@ -203,6 +200,9 @@ Flickity.prototype.activate = function() {
   }
 
   this.emit('activate');
+
+  this.positionSliderAtSelected();
+  this.select( this.selectedIndex );
 };
 
 // slider positions the cells

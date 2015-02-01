@@ -38,7 +38,7 @@
 <script src="../js/tap-listener.js"></script>
 <script src="../js/cell.js"></script>
 <!-- 
-<script src="../js/page-dots.js"></script>
+
 <script src="../js/player.js"></script>
  -->
 <script src="../js/animate.js"></script>
@@ -46,11 +46,12 @@
 <script src="../js/flickity.js"></script>
 <script src="../js/drag.js"></script>
 <script src="../js/prev-next-button.js"></script>
+<script src="../js/page-dots.js"></script>
 
 <script>
 window.onload = function() {
 
-  var flkty = window.flkty = new Flickity('#gallery', { freeScroll: true });
+  var flkty = window.flkty = new Flickity('#gallery', { freeScroll: false });
   flkty.on( 'settle', function() {
     console.log('settle');
   })

@@ -229,6 +229,8 @@ utils.extend( Flickity.prototype, proto );
 
 // --------------------------  -------------------------- //
 
+Flickity.PrevNextButton = PrevNextButton;
+
 return PrevNextButton;
 
 }));
