@@ -1,7 +1,5 @@
 ## To do
 
-contain includes left margin but not right margin
-
 release TapListener class to its own repo
 update & release fizzyUIUtils with handleEvent
 update & release flickity-imagesloaded

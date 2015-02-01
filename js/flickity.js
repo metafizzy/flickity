@@ -361,12 +361,13 @@ Flickity.prototype._getGapCells = function( gapX, cellIndex, increment ) {
 
 // contain cell targets so no excess sliding
 Flickity.prototype._containCells = function() {
-  if ( !this.options.contain || this.options.wrapAround ) {
+  if ( !this.options.contain || this.options.wrapAround || !this.cells.length ) {
     return;
   }
-  // end limit
-  var lastCell = this.getLastCell();
+  var startMargin = this.options.rightToLeft ? 'marginRight' : 'marginLeft';
   var endMargin = this.options.rightToLeft ? 'marginLeft' : 'marginRight';
+  var firstCellStartMargin = this.cells[0].size[ startMargin ];
+  var lastCell = this.getLastCell();
   var contentWidth = this.slideableWidth - lastCell.size[ endMargin ];
   var endLimit = contentWidth - this.size.innerWidth * ( 1 - this.cellAlign );
   // contain each cell target
@@ -374,7 +375,7 @@ Flickity.prototype._containCells = function() {
     var cell = this.cells[i];
     // reset default target
     cell.setDefaultTarget();
-    cell.target = Math.max( cell.target, this.cursorPosition );
+    cell.target = Math.max( cell.target, this.cursorPosition + firstCellStartMargin );
     cell.target = Math.min( cell.target, endLimit );
   }
 };
