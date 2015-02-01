@@ -5,7 +5,7 @@ test( 'auto play', function( assert ) {
   var done = assert.async();
 
   var flkty = new Flickity( '#auto-play', {
-    autoPlay: 500
+    autoPlay: 200
   });
 
   var selectCount = 0;

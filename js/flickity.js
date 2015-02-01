@@ -212,7 +212,7 @@ Flickity.prototype._filterFindCellElements = function( elems ) {
 Flickity.prototype.reloadCells = function() {
   // collection of item elements
   this.cells = this._makeCells( this.slider.children );
-  this.positionCells( this.cells );
+  this.positionCells();
   this._getWrapShiftCells();
   this.setContainerSize();
 };

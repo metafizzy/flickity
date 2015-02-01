@@ -119,7 +119,10 @@ PageDots.prototype.updateSelected = function() {
   if ( this.selectedDot ) {
     this.selectedDot.className = 'dot';
   }
-
+  // don't proceed if no dots
+  if ( !this.dots.length ) {
+    return;
+  }
   this.selectedDot = this.dots[ this.parent.selectedIndex ];
   this.selectedDot.className = 'dot is-selected';
 };

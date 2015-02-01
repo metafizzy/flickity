@@ -82,4 +82,11 @@ test( 'add/remove cells', function() {
   equal( flkty.selectedIndex, 2, 'selectedIndex -2 after 2 removed before' );
   checkCellPositions();
 
+  // remove all cells
+  flkty.remove( flkty.getCellElements() );
+  equal( flkty.cells.length, 0, 'all cells removed' );
+  flkty.resize();
+  ok( true, 'resize with zero items didnt freak out' );
+
+
 });

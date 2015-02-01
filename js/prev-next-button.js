@@ -104,6 +104,7 @@ PrevNextButton.prototype._create = function() {
 };
 
 PrevNextButton.prototype.activate = function() {
+  this.update();
   this.bindTap( this.element );
   // click events from keyboard
   eventie.bind( this.element, 'click', this );
@@ -183,7 +184,9 @@ PrevNextButton.prototype.update = function() {
     return;
   }
   // index of first or last cell, if previous or next
-  var boundIndex = this.isPrevious ? 0 : this.parent.cells.length - 1;
+  var cells = this.parent.cells;
+  var lastIndex = cells.length ? cells.length - 1 : 0;
+  var boundIndex = this.isPrevious ? 0 : lastIndex;
   var method = this.parent.selectedIndex == boundIndex ? 'disable' : 'enable';
   this[ method ]();
 };

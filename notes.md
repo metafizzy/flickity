@@ -1,8 +1,6 @@
 ## To do
 
 contain includes left margin but not right margin
-test empty Flickity
-after removing all, doing a resize()
 
 release TapListener class to its own repo
 update & release fizzyUIUtils with handleEvent

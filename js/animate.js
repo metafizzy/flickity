@@ -140,6 +140,9 @@ proto.positionSlider = function() {
 };
 
 proto.positionSliderAtSelected = function() {
+  if ( !this.cells.length ) {
+    return;
+  }
   var selectedCell = this.cells[ this.selectedIndex ];
   this.x = -selectedCell.target;
   this.positionSlider();
