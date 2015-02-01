@@ -155,7 +155,8 @@ Flickity.prototype.stopPlayer = function() {
 };
 
 Flickity.prototype.deactivatePlayer = function() {
-  this.player.deactivate();
+  this.player.stop();
+  eventie.unbind( this.element, 'mouseenter', this );
 };
 
 // ----- mouseenter/leave ----- //

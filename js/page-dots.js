@@ -77,7 +77,7 @@ PageDots.prototype.activate = function() {
 PageDots.prototype.deactivate = function() {
   // remove from DOM
   this.parent.element.removeChild( this.holder );
-  TapListener.destroy.call( this );
+  TapListener.prototype.destroy.call( this );
 };
 
 PageDots.prototype.setDots = function() {
@@ -158,7 +158,6 @@ Flickity.prototype._createPageDots = function() {
   this.on( 'activate', this.activatePageDots );
   this.on( 'cellAddedRemoved', this.onCellAddedRemovedPageDots );
   this.on( 'deactivate', this.deactivatePageDots );
-  this.on( 'destroy', this.destroyPageDots );
 };
 
 Flickity.prototype.activatePageDots = function() {
@@ -171,10 +170,6 @@ Flickity.prototype.onCellAddedRemovedPageDots = function() {
 
 Flickity.prototype.deactivatePageDots = function() {
   this.pageDots.deactivate();
-};
-
-Flickity.prototype.destroyPageDots = function() {
-  this.pageDots.destroy();
 };
 
 // -----  ----- //

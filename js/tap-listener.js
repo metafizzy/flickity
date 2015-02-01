@@ -45,16 +45,16 @@ TapListener.prototype = new Unipointer();
  */
 TapListener.prototype.bindTap = function( elem ) {
   this.unbindTap();
-  this.element = elem;
+  this.tapElement = elem;
   this._bindStartEvent( elem, true );
 };
 
 TapListener.prototype.unbindTap = function() {
-  if ( !this.element ) {
+  if ( !this.tapElement ) {
     return;
   }
-  this._bindStartEvent( this.element, true );
-  delete this.element;
+  this._bindStartEvent( this.tapElement, true );
+  delete this.tapElement;
 };
 
 var isPageOffset = window.pageYOffset !== undefined;
@@ -65,7 +65,7 @@ var isPageOffset = window.pageYOffset !== undefined;
  */
 TapListener.prototype.pointerUp = function( event, pointer ) {
   var pointerPoint = Unipointer.getPointerPoint( pointer );
-  var boundingRect = this.element.getBoundingClientRect();
+  var boundingRect = this.tapElement.getBoundingClientRect();
   var scrollX = isPageOffset ? window.pageXOffset : document.body.scrollLeft;
   var scrollY = isPageOffset ? window.pageYOffset : document.body.scrollTop;
   var isInside = pointerPoint.x >= boundingRect.left + scrollX &&

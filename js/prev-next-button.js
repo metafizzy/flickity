@@ -115,7 +115,7 @@ PrevNextButton.prototype.deactivate = function() {
   // remove from DOM
   this.parent.element.removeChild( this.element );
   // do regular TapListener destroy
-  TapListener.destroy.call( this );
+  TapListener.prototype.destroy.call( this );
   // click events from keyboard
   eventie.unbind( this.element, 'click', this );
 };

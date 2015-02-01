@@ -628,6 +628,7 @@ Flickity.prototype.deactivate = function() {
   }
   // set flags
   this.isActive = false;
+  this.emit('deactivate');
 };
 
 Flickity.prototype.destroy = function() {
@@ -635,6 +636,7 @@ Flickity.prototype.destroy = function() {
   if ( this.isResizeBound ) {
     eventie.unbind( window, 'resize', this );
   }
+  this.emit('destroy');
   delete this.element.flickityGUID;
   delete instances[ this.guid ];
 };
