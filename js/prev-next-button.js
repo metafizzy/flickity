@@ -7,19 +7,17 @@
   if ( typeof define == 'function' && define.amd ) {
     // AMD
     define( [
-      'eventEmitter/EventEmitter',
       'eventie/eventie',
       './flickity',
       './tap-listener',
       'fizzy-ui-utils/utils'
-    ], function( EventEmitter, eventie, Flickity, TapListener, utils ) {
-      return factory( window, EventEmitter, eventie, Flickity, TapListener, utils );
+    ], function( eventie, Flickity, TapListener, utils ) {
+      return factory( window, eventie, Flickity, TapListener, utils );
     });
   } else if ( typeof exports == 'object' ) {
     // CommonJS
     module.exports = factory(
       window,
-      require('wolfy87-eventemitter'),
       require('eventie'),
       require('./flickity'),
       require('./tap-listener'),
@@ -30,7 +28,6 @@
     window.Flickity = window.Flickity || {};
     window.Flickity.PrevNextButton = factory(
       window,
-      window.EventEmitter,
       window.eventie,
       window.Flickity,
       window.TapListener,
@@ -38,7 +35,7 @@
     );
   }
 
-}( window, function factory( window, EventEmitter, eventie, Flickity, TapListener, utils ) {
+}( window, function factory( window, eventie, Flickity, TapListener, utils ) {
 
 'use strict';
 
@@ -69,7 +66,7 @@ function PrevNextButton( direction, parent ) {
   this._create();
 }
 
-PrevNextButton.prototype = new EventEmitter();
+PrevNextButton.prototype = new TapListener();
 
 PrevNextButton.prototype._create = function() {
   // properties
@@ -99,19 +96,15 @@ PrevNextButton.prototype._create = function() {
   };
   this.parent.on( 'select', this.onselect );
   // tap
-  var tapListener = this.tapListener = new TapListener();
-  tapListener.on( 'tap', function onTap() {
-    _this.onTap.apply( _this, arguments );
-  });
+  this.on( 'tap', this.onTap );
   // pointerDown
-  // TODO fix
-  tapListener.on( 'pointerDown', function onPointerDown( button, event ) {
-    // _this.parent.onChildUIPointerDown( event );
+  this.on( 'pointerDown', function onPointerDown( button, event ) {
+    _this.parent.childUIPointerDown( event );
   });
 };
 
 PrevNextButton.prototype.activate = function() {
-  this.tapListener.bindTap( this.element );
+  this.bindTap( this.element );
   // click events from keyboard
   eventie.bind( this.element, 'click', this );
   // add to DOM
@@ -121,7 +114,8 @@ PrevNextButton.prototype.activate = function() {
 PrevNextButton.prototype.deactivate = function() {
   // remove from DOM
   this.parent.element.removeChild( this.element );
-  this.tapListener.destroy();
+  // do regular TapListener destroy
+  TapListener.destroy.call( this );
   // click events from keyboard
   eventie.unbind( this.element, 'click', this );
 };
@@ -225,9 +219,10 @@ proto.activatePrevNextButtons = function() {
   this.on( 'deactivate', this.deactivatePrevNextButtons );
 };
 
-proto.activatePrevNextButtons = function() {
+proto.deactivatePrevNextButtons = function() {
   this.prevButton.deactivate();
   this.nextButton.deactivate();
+  this.off( 'deactivate', this.deactivatePrevNextButtons );
 };
 
 utils.extend( Flickity.prototype, proto );

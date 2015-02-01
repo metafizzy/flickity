@@ -507,6 +507,10 @@ Flickity.prototype.uiChange = function() {
   this.emit('uiChange');
 };
 
+Flickity.prototype.childUIPointerDown = function( event ) {
+  this.emitEvent( 'childUIPointerDown', [ event ] );
+};
+
 // ----- resize ----- //
 
 Flickity.prototype.onresize = function() {

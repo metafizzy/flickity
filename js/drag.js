@@ -40,6 +40,15 @@
 
 'use strict';
 
+// handle IE8 prevent default
+function preventDefaultEvent( event ) {
+  if ( event.preventDefault ) {
+    event.preventDefault();
+  } else {
+    event.returnValue = false;
+  }
+}
+
 // ----- defaults ----- //
 
 utils.extend( Flickity.defaults, {
@@ -61,6 +70,7 @@ utils.extend( proto, Unidragger.prototype );
 proto._createDrag = function() {
   this.on( 'activate', this.bindDrag );
   this.on( 'uiChange', this._uiChangeDrag );
+  this.on( 'childUIPointerDown', this._childUIPointerDownDrag );
 };
 
 proto.bindDrag = function() {
@@ -84,6 +94,11 @@ proto.hasDragStarted = function( moveVector ) {
 
 proto._uiChangeDrag = function() {
   delete this.isFreeScrolling;
+};
+
+proto._childUIPointerDownDrag = function( event ) {
+  preventDefaultEvent( event );
+  this.pointerDownFocus( event );
 };
 
 // -------------------------- pointer events -------------------------- //
