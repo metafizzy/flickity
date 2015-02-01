@@ -150,9 +150,7 @@ utils.extend( Flickity.defaults, {
 
 Flickity.createMethods.push('_createPageDots');
 
-var FlickityProto = {};
-
-FlickityProto._createPageDots = function() {
+Flickity.prototype._createPageDots = function() {
   if ( !this.options.pageDots ) {
     return;
   }
@@ -162,19 +160,17 @@ FlickityProto._createPageDots = function() {
   this.on( 'destroy', this.destroyPageDots );
 };
 
-FlickityProto.activatePageDots = function() {
+Flickity.prototype.activatePageDots = function() {
   this.pageDots.activate();
 };
 
-FlickityProto.deactivatePageDots = function() {
+Flickity.prototype.deactivatePageDots = function() {
   this.pageDots.deactivate();
 };
 
-FlickityProto.destroyPageDots = function() {
+Flickity.prototype.destroyPageDots = function() {
   this.pageDots.destroy();
 };
-
-utils.extend( Flickity.prototype, FlickityProto );
 
 // -----  ----- //
 
