@@ -41,7 +41,7 @@ function getCellsFragment( cells ) {
   return fragment;
 }
 
-// -------------------------- cell change prototype -------------------------- //
+// -------------------------- add/remove cell prototype -------------------------- //
 
 /**
  * Insert, prepend, or append cells
