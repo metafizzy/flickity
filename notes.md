@@ -1,6 +1,5 @@
 ## To do
 
-getCellElements
 contain includes left margin but not right margin
 test empty Flickity
 after removing all, doing a resize()

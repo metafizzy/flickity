@@ -491,6 +491,18 @@ Flickity.prototype.getCells = function( elems ) {
   return cells;
 };
 
+/**
+ * get cell elements
+ * @returns {Array} cellElems
+ */
+Flickity.prototype.getCellElements = function() {
+  var cellElems = [];
+  for ( var i=0, len = this.cells.length; i < len; i++ ) {
+    cellElems.push( this.cells[i].element );
+  }
+  return cellElems;
+};
+
 // -------------------------- events -------------------------- //
 
 Flickity.prototype.uiChange = function() {
