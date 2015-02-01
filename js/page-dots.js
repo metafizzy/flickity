@@ -156,12 +156,17 @@ Flickity.prototype._createPageDots = function() {
   }
   this.pageDots = new PageDots( this );
   this.on( 'activate', this.activatePageDots );
+  this.on( 'cellAddedRemoved', this.onCellAddedRemovedPageDots );
   this.on( 'deactivate', this.deactivatePageDots );
   this.on( 'destroy', this.destroyPageDots );
 };
 
 Flickity.prototype.activatePageDots = function() {
   this.pageDots.activate();
+};
+
+Flickity.prototype.onCellAddedRemovedPageDots = function() {
+  this.pageDots.setDots();
 };
 
 Flickity.prototype.deactivatePageDots = function() {

@@ -5,26 +5,29 @@
   if ( typeof define == 'function' && define.amd ) {
     // AMD
     define( [
+      './Flickity',
       'fizzy-ui-utils/utils'
-    ], function( utils ) {
-      return factory( window, utils );
+    ], function( Flickity, utils ) {
+      return factory( window, Flickity, utils );
     });
   } else if ( typeof exports == 'object' ) {
     // CommonJS
     module.exports = factory(
       window,
+      require('/.flickity'),
       require('fizzy-ui-utils')
     );
   } else {
     // browser global
     window.Flickity = window.Flickity || {};
-    window.Flickity.cellChangePrototype = factory(
+    window.Flickity = factory(
       window,
+      window.Flickity,
       window.fizzyUIUtils
     );
   }
 
-}( window, function factory( window, utils ) {
+}( window, function factory( window, Flickity, utils ) {
 
 'use strict';
 
@@ -40,14 +43,12 @@ function getCellsFragment( cells ) {
 
 // -------------------------- cell change prototype -------------------------- //
 
-var proto = {};
-
 /**
  * Insert, prepend, or append cells
  * @param {Element, Array, NodeList} elems
  * @param {Integer} index
  */
-proto.insert = function( elems, index ) {
+Flickity.prototype.insert = function( elems, index ) {
   var cells = this._makeCells( elems );
   if ( !cells || !cells.length ) {
     return;
@@ -84,11 +85,11 @@ proto.insert = function( elems, index ) {
   this._cellAddedRemoved( index, selectedIndexDelta );
 };
 
-proto.append = function( elems ) {
+Flickity.prototype.append = function( elems ) {
   this.insert( elems, this.cells.length );
 };
 
-proto.prepend = function( elems ) {
+Flickity.prototype.prepend = function( elems ) {
   this.insert( elems, 0 );
 };
 
@@ -96,7 +97,7 @@ proto.prepend = function( elems ) {
  * Remove cells
  * @param {Element, Array, NodeList} elems
  */
-proto.remove = function( elems ) {
+Flickity.prototype.remove = function( elems ) {
   var cells = this.getCells( elems );
   var selectedIndexDelta = 0;
   var i, len, cell;
@@ -121,15 +122,12 @@ proto.remove = function( elems ) {
 };
 
 // updates when cells are added or removed
-proto._cellAddedRemoved = function( changedCellIndex, selectedIndexDelta ) {
-  // update page dots
-  if ( this.pageDots ) {
-    this.pageDots.setDots();
-  }
+Flickity.prototype._cellAddedRemoved = function( changedCellIndex, selectedIndexDelta ) {
   selectedIndexDelta = selectedIndexDelta || 0;
   this.selectedIndex += selectedIndexDelta;
   this.selectedIndex = Math.max( 0, Math.min( this.cells.length - 1, this.selectedIndex ) );
 
+  this.emitEvent( 'cellAddedRemoved', [ changedCellIndex, selectedIndexDelta ] );
   this.cellChange( changedCellIndex );
 };
 
@@ -137,7 +135,7 @@ proto._cellAddedRemoved = function( changedCellIndex, selectedIndexDelta ) {
  * logic to be run after a cell's size changes
  * @param {Element} elem - cell's element
  */
-proto.cellSizeChange = function( elem ) {
+Flickity.prototype.cellSizeChange = function( elem ) {
   var cell = this.getCell( elem );
   if ( !cell ) {
     return;
@@ -152,7 +150,7 @@ proto.cellSizeChange = function( elem ) {
  * logic any time a cell is changed: added, removed, or size changed
  * @param {Integer} changedCellIndex - index of the changed cell, optional
  */
-proto.cellChange = function( changedCellIndex ) {
+Flickity.prototype.cellChange = function( changedCellIndex ) {
   // TODO maybe always size all cells unless isSkippingSizing
   // size all cells if necessary
   // if ( !isSkippingSizing ) {
@@ -175,6 +173,6 @@ proto.cellChange = function( changedCellIndex ) {
 
 // -----  ----- //
 
-return proto;
+return Flickity;
 
 }));
