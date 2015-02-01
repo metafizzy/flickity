@@ -5,7 +5,7 @@
   if ( typeof define == 'function' && define.amd ) {
     // AMD
     define( [
-      './Flickity',
+      './flickity',
       'fizzy-ui-utils/utils'
     ], function( Flickity, utils ) {
       return factory( window, Flickity, utils );
@@ -14,7 +14,7 @@
     // CommonJS
     module.exports = factory(
       window,
-      require('/.flickity'),
+      require('./flickity'),
       require('fizzy-ui-utils')
     );
   } else {

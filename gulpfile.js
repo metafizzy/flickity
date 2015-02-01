@@ -90,13 +90,13 @@ gulp.task( 'requirejs', function() {
   var banner = getBanner();
   // HACK src is not needed
   // should refactor rjsOptimize to produce src
-  return gulp.src('js/flickity.js')
+  return gulp.src('js/index.js')
     .pipe( rjsOptimize({
       baseUrl: 'bower_components',
       optimize: 'none',
       include: [
         'jquery-bridget/jquery.bridget',
-        'flickity/js/flickity',
+        'flickity/js/index',
         'flickity-imagesloaded/flickity-imagesloaded'
       ],
       paths: {

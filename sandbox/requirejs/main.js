@@ -7,7 +7,7 @@ requirejs.config({
   baseUrl: '../../bower_components'
 });
 
-requirejs( [ '../js/flickity' ], function( Flickity ) {
+requirejs( [ '../js/index' ], function( Flickity ) {
   new Flickity('#gallery');
 });
 // */

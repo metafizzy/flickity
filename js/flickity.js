@@ -18,14 +18,9 @@
       'get-size/get-size',
       'fizzy-ui-utils/utils',
       './cell',
-      './prev-next-button',
-      './page-dots',
-      './player',
-      './drag',
-      './animate',
-      './cell-change'
-    ], function( classie, EventEmitter, eventie, getSize, utils, Cell, PrevNextButton, PageDots, Player, dragPrototype, animatePrototype, cellChangePrototype ) {
-      return factory( window, classie, EventEmitter, eventie, getSize, utils, Cell, PrevNextButton, PageDots, Player, dragPrototype, animatePrototype, cellChangePrototype );
+      './animate'
+    ], function( classie, EventEmitter, eventie, getSize, utils, Cell, animatePrototype ) {
+      return factory( window, classie, EventEmitter, eventie, getSize, utils, Cell, animatePrototype );
     });
   } else if ( typeof exports == 'object' ) {
     // CommonJS
@@ -37,12 +32,7 @@
       require('get-size'),
       require('fizzy-ui-utils'),
       require('./cell'),
-      require('./prev-next-button'),
-      require('./page-dots'),
-      require('./player'),
-      require('./drag'),
-      require('./animate'),
-      require('./cell-change')
+      require('./animate')
     );
   } else {
     // browser global

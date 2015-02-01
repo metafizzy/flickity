@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "description": "Touch responsive gallery",
   "main": [
-    "js/flickity.js",
+    "js/index.js",
     "css/flickity.css"
   ],
   "dependencies": {

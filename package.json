@@ -2,7 +2,7 @@
   "name": "flickity",
   "version": "0.1.0",
   "description": "Touch, responsive, flickable galleries",
-  "main": "js/flickity.js",
+  "main": "js/index.js",
   "dependencies": {
     "desandro-classie": "~1.0.1",
     "desandro-matches-selector": "~1.0.2",
