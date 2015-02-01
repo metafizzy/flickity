@@ -155,7 +155,7 @@ PrevNextButton.prototype.onclick = function() {
   // only allow clicks from keyboard
   var focused = document.activeElement;
   if ( focused && focused == this.element ) {
-    // this.onTap();
+    this.onTap();
   }
 };
 
