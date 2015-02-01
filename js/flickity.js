@@ -201,6 +201,8 @@ Flickity.prototype.activate = function() {
     // listen for key presses
     eventie.bind( this.element, 'keydown', this );
   }
+
+  this.emit('activate');
 };
 
 // slider positions the cells

@@ -7,10 +7,11 @@
     define( [
       'classie/classie',
       'eventie/eventie',
+      './flickity',
       'unidragger/unidragger',
       'fizzy-ui-utils/utils'
-    ], function( classie, eventie, Unidragger, utils ) {
-      return factory( window, classie, eventie, Unidragger, utils );
+    ], function( classie, eventie, Flickity, Unidragger, utils ) {
+      return factory( window, classie, eventie, Flickity, Unidragger, utils );
     });
   } else if ( typeof exports == 'object' ) {
     // CommonJS
@@ -18,6 +19,7 @@
       window,
       require('desandro-classie'),
       require('eventie'),
+      require('./flickity'),
       require('unidragger'),
       require('fizzy-ui-utils')
     );
@@ -28,14 +30,26 @@
       window,
       window.classie,
       window.eventie,
+      window.Flickity,
       window.Unidragger,
       window.fizzyUIUtils
     );
   }
 
-}( window, function factory( window, classie, eventie, Unidragger, utils ) {
+}( window, function factory( window, classie, eventie, Flickity, Unidragger, utils ) {
 
 'use strict';
+
+// ----- defaults ----- //
+
+utils.extend( Flickity.defaults, {
+  draggable: true,
+  touchVerticalScroll: true
+});
+
+// ----- create ----- //
+
+Flickity.createMethods.push('_createDrag');
 
 // -------------------------- drag prototype -------------------------- //
 
@@ -43,6 +57,10 @@ var proto = {};
 utils.extend( proto, Unidragger.prototype );
 
 // --------------------------  -------------------------- //
+
+proto._createDrag = function() {
+  this.on( 'activate', this.bindDrag );
+};
 
 proto.bindDrag = function() {
   if ( !this.options.draggable ) {
@@ -76,8 +94,6 @@ proto.pointerDown = function( event, pointer ) {
   this.pointerDownFocus( event );
   // stop if it was moving
   this.velocity = 0;
-  // stop auto play
-  this.player.stop();
   classie.add( this.viewport, 'is-pointer-down' );
   // bind move and end events
   this._bindPostStartEvents( event );
@@ -312,6 +328,10 @@ proto.staticClick = function( event, pointer ) {
 
 // -----  ----- //
 
-return proto;
+utils.extend( Flickity.prototype, proto );
+
+// -----  ----- //
+
+return Flickity;
 
 }));
