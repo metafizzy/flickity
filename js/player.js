@@ -138,6 +138,7 @@ Flickity.prototype._createPlayer = function() {
 
   this.on( 'activate', this.activatePlayer );
   this.on( 'uiChange', this.stopPlayer );
+  this.on( 'pointerDown', this.stopPlayer );
   this.on( 'deactivate', this.deactivatePlayer );
 };
 
