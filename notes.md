@@ -32,6 +32,14 @@ handling clicks vs. dragging
 HTML init
 lots of files
 
+## Parts
+
+jQuery Bridget
+imagesLoaded
+flickity-imagesloaded
+cell-change (add/remove)
+syncing
+
 ## IE8 quirks
 
 scrollTop & scrollLeft
