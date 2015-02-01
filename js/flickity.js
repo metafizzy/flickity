@@ -56,18 +56,12 @@
       window.getSize,
       window.fizzyUIUtils,
       _Flickity.Cell,
-      _Flickity.PrevNextButton,
-      _Flickity.PageDots,
-      _Flickity.Player,
-      _Flickity.dragPrototype,
-      _Flickity.animatePrototype,
-      _Flickity.cellChangePrototype
+      _Flickity.animatePrototype
     );
   }
 
 }( window, function factory( window, classie, EventEmitter, eventie, getSize,
-  utils, Cell, PrevNextButton, PageDots, Player, dragPrototype, animatePrototype,
-  cellChangePrototype ) {
+  utils, Cell, animatePrototype ) {
 
 'use strict';
 
@@ -76,21 +70,10 @@ var jQuery = window.jQuery;
 var getComputedStyle = window.getComputedStyle;
 var console = window.console;
 
-function noop() {}
-
 function moveElements( elems, toElem ) {
   elems = utils.makeArray( elems );
   while ( elems.length ) {
     toElem.appendChild( elems.shift() );
-  }
-}
-
-// handle IE8 prevent default
-function preventDefaultEvent( event ) {
-  if ( event.preventDefault ) {
-    event.preventDefault();
-  } else {
-    event.returnValue = false;
   }
 }
 
@@ -124,27 +107,21 @@ function Flickity( element, options ) {
 
 Flickity.defaults = {
   accessibility: true,
-  // autoPlay: undefined,
-  freeScrollFriction: 0.075, // friction when free-scrolling
-  friction: 0.28, // friction when selecting
   cellAlign: 'center',
   // cellSelector: undefined,
   // contain: false,
-  draggable: true,
+  freeScrollFriction: 0.075, // friction when free-scrolling
+  friction: 0.28, // friction when selecting
   // initialIndex: 0,
-  // imagesLoaded: false,
   percentPosition: true,
-  pageDots: true,
-  prevNextButtons: true,
   resize: true,
-  touchVerticalScroll: true,
-  // watcCSS: false,
-  // wrapAround: false,
-  selectedAttraction: 0.025,
-  // sync: undefined,
-  leftArrowText: '←', // text for prev/next button when no SVG support
-  rightArrowText: '→'
+  selectedAttraction: 0.025
+  // watchCSS: false,
+  // wrapAround: false
 };
+
+// hash of methods triggered on _create()
+Flickity.createMethods = [];
 
 // inherit EventEmitter
 utils.extend( Flickity.prototype, EventEmitter.prototype );
@@ -165,26 +142,18 @@ Flickity.prototype._create = function() {
   this.originSide = this.options.rightToLeft ? 'right' : 'left';
   // create viewport & slider
   this.viewport = document.createElement('div');
-  this.viewport.className = 'flickity-viewport' +
-    ( this.options.draggable ? ' is-draggable' : '' );
+  this.viewport.className = 'flickity-viewport';
   this._createSlider();
-  // create prev/next buttons, page dots, and player
-  if ( this.options.prevNextButtons ) {
-    this.prevButton = new PrevNextButton( -1, this );
-    this.nextButton = new PrevNextButton( 1, this );
-  }
-  if ( this.options.pageDots ) {
-    this.pageDots = new PageDots( this );
-  }
-  this.player = new Player( this );
 
   if ( this.options.resize || this.options.watchCSS ) {
     eventie.bind( window, 'resize', this );
     this.isResizeBound = true;
   }
-  // sync
-  this.syncers = {};
-  this._initSync();
+
+  for ( var i=0, len = Flickity.createMethods.length; i < len; i++ ) {
+    var method = Flickity.createMethods[i];
+    this[ method ]();
+  }
 
   if ( this.options.watchCSS ) {
     this.watchCSS();
@@ -208,9 +177,6 @@ Flickity.prototype.activate = function() {
   }
   this.isActive = true;
   classie.add( this.element, 'flickity-enabled' );
-  if ( this.options.draggable ) {
-    classie.add( this.element, 'flickity-draggable' );
-  }
   if ( this.options.rightToLeft ) {
     classie.add( this.element, 'flickity-rtl' );
   }
@@ -225,31 +191,9 @@ Flickity.prototype.activate = function() {
   // get cells from children
   this.reloadCells();
   this.setContainerSize();
-  // activate prev/next buttons, page dots
-  if ( this.prevButton ) {
-    this.prevButton.activate();
-  }
-  if ( this.nextButton ) {
-    this.nextButton.activate();
-  }
-  if ( this.pageDots ) {
-    this.pageDots.activate();
-  }
-  // player
-  if ( this.options.autoPlay ) {
-    this.player.play();
-    // add hover listeners
-    eventie.bind( this.element, 'mouseenter', this );
-    // TODO add event for pointer enter
-  }
 
   this.positionSliderAtSelected();
   this.select( this.selectedIndex );
-
-  this.imagesLoaded();
-
-  // events
-  this.bindDrag();
 
   if ( this.options.accessibility ) {
     // allow element to focusable
@@ -443,89 +387,6 @@ Flickity.prototype._containCells = function() {
   }
 };
 
-// ----- sync ----- //
-
-/**
- * sync
- * @param {Element} or {String} elem
- */
-Flickity.prototype.sync = function( elem ) {
-  elem = utils.getQueryElement( elem );
-  var companion = Flickity.data( elem );
-  if ( !companion ) {
-    return;
-  }
-  // two hearts, that beat as one
-  this._syncCompanion( companion );
-  companion._syncCompanion( this );
-};
-
-// initial sync in _create()
-Flickity.prototype._initSync = function() {
-  // HACK do async, give time for other flickity to be initalized
-  var _this = this;
-  setTimeout( function initSyncCompanion() {
-    _this.sync( _this.options.sync );
-  });
-};
-
-/**
- * @param {Flickity} companion
- */
-Flickity.prototype._syncCompanion = function( companion ) {
-  var _this = this;
-  function syncListener() {
-    var index = _this.selectedIndex;
-    // do not select if already selected, prevent infinite loop
-    if ( companion.selectedIndex != index ) {
-      companion.select( index );
-    }
-  }
-  this.on( 'select', syncListener );
-  // keep track of all synced flickities
-  // hold on to listener to unsync
-  this.syncers[ companion.guid ] = syncListener;
-};
-
-/**
- * unsync
- * @param {Element} or {String} elem
- */
-Flickity.prototype.unsync = function( elem ) {
-  elem = utils.getQueryElement( elem );
-  var companion = Flickity.data( elem );
-  this._unsync( companion );
-};
-
-/**
- * @param {Flickity} companion
- */
-Flickity.prototype._unsync = function( companion ) {
-  if ( !companion ) {
-    return;
-  }
-  // I love you but I've chosen darkness
-  this._unsyncCompanion( companion );
-  companion._unsyncCompanion( this );
-};
-
-/**
- * @param {Flickity} companion
- */
-Flickity.prototype._unsyncCompanion = function( companion ) {
-  var id = companion.guid;
-  var syncer = this.syncers[ id ];
-  this.off( 'select', syncer );
-  delete this.syncers[ id ];
-};
-
-Flickity.prototype.unsyncAll = function() {
-  for ( var id in this.syncers ) {
-    var companion = instances[ id ];
-    this._unsync( companion );
-  }
-};
-
 // -----  ----- //
 
 /**
@@ -578,6 +439,7 @@ Flickity.prototype.select = function( index, isWrap ) {
     this.selectedIndex = index;
     this.setSelectedCell();
     this.startAnimation();
+    console.log( 'select', this.x);
     this.dispatchEvent('select');
   }
 };
@@ -588,15 +450,6 @@ Flickity.prototype.previous = function( isWrap ) {
 
 Flickity.prototype.next = function( isWrap ) {
   this.select( this.selectedIndex + 1, isWrap );
-};
-
-Flickity.prototype.updatePrevNextButtons = function() {
-  if ( this.prevButton ) {
-    this.prevButton.update();
-  }
-  if ( this.nextButton ) {
-    this.nextButton.update();
-  }
 };
 
 Flickity.prototype.setSelectedCell = function() {
@@ -611,19 +464,6 @@ Flickity.prototype._removeSelectedCellClass = function() {
     classie.remove( this.selectedCell.element, 'is-selected' );
   }
 };
-
-// on button clicks and ui changes
-// stop player and stop free scrolling
-Flickity.prototype.uiChange = function() {
-  this.player.stop();
-  delete this.isFreeScrolling;
-};
-
-// -------------------------- images -------------------------- //
-
-// handled in a separate package, but included with flickity.pkgd.js
-// https://github.com/metafizzy/flickity-imagesloaded
-Flickity.prototype.imagesLoaded = noop;
 
 // -------------------------- get cells -------------------------- //
 
@@ -755,27 +595,6 @@ Flickity.prototype.onkeydown = function( event ) {
   }
 };
 
-// ----- mouseenter/leave ----- //
-
-// pause auto-play on hover
-Flickity.prototype.onmouseenter = function() {
-  this.player.pause();
-  eventie.bind( this.element, 'mouseleave', this );
-};
-
-// resume auto-play on hover off
-Flickity.prototype.onmouseleave = function() {
-  this.player.unpause();
-  eventie.unbind( this.element, 'mouseleave', this );
-};
-
-// ----- onChildUIPointerDown ----- //
-
-Flickity.prototype.onChildUIPointerDown = function( event ) {
-  preventDefaultEvent( event );
-  this.pointerDownFocus( event );
-};
-
 // -------------------------- destroy -------------------------- //
 
 // deactivate all Flickity functionality, but keep stuff available
@@ -794,26 +613,12 @@ Flickity.prototype.deactivate = function() {
   this.element.removeChild( this.viewport );
   // move child elements back into element
   moveElements( this.slider.children, this.element );
-  // deactivate prev/next buttons, page dots; stop player
-  if ( this.prevButton ) {
-    this.prevButton.deactivate();
-  }
-  if ( this.nextButton ) {
-    this.nextButton.deactivate();
-  }
-  if ( this.pageDots ) {
-    this.pageDots.deactivate();
-  }
-  this.player.stop();
-  // unbind events
-  this.unbindDrag();
   if ( this.options.accessibility ) {
     this.element.removeAttribute('tabIndex');
     eventie.unbind( this.element, 'keydown', this );
   }
   // set flags
   this.isActive = false;
-  this.isAnimating = false;
 };
 
 Flickity.prototype.destroy = function() {
@@ -821,16 +626,13 @@ Flickity.prototype.destroy = function() {
   if ( this.isResizeBound ) {
     eventie.unbind( window, 'resize', this );
   }
-  this.unsyncAll();
   delete this.element.flickityGUID;
   delete instances[ this.guid ];
 };
 
 // -------------------------- prototype -------------------------- //
 
-utils.extend( Flickity.prototype, dragPrototype );
 utils.extend( Flickity.prototype, animatePrototype );
-utils.extend( Flickity.prototype, cellChangePrototype );
 
 // -------------------------- extras -------------------------- //
 
@@ -850,12 +652,6 @@ utils.htmlInit( Flickity, 'flickity' );
 if ( jQuery && jQuery.bridget ) {
   jQuery.bridget( 'flickity', Flickity );
 }
-
-// make classes accessible
-Flickity.Cell = Cell;
-Flickity.PrevNextButton = PrevNextButton;
-Flickity.PageDots = PageDots;
-Flickity.Player = Player;
 
 return Flickity;
 
