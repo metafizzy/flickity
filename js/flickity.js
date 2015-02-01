@@ -441,7 +441,6 @@ Flickity.prototype.select = function( index, isWrap ) {
     this.selectedIndex = index;
     this.setSelectedCell();
     this.startAnimation();
-    console.log( 'select', this.x);
     this.dispatchEvent('select');
   }
 };
@@ -503,6 +502,10 @@ Flickity.prototype.getCells = function( elems ) {
 };
 
 // -------------------------- events -------------------------- //
+
+Flickity.prototype.uiChange = function() {
+  this.emit('uiChange');
+};
 
 // ----- resize ----- //
 

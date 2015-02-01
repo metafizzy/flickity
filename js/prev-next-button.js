@@ -7,17 +7,21 @@
   if ( typeof define == 'function' && define.amd ) {
     // AMD
     define( [
+      'eventEmitter/EventEmitter',
       'eventie/eventie',
+      './flickity',
       './tap-listener',
       'fizzy-ui-utils/utils'
-    ], function( eventie, TapListener, utils ) {
-      return factory( window, eventie, TapListener, utils );
+    ], function( EventEmitter, eventie, Flickity, TapListener, utils ) {
+      return factory( window, EventEmitter, eventie, Flickity, TapListener, utils );
     });
   } else if ( typeof exports == 'object' ) {
     // CommonJS
     module.exports = factory(
       window,
+      require('wolfy87-eventemitter'),
       require('eventie'),
+      require('./flickity'),
       require('./tap-listener'),
       require('fizzy-ui-utils')
     );
@@ -26,19 +30,21 @@
     window.Flickity = window.Flickity || {};
     window.Flickity.PrevNextButton = factory(
       window,
+      window.EventEmitter,
       window.eventie,
+      window.Flickity,
       window.TapListener,
       window.fizzyUIUtils
     );
   }
 
-}( window, function factory( window, eventie, TapListener, utils ) {
+}( window, function factory( window, EventEmitter, eventie, Flickity, TapListener, utils ) {
 
 'use strict';
 
-var svgURI = 'http://www.w3.org/2000/svg';
+// ----- inline SVG support ----- //
 
-// -------------------------- inline SVG support -------------------------- //
+var svgURI = 'http://www.w3.org/2000/svg';
 
 // only check on demand, not on script load
 var supportsInlineSVG = ( function() {
@@ -55,11 +61,15 @@ var supportsInlineSVG = ( function() {
   return checkSupport;
 })();
 
+// -------------------------- PrevNextButton -------------------------- //
+
 function PrevNextButton( direction, parent ) {
   this.direction = direction;
   this.parent = parent;
   this._create();
 }
+
+PrevNextButton.prototype = new EventEmitter();
 
 PrevNextButton.prototype._create = function() {
   // properties
@@ -94,8 +104,9 @@ PrevNextButton.prototype._create = function() {
     _this.onTap.apply( _this, arguments );
   });
   // pointerDown
+  // TODO fix
   tapListener.on( 'pointerDown', function onPointerDown( button, event ) {
-    _this.parent.onChildUIPointerDown( event );
+    // _this.parent.onChildUIPointerDown( event );
   });
 };
 
@@ -150,7 +161,7 @@ PrevNextButton.prototype.onclick = function() {
   // only allow clicks from keyboard
   var focused = document.activeElement;
   if ( focused && focused == this.element ) {
-    this.onTap();
+    // this.onTap();
   }
 };
 
@@ -186,6 +197,42 @@ PrevNextButton.prototype.update = function() {
 PrevNextButton.prototype.destroy = function() {
   this.deactivate();
 };
+
+// -------------------------- Flickity prototype -------------------------- //
+
+utils.extend( Flickity.defaults, {
+  prevNextButtons: true
+});
+
+var proto = {};
+
+Flickity.createMethods.push('_createPrevNextButtons');
+
+proto._createPrevNextButtons = function() {
+  if ( !this.options.prevNextButtons ) {
+    return;
+  }
+
+  this.prevButton = new PrevNextButton( -1, this );
+  this.nextButton = new PrevNextButton( 1, this );
+
+  this.on( 'activate', this.activatePrevNextButtons );
+};
+
+proto.activatePrevNextButtons = function() {
+  this.prevButton.activate();
+  this.nextButton.activate();
+  this.on( 'deactivate', this.deactivatePrevNextButtons );
+};
+
+proto.activatePrevNextButtons = function() {
+  this.prevButton.deactivate();
+  this.nextButton.deactivate();
+};
+
+utils.extend( Flickity.prototype, proto );
+
+// --------------------------  -------------------------- //
 
 return PrevNextButton;
 

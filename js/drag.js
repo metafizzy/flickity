@@ -60,6 +60,7 @@ utils.extend( proto, Unidragger.prototype );
 
 proto._createDrag = function() {
   this.on( 'activate', this.bindDrag );
+  this.on( 'uiChange', this._uiChangeDrag );
 };
 
 proto.bindDrag = function() {
@@ -79,6 +80,10 @@ proto.unbindDrag = function() {
 
 proto.hasDragStarted = function( moveVector ) {
   return Math.abs( moveVector.x ) > 3;
+};
+
+proto._uiChangeDrag = function() {
+  delete this.isFreeScrolling;
 };
 
 // -------------------------- pointer events -------------------------- //
