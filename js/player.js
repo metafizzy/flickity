@@ -4,19 +4,31 @@
 
   if ( typeof define == 'function' && define.amd ) {
     // AMD
-    define( function() {
-      return factory();
+    define( [
+      'eventEmitter/EventEmitter',
+      'eventie/eventie',
+      './flickity'
+    ], function( EventEmitter, eventie, Flickity ) {
+      return factory( EventEmitter, eventie, Flickity );
     });
   } else if ( typeof exports == 'object' ) {
     // CommonJS
-    module.exports = factory();
+    module.exports = factory(
+      require('wolfy87-eventemitter'),
+      require('eventie'),
+      require('./flickity')
+    );
   } else {
     // browser global
     window.Flickity = window.Flickity || {};
-    window.Flickity.Player = factory();
+    window.Flickity.Player = factory(
+      window.EventEmitter,
+      window.eventie,
+      window.Flickity
+    );
   }
 
-}( window, function factory() {
+}( window, function factory( EventEmitter, eventie, Flickity ) {
 
 'use strict';
 
@@ -45,6 +57,8 @@ function Player( parent ) {
     };
   }
 }
+
+Player.prototype = new EventEmitter();
 
 // start play
 Player.prototype.play = function() {
@@ -110,6 +124,56 @@ Player.prototype.visibilityChange = function() {
   var isHidden = document[ hiddenProperty ];
   this[ isHidden ? 'pause' : 'unpause' ]();
 };
+
+// -------------------------- Flickity -------------------------- //
+
+// utils.extend( Flickity.defaults, {
+//   autoPlay: false
+// });
+
+Flickity.createMethods.push('_createPlayer');
+
+Flickity.prototype._createPlayer = function() {
+  this.player = new Player( this );
+
+  this.on( 'activate', this.activatePlayer );
+  this.on( 'uiChange', this.stopPlayer );
+  this.on( 'deactivate', this.deactivatePlayer );
+};
+
+Flickity.prototype.activatePlayer = function() {
+  if ( !this.options.autoPlay ) {
+    return;
+  }
+  this.player.play();
+  eventie.bind( this.element, 'mouseenter', this );
+};
+
+Flickity.prototype.stopPlayer = function() {
+  this.player.stop();
+};
+
+Flickity.prototype.deactivatePlayer = function() {
+  this.player.deactivate();
+};
+
+// ----- mouseenter/leave ----- //
+
+// pause auto-play on hover
+Flickity.prototype.onmouseenter = function() {
+  this.player.pause();
+  eventie.bind( this.element, 'mouseleave', this );
+};
+
+// resume auto-play on hover off
+Flickity.prototype.onmouseleave = function() {
+  this.player.unpause();
+  eventie.unbind( this.element, 'mouseleave', this );
+};
+
+// -----  ----- //
+
+Flickity.Player = Player;
 
 return Player;
 
