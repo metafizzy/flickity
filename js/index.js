@@ -1,8 +1,6 @@
-/*!
- * Flickity v0.1.0
- * Touch, responsive, flickable galleries
- * http://flickity.metafizzy.co
- * Copyright 2015 Metafizzy
+/**
+ * Flickity index
+ * used for AMD and CommonJS exports
  */
 
 ( function( window, factory ) {
@@ -17,8 +15,7 @@
       './prev-next-button',
       './page-dots',
       './player',
-      './add-remove-cell',
-      './sync'
+      './add-remove-cell'
     ], factory );
   } else if ( typeof exports == 'object' ) {
     // CommonJS
@@ -29,7 +26,6 @@
       require('./page-dots'),
       require('./player'),
       require('./add-remove-cell')
-      // require('./sync')
     );
   }
 
