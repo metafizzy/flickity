@@ -39,6 +39,7 @@
   background: white;
   background: hsla(0, 0%, 100%, 0.75);
   cursor: pointer;
+  outline: 0;
   /* vertically center */
   -webkit-transform: translateY(-50%);
       -ms-transform: translateY(-50%);
