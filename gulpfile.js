@@ -97,6 +97,7 @@ gulp.task( 'requirejs', function() {
       include: [
         'jquery-bridget/jquery.bridget',
         'flickity/js/index',
+        'flickity-sync/flickity-sync',
         'flickity-imagesloaded/flickity-imagesloaded'
       ],
       paths: {

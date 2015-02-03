@@ -1,5 +1,5 @@
 /*!
- * Flickity PACKAGED v0.1.0
+ * Flickity PACKAGED v0.2.0
  * Touch, responsive, flickable galleries
  * http://flickity.metafizzy.co
  * Copyright 2015 Metafizzy
@@ -705,7 +705,7 @@ if ( typeof define === 'function' && define.amd ) {
 }.call(this));
 
 /*!
- * eventie v1.0.5
+ * eventie v1.0.6
  * event binding helper
  *   eventie.bind( elem, 'click', myFn )
  *   eventie.unbind( elem, 'click', myFn )
@@ -785,7 +785,7 @@ if ( typeof define === 'function' && define.amd ) {
   window.eventie = eventie;
 }
 
-})( this );
+})( window );
 
 /*!
  * getStyleProperty v1.0.4
@@ -1280,16 +1280,20 @@ if ( typeof define === 'function' && define.amd ) {
 })( Element.prototype );
 
 /**
- * utils
+ * Fizzy UI utils v0.1.1
+ * MIT license
  */
 
+/*jshint browser: true, undef: true, unused: true, strict: true */
+
 ( function( window, factory ) {
+  /*global define: false, module: false, require: false */
   
   // universal module definition
 
   if ( typeof define == 'function' && define.amd ) {
     // AMD
-    define( 'flickity/js/utils',[
+    define( 'fizzy-ui-utils/utils',[
       'doc-ready/doc-ready',
       'matches-selector/matches-selector'
     ], function( docReady, matchesSelector ) {
@@ -1304,7 +1308,7 @@ if ( typeof define === 'function' && define.amd ) {
     );
   } else {
     // browser global
-    window.utils = factory(
+    window.fizzyUIUtils = factory(
       window,
       window.docReady,
       window.matchesSelector
@@ -1315,12 +1319,12 @@ if ( typeof define === 'function' && define.amd ) {
 
 
 
-var U = {};
+var utils = {};
 
 // ----- extend ----- //
 
 // extends objects
-U.extend = function( a, b ) {
+utils.extend = function( a, b ) {
   for ( var prop in b ) {
     a[ prop ] = b[ prop ];
   }
@@ -1329,23 +1333,23 @@ U.extend = function( a, b ) {
 
 // ----- modulo ----- //
 
-U.modulo = function( num, div ) {
+utils.modulo = function( num, div ) {
   return ( ( num % div ) + div ) % div;
 };
 
 // ----- isArray ----- //
   
 var objToString = Object.prototype.toString;
-U.isArray = function( obj ) {
+utils.isArray = function( obj ) {
   return objToString.call( obj ) == '[object Array]';
 };
 
 // ----- makeArray ----- //
 
 // turn element or nodeList into an array
-U.makeArray = function( obj ) {
+utils.makeArray = function( obj ) {
   var ary = [];
-  if ( U.isArray( obj ) ) {
+  if ( utils.isArray( obj ) ) {
     // use object if already an array
     ary = obj;
   } else if ( obj && typeof obj.length == 'number' ) {
@@ -1363,7 +1367,7 @@ U.makeArray = function( obj ) {
 // ----- indexOf ----- //
 
 // index of helper cause IE8
-U.indexOf = Array.prototype.indexOf ? function( ary, obj ) {
+utils.indexOf = Array.prototype.indexOf ? function( ary, obj ) {
     return ary.indexOf( obj );
   } : function( ary, obj ) {
     for ( var i=0, len = ary.length; i < len; i++ ) {
@@ -1376,8 +1380,8 @@ U.indexOf = Array.prototype.indexOf ? function( ary, obj ) {
 
 // ----- removeFrom ----- //
 
-U.removeFrom = function( obj, ary ) {
-  var index = U.indexOf( ary, obj );
+utils.removeFrom = function( obj, ary ) {
+  var index = utils.indexOf( ary, obj );
   if ( index != -1 ) {
     ary.splice( index, 1 );
   }
@@ -1386,7 +1390,7 @@ U.removeFrom = function( obj, ary ) {
 // ----- isElement ----- //
 
 // http://stackoverflow.com/a/384380/182183
-U.isElement = ( typeof HTMLElement == 'function' || typeof HTMLElement == 'object' ) ?
+utils.isElement = ( typeof HTMLElement == 'function' || typeof HTMLElement == 'object' ) ?
   function isElementDOM2( obj ) {
     return obj instanceof HTMLElement;
   } :
@@ -1397,7 +1401,7 @@ U.isElement = ( typeof HTMLElement == 'function' || typeof HTMLElement == 'objec
 
 // ----- setText ----- //
 
-U.setText = ( function() {
+utils.setText = ( function() {
   var setTextProperty;
   function setText( elem, text ) {
     // only check setTextProperty once
@@ -1409,7 +1413,7 @@ U.setText = ( function() {
 
 // ----- getParent ----- //
 
-U.getParent = function( elem, selector ) {
+utils.getParent = function( elem, selector ) {
   while ( elem != document.body ) {
     elem = elem.parentNode;
     if ( matchesSelector( elem, selector ) ) {
@@ -1421,24 +1425,34 @@ U.getParent = function( elem, selector ) {
 // ----- getQueryElement ----- //
 
 // use element as selector string
-U.getQueryElement = function( elem ) {
+utils.getQueryElement = function( elem ) {
   if ( typeof elem == 'string' ) {
     return document.querySelector( elem );
   }
   return elem;
 };
 
+// ----- handleEvent ----- //
+
+// enable .ontype to trigger from .addEventListener( elem, 'type' )
+utils.handleEvent = function( event ) {
+  var method = 'on' + event.type;
+  if ( this[ method ] ) {
+    this[ method ]( event );
+  }
+};
+
 // ----- filterFindElements ----- //
 
-U.filterFindElements = function( elems, selector ) {
+utils.filterFindElements = function( elems, selector ) {
   // make array of elems
-  elems = U.makeArray( elems );
+  elems = utils.makeArray( elems );
   var ffElems = [];
 
   for ( var i=0, len = elems.length; i < len; i++ ) {
     var elem = elems[i];
     // check that elem is an actual element
-    if ( !U.isElement( elem ) ) {
+    if ( !utils.isElement( elem ) ) {
       continue;
     }
     // filter & find items if we have a selector
@@ -1463,7 +1477,7 @@ U.filterFindElements = function( elems, selector ) {
 
 // ----- debounceMethod ----- //
 
-U.debounceMethod = function( _class, methodName, threshold ) {
+utils.debounceMethod = function( _class, methodName, threshold ) {
   // original method
   var method = _class.prototype[ methodName ];
   var timeoutName = methodName + 'Timeout';
@@ -1494,13 +1508,13 @@ function toDashed( str ) {
   }).toLowerCase();
 }
 
-
+var console = window.console;
 /**
  * allow user to initialize classes via .js-namespace class
  * htmlInit( Widget, 'widgetName' )
  * options are parsed from data-namespace-option attribute
  */
-U.htmlInit = function( WidgetClass, namespace ) {
+utils.htmlInit = function( WidgetClass, namespace ) {
   docReady( function() {
     var dashedNamespace = toDashed( namespace );
     var elems = document.querySelectorAll( '.js-' + dashedNamespace );
@@ -1533,7 +1547,7 @@ U.htmlInit = function( WidgetClass, namespace ) {
 
 // -----  ----- //
 
-return U;
+return utils;
 
 }));
 
@@ -1625,1023 +1639,6 @@ return Cell;
 
 }));
 
-// -------------------------- prev/next button -------------------------- //
-
-( function( window, factory ) {
-  
-  // universal module definition
-
-  if ( typeof define == 'function' && define.amd ) {
-    // AMD
-    define( 'flickity/js/prev-next-button',[
-      './utils'
-    ], function( utils ) {
-      return factory( window, utils );
-    });
-  } else if ( typeof exports == 'object' ) {
-    // CommonJS
-    module.exports = factory(
-      window,
-      require('./utils')
-    );
-  } else {
-    // browser global
-    window.Flickity = window.Flickity || {};
-    window.Flickity.PrevNextButton = factory(
-      window,
-      window.utils
-    );
-  }
-
-}( window, function factory( window, utils ) {
-
-
-
-var svgURI = 'http://www.w3.org/2000/svg';
-
-// -------------------------- inline SVG support -------------------------- //
-
-// only check on demand, not on script load
-var supportsInlineSVG = ( function() {
-  var supports;
-  function checkSupport() {
-    if ( supports !== undefined ) {
-      return supports;
-    }
-    var div = document.createElement('div');
-    div.innerHTML = '<svg/>';
-    supports = ( div.firstChild && div.firstChild.namespaceURI ) == svgURI;
-    return supports;
-  }
-  return checkSupport;
-})();
-
-function PrevNextButton( direction, parent ) {
-  this.direction = direction;
-  this.parent = parent;
-  this._create();
-}
-
-PrevNextButton.prototype._create = function() {
-  // properties
-  this.isEnabled = true;
-  this.isPrevious = this.direction == -1;
-  var leftDirection = this.parent.options.rightToLeft ? 1 : -1;
-  this.isLeft = this.direction == leftDirection;
-
-  this.element = document.createElement('button');
-  this.element.className = 'flickity-prev-next-button';
-  this.element.className += this.isPrevious ? ' previous' : ' next';
-  // create arrow
-  if ( supportsInlineSVG() ) {
-    var svg = this.createSVG();
-    this.element.appendChild( svg );
-  } else {
-    // SVG not supported, set button text
-    this.setArrowText();
-    this.element.className += ' no-svg';
-  }
-
-  // update on select
-  var _this = this;
-  this.onselect = function() {
-    _this.update();
-  };
-  this.parent.on( 'select', this.onselect );
-
-  // listen to click event
-  this.element.onclick = function() {
-    _this.onclick();
-  };
-
-};
-
-PrevNextButton.prototype.activate = function() {
-  // add to DOM
-  this.parent.element.appendChild( this.element );
-};
-
-PrevNextButton.prototype.deactivate = function() {
-  // remove from DOM
-  this.parent.element.removeChild( this.element );
-};
-
-PrevNextButton.prototype.createSVG = function() {
-  var svg = document.createElementNS( svgURI, 'svg');
-  svg.setAttribute( 'viewBox', '0 0 100 100' );
-  var path = document.createElementNS( svgURI, 'path');
-  path.setAttribute( 'd', 'M 50,0 L 60,10 L 20,50 L 60,90 L 50,100 L 0,50 Z' );
-  path.setAttribute( 'class', 'arrow' );
-  // adjust arrow
-  var arrowTransform = this.isLeft ? 'translate(15,0)' :
-    'translate(85,100) rotate(180)';
-  path.setAttribute( 'transform', arrowTransform );
-  svg.appendChild( path );
-  return svg;
-};
-
-PrevNextButton.prototype.setArrowText = function() {
-  var parentOptions = this.parent.options;
-  var arrowText = this.isLeft ? parentOptions.leftArrowText : parentOptions.rightArrowText;
-  utils.setText( this.element, arrowText );
-};
-
-PrevNextButton.prototype.onclick = function() {
-  if ( !this.isEnabled ) {
-    return;
-  }
-  this.parent.uiChange();
-  var method = this.isPrevious ? 'previous' : 'next';
-  this.parent[ method ]();
-};
-
-PrevNextButton.prototype.enable = function() {
-  if ( this.isEnabled ) {
-    return;
-  }
-  this.element.disabled = false;
-  this.isEnabled = true;
-};
-
-PrevNextButton.prototype.disable = function() {
-  if ( !this.isEnabled ) {
-    return;
-  }
-  this.element.disabled = true;
-  this.isEnabled = false;
-};
-
-PrevNextButton.prototype.update = function() {
-  if ( this.parent.options.wrapAround ) {
-    this.enable();
-    return;
-  }
-  // index of first or last cell, if previous or next
-  var boundIndex = this.isPrevious ? 0 : this.parent.cells.length - 1;
-  var method = this.parent.selectedIndex == boundIndex ? 'disable' : 'enable';
-  this[ method ]();
-};
-
-return PrevNextButton;
-
-}));
-
-( function( window, factory ) {
-  
-  // universal module definition
-
-  if ( typeof define == 'function' && define.amd ) {
-    // AMD
-    define( 'flickity/js/page-dots',[
-      'eventie/eventie',
-      './utils'
-    ], function( eventie, utils ) {
-      return factory( window, eventie, utils );
-    });
-  } else if ( typeof exports == 'object' ) {
-    // CommonJS
-    module.exports = factory(
-      window,
-      require('eventie'),
-      require('./utils')
-    );
-  } else {
-    // browser global
-    window.Flickity = window.Flickity || {};
-    window.Flickity.PageDots = factory(
-      window,
-      window.eventie,
-      window.utils
-    );
-  }
-
-}( window, function factory( window, eventie, U ) {
-
-// -------------------------- PageDots -------------------------- //
-
-
-
-function PageDots( parent ) {
-  this.parent = parent;
-  this._create();
-}
-
-PageDots.prototype._create = function() {
-  // create holder element
-  this.holder = document.createElement('ol');
-  this.holder.className = 'flickity-page-dots';
-  // create dots, array of elements
-  this.dots = [];
-  // update on select
-  var _this = this;
-  this.onselect = function() {
-    _this.updateSelected();
-  };
-  this.parent.on( 'select', this.onselect );
-
-  eventie.bind( this.holder, 'click', this );
-};
-
-PageDots.prototype.activate = function() {
-  this.setDots();
-  this.updateSelected();
-  // add to DOM
-  this.parent.element.appendChild( this.holder );
-};
-
-PageDots.prototype.deactivate = function() {
-  // remove from DOM
-  this.parent.element.removeChild( this.holder );
-};
-
-PageDots.prototype.setDots = function() {
-  // get difference between number of cells and number of dots
-  var delta = this.parent.cells.length - this.dots.length;
-  if ( delta > 0 ) {
-    this.addDots( delta );
-  } else if ( delta < 0 ) {
-    this.removeDots( -delta );
-  }
-};
-
-PageDots.prototype.addDots = function( count ) {
-  var fragment = document.createDocumentFragment();
-  var newDots = [];
-  while ( count ) {
-    var dot = document.createElement('li');
-    dot.className = 'dot';
-    fragment.appendChild( dot );
-    newDots.push( dot );
-    count--;
-  }
-  this.holder.appendChild( fragment );
-  this.dots = this.dots.concat( newDots );
-};
-
-PageDots.prototype.removeDots = function( count ) {
-  // remove from this.dots collection
-  var removeDots = this.dots.splice( this.dots.length - count, count );
-  // remove from DOM
-  for ( var i=0, len = removeDots.length; i < len; i++ ) {
-    var dot = removeDots[i];
-    this.holder.removeChild( dot );
-  }
-};
-
-PageDots.prototype.updateSelected = function() {
-  // remove selected class on previous
-  if ( this.selectedDot ) {
-    this.selectedDot.className = 'dot';
-  }
-
-  this.selectedDot = this.dots[ this.parent.selectedIndex ];
-  this.selectedDot.className = 'dot is-selected';
-};
-
-// trigger handler methods for events
-PageDots.prototype.handleEvent = function( event ) {
-  var method = 'on' + event.type;
-  if ( this[ method ] ) {
-    this[ method ]( event );
-  }
-};
-
-PageDots.prototype.onclick = function( event ) {
-  var target = event.target;
-  // only care about dot clicks
-  if ( target.nodeName != 'LI' ) {
-    return;
-  }
-
-  this.parent.uiChange();
-  var index = U.indexOf( this.dots, target );
-  this.parent.select( index );
-};
-
-return PageDots;
-
-}));
-
-( function( window, factory ) {
-  
-  // universal module definition
-
-  if ( typeof define == 'function' && define.amd ) {
-    // AMD
-    define( 'flickity/js/player',[],function() {
-      return factory();
-    });
-  } else if ( typeof exports == 'object' ) {
-    // CommonJS
-    module.exports = factory();
-  } else {
-    // browser global
-    window.Flickity = window.Flickity || {};
-    window.Flickity.Player = factory();
-  }
-
-}( window, function factory() {
-
-
-
-function Player( parent ) {
-  this.isPlaying = false;
-  this.parent = parent;
-}
-
-// start play
-Player.prototype.play = function() {
-  this.isPlaying = true;
-  // playing kills pauses
-  delete this.isPaused;
-  // start ticking
-  this.tick();
-};
-
-Player.prototype.tick = function() {
-  // do not tick if paused or not playing
-  if ( !this.isPlaying || this.isPaused ) {
-    return;
-  }
-  var time = this.parent.options.autoPlay;
-  // default to 3 seconds
-  time = typeof time == 'number' ? time : 3000;
-  var _this = this;
-  this.timeout = setTimeout( function() {
-    _this.parent.next( true );
-    _this.tick();
-  }, time );
-};
-
-Player.prototype.stop = function() {
-  this.isPlaying = false;
-  // stopping kills pauses
-  delete this.isPaused;
-  this.clear();
-};
-
-Player.prototype.clear = function() {
-  clearTimeout( this.timeout );
-};
-
-Player.prototype.pause = function() {
-  if ( this.isPlaying ) {
-    this.isPaused = true;
-    this.clear();
-  }
-};
-
-Player.prototype.unpause = function() {
-  // re-start play if in unpaused state
-  if ( this.isPaused ) {
-    this.play();
-  }
-};
-
-return Player;
-
-}));
-
-( function( window, factory ) {
-  
-  // universal module definition
-
-  if ( typeof define == 'function' && define.amd ) {
-    // AMD
-    define( 'flickity/js/unipointer',[
-      'eventie/eventie'
-    ], function( eventie ) {
-      return factory( window, eventie );
-    });
-  } else if ( typeof exports == 'object' ) {
-    // CommonJS
-    module.exports = factory(
-      window,
-      require('eventie')
-    );
-  } else {
-    // browser global
-    window.Unipointer = factory(
-      window,
-      window.eventie
-    );
-  }
-
-}( window, function factory( window, eventie ) {
-
-
-
-// -----  ----- //
-
-function noop() {}
-
-// -------------------------- Unipointer -------------------------- //
-
-function Unipointer() {}
-
-// trigger handler methods for events
-Unipointer.prototype.handleEvent = function( event ) {
-  var method = 'on' + event.type;
-  if ( this[ method ] ) {
-    this[ method ]( event );
-  }
-};
-
-// returns the touch that we're keeping track of
-Unipointer.prototype.getTouch = function( touches ) {
-  for ( var i=0, len = touches.length; i < len; i++ ) {
-    var touch = touches[i];
-    if ( touch.identifier == this.pointerIdentifier ) {
-      return touch;
-    }
-  }
-};
-
-// ----- bind start ----- //
-
-// works as unbinder, as you can .bindHandles( false ) to unbind
-
-/**
- * @param {Boolean} isBind - will unbind if falsey
- */
-Unipointer.prototype.bindHandles = function( isBind ) {
-  var binder;
-  if ( window.navigator.pointerEnabled ) {
-    binder = this.bindPointer;
-  } else if ( window.navigator.msPointerEnabled ) {
-    binder = this.bindMSPointer;
-  } else {
-    binder = this.bindMouseTouch;
-  }
-  // munge isBind, default to true
-  isBind = isBind === undefined ? true : !!isBind;
-  for ( var i=0, len = this.handles.length; i < len; i++ ) {
-    var handle = this.handles[i];
-    binder.call( this, handle, isBind );
-  }
-};
-
-Unipointer.prototype.bindPointer = function( handle, isBind ) {
-  // W3C Pointer Events, IE11. See https://coderwall.com/p/mfreca
-  var bindMethod = isBind ? 'bind' : 'unbind';
-  eventie[ bindMethod ]( handle, 'pointerdown', this );
-  // disable scrolling on the element
-  handle.style.touchAction = isBind ? 'none' : '';
-};
-
-Unipointer.prototype.bindMSPointer = function( handle, isBind ) {
-  // IE10 Pointer Events
-  var bindMethod = isBind ? 'bind' : 'unbind';
-  eventie[ bindMethod ]( handle, 'MSPointerDown', this );
-  // disable scrolling on the element
-  handle.style.msTouchAction = isBind ? 'none' : '';
-};
-
-Unipointer.prototype.bindMouseTouch = function( handle, isBind ) {
-  // listen for both, for devices like Chrome Pixel
-  //   which has touch and mouse events
-  var bindMethod = isBind ? 'bind' : 'unbind';
-  eventie[ bindMethod ]( handle, 'mousedown', this );
-  eventie[ bindMethod ]( handle, 'touchstart', this );
-  // TODO re-enable img.ondragstart when unbinding
-  if ( isBind ) {
-    disableImgOndragstart( handle );
-  }
-};
-
-// remove default dragging interaction on all images in IE8
-// IE8 does its own drag thing on images, which messes stuff up
-
-function noDragStart() {
-  return false;
-}
-
-// TODO replace this with a IE8 test
-var isIE8 = 'attachEvent' in document.documentElement;
-
-// IE8 only
-var disableImgOndragstart = !isIE8 ? noop : function( handle ) {
-
-  if ( handle.nodeName == 'IMG' ) {
-    handle.ondragstart = noDragStart;
-  }
-
-  var images = handle.querySelectorAll('img');
-  for ( var i=0, len = images.length; i < len; i++ ) {
-    var img = images[i];
-    img.ondragstart = noDragStart;
-  }
-};
-
-// ----- start event ----- //
-
-Unipointer.prototype.onmousedown = function( event ) {
-  // dismiss clicks from right or middle buttons
-  var button = event.button;
-  if ( button && ( button !== 0 && button !== 1 ) ) {
-    return;
-  }
-  this._pointerDown( event, event );
-};
-
-Unipointer.prototype.ontouchstart = function( event ) {
-  this._pointerDown( event, event.changedTouches[0] );
-};
-
-Unipointer.prototype.onMSPointerDown =
-Unipointer.prototype.onpointerdown = function( event ) {
-  this._pointerDown( event, event );
-};
-
-// hash of events to be bound after start event
-var postStartEvents = {
-  mousedown: [ 'mousemove', 'mouseup' ],
-  touchstart: [ 'touchmove', 'touchend', 'touchcancel' ],
-  pointerdown: [ 'pointermove', 'pointerup', 'pointercancel' ],
-  MSPointerDown: [ 'MSPointerMove', 'MSPointerUp', 'MSPointerCancel' ]
-};
-
-/**
- * pointer start
- * @param {Event} event
- * @param {Event or Touch} pointer
- */
-Unipointer.prototype._pointerDown = function( event, pointer ) {
-  // dismiss other pointers
-  if ( this.isPointerDown ) {
-    return;
-  }
-
-  this.isPointerDown = true;
-
-  // save pointer identifier to match up touch events
-  this.pointerIdentifier = pointer.pointerId !== undefined ?
-    // pointerId for pointer events, touch.indentifier for touch events
-    pointer.pointerId : pointer.identifier;
-
-  // bind move and end events
-  this._bindPostStartEvents({
-    // get proper events to match start event
-    events: postStartEvents[ event.type ],
-    // IE8 needs to be bound to document
-    node: event.preventDefault ? window : document
-  });
-
-  this.pointerDown( event, pointer );
-  this.emitEvent( 'pointerDown', [ this, event, pointer ] );
-};
-
-Unipointer.prototype.pointerDown = noop;
-
-// ----- bind/unbind ----- //
-
-Unipointer.prototype._bindPostStartEvents = function( args ) {
-  for ( var i=0, len = args.events.length; i < len; i++ ) {
-    var event = args.events[i];
-    eventie.bind( args.node, event, this );
-  }
-  // save these arguments
-  this._boundPointerEvents = args;
-};
-
-Unipointer.prototype._unbindPostStartEvents = function() {
-  var args = this._boundPointerEvents;
-  // IE8 can trigger dragEnd twice, check for _boundEvents
-  if ( !args || !args.events ) {
-    return;
-  }
-
-  for ( var i=0, len = args.events.length; i < len; i++ ) {
-    var event = args.events[i];
-    eventie.unbind( args.node, event, this );
-  }
-  delete this._boundPointerEvents;
-};
-
-// ----- move event ----- //
-
-Unipointer.prototype.onmousemove = function( event ) {
-  this._pointerMove( event, event );
-};
-
-Unipointer.prototype.onMSPointerMove =
-Unipointer.prototype.onpointermove = function( event ) {
-  if ( event.pointerId == this.pointerIdentifier ) {
-    this._pointerMove( event, event );
-  }
-};
-
-Unipointer.prototype.ontouchmove = function( event ) {
-  var touch = this.getTouch( event.changedTouches );
-  if ( touch ) {
-    this._pointerMove( event, touch );
-  }
-};
-
-/**
- * drag move
- * @param {Event} event
- * @param {Event or Touch} pointer
- */
-Unipointer.prototype._pointerMove = function( event, pointer ) {
-  this.pointerMove( event, pointer );
-  this.emitEvent( 'pointerMove', [ this, event, pointer ] );
-};
-
-Unipointer.prototype.pointerMove = noop;
-
-// ----- end event ----- //
-
-Unipointer.prototype.onmouseup = function( event ) {
-  this._pointerUp( event, event );
-};
-
-Unipointer.prototype.onMSPointerUp =
-Unipointer.prototype.onpointerup = function( event ) {
-  if ( event.pointerId == this.pointerIdentifier ) {
-    this._pointerUp( event, event );
-  }
-};
-
-Unipointer.prototype.ontouchend = function( event ) {
-  var touch = this.getTouch( event.changedTouches );
-  if ( touch ) {
-    this._pointerUp( event, touch );
-  }
-};
-
-/**
- * drag end
- * @param {Event} event
- * @param {Event or Touch} pointer
- */
-Unipointer.prototype._pointerUp = function( event, pointer ) {
-  this.isPointerDown = false;
-
-  delete this.pointerIdentifier;
-
-  // remove events
-  this._unbindPostStartEvents();
-
-  this.pointerUp( event, pointer );
-  this.emitEvent( 'pointerUp', [ this, event, pointer ] );
-};
-
-Unipointer.prototype.pointerUp = noop;
-
-// ----- cancel event ----- //
-
-// coerce to end event
-
-Unipointer.prototype.onMSPointerCancel =
-Unipointer.prototype.onpointercancel = function( event ) {
-  if ( event.pointerId == this.pointerIdentifier ) {
-    this._pointerUp( event, event );
-  }
-};
-
-Unipointer.prototype.ontouchcancel = function( event ) {
-  var touch = this.getTouch( event.changedTouches );
-  this._pointerUp( event, touch );
-};
-
-// -----  ----- //
-
-Unipointer.getPointerPoint = function( pointer ) {
-  return {
-    x: pointer.pageX !== undefined ? pointer.pageX : pointer.clientX,
-    y: pointer.pageY !== undefined ? pointer.pageY : pointer.clientY
-  };
-};
-
-// fix for IE8
-Unipointer.setPointerPoint = function( point, pointer ) {
-  point.x = pointer.pageX !== undefined ? pointer.pageX : pointer.clientX;
-  point.y = pointer.pageY !== undefined ? pointer.pageY : pointer.clientY;
-};
-
-// -----  ----- //
-
-return Unipointer;
-
-}));
-
-( function( window, factory ) {
-  
-  // universal module definition
-
-  if ( typeof define == 'function' && define.amd ) {
-    // AMD
-    define( 'flickity/js/drag',[
-      './unipointer',
-      'classie/classie',
-      'eventie/eventie',
-      './utils'
-    ], function( Unipointer, eventie, utils ) {
-      return factory( window, Unipointer, eventie, utils );
-    });
-  } else if ( typeof exports == 'object' ) {
-    // CommonJS
-    module.exports = factory(
-      window,
-      require('./unipointer'),
-      require('desandro-classie'),
-      require('eventie'),
-      require('./utils')
-    );
-  } else {
-    // browser global
-    window.Flickity = window.Flickity || {};
-    window.Flickity.dragPrototype = factory(
-      window,
-      window.Unipointer,
-      window.classie,
-      window.eventie,
-      window.utils
-    );
-  }
-
-}( window, function factory( window, Unipointer, classie, eventie, U ) {
-
-
-
-// handle IE8 prevent default
-function preventDefaultEvent( event ) {
-  if ( event.preventDefault ) {
-    event.preventDefault();
-  } else {
-    event.returnValue = false;
-  }
-}
-
-// -------------------------- drag prototype -------------------------- //
-
-var proto = {};
-U.extend( proto, Unipointer.prototype );
-
-// --------------------------  -------------------------- //
-
-proto.bindDrag = function() {
-  if ( !this.options.draggable ) {
-    return;
-  }
-  this.handles = [ this.viewport ];
-  this.bindHandles();
-  // bind click handler
-  eventie.bind( this.viewport, 'click', this );
-};
-
-proto.unbindDrag = function() {
-  if ( !this.options.draggable ) {
-    return;
-  }
-  this.bindHandles( false );
-  // unbind click handler
-  eventie.unbind( this.viewport, 'click', this );
-};
-
-// -------------------------- pointer events -------------------------- //
-
-var allowTouchstartNodes = {
-  INPUT: true,
-  A: true,
-  BUTTON: true
-};
-
-proto.pointerDown = function( event, pointer ) {
-  var targetNodeName = event.target.nodeName;
-  // HACK iOS, allow clicks on buttons, inputs, and links
-  var isTouchstart = event.type == 'touchstart';
-  var isTouchstartNode = allowTouchstartNodes[ targetNodeName ];
-  if ( !isTouchstart || ( isTouchstart && !isTouchstartNode ) ) {
-    preventDefaultEvent( event );
-  }
-  // kludge to blur focused inputs in dragger
-  var focused = document.activeElement;
-  if ( focused && focused.blur && focused != this.element ) {
-    focused.blur();
-  }
-  // focus element, if its not an input
-  if ( this.options.accessibility && targetNodeName != 'INPUT' ) {
-    this.element.focus();
-  }
-  // stop if it was moving
-  this.velocity = 0;
-  // track to see when dragging starts
-  this.pointerDownPoint = Unipointer.getPointerPoint( pointer );
-  // stop auto play
-  this.player.stop();
-  classie.add( this.viewport, 'is-pointer-down' );
-};
-
-proto.pointerMove = function( event, pointer ) {
-  var movePoint = Unipointer.getPointerPoint( pointer );
-  var dragMove = movePoint.x - this.pointerDownPoint.x;
-  // start drag
-  if ( !this.isDragging && Math.abs( dragMove ) > 3 ) {
-    this.dragStart( event, pointer );
-  }
-
-  this.dragMove( movePoint, event, pointer );
-};
-
-proto.pointerUp = function( event, pointer ) {
-  if ( this.isDragging ) {
-    this.dragEnd( event, pointer );
-  } else {
-    // pointer didn't move enough for drag to start
-    this.staticClick( event, pointer );
-  }
-  classie.remove( this.viewport, 'is-pointer-down' );
-};
-
-// -------------------------- dragging -------------------------- //
-
-proto.dragStart = function( event, pointer ) {
-  this.isDragging = true;
-  this.dragStartPoint = Unipointer.getPointerPoint( pointer );
-  this.dragStartPosition = this.x;
-  this.startAnimation();
-  // prevent clicks
-  this.isPreventingClicks = true;
-  this.dispatchEvent( 'dragStart', event, [ pointer ] );
-};
-
-proto.dragMove = function( movePoint, event, pointer ) {
-  // do not drag if not dragging yet
-  if ( !this.isDragging ) {
-    return;
-  }
-
-  this.previousDragX = this.x;
-
-  var movedX = movePoint.x - this.dragStartPoint.x;
-  // reverse if right-to-left
-  var direction = this.options.rightToLeft ? -1 : 1;
-  this.x = this.dragStartPosition + movedX * direction;
-
-  if ( !this.options.wrapAround && this.cells.length ) {
-    // slow drag
-    var originBound = Math.max( -this.cells[0].target, this.dragStartPosition);
-    this.x = this.x > originBound ? ( this.x - originBound ) * 0.5 + originBound : this.x;
-    var endBound = Math.min( -this.getLastCell().target, this.dragStartPosition );
-    this.x = this.x < endBound ? ( this.x - endBound ) * 0.5 + endBound : this.x;
-  }
-
-  this.previousDragMoveTime = this.dragMoveTime;
-  this.dragMoveTime = new Date();
-  this.dispatchEvent( 'dragMove', event, [ pointer ] );
-};
-
-proto.dragEnd = function( event, pointer ) {
-  this.dragEndFlick();
-  if ( this.options.freeScroll ) {
-    this.isFreeScrolling = true;
-  }
-  // set selectedIndex based on where flick will end up
-  var index = this.dragEndRestingSelect();
-
-  if ( this.options.freeScroll && !this.options.wrapAround ) {
-    // if free-scroll & not wrap around
-    // do not free-scroll if going outside of bounding cells
-    // so bounding cells can attract slider, and keep it in bounds
-    var restingX = this.getRestingPosition();
-    this.isFreeScrolling = -restingX > this.cells[0].target &&
-      -restingX < this.getLastCell().target;
-  } else if ( !this.options.freeScroll && index == this.selectedIndex ) {
-    // boost selection if selected index has not changed
-    index += this.dragEndBoostSelect();
-  }
-  // apply selection
-  // TODO refactor this, selecting here feels weird
-  this.select( index );
-  // set flags
-  this.isDragging = false;
-  // re-enable clicking async
-  var _this = this;
-  setTimeout( function() {
-    delete _this.isPreventingClicks;
-  });
-
-  this.dispatchEvent( 'dragEnd', event, [ pointer ] );
-};
-
-// apply velocity after dragging
-proto.dragEndFlick = function() {
-  if ( !isFinite( this.previousDragX ) ) {
-    return;
-  }
-  // set slider velocity
-  var timeDelta = this.dragMoveTime - this.previousDragMoveTime;
-  // 60 frames per second, ideally
-  // TODO, velocity should be in pixels per millisecond
-  // currently in pixels per frame
-  timeDelta /= 1000 / 60;
-  var xDelta = this.x - this.previousDragX;
-  this.velocity = xDelta / timeDelta;
-  // reset
-  delete this.previousDragX;
-};
-
-proto.dragEndRestingSelect = function() {
-  var restingX = this.getRestingPosition();
-  // how far away from selected cell
-  var distance = Math.abs( this.getCellDistance( -restingX, this.selectedIndex ) );
-  // get closet resting going up and going down
-  var positiveResting = this._getClosestResting( restingX, distance, 1 );
-  var negativeResting = this._getClosestResting( restingX, distance, -1 );
-  // use closer resting for wrap-around
-  var index = positiveResting.distance < negativeResting.distance ?
-    positiveResting.index : negativeResting.index;
-  return index;
-};
-
-/**
- * given resting X and distance to selected cell
- * get the distance and index of the closest cell
- * @param {Number} restingX - estimated post-flick resting position
- * @param {Number} distance - distance to selected cell
- * @param {Integer} increment - +1 or -1, going up or down
- * @returns {Object} - { distance: {Number}, index: {Integer} }
- */
-proto._getClosestResting = function( restingX, distance, increment ) {
-  var index = this.selectedIndex;
-  var minDistance = Infinity;
-  var condition = this.options.contain && !this.options.wrapAround ?
-    // if fit-content, keep going if distance is equal to minDistance
-    function( d, md ) { return d <= md; } : function( d, md ) { return d < md; };
-  while ( condition( distance, minDistance ) ) {
-    // measure distance to next cell
-    index += increment;
-    minDistance = distance;
-    distance = this.getCellDistance( -restingX, index );
-    if ( distance === null ) {
-      break;
-    }
-    distance = Math.abs( distance );
-  }
-  return {
-    distance: minDistance,
-    // selected was previous index
-    index: index - increment
-  };
-};
-
-/**
- * measure distance between x and a cell target
- * @param {Number} x
- * @param {Integer} index - cell index
- */
-proto.getCellDistance = function( x, index ) {
-  var len = this.cells.length;
-  var cellIndex = this.options.wrapAround ? U.modulo( index, len ) : index;
-  var cell = this.cells[ cellIndex ];
-  if ( !cell ) {
-    return null;
-  }
-  // add distance for wrap-around cells
-  var wrap = this.options.wrapAround ? this.slideableWidth * Math.floor( index / len ) : 0;
-  return x - ( cell.target + wrap );
-};
-
-proto.dragEndBoostSelect = function() {
-  var distance = this.getCellDistance( -this.x, this.selectedIndex );
-  if ( distance > 0 && this.velocity < -1 ) {
-    // if moving towards the right, and positive velocity, and the next attractor
-    return 1;
-  } else if ( distance < 0 && this.velocity > 1 ) {
-    // if moving towards the left, and negative velocity, and previous attractor
-    return -1;
-  }
-  return 0;
-};
-
-// ----- onclick ----- //
-
-// handle all clicks and prevent clicks when dragging
-proto.onclick = function( event ) {
-  if ( this.isPreventingClicks ) {
-    preventDefaultEvent( event );
-  }
-};
-
-// ----- staticClick ----- //
-
-// triggered after pointer down & up with no/tiny movement
-proto.staticClick = function( event, pointer ) {
-  // allow click in text input
-  if ( event.target.nodeName == 'INPUT' && event.target.type == 'text' ) {
-    event.target.focus();
-  }
-  this.dispatchEvent( 'staticClick', event, [ pointer ] );
-};
-
-// -----  ----- //
-
-return proto;
-
-}));
-
 ( function( window, factory ) {
   
   // universal module definition
@@ -2650,7 +1647,7 @@ return proto;
     // AMD
     define( 'flickity/js/animate',[
       'get-style-property/get-style-property',
-      './utils'
+      'fizzy-ui-utils/utils'
     ], function( getStyleProperty, utils ) {
       return factory( window, getStyleProperty, utils );
     });
@@ -2659,7 +1656,7 @@ return proto;
     module.exports = factory(
       window,
       require('desandro-get-style-property'),
-      require('./utils')
+      require('fizzy-ui-utils')
     );
   } else {
     // browser global
@@ -2667,11 +1664,11 @@ return proto;
     window.Flickity.animatePrototype = factory(
       window,
       window.getStyleProperty,
-      window.utils
+      window.fizzyUIUtils
     );
   }
 
-}( window, function factory( window, getStyleProperty, U ) {
+}( window, function factory( window, getStyleProperty, utils ) {
 
 
 
@@ -2732,7 +1729,7 @@ proto.animate = function() {
 
   var previousX = this.x;
 
-  this.updatePhysics();
+  this.integratePhysics();
   this.positionSlider();
   this.settle( previousX );
   // animate next frame
@@ -2761,7 +1758,7 @@ proto.positionSlider = function() {
   var x = this.x;
   // wrap position around
   if ( this.options.wrapAround ) {
-    x = U.modulo( x, this.slideableWidth );
+    x = utils.modulo( x, this.slideableWidth );
     x = x - this.slideableWidth;
     this.shiftWrapCells( x );
   }
@@ -2784,6 +1781,9 @@ proto.positionSlider = function() {
 };
 
 proto.positionSliderAtSelected = function() {
+  if ( !this.cells.length ) {
+    return;
+  }
   var selectedCell = this.cells[ this.selectedIndex ];
   this.x = -selectedCell.target;
   this.positionSlider();
@@ -2845,7 +1845,7 @@ proto._unshiftCells = function( cells ) {
 
 // -------------------------- physics -------------------------- //
 
-proto.updatePhysics = function() {
+proto.integratePhysics = function() {
   this.velocity += this.accel;
   this.x += this.velocity;
   this.velocity *= this.getFrictionFactor();
@@ -2885,176 +1885,8 @@ return proto;
 
 }));
 
-( function( window, factory ) {
-  
-  // universal module definition
-
-  if ( typeof define == 'function' && define.amd ) {
-    // AMD
-    define( 'flickity/js/cell-change',[
-      './utils'
-    ], function( utils ) {
-      return factory( window, utils );
-    });
-  } else if ( typeof exports == 'object' ) {
-    // CommonJS
-    module.exports = factory(
-      window,
-      require('./utils')
-    );
-  } else {
-    // browser global
-    window.Flickity = window.Flickity || {};
-    window.Flickity.cellChangePrototype = factory(
-      window,
-      window.utils
-    );
-  }
-
-})( window, function factory( window, U ) {
-
-
-
-// append cells to a document fragment
-function getCellsFragment( cells ) {
-  var fragment = document.createDocumentFragment();
-  for ( var i=0, len = cells.length; i < len; i++ ) {
-    var cell = cells[i];
-    fragment.appendChild( cell.element );
-  }
-  return fragment;
-}
-
-// -------------------------- cell change prototype -------------------------- //
-
-var proto = {};
-
-/**
- * Insert, prepend, or append cells
- * @param {Element, Array, NodeList} elems
- * @param {Integer} index
- */
-proto.insert = function( elems, index ) {
-  var cells = this._makeCells( elems );
-  if ( !cells || !cells.length ) {
-    return;
-  }
-  var len = this.cells.length;
-  // default to append
-  index = index === undefined ? len : index;
-  // add cells with document fragment
-  var fragment = getCellsFragment( cells );
-  // append to slider
-  var isAppend = index == len;
-  if ( isAppend ) {
-    this.slider.appendChild( fragment );
-  } else {
-    var insertCellElement = this.cells[ index ].element;
-    this.slider.insertBefore( fragment, insertCellElement );
-  }
-  // add to this.cells
-  if ( index === 0 ) {
-    // prepend, add to start
-    this.cells = cells.concat( this.cells );
-  } else if ( isAppend ) {
-    // append, add to end
-    this.cells = this.cells.concat( cells );
-  } else {
-    // insert in this.cells
-    var endCells = this.cells.splice( index, len - index );
-    this.cells = this.cells.concat( cells ).concat( endCells );
-  }
-
-  this._sizeCells( cells );
-  this._cellAddedRemoved( index );
-};
-
-proto.append = function( elems ) {
-  this.insert( elems, this.cells.length );
-};
-
-proto.prepend = function( elems ) {
-  this.insert( elems, 0 );
-};
-
-/**
- * Remove cells
- * @param {Element, Array, NodeList} elems
- */
-proto.remove = function( elems ) {
-  var cells = this.getCells( elems );
-  for ( var i=0, len = cells.length; i < len; i++ ) {
-    var cell = cells[i];
-    cell.remove();
-    // remove item from collection
-    U.removeFrom( cell, this.cells );
-  }
-
-  if ( cells.length ) {
-    // update stuff
-    this._cellAddedRemoved( 0 );
-  }
-};
-
-// updates when cells are added or removed
-proto._cellAddedRemoved = function( index ) {
-  // update page dots
-  if ( this.pageDots ) {
-    this.pageDots.setDots();
-  }
-  // TODO cell is removed before the selected cell, adjust selectedIndex by -1
-  this.selectedIndex = Math.max( 0, Math.min( this.cells.length - 1, this.selectedIndex ) );
-
-  this.cellChange( index );
-};
-
-/**
- * logic to be run after a cell's size changes
- * @param {Element} elem - cell's element
- */
-proto.cellSizeChange = function( elem ) {
-  var cell = this.getCell( elem );
-  if ( !cell ) {
-    return;
-  }
-  cell.getSize();
-
-  var index = U.indexOf( this.cells, cell );
-  this.cellChange( index );
-};
-
-/**
- * logic any time a cell is changed: added, removed, or size changed
- * @param {Integer} index - index of the changed cell, optional
- */
-proto.cellChange = function( index ) {
-  // TODO maybe always size all cells unless isSkippingSizing
-  // size all cells if necessary
-  // if ( !isSkippingSizing ) {
-  //   this._sizeCells( this.cells );
-  // }
-
-  index = index || 0;
-
-  this._positionCells( index );
-  this._getWrapShiftCells();
-  this.setContainerSize();
-  // position slider
-  if ( this.options.freeScroll ) {
-    this.positionSlider();
-  } else {
-    this.select( this.selectedIndex );
-  }
-};
-
-// -----  ----- //
-
-return proto;
-
-});
-
 /*!
- * Flickity v0.1.0
+ * Flickity v0.2.0
  * Touch, responsive, flickable galleries
  * http://flickity.metafizzy.co
  * Copyright 2015 Metafizzy
@@ -3066,21 +1898,16 @@ return proto;
 
   if ( typeof define == 'function' && define.amd ) {
     // AMD
-    define( [
+    define( 'flickity/js/flickity',[
       'classie/classie',
       'eventEmitter/EventEmitter',
       'eventie/eventie',
       'get-size/get-size',
-      'flickity/js/utils',
-      'flickity/js/cell',
-      'flickity/js/prev-next-button',
-      'flickity/js/page-dots',
-      'flickity/js/player',
-      'flickity/js/drag',
-      'flickity/js/animate',
-      'flickity/js/cell-change'
-    ], function( classie, EventEmitter, eventie, getSize, U, Cell, PrevNextButton, PageDots, Player, dragPrototype, animatePrototype, cellChangePrototype ) {
-      return factory( window, classie, EventEmitter, eventie, getSize, U, Cell, PrevNextButton, PageDots, Player, dragPrototype, animatePrototype, cellChangePrototype );
+      'fizzy-ui-utils/utils',
+      './cell',
+      './animate'
+    ], function( classie, EventEmitter, eventie, getSize, utils, Cell, animatePrototype ) {
+      return factory( window, classie, EventEmitter, eventie, getSize, utils, Cell, animatePrototype );
     });
   } else if ( typeof exports == 'object' ) {
     // CommonJS
@@ -3090,14 +1917,9 @@ return proto;
       require('wolfy87-eventemitter'),
       require('eventie'),
       require('get-size'),
-      require('./utils'),
+      require('fizzy-ui-utils'),
       require('./cell'),
-      require('./prev-next-button'),
-      require('./page-dots'),
-      require('./player'),
-      require('./drag'),
-      require('./animate'),
-      require('./cell-change')
+      require('./animate')
     );
   } else {
     // browser global
@@ -3109,20 +1931,14 @@ return proto;
       window.EventEmitter,
       window.eventie,
       window.getSize,
-      window.utils,
+      window.fizzyUIUtils,
       _Flickity.Cell,
-      _Flickity.PrevNextButton,
-      _Flickity.PageDots,
-      _Flickity.Player,
-      _Flickity.dragPrototype,
-      _Flickity.animatePrototype,
-      _Flickity.cellChangePrototype
+      _Flickity.animatePrototype
     );
   }
 
 }( window, function factory( window, classie, EventEmitter, eventie, getSize,
-  U, Cell, PrevNextButton, PageDots, Player, dragPrototype, animatePrototype,
-  cellChangePrototype ) {
+  utils, Cell, animatePrototype ) {
 
 
 
@@ -3130,11 +1946,11 @@ return proto;
 var jQuery = window.jQuery;
 var getComputedStyle = window.getComputedStyle;
 var console = window.console;
-var imagesLoaded = window.imagesLoaded;
 
-function moveChildren( fromElem, toElem ) {
-  while ( fromElem.children.length ) {
-    toElem.appendChild( fromElem.children[0] );
+function moveElements( elems, toElem ) {
+  elems = utils.makeArray( elems );
+  while ( elems.length ) {
+    toElem.appendChild( elems.shift() );
   }
 }
 
@@ -3146,7 +1962,7 @@ var GUID = 0;
 var instances = {};
 
 function Flickity( element, options ) {
-  var queryElement = U.getQueryElement( element );
+  var queryElement = utils.getQueryElement( element );
   if ( !queryElement ) {
     if ( console ) {
       console.error( 'Bad element for Flickity: ' + ( queryElement || element ) );
@@ -3159,7 +1975,7 @@ function Flickity( element, options ) {
     this.$element = jQuery( this.element );
   }
   // options
-  this.options = U.extend( {}, this.constructor.defaults );
+  this.options = utils.extend( {}, this.constructor.defaults );
   this.option( options );
 
   // kick things off
@@ -3168,28 +1984,24 @@ function Flickity( element, options ) {
 
 Flickity.defaults = {
   accessibility: true,
-  // autoPlay: undefined,
-  freeScrollFriction: 0.075, // friction when free-scrolling
-  friction: 0.28, // friction when selecting
   cellAlign: 'center',
   // cellSelector: undefined,
   // contain: false,
-  draggable: true,
+  freeScrollFriction: 0.075, // friction when free-scrolling
+  friction: 0.28, // friction when selecting
   // initialIndex: 0,
-  // imagesLoaded: false,
   percentPosition: true,
-  pageDots: true,
-  prevNextButtons: true,
-  resizeBound: true,
-  // watcCSS: false,
-  // wrapAround: false,
-  selectedAttraction: 0.025,
-  leftArrowText: '←', // text for prev/next button when no SVG support
-  rightArrowText: '→'
+  resize: true,
+  selectedAttraction: 0.025
+  // watchCSS: false,
+  // wrapAround: false
 };
 
+// hash of methods triggered on _create()
+Flickity.createMethods = [];
+
 // inherit EventEmitter
-U.extend( Flickity.prototype, EventEmitter.prototype );
+utils.extend( Flickity.prototype, EventEmitter.prototype );
 
 Flickity.prototype._create = function() {
   // add id for Flickity.data
@@ -3209,18 +2021,15 @@ Flickity.prototype._create = function() {
   this.viewport = document.createElement('div');
   this.viewport.className = 'flickity-viewport';
   this._createSlider();
-  // create prev/next buttons, page dots, and player
-  if ( this.options.prevNextButtons ) {
-    this.prevButton = new PrevNextButton( -1, this );
-    this.nextButton = new PrevNextButton( 1, this );
-  }
-  if ( this.options.pageDots ) {
-    this.pageDots = new PageDots( this );
-  }
-  this.player = new Player( this );
 
-  if ( this.options.resizeBound || this.options.watchCSS ) {
+  if ( this.options.resize || this.options.watchCSS ) {
     eventie.bind( window, 'resize', this );
+    this.isResizeBound = true;
+  }
+
+  for ( var i=0, len = Flickity.createMethods.length; i < len; i++ ) {
+    var method = Flickity.createMethods[i];
+    this[ method ]();
   }
 
   if ( this.options.watchCSS ) {
@@ -3236,7 +2045,7 @@ Flickity.prototype._create = function() {
  * @param {Object} opts
  */
 Flickity.prototype.option = function( opts ) {
-  U.extend( this.options, opts );
+  utils.extend( this.options, opts );
 };
 
 Flickity.prototype.activate = function() {
@@ -3245,8 +2054,13 @@ Flickity.prototype.activate = function() {
   }
   this.isActive = true;
   classie.add( this.element, 'flickity-enabled' );
-  // move children to slider
-  moveChildren( this.element, this.slider );
+  if ( this.options.rightToLeft ) {
+    classie.add( this.element, 'flickity-rtl' );
+  }
+
+  // move initial cell elements so they can be loaded as cells
+  var cellElems = this._filterFindCellElements( this.element.children );
+  moveElements( cellElems, this.slider );
   this.viewport.appendChild( this.slider );
   this.element.appendChild( this.viewport );
 
@@ -3254,31 +2068,6 @@ Flickity.prototype.activate = function() {
   // get cells from children
   this.reloadCells();
   this.setContainerSize();
-  // activate prev/next buttons, page dots
-  if ( this.prevButton ) {
-    this.prevButton.activate();
-  }
-  if ( this.nextButton ) {
-    this.nextButton.activate();
-  }
-  if ( this.pageDots ) {
-    this.pageDots.activate();
-  }
-  // player
-  if ( this.options.autoPlay ) {
-    this.player.play();
-    // add hover listeners
-    eventie.bind( this.element, 'mouseenter', this );
-    // TODO add event for pointer enter
-  }
-
-  this.positionSliderAtSelected();
-  this.select( this.selectedIndex );
-
-  this.imagesLoaded();
-
-  // events
-  this.bindDrag();
 
   if ( this.options.accessibility ) {
     // allow element to focusable
@@ -3286,6 +2075,11 @@ Flickity.prototype.activate = function() {
     // listen for key presses
     eventie.bind( this.element, 'keydown', this );
   }
+
+  this.emit('activate');
+
+  this.positionSliderAtSelected();
+  this.select( this.selectedIndex );
 };
 
 // slider positions the cells
@@ -3297,11 +2091,15 @@ Flickity.prototype._createSlider = function() {
   this.slider = slider;
 };
 
+Flickity.prototype._filterFindCellElements = function( elems ) {
+  return utils.filterFindElements( elems, this.options.cellSelector );
+};
+
 // goes through all children
 Flickity.prototype.reloadCells = function() {
   // collection of item elements
   this.cells = this._makeCells( this.slider.children );
-  this.positionCells( this.cells );
+  this.positionCells();
   this._getWrapShiftCells();
   this.setContainerSize();
 };
@@ -3312,7 +2110,7 @@ Flickity.prototype.reloadCells = function() {
  * @returns {Array} items - collection of new Flickity Cells
  */
 Flickity.prototype._makeCells = function( elems ) {
-  var cellElems = U.filterFindElements( elems, this.options.cellSelector );
+  var cellElems = this._filterFindCellElements( elems );
 
   // create new Flickity for collection
   var cells = [];
@@ -3373,6 +2171,11 @@ Flickity.prototype._sizeCells = function( cells ) {
     var cell = cells[i];
     cell.getSize();
   }
+};
+
+Flickity.prototype.reposition = function() {
+  this.positionCells();
+  this.positionSliderAtSelected();
 };
 
 Flickity.prototype.getSize = function() {
@@ -3445,12 +2248,13 @@ Flickity.prototype._getGapCells = function( gapX, cellIndex, increment ) {
 
 // contain cell targets so no excess sliding
 Flickity.prototype._containCells = function() {
-  if ( !this.options.contain || this.options.wrapAround ) {
+  if ( !this.options.contain || this.options.wrapAround || !this.cells.length ) {
     return;
   }
-  // end limit
-  var lastCell = this.getLastCell();
+  var startMargin = this.options.rightToLeft ? 'marginRight' : 'marginLeft';
   var endMargin = this.options.rightToLeft ? 'marginLeft' : 'marginRight';
+  var firstCellStartMargin = this.cells[0].size[ startMargin ];
+  var lastCell = this.getLastCell();
   var contentWidth = this.slideableWidth - lastCell.size[ endMargin ];
   var endLimit = contentWidth - this.size.innerWidth * ( 1 - this.cellAlign );
   // contain each cell target
@@ -3458,7 +2262,7 @@ Flickity.prototype._containCells = function() {
     var cell = this.cells[i];
     // reset default target
     cell.setDefaultTarget();
-    cell.target = Math.max( cell.target, this.cursorPosition );
+    cell.target = Math.max( cell.target, this.cursorPosition + firstCellStartMargin );
     cell.target = Math.min( cell.target, endLimit );
   }
 };
@@ -3479,7 +2283,7 @@ Flickity.prototype.dispatchEvent = function( type, event, args ) {
     if ( event ) {
       // create jQuery event
       var $event = jQuery.Event( event );
-      $event.type = type;
+      $event.type = type + '.flickity';
       this.$element.trigger( $event, args );
     } else {
       // just trigger with type if no event available
@@ -3508,7 +2312,7 @@ Flickity.prototype.select = function( index, isWrap ) {
   }
 
   if ( this.options.wrapAround || isWrap ) {
-    index = U.modulo( index, this.cells.length );
+    index = utils.modulo( index, this.cells.length );
   }
 
   if ( this.cells[ index ] ) {
@@ -3527,50 +2331,17 @@ Flickity.prototype.next = function( isWrap ) {
   this.select( this.selectedIndex + 1, isWrap );
 };
 
-Flickity.prototype.updatePrevNextButtons = function() {
-  if ( this.prevButton ) {
-    this.prevButton.update();
-  }
-  if ( this.nextButton ) {
-    this.nextButton.update();
-  }
-};
-
 Flickity.prototype.setSelectedCell = function() {
   this._removeSelectedCellClass();
   this.selectedCell = this.cells[ this.selectedIndex ];
-  classie.add( this.selectedCell.element, 'is-selected' );
+  this.selectedElement = this.selectedCell.element;
+  classie.add( this.selectedElement, 'is-selected' );
 };
 
 Flickity.prototype._removeSelectedCellClass = function() {
   if ( this.selectedCell ) {
     classie.remove( this.selectedCell.element, 'is-selected' );
   }
-};
-
-// on button clicks and ui changes
-// stop player and stop free scrolling
-Flickity.prototype.uiChange = function() {
-  this.player.stop();
-  delete this.isFreeScrolling;
-};
-
-// -------------------------- images -------------------------- //
-
-// TODO move out this repo to avoid problems with imagesLoaded dependency
-Flickity.prototype.imagesLoaded = function() {
-  if ( !this.options.imagesLoaded || !imagesLoaded ) {
-    return;
-  }
-  var _this = this;
-  function onImagesLoadedProgress( instance, image ) {
-    // check if image is a cell
-    var cell = _this.getCell( image.img );
-    // otherwise get its parents
-    var cellElem = cell.element || U.getParent( image.img, '.flickity-slider > *' );
-    _this.cellSizeChange( cellElem );
-  }
-  imagesLoaded( this.slider ).on( 'progress', onImagesLoadedProgress );
 };
 
 // -------------------------- get cells -------------------------- //
@@ -3596,7 +2367,7 @@ Flickity.prototype.getCell = function( elem ) {
  * @returns {Array} cells - Flickity.Cells
  */
 Flickity.prototype.getCells = function( elems ) {
-  elems = U.makeArray( elems );
+  elems = utils.makeArray( elems );
   var cells = [];
   for ( var i=0, len = elems.length; i < len; i++ ) {
     var elem = elems[i];
@@ -3608,7 +2379,27 @@ Flickity.prototype.getCells = function( elems ) {
   return cells;
 };
 
+/**
+ * get cell elements
+ * @returns {Array} cellElems
+ */
+Flickity.prototype.getCellElements = function() {
+  var cellElems = [];
+  for ( var i=0, len = this.cells.length; i < len; i++ ) {
+    cellElems.push( this.cells[i].element );
+  }
+  return cellElems;
+};
+
 // -------------------------- events -------------------------- //
+
+Flickity.prototype.uiChange = function() {
+  this.emit('uiChange');
+};
+
+Flickity.prototype.childUIPointerDown = function( event ) {
+  this.emitEvent( 'childUIPointerDown', [ event ] );
+};
 
 // ----- resize ----- //
 
@@ -3617,7 +2408,7 @@ Flickity.prototype.onresize = function() {
   this.resize();
 };
 
-U.debounceMethod( Flickity, 'onresize', 150 );
+utils.debounceMethod( Flickity, 'onresize', 150 );
 
 Flickity.prototype.resize = function() {
   if ( !this.isActive ) {
@@ -3626,7 +2417,7 @@ Flickity.prototype.resize = function() {
   this.getSize();
   // wrap values
   if ( this.options.wrapAround ) {
-    this.x = U.modulo( this.x, this.slideableWidth );
+    this.x = utils.modulo( this.x, this.slideableWidth );
   }
   this.positionCells();
   this._getWrapShiftCells();
@@ -3703,6 +2494,1744 @@ Flickity.prototype.onkeydown = function( event ) {
   }
 };
 
+// -------------------------- destroy -------------------------- //
+
+// deactivate all Flickity functionality, but keep stuff available
+Flickity.prototype.deactivate = function() {
+  if ( !this.isActive ) {
+    return;
+  }
+  classie.remove( this.element, 'flickity-enabled' );
+  classie.remove( this.element, 'flickity-rtl' );
+  // destroy cells
+  for ( var i=0, len = this.cells.length; i < len; i++ ) {
+    var cell = this.cells[i];
+    cell.destroy();
+  }
+  this._removeSelectedCellClass();
+  this.element.removeChild( this.viewport );
+  // move child elements back into element
+  moveElements( this.slider.children, this.element );
+  if ( this.options.accessibility ) {
+    this.element.removeAttribute('tabIndex');
+    eventie.unbind( this.element, 'keydown', this );
+  }
+  // set flags
+  this.isActive = false;
+  this.emit('deactivate');
+};
+
+Flickity.prototype.destroy = function() {
+  this.deactivate();
+  if ( this.isResizeBound ) {
+    eventie.unbind( window, 'resize', this );
+  }
+  this.emit('destroy');
+  delete this.element.flickityGUID;
+  delete instances[ this.guid ];
+};
+
+// -------------------------- prototype -------------------------- //
+
+utils.extend( Flickity.prototype, animatePrototype );
+
+// -------------------------- extras -------------------------- //
+
+/**
+ * get Flickity instance from element
+ * @param {Element} elem
+ * @returns {Flickity}
+ */
+Flickity.data = function( elem ) {
+  elem = utils.getQueryElement( elem );
+  var id = elem && elem.flickityGUID;
+  return id && instances[ id ];
+};
+
+utils.htmlInit( Flickity, 'flickity' );
+
+if ( jQuery && jQuery.bridget ) {
+  jQuery.bridget( 'flickity', Flickity );
+}
+
+return Flickity;
+
+}));
+
+/*!
+ * Unipointer v0.1.0
+ * base class for doing one thing with pointer event
+ * MIT license
+ */
+
+/*jshint browser: true, undef: true, unused: true, strict: true */
+/*global define: false, module: false, require: false */
+
+( function( window, factory ) {
+  
+  // universal module definition
+
+  if ( typeof define == 'function' && define.amd ) {
+    // AMD
+    define( 'unipointer/unipointer',[
+      'eventEmitter/EventEmitter',
+      'eventie/eventie'
+    ], function( EventEmitter, eventie ) {
+      return factory( window, EventEmitter, eventie );
+    });
+  } else if ( typeof exports == 'object' ) {
+    // CommonJS
+    module.exports = factory(
+      window,
+      require('wolfy87-eventemitter'),
+      require('eventie')
+    );
+  } else {
+    // browser global
+    window.Unipointer = factory(
+      window,
+      window.EventEmitter,
+      window.eventie
+    );
+  }
+
+}( window, function factory( window, EventEmitter, eventie ) {
+
+
+
+function noop() {}
+
+function Unipointer() {}
+
+// inherit EventEmitter
+Unipointer.prototype = new EventEmitter();
+
+Unipointer.prototype.bindStartEvent = function( elem ) {
+  this._bindStartEvent( elem, true );
+};
+
+Unipointer.prototype.unbindStartEvent = function( elem ) {
+  this._bindStartEvent( elem, false );
+};
+
+/**
+ * works as unbinder, as you can ._bindStart( false ) to unbind
+ * @param {Boolean} isBind - will unbind if falsey
+ */
+Unipointer.prototype._bindStartEvent = function( elem, isBind ) {
+  // munge isBind, default to true
+  isBind = isBind === undefined ? true : !!isBind;
+  var bindMethod = isBind ? 'bind' : 'unbind';
+
+  if ( window.navigator.pointerEnabled ) {
+    // W3C Pointer Events, IE11. See https://coderwall.com/p/mfreca
+    eventie[ bindMethod ]( elem, 'pointerdown', this );
+  } else if ( window.navigator.msPointerEnabled ) {
+    // IE10 Pointer Events
+    eventie[ bindMethod ]( elem, 'MSPointerDown', this );
+  } else {
+    // listen for both, for devices like Chrome Pixel
+    eventie[ bindMethod ]( elem, 'mousedown', this );
+    eventie[ bindMethod ]( elem, 'touchstart', this );
+  }
+};
+
+// trigger handler methods for events
+Unipointer.prototype.handleEvent = function( event ) {
+  var method = 'on' + event.type;
+  if ( this[ method ] ) {
+    this[ method ]( event );
+  }
+};
+
+// returns the touch that we're keeping track of
+Unipointer.prototype.getTouch = function( touches ) {
+  for ( var i=0, len = touches.length; i < len; i++ ) {
+    var touch = touches[i];
+    if ( touch.identifier == this.pointerIdentifier ) {
+      return touch;
+    }
+  }
+};
+
+// ----- start event ----- //
+
+Unipointer.prototype.onmousedown = function( event ) {
+  // dismiss clicks from right or middle buttons
+  var button = event.button;
+  if ( button && ( button !== 0 && button !== 1 ) ) {
+    return;
+  }
+  this._pointerDown( event, event );
+};
+
+Unipointer.prototype.ontouchstart = function( event ) {
+  this._pointerDown( event, event.changedTouches[0] );
+};
+
+Unipointer.prototype.onMSPointerDown =
+Unipointer.prototype.onpointerdown = function( event ) {
+  this._pointerDown( event, event );
+};
+
+/**
+ * pointer start
+ * @param {Event} event
+ * @param {Event or Touch} pointer
+ */
+Unipointer.prototype._pointerDown = function( event, pointer ) {
+  // dismiss other pointers
+  if ( this.isPointerDown ) {
+    return;
+  }
+
+  this.isPointerDown = true;
+  // save pointer identifier to match up touch events
+  this.pointerIdentifier = pointer.pointerId !== undefined ?
+    // pointerId for pointer events, touch.indentifier for touch events
+    pointer.pointerId : pointer.identifier;
+
+  this.pointerDown( event, pointer );
+};
+
+Unipointer.prototype.pointerDown = function( event, pointer ) {
+  this._bindPostStartEvents( event );
+  this.emitEvent( 'pointerDown', [ this, event, pointer ] );
+};
+
+// hash of events to be bound after start event
+var postStartEvents = {
+  mousedown: [ 'mousemove', 'mouseup' ],
+  touchstart: [ 'touchmove', 'touchend', 'touchcancel' ],
+  pointerdown: [ 'pointermove', 'pointerup', 'pointercancel' ],
+  MSPointerDown: [ 'MSPointerMove', 'MSPointerUp', 'MSPointerCancel' ]
+};
+
+Unipointer.prototype._bindPostStartEvents = function( event ) {
+  if ( !event ) {
+    return;
+  }
+  // get proper events to match start event
+  var events = postStartEvents[ event.type ];
+  // IE8 needs to be bound to document
+  var node = event.preventDefault ? window : document;
+  // bind events to node
+  for ( var i=0, len = events.length; i < len; i++ ) {
+    var evnt = events[i];
+    eventie.bind( node, evnt, this );
+  }
+  // save these arguments
+  this._boundPointerEvents = {
+    events: events,
+    node: node
+  };
+};
+
+Unipointer.prototype._unbindPostStartEvents = function() {
+  var args = this._boundPointerEvents;
+  // IE8 can trigger dragEnd twice, check for _boundEvents
+  if ( !args || !args.events ) {
+    return;
+  }
+
+  for ( var i=0, len = args.events.length; i < len; i++ ) {
+    var event = args.events[i];
+    eventie.unbind( args.node, event, this );
+  }
+  delete this._boundPointerEvents;
+};
+
+// ----- move event ----- //
+
+Unipointer.prototype.onmousemove = function( event ) {
+  this._pointerMove( event, event );
+};
+
+Unipointer.prototype.onMSPointerMove =
+Unipointer.prototype.onpointermove = function( event ) {
+  if ( event.pointerId == this.pointerIdentifier ) {
+    this._pointerMove( event, event );
+  }
+};
+
+Unipointer.prototype.ontouchmove = function( event ) {
+  var touch = this.getTouch( event.changedTouches );
+  if ( touch ) {
+    this._pointerMove( event, touch );
+  }
+};
+
+/**
+ * pointer move
+ * @param {Event} event
+ * @param {Event or Touch} pointer
+ * @private
+ */
+Unipointer.prototype._pointerMove = function( event, pointer ) {
+  this.pointerMove( event, pointer );
+};
+
+// public
+Unipointer.prototype.pointerMove = function( event, pointer ) {
+  this.emitEvent( 'pointerMove', [ this, event, pointer ] );
+};
+
+// ----- end event ----- //
+
+
+Unipointer.prototype.onmouseup = function( event ) {
+  this._pointerUp( event, event );
+};
+
+Unipointer.prototype.onMSPointerUp =
+Unipointer.prototype.onpointerup = function( event ) {
+  if ( event.pointerId == this.pointerIdentifier ) {
+    this._pointerUp( event, event );
+  }
+};
+
+Unipointer.prototype.ontouchend = function( event ) {
+  var touch = this.getTouch( event.changedTouches );
+  if ( touch ) {
+    this._pointerUp( event, touch );
+  }
+};
+
+/**
+ * pointer up
+ * @param {Event} event
+ * @param {Event or Touch} pointer
+ * @private
+ */
+Unipointer.prototype._pointerUp = function( event, pointer ) {
+  this._pointerDone();
+  this.pointerUp( event, pointer );
+};
+
+// public
+Unipointer.prototype.pointerUp = function( event, pointer ) {
+  this.emitEvent( 'pointerUp', [ this, event, pointer ] );
+};
+
+// ----- pointer done ----- //
+
+// triggered on pointer up & pointer cancel
+Unipointer.prototype._pointerDone = function() {
+  // reset properties
+  this.isPointerDown = false;
+  delete this.pointerIdentifier;
+  // remove events
+  this._unbindPostStartEvents();
+  this.pointerDone();
+};
+
+Unipointer.prototype.pointerDone = noop;
+
+// ----- pointer cancel ----- //
+
+Unipointer.prototype.onMSPointerCancel =
+Unipointer.prototype.onpointercancel = function( event ) {
+  if ( event.pointerId == this.pointerIdentifier ) {
+    this._pointerCancel( event, event );
+  }
+};
+
+Unipointer.prototype.ontouchcancel = function( event ) {
+  var touch = this.getTouch( event.changedTouches );
+  if ( touch ) {
+    this._pointerCancel( event, touch );
+  }
+};
+
+/**
+ * pointer cancel
+ * @param {Event} event
+ * @param {Event or Touch} pointer
+ * @private
+ */
+Unipointer.prototype._pointerCancel = function( event, pointer ) {
+  this._pointerDone();
+  this.pointerCancel( event, pointer );
+};
+
+// public
+Unipointer.prototype.pointerCancel = function( event, pointer ) {
+  this.emitEvent( 'pointerCancel', [ this, event, pointer ] );
+};
+
+// -----  ----- //
+
+// utility function for getting x/y cooridinates from event, because IE8
+Unipointer.getPointerPoint = function( pointer ) {
+  return {
+    x: pointer.pageX !== undefined ? pointer.pageX : pointer.clientX,
+    y: pointer.pageY !== undefined ? pointer.pageY : pointer.clientY
+  };
+};
+
+// -----  ----- //
+
+return Unipointer;
+
+}));
+
+/*!
+ * Unidragger v0.2.0
+ * Draggable base class
+ * MIT license
+ */
+
+/*jshint browser: true, unused: true, undef: true, strict: true */
+
+( function( window, factory ) {
+  /*global define: false, module: false, require: false */
+  
+  // universal module definition
+
+  if ( typeof define == 'function' && define.amd ) {
+    // AMD
+    define( 'unidragger/unidragger',[
+      'eventie/eventie',
+      'unipointer/unipointer'
+    ], function( eventie, Unipointer ) {
+      return factory( window, eventie, Unipointer );
+    });
+  } else if ( typeof exports == 'object' ) {
+    // CommonJS
+    module.exports = factory(
+      window,
+      require('eventie'),
+      require('unipointer')
+    );
+  } else {
+    // browser global
+    window.Unidragger = factory(
+      window,
+      window.eventie,
+      window.Unipointer
+    );
+  }
+
+}( window, function factory( window, eventie, Unipointer ) {
+
+
+
+// -----  ----- //
+
+function noop() {}
+
+// handle IE8 prevent default
+function preventDefaultEvent( event ) {
+  if ( event.preventDefault ) {
+    event.preventDefault();
+  } else {
+    event.returnValue = false;
+  }
+}
+
+// -------------------------- Unidragger -------------------------- //
+
+function Unidragger() {}
+
+// inherit Unipointer & EventEmitter
+Unidragger.prototype = new Unipointer();
+
+// ----- bind start ----- //
+
+Unidragger.prototype.bindHandles = function() {
+  this._bindHandles( true );
+};
+
+Unidragger.prototype.unbindHandles = function() {
+  this._bindHandles( false );
+};
+
+var navigator = window.navigator;
+/**
+ * works as unbinder, as you can .bindHandles( false ) to unbind
+ * @param {Boolean} isBind - will unbind if falsey
+ */
+Unidragger.prototype._bindHandles = function( isBind ) {
+  // munge isBind, default to true
+  isBind = isBind === undefined ? true : !!isBind;
+  // extra bind logic
+  var binderExtra;
+  if ( navigator.pointerEnabled ) {
+    binderExtra = function( handle ) {
+      // disable scrolling on the element
+      handle.style.touchAction = isBind ? 'none' : '';
+    };
+  } else if ( navigator.msPointerEnabled ) {
+    binderExtra = function( handle ) {
+      // disable scrolling on the element
+      handle.style.msTouchAction = isBind ? 'none' : '';
+    };
+  } else {
+    binderExtra = function() {
+      // TODO re-enable img.ondragstart when unbinding
+      if ( isBind ) {
+        disableImgOndragstart( handle );
+      }
+    };
+  }
+  // bind each handle
+  var bindMethod = isBind ? 'bind' : 'unbind';
+  for ( var i=0, len = this.handles.length; i < len; i++ ) {
+    var handle = this.handles[i];
+    this._bindStartEvent( handle, isBind );
+    binderExtra( handle );
+    eventie[ bindMethod ]( handle, 'click', this );
+  }
+};
+
+// remove default dragging interaction on all images in IE8
+// IE8 does its own drag thing on images, which messes stuff up
+
+function noDragStart() {
+  return false;
+}
+
+// TODO replace this with a IE8 test
+var isIE8 = 'attachEvent' in document.documentElement;
+
+// IE8 only
+var disableImgOndragstart = !isIE8 ? noop : function( handle ) {
+
+  if ( handle.nodeName == 'IMG' ) {
+    handle.ondragstart = noDragStart;
+  }
+
+  var images = handle.querySelectorAll('img');
+  for ( var i=0, len = images.length; i < len; i++ ) {
+    var img = images[i];
+    img.ondragstart = noDragStart;
+  }
+};
+
+// ----- start event ----- //
+
+var allowTouchstartNodes = Unidragger.allowTouchstartNodes = {
+  INPUT: true,
+  A: true,
+  BUTTON: true,
+  SELECT: true
+};
+
+/**
+ * pointer start
+ * @param {Event} event
+ * @param {Event or Touch} pointer
+ */
+Unidragger.prototype.pointerDown = function( event, pointer ) {
+  this._dragPointerDown( event, pointer );
+  // kludge to blur focused inputs in dragger
+  var focused = document.activeElement;
+  if ( focused && focused.blur ) {
+    focused.blur();
+  }
+  // bind move and end events
+  this._bindPostStartEvents( event );
+  this.emitEvent( 'pointerDown', [ this, event, pointer ] );
+};
+
+// base pointer down logic
+Unidragger.prototype._dragPointerDown = function( event, pointer ) {
+  // track to see when dragging starts
+  this.pointerDownPoint = Unipointer.getPointerPoint( pointer );
+
+  var targetNodeName = event.target.nodeName;
+  // HACK iOS, allow clicks on buttons, inputs, and links
+  var isTouchstartNode = event.type == 'touchstart' && allowTouchstartNodes[ targetNodeName ];
+  // do not prevent default on touchstart nodes or <select>
+  if ( !isTouchstartNode && targetNodeName != 'SELECT' ) {
+    preventDefaultEvent( event );
+  }
+};
+
+// ----- move event ----- //
+
+/**
+ * drag move
+ * @param {Event} event
+ * @param {Event or Touch} pointer
+ */
+Unidragger.prototype.pointerMove = function( event, pointer ) {
+  var moveVector = this._dragPointerMove( event, pointer );
+  this.emitEvent( 'pointerMove', [ this, event, pointer, moveVector ] );
+  this._dragMove( event, pointer, moveVector );
+};
+
+// base pointer move logic
+Unidragger.prototype._dragPointerMove = function( event, pointer ) {
+  var movePoint = Unipointer.getPointerPoint( pointer );
+  var moveVector = {
+    x: movePoint.x - this.pointerDownPoint.x,
+    y: movePoint.y - this.pointerDownPoint.y
+  };
+  // start drag if pointer has moved far enough to start drag
+  if ( !this.isDragging && this.hasDragStarted( moveVector ) ) {
+    this._dragStart( event, pointer );
+  }
+  return moveVector;
+};
+
+// condition if pointer has moved far enough to start drag
+Unidragger.prototype.hasDragStarted = function( moveVector ) {
+  return Math.abs( moveVector.x ) > 3 || Math.abs( moveVector.y ) > 3;
+};
+
+
+// ----- end event ----- //
+
+/**
+ * pointer up
+ * @param {Event} event
+ * @param {Event or Touch} pointer
+ */
+Unidragger.prototype.pointerUp = function( event, pointer ) {
+  this.emitEvent( 'pointerUp', [ this, event, pointer ] );
+  this._dragPointerUp( event, pointer );
+};
+
+Unidragger.prototype._dragPointerUp = function( event, pointer ) {
+  if ( this.isDragging ) {
+    this._dragEnd( event, pointer );
+  } else {
+    // pointer didn't move enough for drag to start
+    this._staticClick( event, pointer );
+  }
+};
+
+// -------------------------- drag -------------------------- //
+
+// dragStart
+Unidragger.prototype._dragStart = function( event, pointer ) {
+  this.isDragging = true;
+  this.dragStartPoint = Unidragger.getPointerPoint( pointer );
+  // prevent clicks
+  this.isPreventingClicks = true;
+
+  this.dragStart( event, pointer );
+};
+
+Unidragger.prototype.dragStart = function( event, pointer ) {
+  this.emitEvent( 'dragStart', [ this, event, pointer ] );
+};
+
+// dragMove
+Unidragger.prototype._dragMove = function( event, pointer, moveVector ) {
+  // do not drag if not dragging yet
+  if ( !this.isDragging ) {
+    return;
+  }
+
+  this.dragMove( event, pointer, moveVector );
+};
+
+Unidragger.prototype.dragMove = function( event, pointer, moveVector ) {
+  this.emitEvent( 'dragMove', [ this, event, pointer, moveVector ] );
+};
+
+// dragEnd
+Unidragger.prototype._dragEnd = function( event, pointer ) {
+  // set flags
+  this.isDragging = false;
+  // re-enable clicking async
+  var _this = this;
+  setTimeout( function() {
+    delete _this.isPreventingClicks;
+  });
+
+  this.dragEnd( event, pointer );
+};
+
+Unidragger.prototype.dragEnd = function( event, pointer ) {
+  this.emitEvent( 'dragEnd', [ this, event, pointer ] );
+};
+
+// ----- onclick ----- //
+
+// handle all clicks and prevent clicks when dragging
+Unidragger.prototype.onclick = function( event ) {
+  if ( this.isPreventingClicks ) {
+    preventDefaultEvent( event );
+  }
+};
+
+// ----- staticClick ----- //
+
+// triggered after pointer down & up with no/tiny movement
+Unidragger.prototype._staticClick = function( event, pointer ) {
+  // allow click in text input
+  if ( event.target.nodeName == 'INPUT' && event.target.type == 'text' ) {
+    event.target.focus();
+  }
+  this.staticClick( event, pointer );
+};
+
+Unidragger.prototype.staticClick = function( event, pointer ) {
+  this.emitEvent( 'staticClick', [ this, event, pointer ] );
+};
+
+// -----  ----- //
+
+Unidragger.getPointerPoint = function( pointer ) {
+  return {
+    x: pointer.pageX !== undefined ? pointer.pageX : pointer.clientX,
+    y: pointer.pageY !== undefined ? pointer.pageY : pointer.clientY
+  };
+};
+
+// -----  ----- //
+
+Unidragger.getPointerPoint = Unipointer.getPointerPoint;
+
+return Unidragger;
+
+}));
+
+( function( window, factory ) {
+  
+  // universal module definition
+
+  if ( typeof define == 'function' && define.amd ) {
+    // AMD
+    define( 'flickity/js/drag',[
+      'classie/classie',
+      'eventie/eventie',
+      './flickity',
+      'unidragger/unidragger',
+      'fizzy-ui-utils/utils'
+    ], function( classie, eventie, Flickity, Unidragger, utils ) {
+      return factory( window, classie, eventie, Flickity, Unidragger, utils );
+    });
+  } else if ( typeof exports == 'object' ) {
+    // CommonJS
+    module.exports = factory(
+      window,
+      require('desandro-classie'),
+      require('eventie'),
+      require('./flickity'),
+      require('unidragger'),
+      require('fizzy-ui-utils')
+    );
+  } else {
+    // browser global
+    window.Flickity = window.Flickity || {};
+    window.Flickity.dragPrototype = factory(
+      window,
+      window.classie,
+      window.eventie,
+      window.Flickity,
+      window.Unidragger,
+      window.fizzyUIUtils
+    );
+  }
+
+}( window, function factory( window, classie, eventie, Flickity, Unidragger, utils ) {
+
+
+
+// handle IE8 prevent default
+function preventDefaultEvent( event ) {
+  if ( event.preventDefault ) {
+    event.preventDefault();
+  } else {
+    event.returnValue = false;
+  }
+}
+
+// ----- defaults ----- //
+
+utils.extend( Flickity.defaults, {
+  draggable: true,
+  touchVerticalScroll: true
+});
+
+// ----- create ----- //
+
+Flickity.createMethods.push('_createDrag');
+
+// -------------------------- drag prototype -------------------------- //
+
+var proto = {};
+utils.extend( proto, Unidragger.prototype );
+
+// --------------------------  -------------------------- //
+
+proto._createDrag = function() {
+  this.on( 'activate', this.bindDrag );
+  this.on( 'uiChange', this._uiChangeDrag );
+  this.on( 'childUIPointerDown', this._childUIPointerDownDrag );
+};
+
+proto.bindDrag = function() {
+  if ( !this.options.draggable ) {
+    return;
+  }
+  this.handles = [ this.viewport ];
+  this.bindHandles();
+};
+
+proto.unbindDrag = function() {
+  if ( !this.options.draggable ) {
+    return;
+  }
+  this.unbindHandles();
+};
+
+proto.hasDragStarted = function( moveVector ) {
+  return Math.abs( moveVector.x ) > 3;
+};
+
+proto._uiChangeDrag = function() {
+  delete this.isFreeScrolling;
+};
+
+proto._childUIPointerDownDrag = function( event ) {
+  preventDefaultEvent( event );
+  this.pointerDownFocus( event );
+};
+
+// -------------------------- pointer events -------------------------- //
+
+proto.pointerDown = function( event, pointer ) {
+  this._dragPointerDown( event, pointer );
+
+  // kludge to blur focused inputs in dragger
+  var focused = document.activeElement;
+  if ( focused && focused.blur && focused != this.element ) {
+    focused.blur();
+  }
+  this.pointerDownFocus( event );
+  // stop if it was moving
+  this.velocity = 0;
+  classie.add( this.viewport, 'is-pointer-down' );
+  // bind move and end events
+  this._bindPostStartEvents( event );
+  this.dispatchEvent( 'pointerDown', event, [ pointer ] );
+};
+
+var touchStartEvents = {
+  touchstart: true,
+  MSPointerDown: true
+};
+
+var focusNodes = {
+  INPUT: true,
+  SELECT: true
+};
+
+proto.pointerDownFocus = function( event ) {
+  // focus element, if not touch, and its not an input or select
+  if ( this.options.accessibility && !touchStartEvents[ event.type ] &&
+      !focusNodes[ event.target.nodeName ] ) {
+    this.element.focus();
+  }
+};
+
+proto.pointerMove = function( event, pointer ) {
+  var moveVector = this._dragPointerMove( event, pointer );
+  this.touchVerticalScrollMove( event, pointer, moveVector );
+  this._dragMove( event, pointer, moveVector );
+  this.dispatchEvent( 'pointerMove', event, [ pointer, moveVector ] );
+};
+
+proto.pointerUp = function( event, pointer ) {
+  delete this.isTouchScrolling;
+  classie.remove( this.viewport, 'is-pointer-down' );
+  this.dispatchEvent( 'pointerUp', event, [ pointer ] );
+  this._dragPointerUp( event, pointer );
+};
+
+// -------------------------- vertical scroll -------------------------- //
+
+var touchScrollEvents = {
+  // move events
+  // mousemove: true,
+  touchmove: true,
+  MSPointerMove: true
+};
+
+// position of pointer, relative to window
+function getPointerWindowY( pointer ) {
+  var pointerPoint = Unidragger.getPointerPoint( pointer );
+  return pointerPoint.y - window.pageYOffset;
+}
+
+proto.touchVerticalScrollMove = function( event, pointer, moveVector ) {
+  if ( !this.options.touchVerticalScroll || !touchScrollEvents[ event.type ] ) {
+    return;
+  }
+  // don't start vertical scrolling until pointer has moved 16 pixels in a direction
+  if ( !this.isTouchScrolling && Math.abs( moveVector.y ) > 16 ) {
+    // start touch vertical scrolling
+    // scroll & pointerY when started
+    this.startScrollY = window.pageYOffset;
+    this.pointerWindowStartY = getPointerWindowY( pointer );
+    // start scroll animation
+    this.isTouchScrolling = true;
+  }
+  if ( !this.isTouchScrolling ) {
+    return;
+  }
+  // scroll window
+  var scrollDelta = this.pointerWindowStartY - getPointerWindowY( pointer );
+  var scrollY = this.startScrollY + scrollDelta;
+  window.scroll( window.pageXOffset, scrollY );
+};
+
+// -------------------------- dragging -------------------------- //
+
+proto.dragStart = function( event, pointer ) {
+  this.dragStartPosition = this.x;
+  this.startAnimation();
+  this.dispatchEvent( 'dragStart', event, [ pointer ] );
+};
+
+proto.dragMove = function( event, pointer, moveVector ) {
+  this.previousDragX = this.x;
+
+  var movedX = moveVector.x;
+  // reverse if right-to-left
+  var direction = this.options.rightToLeft ? -1 : 1;
+  this.x = this.dragStartPosition + movedX * direction;
+
+  if ( !this.options.wrapAround && this.cells.length ) {
+    // slow drag
+    var originBound = Math.max( -this.cells[0].target, this.dragStartPosition);
+    this.x = this.x > originBound ? ( this.x - originBound ) * 0.5 + originBound : this.x;
+    var endBound = Math.min( -this.getLastCell().target, this.dragStartPosition );
+    this.x = this.x < endBound ? ( this.x - endBound ) * 0.5 + endBound : this.x;
+  }
+
+  this.previousDragMoveTime = this.dragMoveTime;
+  this.dragMoveTime = new Date();
+  this.dispatchEvent( 'dragMove', event, [ pointer, moveVector ] );
+};
+
+proto.dragEnd = function( event, pointer ) {
+  this.dragEndFlick();
+  if ( this.options.freeScroll ) {
+    this.isFreeScrolling = true;
+  }
+  // set selectedIndex based on where flick will end up
+  var index = this.dragEndRestingSelect();
+
+  if ( this.options.freeScroll && !this.options.wrapAround ) {
+    // if free-scroll & not wrap around
+    // do not free-scroll if going outside of bounding cells
+    // so bounding cells can attract slider, and keep it in bounds
+    var restingX = this.getRestingPosition();
+    this.isFreeScrolling = -restingX > this.cells[0].target &&
+      -restingX < this.getLastCell().target;
+  } else if ( !this.options.freeScroll && index == this.selectedIndex ) {
+    // boost selection if selected index has not changed
+    index += this.dragEndBoostSelect();
+  }
+  // apply selection
+  // TODO refactor this, selecting here feels weird
+  this.select( index );
+  this.dispatchEvent( 'dragEnd', event, [ pointer ] );
+};
+
+// apply velocity after dragging
+proto.dragEndFlick = function() {
+  if ( !isFinite( this.previousDragX ) ) {
+    return;
+  }
+  // set slider velocity
+  var timeDelta = this.dragMoveTime - this.previousDragMoveTime;
+  // prevent divide by 0, if dragMove & dragEnd happened at same time
+  if ( timeDelta ) {
+    // 60 frames per second, ideally
+    // TODO, velocity should be in pixels per millisecond
+    // currently in pixels per frame
+    timeDelta /= 1000 / 60;
+    var xDelta = this.x - this.previousDragX;
+    this.velocity = xDelta / timeDelta;
+  }
+  // reset
+  delete this.previousDragX;
+};
+
+proto.dragEndRestingSelect = function() {
+  var restingX = this.getRestingPosition();
+  // how far away from selected cell
+  var distance = Math.abs( this.getCellDistance( -restingX, this.selectedIndex ) );
+  // get closet resting going up and going down
+  var positiveResting = this._getClosestResting( restingX, distance, 1 );
+  var negativeResting = this._getClosestResting( restingX, distance, -1 );
+  // use closer resting for wrap-around
+  var index = positiveResting.distance < negativeResting.distance ?
+    positiveResting.index : negativeResting.index;
+  // for contain, force boost if delta is not greater than 1
+  if ( this.options.contain && !this.options.wrapAround ) {
+    index = Math.abs( index - this.selectedIndex ) <= 1 ? this.selectedIndex : index;
+  }
+  return index;
+};
+
+/**
+ * given resting X and distance to selected cell
+ * get the distance and index of the closest cell
+ * @param {Number} restingX - estimated post-flick resting position
+ * @param {Number} distance - distance to selected cell
+ * @param {Integer} increment - +1 or -1, going up or down
+ * @returns {Object} - { distance: {Number}, index: {Integer} }
+ */
+proto._getClosestResting = function( restingX, distance, increment ) {
+  var index = this.selectedIndex;
+  var minDistance = Infinity;
+  var condition = this.options.contain && !this.options.wrapAround ?
+    // if contain, keep going if distance is equal to minDistance
+    function( d, md ) { return d <= md; } : function( d, md ) { return d < md; };
+  while ( condition( distance, minDistance ) ) {
+    // measure distance to next cell
+    index += increment;
+    minDistance = distance;
+    distance = this.getCellDistance( -restingX, index );
+    if ( distance === null ) {
+      break;
+    }
+    distance = Math.abs( distance );
+  }
+  return {
+    distance: minDistance,
+    // selected was previous index
+    index: index - increment
+  };
+};
+
+/**
+ * measure distance between x and a cell target
+ * @param {Number} x
+ * @param {Integer} index - cell index
+ */
+proto.getCellDistance = function( x, index ) {
+  var len = this.cells.length;
+  var cellIndex = this.options.wrapAround ? utils.modulo( index, len ) : index;
+  var cell = this.cells[ cellIndex ];
+  if ( !cell ) {
+    return null;
+  }
+  // add distance for wrap-around cells
+  var wrap = this.options.wrapAround ? this.slideableWidth * Math.floor( index / len ) : 0;
+  return x - ( cell.target + wrap );
+};
+
+proto.dragEndBoostSelect = function() {
+  var distance = this.getCellDistance( -this.x, this.selectedIndex );
+  if ( distance > 0 && this.velocity < -1 ) {
+    // if moving towards the right, and positive velocity, and the next attractor
+    return 1;
+  } else if ( distance < 0 && this.velocity > 1 ) {
+    // if moving towards the left, and negative velocity, and previous attractor
+    return -1;
+  }
+  return 0;
+};
+
+// ----- staticClick ----- //
+
+proto.staticClick = function( event, pointer ) {
+  this.dispatchEvent( 'staticClick', event, [ pointer ] );
+};
+
+// -----  ----- //
+
+utils.extend( Flickity.prototype, proto );
+
+// -----  ----- //
+
+return Flickity;
+
+}));
+
+/*!
+ * Tap listener v0.1.0
+ * listens to taps
+ * MIT license
+ */
+
+/*jshint browser: true, unused: true, undef: true, strict: true */
+
+( function( window, factory ) {
+  /*global define: false, module: false, require: false */
+  
+  // universal module definition
+
+  if ( typeof define == 'function' && define.amd ) {
+    // AMD
+    define( 'tap-listener/tap-listener',[
+      'unipointer/unipointer'
+    ], function( Unipointer ) {
+      return factory( window, Unipointer );
+    });
+  } else if ( typeof exports == 'object' ) {
+    // CommonJS
+    module.exports = factory(
+      window,
+      require('unipointer')
+    );
+  } else {
+    // browser global
+    window.TapListener = factory(
+      window,
+      window.Unipointer
+    );
+  }
+
+}( window, function factory( window, Unipointer ) {
+
+
+
+// --------------------------  TapListener -------------------------- //
+
+function TapListener( elem ) {
+  this.bindTap( elem );
+}
+
+// inherit Unipointer & EventEmitter
+TapListener.prototype = new Unipointer();
+
+/**
+ * bind tap event to element
+ * @param {Element} elem
+ */
+TapListener.prototype.bindTap = function( elem ) {
+  if ( !elem ) {
+    return;
+  }
+  this.unbindTap();
+  this.tapElement = elem;
+  this._bindStartEvent( elem, true );
+};
+
+TapListener.prototype.unbindTap = function() {
+  if ( !this.tapElement ) {
+    return;
+  }
+  this._bindStartEvent( this.tapElement, true );
+  delete this.tapElement;
+};
+
+var isPageOffset = window.pageYOffset !== undefined;
+/**
+ * pointer up
+ * @param {Event} event
+ * @param {Event or Touch} pointer
+ */
+TapListener.prototype.pointerUp = function( event, pointer ) {
+  var pointerPoint = Unipointer.getPointerPoint( pointer );
+  var boundingRect = this.tapElement.getBoundingClientRect();
+  // standard or IE8 scroll positions
+  var scrollX = isPageOffset ? window.pageXOffset : document.body.scrollLeft;
+  var scrollY = isPageOffset ? window.pageYOffset : document.body.scrollTop;
+  // calculate if pointer is inside tapElement
+  var isInside = pointerPoint.x >= boundingRect.left + scrollX &&
+    pointerPoint.x <= boundingRect.right + scrollX &&
+    pointerPoint.y >= boundingRect.top + scrollY &&
+    pointerPoint.y <= boundingRect.bottom + scrollY;
+  // trigger callback if pointer is inside element
+  if ( isInside ) {
+    this.emitEvent( 'tap', [ this, event, pointer ] );
+  }
+};
+
+TapListener.prototype.destroy = function() {
+  this.pointerDone();
+  this.unbindTap();
+};
+
+// -----  ----- //
+
+return TapListener;
+
+}));
+
+// -------------------------- prev/next button -------------------------- //
+
+( function( window, factory ) {
+  
+  // universal module definition
+
+  if ( typeof define == 'function' && define.amd ) {
+    // AMD
+    define( 'flickity/js/prev-next-button',[
+      'eventie/eventie',
+      './flickity',
+      'tap-listener/tap-listener',
+      'fizzy-ui-utils/utils'
+    ], function( eventie, Flickity, TapListener, utils ) {
+      return factory( window, eventie, Flickity, TapListener, utils );
+    });
+  } else if ( typeof exports == 'object' ) {
+    // CommonJS
+    module.exports = factory(
+      window,
+      require('eventie'),
+      require('./flickity'),
+      require('tap-listener'),
+      require('fizzy-ui-utils')
+    );
+  } else {
+    // browser global
+    window.Flickity = window.Flickity || {};
+    window.Flickity.PrevNextButton = factory(
+      window,
+      window.eventie,
+      window.Flickity,
+      window.TapListener,
+      window.fizzyUIUtils
+    );
+  }
+
+}( window, function factory( window, eventie, Flickity, TapListener, utils ) {
+
+
+
+// ----- inline SVG support ----- //
+
+var svgURI = 'http://www.w3.org/2000/svg';
+
+// only check on demand, not on script load
+var supportsInlineSVG = ( function() {
+  var supports;
+  function checkSupport() {
+    if ( supports !== undefined ) {
+      return supports;
+    }
+    var div = document.createElement('div');
+    div.innerHTML = '<svg/>';
+    supports = ( div.firstChild && div.firstChild.namespaceURI ) == svgURI;
+    return supports;
+  }
+  return checkSupport;
+})();
+
+// -------------------------- PrevNextButton -------------------------- //
+
+function PrevNextButton( direction, parent ) {
+  this.direction = direction;
+  this.parent = parent;
+  this._create();
+}
+
+PrevNextButton.prototype = new TapListener();
+
+PrevNextButton.prototype._create = function() {
+  // properties
+  this.isEnabled = true;
+  this.isPrevious = this.direction == -1;
+  var leftDirection = this.parent.options.rightToLeft ? 1 : -1;
+  this.isLeft = this.direction == leftDirection;
+
+  var element = this.element = document.createElement('button');
+  element.className = 'flickity-prev-next-button';
+  element.className += this.isPrevious ? ' previous' : ' next';
+  // prevent button from submitting form http://stackoverflow.com/a/10836076/182183
+  element.setAttribute( 'type', 'button' );
+  // create arrow
+  if ( supportsInlineSVG() ) {
+    var svg = this.createSVG();
+    element.appendChild( svg );
+  } else {
+    // SVG not supported, set button text
+    this.setArrowText();
+    element.className += ' no-svg';
+  }
+  // update on select
+  var _this = this;
+  this.onselect = function() {
+    _this.update();
+  };
+  this.parent.on( 'select', this.onselect );
+  // tap
+  this.on( 'tap', this.onTap );
+  // pointerDown
+  this.on( 'pointerDown', function onPointerDown( button, event ) {
+    _this.parent.childUIPointerDown( event );
+  });
+};
+
+PrevNextButton.prototype.activate = function() {
+  this.update();
+  this.bindTap( this.element );
+  // click events from keyboard
+  eventie.bind( this.element, 'click', this );
+  // add to DOM
+  this.parent.element.appendChild( this.element );
+};
+
+PrevNextButton.prototype.deactivate = function() {
+  // remove from DOM
+  this.parent.element.removeChild( this.element );
+  // do regular TapListener destroy
+  TapListener.prototype.destroy.call( this );
+  // click events from keyboard
+  eventie.unbind( this.element, 'click', this );
+};
+
+PrevNextButton.prototype.createSVG = function() {
+  var svg = document.createElementNS( svgURI, 'svg');
+  svg.setAttribute( 'viewBox', '0 0 100 100' );
+  var path = document.createElementNS( svgURI, 'path');
+  path.setAttribute( 'd', 'M 50,0 L 60,10 L 20,50 L 60,90 L 50,100 L 0,50 Z' );
+  path.setAttribute( 'class', 'arrow' );
+  // adjust arrow
+  var arrowTransform = this.isLeft ? 'translate(15,0)' :
+    'translate(85,100) rotate(180)';
+  path.setAttribute( 'transform', arrowTransform );
+  svg.appendChild( path );
+  return svg;
+};
+
+PrevNextButton.prototype.setArrowText = function() {
+  var parentOptions = this.parent.options;
+  var arrowText = this.isLeft ? parentOptions.leftArrowText : parentOptions.rightArrowText;
+  utils.setText( this.element, arrowText );
+};
+
+PrevNextButton.prototype.onTap = function() {
+  if ( !this.isEnabled ) {
+    return;
+  }
+  this.parent.uiChange();
+  var method = this.isPrevious ? 'previous' : 'next';
+  this.parent[ method ]();
+};
+
+PrevNextButton.prototype.handleEvent = utils.handleEvent;
+
+PrevNextButton.prototype.onclick = function() {
+  // only allow clicks from keyboard
+  var focused = document.activeElement;
+  if ( focused && focused == this.element ) {
+    this.onTap();
+  }
+};
+
+// -----  ----- //
+
+PrevNextButton.prototype.enable = function() {
+  if ( this.isEnabled ) {
+    return;
+  }
+  this.element.disabled = false;
+  this.isEnabled = true;
+};
+
+PrevNextButton.prototype.disable = function() {
+  if ( !this.isEnabled ) {
+    return;
+  }
+  this.element.disabled = true;
+  this.isEnabled = false;
+};
+
+PrevNextButton.prototype.update = function() {
+  if ( this.parent.options.wrapAround ) {
+    this.enable();
+    return;
+  }
+  // index of first or last cell, if previous or next
+  var cells = this.parent.cells;
+  var lastIndex = cells.length ? cells.length - 1 : 0;
+  var boundIndex = this.isPrevious ? 0 : lastIndex;
+  var method = this.parent.selectedIndex == boundIndex ? 'disable' : 'enable';
+  this[ method ]();
+};
+
+PrevNextButton.prototype.destroy = function() {
+  this.deactivate();
+};
+
+// -------------------------- Flickity prototype -------------------------- //
+
+utils.extend( Flickity.defaults, {
+  prevNextButtons: true
+});
+
+Flickity.createMethods.push('_createPrevNextButtons');
+
+Flickity.prototype._createPrevNextButtons = function() {
+  if ( !this.options.prevNextButtons ) {
+    return;
+  }
+
+  this.prevButton = new PrevNextButton( -1, this );
+  this.nextButton = new PrevNextButton( 1, this );
+
+  this.on( 'activate', this.activatePrevNextButtons );
+};
+
+Flickity.prototype.activatePrevNextButtons = function() {
+  this.prevButton.activate();
+  this.nextButton.activate();
+  this.on( 'deactivate', this.deactivatePrevNextButtons );
+};
+
+Flickity.prototype.deactivatePrevNextButtons = function() {
+  this.prevButton.deactivate();
+  this.nextButton.deactivate();
+  this.off( 'deactivate', this.deactivatePrevNextButtons );
+};
+
+// --------------------------  -------------------------- //
+
+Flickity.PrevNextButton = PrevNextButton;
+
+return PrevNextButton;
+
+}));
+
+( function( window, factory ) {
+  
+  // universal module definition
+
+  if ( typeof define == 'function' && define.amd ) {
+    // AMD
+    define( 'flickity/js/page-dots',[
+      'eventie/eventie',
+      './flickity',
+      'tap-listener/tap-listener',
+      'fizzy-ui-utils/utils'
+    ], function( eventie, Flickity, TapListener, utils ) {
+      return factory( window, eventie, Flickity, TapListener, utils );
+    });
+  } else if ( typeof exports == 'object' ) {
+    // CommonJS
+    module.exports = factory(
+      window,
+      require('eventie'),
+      require('./flickity'),
+      require('tap-listener'),
+      require('fizzy-ui-utils')
+    );
+  } else {
+    // browser global
+    window.Flickity = window.Flickity || {};
+    window.Flickity.PageDots = factory(
+      window,
+      window.eventie,
+      window.Flickity,
+      window.TapListener,
+      window.fizzyUIUtils
+    );
+  }
+
+}( window, function factory( window, eventie, Flickity, TapListener, utils ) {
+
+// -------------------------- PageDots -------------------------- //
+
+
+
+function PageDots( parent ) {
+  this.parent = parent;
+  this._create();
+}
+
+PageDots.prototype = new TapListener();
+
+PageDots.prototype._create = function() {
+  // create holder element
+  this.holder = document.createElement('ol');
+  this.holder.className = 'flickity-page-dots';
+  // create dots, array of elements
+  this.dots = [];
+  // update on select
+  var _this = this;
+  this.onselect = function() {
+    _this.updateSelected();
+  };
+  this.parent.on( 'select', this.onselect );
+  // tap
+  this.on( 'tap', this.onTap );
+  // pointerDown
+  this.on( 'pointerDown', function onPointerDown( button, event ) {
+    _this.parent.childUIPointerDown( event );
+  });
+};
+
+PageDots.prototype.activate = function() {
+  this.setDots();
+  this.updateSelected();
+  this.bindTap( this.holder );
+  // add to DOM
+  this.parent.element.appendChild( this.holder );
+};
+
+PageDots.prototype.deactivate = function() {
+  // remove from DOM
+  this.parent.element.removeChild( this.holder );
+  TapListener.prototype.destroy.call( this );
+};
+
+PageDots.prototype.setDots = function() {
+  // get difference between number of cells and number of dots
+  var delta = this.parent.cells.length - this.dots.length;
+  if ( delta > 0 ) {
+    this.addDots( delta );
+  } else if ( delta < 0 ) {
+    this.removeDots( -delta );
+  }
+};
+
+PageDots.prototype.addDots = function( count ) {
+  var fragment = document.createDocumentFragment();
+  var newDots = [];
+  while ( count ) {
+    var dot = document.createElement('li');
+    dot.className = 'dot';
+    fragment.appendChild( dot );
+    newDots.push( dot );
+    count--;
+  }
+  this.holder.appendChild( fragment );
+  this.dots = this.dots.concat( newDots );
+};
+
+PageDots.prototype.removeDots = function( count ) {
+  // remove from this.dots collection
+  var removeDots = this.dots.splice( this.dots.length - count, count );
+  // remove from DOM
+  for ( var i=0, len = removeDots.length; i < len; i++ ) {
+    var dot = removeDots[i];
+    this.holder.removeChild( dot );
+  }
+};
+
+PageDots.prototype.updateSelected = function() {
+  // remove selected class on previous
+  if ( this.selectedDot ) {
+    this.selectedDot.className = 'dot';
+  }
+  // don't proceed if no dots
+  if ( !this.dots.length ) {
+    return;
+  }
+  this.selectedDot = this.dots[ this.parent.selectedIndex ];
+  this.selectedDot.className = 'dot is-selected';
+};
+
+PageDots.prototype.onTap = function( instance, event ) {
+  var target = event.target;
+  // only care about dot clicks
+  if ( target.nodeName != 'LI' ) {
+    return;
+  }
+
+  this.parent.uiChange();
+  var index = utils.indexOf( this.dots, target );
+  this.parent.select( index );
+};
+
+PageDots.prototype.destroy = function() {
+  this.deactivate();
+};
+
+Flickity.PageDots = PageDots;
+
+// -------------------------- Flickity -------------------------- //
+
+utils.extend( Flickity.defaults, {
+  pageDots: true
+});
+
+Flickity.createMethods.push('_createPageDots');
+
+Flickity.prototype._createPageDots = function() {
+  if ( !this.options.pageDots ) {
+    return;
+  }
+  this.pageDots = new PageDots( this );
+  this.on( 'activate', this.activatePageDots );
+  this.on( 'cellAddedRemoved', this.onCellAddedRemovedPageDots );
+  this.on( 'deactivate', this.deactivatePageDots );
+};
+
+Flickity.prototype.activatePageDots = function() {
+  this.pageDots.activate();
+};
+
+Flickity.prototype.onCellAddedRemovedPageDots = function() {
+  this.pageDots.setDots();
+};
+
+Flickity.prototype.deactivatePageDots = function() {
+  this.pageDots.deactivate();
+};
+
+// -----  ----- //
+
+Flickity.PageDots = PageDots;
+
+return PageDots;
+
+}));
+
+( function( window, factory ) {
+  
+  // universal module definition
+
+  if ( typeof define == 'function' && define.amd ) {
+    // AMD
+    define( 'flickity/js/player',[
+      'eventEmitter/EventEmitter',
+      'eventie/eventie',
+      './flickity'
+    ], function( EventEmitter, eventie, Flickity ) {
+      return factory( EventEmitter, eventie, Flickity );
+    });
+  } else if ( typeof exports == 'object' ) {
+    // CommonJS
+    module.exports = factory(
+      require('wolfy87-eventemitter'),
+      require('eventie'),
+      require('./flickity')
+    );
+  } else {
+    // browser global
+    window.Flickity = window.Flickity || {};
+    window.Flickity.Player = factory(
+      window.EventEmitter,
+      window.eventie,
+      window.Flickity
+    );
+  }
+
+}( window, function factory( EventEmitter, eventie, Flickity ) {
+
+
+
+// -------------------------- Page Visibility -------------------------- //
+// https://developer.mozilla.org/en-US/docs/Web/Guide/User_experience/Using_the_Page_Visibility_API
+
+var hiddenProperty, visibilityEvent;
+if ( 'hidden' in document ) {
+  hiddenProperty = 'hidden';
+  visibilityEvent = 'visibilitychange';
+} else if ( 'webkitHidden' in document ) {
+  hiddenProperty = 'webkitHidden';
+  visibilityEvent = 'webkitvisibilitychange';
+}
+
+// -------------------------- Player -------------------------- //
+
+function Player( parent ) {
+  this.isPlaying = false;
+  this.parent = parent;
+  // visibility change event handler
+  if ( visibilityEvent ) {
+    var _this = this;
+    this.onVisibilityChange = function() {
+      _this.visibilityChange();
+    };
+  }
+}
+
+Player.prototype = new EventEmitter();
+
+// start play
+Player.prototype.play = function() {
+  this.isPlaying = true;
+  // playing kills pauses
+  delete this.isPaused;
+  // listen to visibility change
+  if ( visibilityEvent ) {
+    document.addEventListener( visibilityEvent, this.onVisibilityChange, false );
+  }
+  // start ticking
+  this.tick();
+};
+
+Player.prototype.tick = function() {
+  // do not tick if paused or not playing
+  if ( !this.isPlaying || this.isPaused ) {
+    return;
+  }
+  // keep track of when .tick()
+  this.tickTime = new Date();
+  var time = this.parent.options.autoPlay;
+  // default to 3 seconds
+  time = typeof time == 'number' ? time : 3000;
+  var _this = this;
+  this.timeout = setTimeout( function() {
+    _this.parent.next( true );
+    _this.tick();
+  }, time );
+};
+
+Player.prototype.stop = function() {
+  this.isPlaying = false;
+  // stopping kills pauses
+  delete this.isPaused;
+  this.clear();
+  // remove visibility change event
+  if ( visibilityEvent ) {
+    document.removeEventListener( visibilityEvent, this.onVisibilityChange, false );
+  }
+};
+
+Player.prototype.clear = function() {
+  clearTimeout( this.timeout );
+};
+
+Player.prototype.pause = function() {
+  if ( this.isPlaying ) {
+    this.isPaused = true;
+    this.clear();
+  }
+};
+
+Player.prototype.unpause = function() {
+  // re-start play if in unpaused state
+  if ( this.isPaused ) {
+    this.play();
+  }
+};
+
+// pause if page visibility is hidden, unpause if visible
+Player.prototype.visibilityChange = function() {
+  var isHidden = document[ hiddenProperty ];
+  this[ isHidden ? 'pause' : 'unpause' ]();
+};
+
+// -------------------------- Flickity -------------------------- //
+
+// utils.extend( Flickity.defaults, {
+//   autoPlay: false
+// });
+
+Flickity.createMethods.push('_createPlayer');
+
+Flickity.prototype._createPlayer = function() {
+  this.player = new Player( this );
+
+  this.on( 'activate', this.activatePlayer );
+  this.on( 'uiChange', this.stopPlayer );
+  this.on( 'pointerDown', this.stopPlayer );
+  this.on( 'deactivate', this.deactivatePlayer );
+};
+
+Flickity.prototype.activatePlayer = function() {
+  if ( !this.options.autoPlay ) {
+    return;
+  }
+  this.player.play();
+  eventie.bind( this.element, 'mouseenter', this );
+};
+
+Flickity.prototype.stopPlayer = function() {
+  this.player.stop();
+};
+
+Flickity.prototype.deactivatePlayer = function() {
+  this.player.stop();
+  eventie.unbind( this.element, 'mouseenter', this );
+};
+
 // ----- mouseenter/leave ----- //
 
 // pause auto-play on hover
@@ -3717,84 +4246,765 @@ Flickity.prototype.onmouseleave = function() {
   eventie.unbind( this.element, 'mouseleave', this );
 };
 
-// -------------------------- destroy -------------------------- //
+// -----  ----- //
 
-// deactivate all Flickity functionality, but keep stuff available
-Flickity.prototype.deactivate = function() {
-  if ( !this.isActive ) {
-    return;
+Flickity.Player = Player;
+
+return Player;
+
+}));
+
+( function( window, factory ) {
+  
+  // universal module definition
+
+  if ( typeof define == 'function' && define.amd ) {
+    // AMD
+    define( 'flickity/js/add-remove-cell',[
+      './flickity',
+      'fizzy-ui-utils/utils'
+    ], function( Flickity, utils ) {
+      return factory( window, Flickity, utils );
+    });
+  } else if ( typeof exports == 'object' ) {
+    // CommonJS
+    module.exports = factory(
+      window,
+      require('./flickity'),
+      require('fizzy-ui-utils')
+    );
+  } else {
+    // browser global
+    window.Flickity = window.Flickity || {};
+    window.Flickity = factory(
+      window,
+      window.Flickity,
+      window.fizzyUIUtils
+    );
   }
-  classie.remove( this.element, 'flickity-enabled' );
-  // destroy cells
-  for ( var i=0, len = this.cells.length; i < len; i++ ) {
-    var cell = this.cells[i];
-    cell.destroy();
+
+}( window, function factory( window, Flickity, utils ) {
+
+
+
+// append cells to a document fragment
+function getCellsFragment( cells ) {
+  var fragment = document.createDocumentFragment();
+  for ( var i=0, len = cells.length; i < len; i++ ) {
+    var cell = cells[i];
+    fragment.appendChild( cell.element );
   }
-  this._removeSelectedCellClass();
-  this.element.removeChild( this.viewport );
-  // move child elements back into element
-  moveChildren( this.slider, this.element );
-  // deactivate prev/next buttons, page dots; stop player
-  if ( this.prevButton ) {
-    this.prevButton.deactivate();
-  }
-  if ( this.nextButton ) {
-    this.nextButton.deactivate();
-  }
-  if ( this.pageDots ) {
-    this.pageDots.deactivate();
-  }
-  this.player.stop();
-  // unbind events
-  this.unbindDrag();
-  if ( this.options.accessibility ) {
-    this.element.removeAttribute('tabIndex');
-    eventie.unbind( this.element, 'keydown', this );
-  }
-  // set flags
-  this.isActive = false;
-  this.isAnimating = false;
-};
-
-Flickity.prototype.destroy = function() {
-  this.deactivate();
-  if ( this.options.resizeBound || this.options.watch ) {
-    eventie.unbind( window, 'resize', this );
-  }
-  delete this.element.flickityGUID;
-  delete instances[ this.guid ];
-};
-
-// -------------------------- prototype -------------------------- //
-
-U.extend( Flickity.prototype, dragPrototype );
-U.extend( Flickity.prototype, animatePrototype );
-U.extend( Flickity.prototype, cellChangePrototype );
-
-// -------------------------- extras -------------------------- //
-
-/**
- * get Flickity instance from element
- * @param {Element} elem
- * @returns {Flickity}
- */
-Flickity.data = function( elem ) {
-  elem = U.getQueryElement( elem );
-  var id = elem && elem.flickityGUID;
-  return id && instances[ id ];
-};
-
-U.htmlInit( Flickity, 'flickity' );
-
-if ( jQuery && jQuery.bridget ) {
-  jQuery.bridget( 'flickity', Flickity );
+  return fragment;
 }
 
-// make classes accessible
-Flickity.Cell = Cell;
-Flickity.PrevNextButton = PrevNextButton;
-Flickity.PageDots = PageDots;
-Flickity.Player = Player;
+// -------------------------- add/remove cell prototype -------------------------- //
+
+/**
+ * Insert, prepend, or append cells
+ * @param {Element, Array, NodeList} elems
+ * @param {Integer} index
+ */
+Flickity.prototype.insert = function( elems, index ) {
+  var cells = this._makeCells( elems );
+  if ( !cells || !cells.length ) {
+    return;
+  }
+  var len = this.cells.length;
+  // default to append
+  index = index === undefined ? len : index;
+  // add cells with document fragment
+  var fragment = getCellsFragment( cells );
+  // append to slider
+  var isAppend = index == len;
+  if ( isAppend ) {
+    this.slider.appendChild( fragment );
+  } else {
+    var insertCellElement = this.cells[ index ].element;
+    this.slider.insertBefore( fragment, insertCellElement );
+  }
+  // add to this.cells
+  if ( index === 0 ) {
+    // prepend, add to start
+    this.cells = cells.concat( this.cells );
+  } else if ( isAppend ) {
+    // append, add to end
+    this.cells = this.cells.concat( cells );
+  } else {
+    // insert in this.cells
+    var endCells = this.cells.splice( index, len - index );
+    this.cells = this.cells.concat( cells ).concat( endCells );
+  }
+
+  this._sizeCells( cells );
+
+  var selectedIndexDelta = index > this.selectedIndex ? 0 : cells.length;
+  this._cellAddedRemoved( index, selectedIndexDelta );
+};
+
+Flickity.prototype.append = function( elems ) {
+  this.insert( elems, this.cells.length );
+};
+
+Flickity.prototype.prepend = function( elems ) {
+  this.insert( elems, 0 );
+};
+
+/**
+ * Remove cells
+ * @param {Element, Array, NodeList} elems
+ */
+Flickity.prototype.remove = function( elems ) {
+  var cells = this.getCells( elems );
+  var selectedIndexDelta = 0;
+  var i, len, cell;
+  // calculate selectedIndexDelta, easier if done in seperate loop
+  for ( i=0, len = cells.length; i < len; i++ ) {
+    cell = cells[i];
+    var wasBefore = utils.indexOf( this.cells, cell ) < this.selectedIndex;
+    selectedIndexDelta -= wasBefore ? 1 : 0;
+  }
+
+  for ( i=0, len = cells.length; i < len; i++ ) {
+    cell = cells[i];
+    cell.remove();
+    // remove item from collection
+    utils.removeFrom( cell, this.cells );
+  }
+
+  if ( cells.length ) {
+    // update stuff
+    this._cellAddedRemoved( 0, selectedIndexDelta );
+  }
+};
+
+// updates when cells are added or removed
+Flickity.prototype._cellAddedRemoved = function( changedCellIndex, selectedIndexDelta ) {
+  selectedIndexDelta = selectedIndexDelta || 0;
+  this.selectedIndex += selectedIndexDelta;
+  this.selectedIndex = Math.max( 0, Math.min( this.cells.length - 1, this.selectedIndex ) );
+
+  this.emitEvent( 'cellAddedRemoved', [ changedCellIndex, selectedIndexDelta ] );
+  this.cellChange( changedCellIndex );
+};
+
+/**
+ * logic to be run after a cell's size changes
+ * @param {Element} elem - cell's element
+ */
+Flickity.prototype.cellSizeChange = function( elem ) {
+  var cell = this.getCell( elem );
+  if ( !cell ) {
+    return;
+  }
+  cell.getSize();
+
+  var index = utils.indexOf( this.cells, cell );
+  this.cellChange( index );
+};
+
+/**
+ * logic any time a cell is changed: added, removed, or size changed
+ * @param {Integer} changedCellIndex - index of the changed cell, optional
+ */
+Flickity.prototype.cellChange = function( changedCellIndex ) {
+  // TODO maybe always size all cells unless isSkippingSizing
+  // size all cells if necessary
+  // if ( !isSkippingSizing ) {
+  //   this._sizeCells( this.cells );
+  // }
+
+  changedCellIndex = changedCellIndex || 0;
+
+  this._positionCells( changedCellIndex );
+  this._getWrapShiftCells();
+  this.setContainerSize();
+  // position slider
+  if ( this.options.freeScroll ) {
+    this.positionSlider();
+  } else {
+    this.positionSliderAtSelected();
+    this.select( this.selectedIndex );
+  }
+};
+
+// -----  ----- //
+
+return Flickity;
+
+}));
+
+/**
+ * Flickity index
+ * used for AMD and CommonJS exports
+ */
+
+( function( window, factory ) {
+  
+  // universal module definition
+
+  if ( typeof define == 'function' && define.amd ) {
+    // AMD
+    define( 'flickity/js/index',[
+      './flickity',
+      './drag',
+      './prev-next-button',
+      './page-dots',
+      './player',
+      './add-remove-cell'
+    ], factory );
+  } else if ( typeof exports == 'object' ) {
+    // CommonJS
+    module.exports = factory(
+      require('./flickity'),
+      require('./drag'),
+      require('./prev-next-button'),
+      require('./page-dots'),
+      require('./player'),
+      require('./add-remove-cell')
+    );
+  }
+
+})( window, function factory( Flickity ) {
+  /*jshint strict: false*/
+  return Flickity;
+});
+
+/*!
+ * Flickity sync v0.1.0
+ * enable sync for Flickity
+ */
+
+/*jshint browser: true, undef: true, unused: true, strict: true*/
+
+( function( window, factory ) {
+  /*global define: false, module: false, require: false */
+  
+  // universal module definition
+
+  if ( typeof define == 'function' && define.amd ) {
+    // AMD
+    define( 'flickity-sync/flickity-sync',[
+      'flickity/js/flickity',
+      'fizzy-ui-utils/utils'
+    ], function( Flickity, utils ) {
+      return factory( window, Flickity, utils );
+    });
+  } else if ( typeof exports == 'object' ) {
+    // CommonJS
+    module.exports = factory(
+      window,
+      require('flickity'),
+      require('fizzy-ui-utils')
+    );
+  } else {
+    // browser global
+    window.Flickity = window.Flickity || {};
+    window.Flickity = factory(
+      window,
+      window.Flickity,
+      window.fizzyUIUtils
+    );
+  }
+
+}( window, function factory( window, Flickity, utils ) {
+
+
+
+// -------------------------- sync prototype -------------------------- //
+
+// Flickity.defaults.sync = false;
+
+Flickity.createMethods.push('_createSync');
+
+Flickity.prototype._createSync = function() {
+  this.syncers = {};
+  var syncOption = this.options.sync;
+
+  this.on( 'destroy', this.unsyncAll );
+
+  if ( !syncOption ) {
+    return;
+  }
+  // HACK do async, give time for other flickity to be initalized
+  var _this = this;
+  setTimeout( function initSyncCompanion() {
+    _this.sync( syncOption );
+  });
+};
+
+/**
+ * sync
+ * @param {Element} or {String} elem
+ */
+Flickity.prototype.sync = function( elem ) {
+  elem = utils.getQueryElement( elem );
+  var companion = Flickity.data( elem );
+  if ( !companion ) {
+    return;
+  }
+  // two hearts, that beat as one
+  this._syncCompanion( companion );
+  companion._syncCompanion( this );
+};
+
+/**
+ * @param {Flickity} companion
+ */
+Flickity.prototype._syncCompanion = function( companion ) {
+  var _this = this;
+  function syncListener() {
+    var index = _this.selectedIndex;
+    // do not select if already selected, prevent infinite loop
+    if ( companion.selectedIndex != index ) {
+      companion.select( index );
+    }
+  }
+  this.on( 'select', syncListener );
+  // keep track of all synced flickities
+  // hold on to listener to unsync
+  this.syncers[ companion.guid ] = {
+    flickity: companion,
+    listener: syncListener
+  };
+};
+
+/**
+ * unsync
+ * @param {Element} or {String} elem
+ */
+Flickity.prototype.unsync = function( elem ) {
+  elem = utils.getQueryElement( elem );
+  var companion = Flickity.data( elem );
+  this._unsync( companion );
+};
+
+/**
+ * @param {Flickity} companion
+ */
+Flickity.prototype._unsync = function( companion ) {
+  if ( !companion ) {
+    return;
+  }
+  // I love you but I've chosen darkness
+  this._unsyncCompanion( companion );
+  companion._unsyncCompanion( this );
+};
+
+/**
+ * @param {Flickity} companion
+ */
+Flickity.prototype._unsyncCompanion = function( companion ) {
+  var id = companion.guid;
+  var syncer = this.syncers[ id ];
+  this.off( 'select', syncer.listener );
+  delete this.syncers[ id ];
+};
+
+Flickity.prototype.unsyncAll = function() {
+  for ( var id in this.syncers ) {
+    var syncer = this.syncers[ id ];
+    this._unsync( syncer.flickity );
+  }
+};
+
+// -----  ----- //
+
+return Flickity;
+
+}));
+
+/*!
+ * imagesLoaded v3.1.8
+ * JavaScript is all like "You images are done yet or what?"
+ * MIT License
+ */
+
+( function( window, factory ) { 
+  // universal module definition
+
+  /*global define: false, module: false, require: false */
+
+  if ( typeof define === 'function' && define.amd ) {
+    // AMD
+    define( 'imagesloaded/imagesloaded',[
+      'eventEmitter/EventEmitter',
+      'eventie/eventie'
+    ], function( EventEmitter, eventie ) {
+      return factory( window, EventEmitter, eventie );
+    });
+  } else if ( typeof exports === 'object' ) {
+    // CommonJS
+    module.exports = factory(
+      window,
+      require('wolfy87-eventemitter'),
+      require('eventie')
+    );
+  } else {
+    // browser global
+    window.imagesLoaded = factory(
+      window,
+      window.EventEmitter,
+      window.eventie
+    );
+  }
+
+})( window,
+
+// --------------------------  factory -------------------------- //
+
+function factory( window, EventEmitter, eventie ) {
+
+
+
+var $ = window.jQuery;
+var console = window.console;
+var hasConsole = typeof console !== 'undefined';
+
+// -------------------------- helpers -------------------------- //
+
+// extend objects
+function extend( a, b ) {
+  for ( var prop in b ) {
+    a[ prop ] = b[ prop ];
+  }
+  return a;
+}
+
+var objToString = Object.prototype.toString;
+function isArray( obj ) {
+  return objToString.call( obj ) === '[object Array]';
+}
+
+// turn element or nodeList into an array
+function makeArray( obj ) {
+  var ary = [];
+  if ( isArray( obj ) ) {
+    // use object if already an array
+    ary = obj;
+  } else if ( typeof obj.length === 'number' ) {
+    // convert nodeList to array
+    for ( var i=0, len = obj.length; i < len; i++ ) {
+      ary.push( obj[i] );
+    }
+  } else {
+    // array of single index
+    ary.push( obj );
+  }
+  return ary;
+}
+
+  // -------------------------- imagesLoaded -------------------------- //
+
+  /**
+   * @param {Array, Element, NodeList, String} elem
+   * @param {Object or Function} options - if function, use as callback
+   * @param {Function} onAlways - callback function
+   */
+  function ImagesLoaded( elem, options, onAlways ) {
+    // coerce ImagesLoaded() without new, to be new ImagesLoaded()
+    if ( !( this instanceof ImagesLoaded ) ) {
+      return new ImagesLoaded( elem, options );
+    }
+    // use elem as selector string
+    if ( typeof elem === 'string' ) {
+      elem = document.querySelectorAll( elem );
+    }
+
+    this.elements = makeArray( elem );
+    this.options = extend( {}, this.options );
+
+    if ( typeof options === 'function' ) {
+      onAlways = options;
+    } else {
+      extend( this.options, options );
+    }
+
+    if ( onAlways ) {
+      this.on( 'always', onAlways );
+    }
+
+    this.getImages();
+
+    if ( $ ) {
+      // add jQuery Deferred object
+      this.jqDeferred = new $.Deferred();
+    }
+
+    // HACK check async to allow time to bind listeners
+    var _this = this;
+    setTimeout( function() {
+      _this.check();
+    });
+  }
+
+  ImagesLoaded.prototype = new EventEmitter();
+
+  ImagesLoaded.prototype.options = {};
+
+  ImagesLoaded.prototype.getImages = function() {
+    this.images = [];
+
+    // filter & find items if we have an item selector
+    for ( var i=0, len = this.elements.length; i < len; i++ ) {
+      var elem = this.elements[i];
+      // filter siblings
+      if ( elem.nodeName === 'IMG' ) {
+        this.addImage( elem );
+      }
+      // find children
+      // no non-element nodes, #143
+      var nodeType = elem.nodeType;
+      if ( !nodeType || !( nodeType === 1 || nodeType === 9 || nodeType === 11 ) ) {
+        continue;
+      }
+      var childElems = elem.querySelectorAll('img');
+      // concat childElems to filterFound array
+      for ( var j=0, jLen = childElems.length; j < jLen; j++ ) {
+        var img = childElems[j];
+        this.addImage( img );
+      }
+    }
+  };
+
+  /**
+   * @param {Image} img
+   */
+  ImagesLoaded.prototype.addImage = function( img ) {
+    var loadingImage = new LoadingImage( img );
+    this.images.push( loadingImage );
+  };
+
+  ImagesLoaded.prototype.check = function() {
+    var _this = this;
+    var checkedCount = 0;
+    var length = this.images.length;
+    this.hasAnyBroken = false;
+    // complete if no images
+    if ( !length ) {
+      this.complete();
+      return;
+    }
+
+    function onConfirm( image, message ) {
+      if ( _this.options.debug && hasConsole ) {
+        console.log( 'confirm', image, message );
+      }
+
+      _this.progress( image );
+      checkedCount++;
+      if ( checkedCount === length ) {
+        _this.complete();
+      }
+      return true; // bind once
+    }
+
+    for ( var i=0; i < length; i++ ) {
+      var loadingImage = this.images[i];
+      loadingImage.on( 'confirm', onConfirm );
+      loadingImage.check();
+    }
+  };
+
+  ImagesLoaded.prototype.progress = function( image ) {
+    this.hasAnyBroken = this.hasAnyBroken || !image.isLoaded;
+    // HACK - Chrome triggers event before object properties have changed. #83
+    var _this = this;
+    setTimeout( function() {
+      _this.emit( 'progress', _this, image );
+      if ( _this.jqDeferred && _this.jqDeferred.notify ) {
+        _this.jqDeferred.notify( _this, image );
+      }
+    });
+  };
+
+  ImagesLoaded.prototype.complete = function() {
+    var eventName = this.hasAnyBroken ? 'fail' : 'done';
+    this.isComplete = true;
+    var _this = this;
+    // HACK - another setTimeout so that confirm happens after progress
+    setTimeout( function() {
+      _this.emit( eventName, _this );
+      _this.emit( 'always', _this );
+      if ( _this.jqDeferred ) {
+        var jqMethod = _this.hasAnyBroken ? 'reject' : 'resolve';
+        _this.jqDeferred[ jqMethod ]( _this );
+      }
+    });
+  };
+
+  // -------------------------- jquery -------------------------- //
+
+  if ( $ ) {
+    $.fn.imagesLoaded = function( options, callback ) {
+      var instance = new ImagesLoaded( this, options, callback );
+      return instance.jqDeferred.promise( $(this) );
+    };
+  }
+
+
+  // --------------------------  -------------------------- //
+
+  function LoadingImage( img ) {
+    this.img = img;
+  }
+
+  LoadingImage.prototype = new EventEmitter();
+
+  LoadingImage.prototype.check = function() {
+    // first check cached any previous images that have same src
+    var resource = cache[ this.img.src ] || new Resource( this.img.src );
+    if ( resource.isConfirmed ) {
+      this.confirm( resource.isLoaded, 'cached was confirmed' );
+      return;
+    }
+
+    // If complete is true and browser supports natural sizes,
+    // try to check for image status manually.
+    if ( this.img.complete && this.img.naturalWidth !== undefined ) {
+      // report based on naturalWidth
+      this.confirm( this.img.naturalWidth !== 0, 'naturalWidth' );
+      return;
+    }
+
+    // If none of the checks above matched, simulate loading on detached element.
+    var _this = this;
+    resource.on( 'confirm', function( resrc, message ) {
+      _this.confirm( resrc.isLoaded, message );
+      return true;
+    });
+
+    resource.check();
+  };
+
+  LoadingImage.prototype.confirm = function( isLoaded, message ) {
+    this.isLoaded = isLoaded;
+    this.emit( 'confirm', this, message );
+  };
+
+  // -------------------------- Resource -------------------------- //
+
+  // Resource checks each src, only once
+  // separate class from LoadingImage to prevent memory leaks. See #115
+
+  var cache = {};
+
+  function Resource( src ) {
+    this.src = src;
+    // add to cache
+    cache[ src ] = this;
+  }
+
+  Resource.prototype = new EventEmitter();
+
+  Resource.prototype.check = function() {
+    // only trigger checking once
+    if ( this.isChecked ) {
+      return;
+    }
+    // simulate loading on detached element
+    var proxyImage = new Image();
+    eventie.bind( proxyImage, 'load', this );
+    eventie.bind( proxyImage, 'error', this );
+    proxyImage.src = this.src;
+    // set flag
+    this.isChecked = true;
+  };
+
+  // ----- events ----- //
+
+  // trigger specified handler for event type
+  Resource.prototype.handleEvent = function( event ) {
+    var method = 'on' + event.type;
+    if ( this[ method ] ) {
+      this[ method ]( event );
+    }
+  };
+
+  Resource.prototype.onload = function( event ) {
+    this.confirm( true, 'onload' );
+    this.unbindProxyEvents( event );
+  };
+
+  Resource.prototype.onerror = function( event ) {
+    this.confirm( false, 'onerror' );
+    this.unbindProxyEvents( event );
+  };
+
+  // ----- confirm ----- //
+
+  Resource.prototype.confirm = function( isLoaded, message ) {
+    this.isConfirmed = true;
+    this.isLoaded = isLoaded;
+    this.emit( 'confirm', this, message );
+  };
+
+  Resource.prototype.unbindProxyEvents = function( event ) {
+    eventie.unbind( event.target, 'load', this );
+    eventie.unbind( event.target, 'error', this );
+  };
+
+  // -----  ----- //
+
+  return ImagesLoaded;
+
+});
+
+/*!
+ * Flickity imagesLoaded v0.1.0
+ * enables imagesLoaded option for Flickity
+ */
+
+/*jshint browser: true, strict: true, undef: true, unused: true */
+
+( function( window, factory ) {
+  /*global define: false, module: false, require: false */
+  
+  // universal module definition
+
+  if ( typeof define == 'function' && define.amd ) {
+    // AMD
+    define( [
+      'flickity/js/flickity',
+      'imagesloaded/imagesloaded',
+      'fizzy-ui-utils/utils'
+    ], function( Flickity, imagesLoaded, utils ) {
+      return factory( window, Flickity, imagesLoaded, utils );
+    });
+  } else if ( typeof exports == 'object' ) {
+    // CommonJS
+    module.exports = factory(
+      window,
+      require('flickity'),
+      require('imagesloaded'),
+      require('fizzy-ui-utils')
+    );
+  } else {
+    // browser global
+    window.Flickity = factory(
+      window,
+      window.Flickity,
+      window.imagesLoaded,
+      window.fizzyUIUtils
+    );
+  }
+
+}( window, function factory( window, Flickity, imagesLoaded, utils ) {
+  
+
+Flickity.prototype.imagesLoaded = function() {
+  if ( !this.options.imagesLoaded ) {
+    return;
+  }
+  var _this = this;
+  function onImagesLoadedProgress( instance, image ) {
+    // check if image is a cell
+    var cell = _this.getCell( image.img );
+    // otherwise get its parents
+    var cellElem = cell.element || utils.getParent( image.img, '.flickity-slider > *' );
+    _this.cellSizeChange( cellElem );
+  }
+  imagesLoaded( this.slider ).on( 'progress', onImagesLoadedProgress );
+};
 
 return Flickity;
 

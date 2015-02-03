@@ -1,7 +1,7 @@
 {
   "name": "flickity",
-  "version": "0.1.0",
-  "description": "Touch responsive gallery",
+  "version": "0.2.0",
+  "description": "Touch, responsive, flickable galleries",
   "main": [
     "js/index.js",
     "css/flickity.css"
@@ -21,7 +21,7 @@
   },
   "devDependencies": {
     "flickity-imagesloaded": "~0.1.1",
-    "flickity-sync": "~0.1.0",
+    "flickity-sync": "~0.1.1",
     "jquery-bridget": "~1.1.0",
     "qunit": "~1.16.0"
   },

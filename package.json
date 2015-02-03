@@ -1,6 +1,6 @@
 {
   "name": "flickity",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "Touch, responsive, flickable galleries",
   "main": "js/index.js",
   "dependencies": {
@@ -18,7 +18,7 @@
   },
   "devDependencies": {
     "flickity-imagesloaded": "~0.1.1",
-    "flickity-sync": "~0.1.0",
+    "flickity-sync": "~0.1.1",
     "jquery-bridget": "~1.1.0",
     "gulp": "^3.8.10",
     "gulp-jshint": "^1.9.0",
