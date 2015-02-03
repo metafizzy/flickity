@@ -1,10 +1,5 @@
 ## To do
 
-release TapListener class to its own repo
-update & release fizzyUIUtils with handleEvent
-update & release flickity-imagesloaded
-update & release unidragger
-
 ## Feature requests
 
 isGroupPaging

@@ -7,7 +7,7 @@
     define( [
       'eventie/eventie',
       './flickity',
-      './tap-listener',
+      'tap-listener/tap-listener',
       'fizzy-ui-utils/utils'
     ], function( eventie, Flickity, TapListener, utils ) {
       return factory( window, eventie, Flickity, TapListener, utils );
@@ -18,7 +18,7 @@
       window,
       require('eventie'),
       require('./flickity'),
-      require('./tap-listener'),
+      require('tap-listener'),
       require('fizzy-ui-utils')
     );
   } else {

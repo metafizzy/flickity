@@ -14,14 +14,16 @@
     "get-style-property": "~1.0.4",
     "doc-ready": "~1.0.4",
     "classie": "~1.0.1",
-    "unidragger": "~0.1.0",
-    "fizzy-ui-utils": "~0.1.0",
-    "unipointer": "~0.1.0"
+    "unidragger": "~0.2.0",
+    "fizzy-ui-utils": "~0.1.1",
+    "unipointer": "~0.1.0",
+    "tap-listener": "~0.1.0"
   },
   "devDependencies": {
+    "flickity-imagesloaded": "~0.1.1",
+    "flickity-sync": "~0.1.0",
     "jquery-bridget": "~1.1.0",
-    "qunit": "~1.16.0",
-    "flickity-imagesloaded": "~0.1.0"
+    "qunit": "~1.16.0"
   },
   "moduleType": [
     "amd",
