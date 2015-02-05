@@ -107,7 +107,8 @@ Flickity.defaults = {
   resize: true,
   selectedAttraction: 0.025
   // watchCSS: false,
-  // wrapAround: false
+  // wrapAround: false,
+  pauseOnHover: true
 };
 
 // hash of methods triggered on _create()
