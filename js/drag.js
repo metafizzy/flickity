@@ -77,6 +77,7 @@ proto.bindDrag = function() {
   if ( !this.options.draggable ) {
     return;
   }
+  classie.add( this.viewport, 'is-draggable' );
   this.handles = [ this.viewport ];
   this.bindHandles();
 };
@@ -85,6 +86,7 @@ proto.unbindDrag = function() {
   if ( !this.options.draggable ) {
     return;
   }
+  classie.remove( this.viewport, 'is-draggable' );
   this.unbindHandles();
 };
 
