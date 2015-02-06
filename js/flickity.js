@@ -286,6 +286,8 @@ Flickity.prototype._sizeCells = function( cells ) {
   }
 };
 
+// alias _init for jQuery plugin .flickity()
+Flickity.prototype._init =
 Flickity.prototype.reposition = function() {
   this.positionCells();
   this.positionSliderAtSelected();
