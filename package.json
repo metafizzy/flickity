@@ -18,7 +18,7 @@
   },
   "devDependencies": {
     "flickity-imagesloaded": "~0.1.1",
-    "flickity-sync": "~0.1.1",
+    "flickity-as-nav-for": "~0.1.0",
     "jquery-bridget": "~1.1.0",
     "gulp": "^3.8.10",
     "gulp-jshint": "^1.9.0",
@@ -28,7 +28,7 @@
     "requirejs": "^2.1.15",
     "chalk": "^0.5.1",
     "gulp-replace": "^0.5.1",
-    "gulp-uglify": "^1.0.2"
+    "gulp-uglify": "^1.0.2",
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"

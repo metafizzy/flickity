@@ -21,7 +21,7 @@
   },
   "devDependencies": {
     "flickity-imagesloaded": "~0.1.1",
-    "flickity-sync": "~0.1.1",
+    "flickity-as-nav-for": "~0.1.0",
     "jquery-bridget": "~1.1.0",
     "qunit": "~1.16.0"
   },
