@@ -187,6 +187,10 @@ window.onload = function() {
     cellAlign: 'left'
   });
 
+  halfWidthflky.on( 'staticClick', function( event, pointer, clickedCellIndex, clickedCellElement ) {
+    console.log( clickedCellIndex, clickedCellElement );
+  })
+
   new Flickity( '#gallery3', {
   });
 

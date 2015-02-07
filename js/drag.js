@@ -345,7 +345,13 @@ proto.dragEndBoostSelect = function() {
 // ----- staticClick ----- //
 
 proto.staticClick = function( event, pointer ) {
-  this.dispatchEvent( 'staticClick', event, [ pointer ] );
+  // get clickedCell, if cell was clicked
+  var clickedCell = this.getParentCell( event.target );
+  var clickedCellIndex = clickedCell &&
+    utils.indexOf( this.cells, clickedCell );
+  var clickedCellElem = clickedCell && clickedCell.element;
+  this.dispatchEvent( 'staticClick', event,
+    [ pointer, clickedCellIndex, clickedCellElem ] );
 };
 
 // -----  ----- //

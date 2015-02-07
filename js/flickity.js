@@ -506,6 +506,18 @@ Flickity.prototype.getCellElements = function() {
   return cellElems;
 };
 
+/**
+ * get parent cell from an element
+ * @param {Element} elem
+ * @returns {Flickit.Cell} cell
+ */
+Flickity.prototype.getParentCell = function( elem ) {
+  // first check if elem is cell
+  var cell = this.getCell( elem );
+  cell = cell || utils.getParent( elem, '.flickity-slider > *' );
+  return cell;
+};
+
 // -------------------------- events -------------------------- //
 
 Flickity.prototype.uiChange = function() {
