@@ -71,23 +71,26 @@ proto._createDrag = function() {
   this.on( 'activate', this.bindDrag );
   this.on( 'uiChange', this._uiChangeDrag );
   this.on( 'childUIPointerDown', this._childUIPointerDownDrag );
+  this.on( 'deactivate', this.unbindDrag );
 };
 
 proto.bindDrag = function() {
-  if ( !this.options.draggable ) {
+  if ( !this.options.draggable || this.isDragBound ) {
     return;
   }
   classie.add( this.element, 'is-draggable' );
   this.handles = [ this.viewport ];
   this.bindHandles();
+  this.isDragBound = true;
 };
 
 proto.unbindDrag = function() {
-  if ( !this.options.draggable ) {
+  if ( !this.isDragBound ) {
     return;
   }
   classie.remove( this.element, 'is-draggable' );
   this.unbindHandles();
+  delete this.isDragBound;
 };
 
 proto.hasDragStarted = function( moveVector ) {
