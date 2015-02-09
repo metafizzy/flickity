@@ -1,5 +1,5 @@
 /*!
- * Flickity PACKAGED v0.2.1
+ * Flickity PACKAGED v0.2.2
  * Touch, responsive, flickable galleries
  * http://flickity.metafizzy.co
  * Copyright 2015 Metafizzy
@@ -1886,7 +1886,7 @@ return proto;
 }));
 
 /*!
- * Flickity v0.2.1
+ * Flickity v0.2.2
  * Touch, responsive, flickable galleries
  * http://flickity.metafizzy.co
  * Copyright 2015 Metafizzy
@@ -4495,7 +4495,7 @@ return Flickity;
 });
 
 /*!
- * Flickity asNavFor v0.1.0
+ * Flickity asNavFor v0.1.1
  * enable asNavFor for Flickity
  */
 
@@ -4537,7 +4537,7 @@ return Flickity;
 
 
 
-// -------------------------- sync prototype -------------------------- //
+// -------------------------- asNavFor prototype -------------------------- //
 
 // Flickity.defaults.asNavFor = null;
 
@@ -4562,7 +4562,8 @@ Flickity.prototype._createAsNavFor = function() {
 Flickity.prototype.setNavCompanion = function( elem ) {
   elem = utils.getQueryElement( elem );
   var companion = Flickity.data( elem );
-  if ( !companion ) {
+  // stop if no companion or companion is self
+  if ( !companion || companion == this ) {
     return;
   }
 
@@ -4618,6 +4619,9 @@ Flickity.prototype.deactivateAsNavFor = function() {
 };
 
 Flickity.prototype.destroyAsNavFor = function() {
+  if ( !this.navCompanion ) {
+    return;
+  }
   this.navCompanion.off( 'select', this.onNavCompanionSelect );
   this.off( 'staticClick', this.onNavStaticClick );
   delete this.navCompanion;

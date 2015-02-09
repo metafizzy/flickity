@@ -1,5 +1,9 @@
 # Changelog
 
+### v0.2.2
+
+Fix `.destroy()` bug with [flickity-as-nav-for](https://github.com/metafizzy/flickity-as-nav-for)
+
 ### v0.2.1
 
 + Swap out [flickity-sync](https://github.com/metafizzy/flickity-sync) package for [flickity-as-nav-for](https://github.com/metafizzy/flickity-as-nav-for), for [#13](https://github.com/metafizzy/flickity/issues/13)

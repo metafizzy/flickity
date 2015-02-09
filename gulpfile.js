@@ -133,8 +133,22 @@ gulp.task( 'copy-css', function() {
     .pipe( gulp.dest('dist') );
 });
 
+
+// ----- jsonlint ----- //
+
+var jsonlint = require('gulp-json-lint');
+
+gulp.task( 'jsonlint', function() {
+  gulp.src( '*.json' )
+    .pipe( jsonlint() )
+    .pipe( jsonlint.report('verbose') );
+});
+
+// ----- default ----- //
+
 gulp.task( 'default', [
   'hint',
+  'jsonlint',
   'uglify',
   'copy-css'
 ]);
