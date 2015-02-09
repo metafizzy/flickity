@@ -45,3 +45,6 @@ cannot `.focus()` on a button that is `disabled`
     }
 
 Cannot `elem.detach( 'onevent', undefined )`
+
+in order to prevent child element from 'stealing' focus, need to set `unselectable="on"`
+http://stackoverflow.com/a/17525223/182183

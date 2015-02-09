@@ -80,6 +80,7 @@ PrevNextButton.prototype._create = function() {
   element.className += this.isPrevious ? ' previous' : ' next';
   // prevent button from submitting form http://stackoverflow.com/a/10836076/182183
   element.setAttribute( 'type', 'button' );
+  Flickity.setUnselectable( element );
   // create arrow
   if ( supportsInlineSVG() ) {
     var svg = this.createSVG();

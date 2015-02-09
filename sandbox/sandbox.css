@@ -20,6 +20,8 @@ body {
   clear: both;
 }
 
+.container:focus { border: 1px blue dotted; }
+
 .cell {
   width: 100%;
   height: 200px;
@@ -39,12 +41,12 @@ body {
 .cell:nth-child(6n+4) { background: hsl(240, 80%, 70%); }
 .cell:nth-child(6n+5) { background: hsl(300, 80%, 70%); }
 
-.cell.n1 { background: hsl(0, 80%, 70%); }
-.cell.n2 { background: hsl(60, 80%, 70%); }
-.cell.n3 { background: hsl(120, 80%, 70%); }
-.cell.n4 { background: hsl(180, 80%, 70%); }
-.cell.n5 { background: hsl(240, 80%, 70%); }
-.cell.n6 { background: hsl(300, 80%, 70%); }
+.cell.n1 { background: #D22; background: hsl(0, 80%, 70%); }
+.cell.n2 { background: #DD2; background: hsl(60, 80%, 70%); }
+.cell.n3 { background: #2D2; background: hsl(120, 80%, 70%); }
+.cell.n4 { background: #2DD; background: hsl(180, 80%, 70%); }
+.cell.n5 { background: #22D; background: hsl(240, 80%, 70%); }
+.cell.n6 { background: #D2D; background: hsl(300, 80%, 70%); }
 
 #half-width .cell {
   width: 48%;

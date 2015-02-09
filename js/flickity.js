@@ -133,6 +133,7 @@ Flickity.prototype._create = function() {
   // create viewport & slider
   this.viewport = document.createElement('div');
   this.viewport.className = 'flickity-viewport';
+  Flickity.setUnselectable( this.viewport );
   this._createSlider();
 
   if ( this.options.resize || this.options.watchCSS ) {
@@ -663,6 +664,17 @@ Flickity.prototype.destroy = function() {
 utils.extend( Flickity.prototype, animatePrototype );
 
 // -------------------------- extras -------------------------- //
+
+// quick check for IE8
+var isIE8 = 'attachEvent' in window;
+
+Flickity.setUnselectable = function( elem ) {
+  if ( !isIE8 ) {
+    return;
+  }
+  // IE8 prevent child from changing focus http://stackoverflow.com/a/17525223/182183
+  elem.setAttribute( 'unselectable', 'on' );
+};
 
 /**
  * get Flickity instance from element

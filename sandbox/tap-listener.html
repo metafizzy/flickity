@@ -13,7 +13,7 @@
     background: red;
     border: 20px solid blue;
     margin: 20px;
-    margin-top: 600px;
+    margin-top: 200px;
   }
   
   p { margin: 5px 0;}
@@ -24,9 +24,10 @@
 
   <h1>tap listener</h1>
 
-  <div class="button1"></div>
+  <div class="button1">Button 1</div>
 
 <script src="../bower_components/eventie/eventie.js"></script>
+<script src="../bower_components/eventEmitter/EventEmitter.js"></script>
 <script src="../bower_components/fizzy-ui-utils/utils.js"></script>
 <script src="../bower_components/unipointer/unipointer.js"></script>
 <script src="../bower_components/tap-listener/tap-listener.js"></script>
@@ -34,7 +35,10 @@
 <script>
 window.onload = function() {
 
-  window.tapListener = new TapListener( document.querySelector('.button1'), function() {
+
+
+  var tapListener = window.tapListener = new TapListener( document.querySelector('.button1') );
+  tapListener.on( 'tap', function() {
     var p = document.createElement('p');
     fizzyUIUtils.setText( p, 'TAP' );
     document.body.appendChild( p );

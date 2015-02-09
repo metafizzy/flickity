@@ -15,13 +15,13 @@
   <h1>single</h1>
 
   <div id="gallery" class="container">
-    <div class="cell" n1></div>
-    <div class="cell" n2></div>
-    <div class="cell" n3></div>
-    <div class="cell" n4></div>
-    <div class="cell" n5></div>
-    <div class="cell" n6></div>
-    <div class="cell" n7></div>
+    <div class="cell n1">1</div>
+    <div class="cell n2">2</div>
+    <div class="cell n3">3</div>
+    <div class="cell n4">4</div>
+    <div class="cell n5">5</div>
+    <div class="cell n6">6</div>
+    <div class="cell n1">7</div>
   </div>
 
 <script src="../bower_components/get-style-property/get-style-property.js"></script>
@@ -48,7 +48,7 @@
 <script>
 window.onload = function() {
 
-  var flkty = window.flkty = new Flickity('#gallery', { autoPlay: 1000 });
+  var flkty = window.flkty = new Flickity('#gallery');
 
 };
 </script>

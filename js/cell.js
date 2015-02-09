@@ -35,8 +35,14 @@ function Cell( elem, parent ) {
   this.create();
 }
 
+var isIE8 = 'attachEvent' in window;
+
 Cell.prototype.create = function() {
   this.element.style.position = 'absolute';
+  // IE8 prevent child from changing focus http://stackoverflow.com/a/17525223/182183
+  if ( isIE8 ) {
+    this.element.setAttribute( 'unselectable', 'on' );
+  }
   this.x = 0;
   this.shift = 0;
 };
