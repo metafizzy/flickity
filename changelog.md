@@ -1,5 +1,10 @@
 # Changelog
 
+### v0.2.3
+
++ Add back arrows for IE8 and Android 2.3
++ Fix IE8 bug on `.deactivate()`
+
 ### v0.2.2
 
 Fix `.destroy()` bug with [flickity-as-nav-for](https://github.com/metafizzy/flickity-as-nav-for)

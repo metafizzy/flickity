@@ -148,6 +148,7 @@ Flickity.prototype.activatePlayer = function() {
   }
   this.player.play();
   eventie.bind( this.element, 'mouseenter', this );
+  this.isMouseenterBound = true;
 };
 
 Flickity.prototype.stopPlayer = function() {
@@ -156,7 +157,10 @@ Flickity.prototype.stopPlayer = function() {
 
 Flickity.prototype.deactivatePlayer = function() {
   this.player.stop();
-  eventie.unbind( this.element, 'mouseenter', this );
+  if ( this.isMouseenterBound ) {
+    eventie.unbind( this.element, 'mouseenter', this );
+    delete this.isMouseenterBound;
+  }
 };
 
 // ----- mouseenter/leave ----- //

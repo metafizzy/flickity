@@ -44,3 +44,4 @@ cannot `.focus()` on a button that is `disabled`
       }
     }
 
+Cannot `elem.detach( 'onevent', undefined )`
