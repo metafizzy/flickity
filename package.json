@@ -1,6 +1,6 @@
 {
   "name": "flickity",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "description": "Touch, responsive, flickable galleries",
   "main": "js/index.js",
   "dependencies": {
@@ -28,7 +28,7 @@
     "requirejs": "^2.1.15",
     "chalk": "^0.5.1",
     "gulp-replace": "^0.5.1",
-    "gulp-uglify": "^1.0.2",
+    "gulp-uglify": "^1.0.2"
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"

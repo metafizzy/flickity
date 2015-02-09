@@ -12,19 +12,28 @@
   position: relative;
 }
 
-.flickity-viewport.is-draggable {
+.flickity-slider {
+  position: absolute;
+  width: 100%;
+}
+
+/* draggable */
+
+.flickity-enabled.is-draggable {
+  -webkit-user-select: none;
+     -moz-user-select: none;
+      -ms-user-select: none;
+          user-select: none;
+}
+
+.flickity-enabled.is-draggable .flickity-viewport {
   cursor: -webkit-grab;
   cursor: grab;
 }
 
-.flickity-viewport.is-draggable.is-pointer-down {
+.flickity-enabled.is-draggable .flickity-viewport.is-pointer-down {
   cursor: -webkit-grabbing;
   cursor: grabbing;
-}
-
-.flickity-slider {
-  position: absolute;
-  width: 100%;
 }
 
 /* ---- previous/next buttons ---- */

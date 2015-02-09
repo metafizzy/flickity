@@ -1,6 +1,6 @@
 {
   "name": "flickity",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "description": "Touch, responsive, flickable galleries",
   "main": [
     "js/index.js",
