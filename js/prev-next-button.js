@@ -198,7 +198,9 @@ PrevNextButton.prototype.destroy = function() {
 // -------------------------- Flickity prototype -------------------------- //
 
 utils.extend( Flickity.defaults, {
-  prevNextButtons: true
+  prevNextButtons: true,
+  leftArrowText: '‹',
+  rightArrowText: '›'
 });
 
 Flickity.createMethods.push('_createPrevNextButtons');
