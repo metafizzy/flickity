@@ -81,10 +81,6 @@ var flky = new Flickity( '.gallery', {
   friction: 0.2,
   // smaller number = easier to flick farther
 
-  imagesLoaded: false,
-  // if imagesLoaded is present, Flickity can re-position cells
-  // once images are loaded
-
   initialIndex: 0,
   // zero-based index of the initial selected cell
 
@@ -104,11 +100,6 @@ var flky = new Flickity( '.gallery', {
 
   rightToLeft: false,
   // enables right-to-left layout
-
-  sync: undefined,
-  // use to sync flickities together
-  // set selector string `sync: '#gallery-b'`
-  // set element `sync: document.querySelector('#gallery-b')`
 
   watchCSS: false,
   // watches the content of :after of the element

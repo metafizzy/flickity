@@ -27,6 +27,7 @@
 }
 
 .flickity-enabled.is-draggable .flickity-viewport {
+  cursor: move;
   cursor: -webkit-grab;
   cursor: grab;
 }

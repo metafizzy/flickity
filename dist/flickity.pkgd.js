@@ -1,5 +1,5 @@
 /*!
- * Flickity PACKAGED v0.2.2
+ * Flickity PACKAGED v0.2.3
  * Touch, responsive, flickable galleries
  * http://flickity.metafizzy.co
  * Copyright 2015 Metafizzy
@@ -1588,8 +1588,14 @@ function Cell( elem, parent ) {
   this.create();
 }
 
+var isIE8 = 'attachEvent' in window;
+
 Cell.prototype.create = function() {
   this.element.style.position = 'absolute';
+  // IE8 prevent child from changing focus http://stackoverflow.com/a/17525223/182183
+  if ( isIE8 ) {
+    this.element.setAttribute( 'unselectable', 'on' );
+  }
   this.x = 0;
   this.shift = 0;
 };
@@ -1757,7 +1763,7 @@ var is3d = !!getStyleProperty('perspective');
 proto.positionSlider = function() {
   var x = this.x;
   // wrap position around
-  if ( this.options.wrapAround ) {
+  if ( this.options.wrapAround && this.cells.length > 1 ) {
     x = utils.modulo( x, this.slideableWidth );
     x = x - this.slideableWidth;
     this.shiftWrapCells( x );
@@ -1870,12 +1876,13 @@ proto.getRestingPosition = function() {
 
 proto.applySelectedAttraction = function() {
   // do not attract if pointer down or no cells
-  if ( this.isPointerDown || this.isFreeScrolling || !this.cells.length ) {
+  var len = this.cells.length;
+  if ( this.isPointerDown || this.isFreeScrolling || !len ) {
     return;
   }
   var cell = this.cells[ this.selectedIndex ];
-  var wrap = this.options.wrapAround ?
-    this.slideableWidth * Math.floor( this.selectedIndex / this.cells.length ) : 0;
+  var wrap = this.options.wrapAround && len > 1 ?
+    this.slideableWidth * Math.floor( this.selectedIndex / len ) : 0;
   var distance = ( cell.target + wrap ) * -1 - this.x;
   var force = distance * this.options.selectedAttraction;
   this.applyForce( force );
@@ -1886,7 +1893,7 @@ return proto;
 }));
 
 /*!
- * Flickity v0.2.2
+ * Flickity v0.2.3
  * Touch, responsive, flickable galleries
  * http://flickity.metafizzy.co
  * Copyright 2015 Metafizzy
@@ -2020,6 +2027,7 @@ Flickity.prototype._create = function() {
   // create viewport & slider
   this.viewport = document.createElement('div');
   this.viewport.className = 'flickity-viewport';
+  Flickity.setUnselectable( this.viewport );
   this._createSlider();
 
   if ( this.options.resize || this.options.watchCSS ) {
@@ -2305,16 +2313,17 @@ Flickity.prototype.select = function( index, isWrap ) {
     return;
   }
   // wrap position so slider is within normal area
-  if ( this.options.wrapAround ) {
+  var len = this.cells.length;
+  if ( this.options.wrapAround && len > 1 ) {
     if ( index < 0 ) {
       this.x -= this.slideableWidth;
-    } else if ( index >= this.cells.length ) {
+    } else if ( index >= len ) {
       this.x += this.slideableWidth;
     }
   }
 
   if ( this.options.wrapAround || isWrap ) {
-    index = utils.modulo( index, this.cells.length );
+    index = utils.modulo( index, len );
   }
 
   if ( this.cells[ index ] ) {
@@ -2401,8 +2410,12 @@ Flickity.prototype.getCellElements = function() {
 Flickity.prototype.getParentCell = function( elem ) {
   // first check if elem is cell
   var cell = this.getCell( elem );
-  cell = cell || utils.getParent( elem, '.flickity-slider > *' );
-  return cell;
+  if ( cell ) {
+    return cell;
+  }
+  // try to get parent cell elem
+  elem = utils.getParent( elem, '.flickity-slider > *' );
+  return this.getCell( elem );
 };
 
 // -------------------------- events -------------------------- //
@@ -2551,6 +2564,17 @@ utils.extend( Flickity.prototype, animatePrototype );
 
 // -------------------------- extras -------------------------- //
 
+// quick check for IE8
+var isIE8 = 'attachEvent' in window;
+
+Flickity.setUnselectable = function( elem ) {
+  if ( !isIE8 ) {
+    return;
+  }
+  // IE8 prevent child from changing focus http://stackoverflow.com/a/17525223/182183
+  elem.setAttribute( 'unselectable', 'on' );
+};
+
 /**
  * get Flickity instance from element
  * @param {Element} elem
@@ -2567,6 +2591,8 @@ utils.htmlInit( Flickity, 'flickity' );
 if ( jQuery && jQuery.bridget ) {
   jQuery.bridget( 'flickity', Flickity );
 }
+
+Flickity.Cell = Cell;
 
 return Flickity;
 
@@ -3529,13 +3555,15 @@ proto._getClosestResting = function( restingX, distance, increment ) {
  */
 proto.getCellDistance = function( x, index ) {
   var len = this.cells.length;
-  var cellIndex = this.options.wrapAround ? utils.modulo( index, len ) : index;
+  // wrap around if at least 2 cells
+  var isWrapAround = this.options.wrapAround && len > 1;
+  var cellIndex = isWrapAround ? utils.modulo( index, len ) : index;
   var cell = this.cells[ cellIndex ];
   if ( !cell ) {
     return null;
   }
   // add distance for wrap-around cells
-  var wrap = this.options.wrapAround ? this.slideableWidth * Math.floor( index / len ) : 0;
+  var wrap = isWrapAround ? this.slideableWidth * Math.floor( index / len ) : 0;
   return x - ( cell.target + wrap );
 };
 
@@ -3757,6 +3785,7 @@ PrevNextButton.prototype._create = function() {
   element.className += this.isPrevious ? ' previous' : ' next';
   // prevent button from submitting form http://stackoverflow.com/a/10836076/182183
   element.setAttribute( 'type', 'button' );
+  Flickity.setUnselectable( element );
   // create arrow
   if ( supportsInlineSVG() ) {
     var svg = this.createSVG();
@@ -3856,12 +3885,13 @@ PrevNextButton.prototype.disable = function() {
 };
 
 PrevNextButton.prototype.update = function() {
-  if ( this.parent.options.wrapAround ) {
+  // index of first or last cell, if previous or next
+  var cells = this.parent.cells;
+  // enable is wrapAround and at least 2 cells
+  if ( this.parent.options.wrapAround && cells.length > 1 ) {
     this.enable();
     return;
   }
-  // index of first or last cell, if previous or next
-  var cells = this.parent.cells;
   var lastIndex = cells.length ? cells.length - 1 : 0;
   var boundIndex = this.isPrevious ? 0 : lastIndex;
   var method = this.parent.selectedIndex == boundIndex ? 'disable' : 'enable';
@@ -3875,7 +3905,9 @@ PrevNextButton.prototype.destroy = function() {
 // -------------------------- Flickity prototype -------------------------- //
 
 utils.extend( Flickity.defaults, {
-  prevNextButtons: true
+  prevNextButtons: true,
+  leftArrowText: '‹',
+  rightArrowText: '›'
 });
 
 Flickity.createMethods.push('_createPrevNextButtons');
@@ -3963,6 +3995,7 @@ PageDots.prototype._create = function() {
   // create holder element
   this.holder = document.createElement('ol');
   this.holder.className = 'flickity-page-dots';
+  Flickity.setUnselectable( this.holder );
   // create dots, array of elements
   this.dots = [];
   // update on select
@@ -4246,6 +4279,7 @@ Flickity.prototype.activatePlayer = function() {
   }
   this.player.play();
   eventie.bind( this.element, 'mouseenter', this );
+  this.isMouseenterBound = true;
 };
 
 Flickity.prototype.stopPlayer = function() {
@@ -4254,7 +4288,10 @@ Flickity.prototype.stopPlayer = function() {
 
 Flickity.prototype.deactivatePlayer = function() {
   this.player.stop();
-  eventie.unbind( this.element, 'mouseenter', this );
+  if ( this.isMouseenterBound ) {
+    eventie.unbind( this.element, 'mouseenter', this );
+    delete this.isMouseenterBound;
+  }
 };
 
 // ----- mouseenter/leave ----- //
