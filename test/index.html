@@ -43,6 +43,7 @@
   <script src="unit/init.js"></script>
   <script src="unit/cell-selector.js"></script>
   <script src="unit/empty.js"></script>
+  <script src="unit/get-parent-cell.js"></script>
   <script src="unit/position-cells.js"></script>
   <script src="unit/contain.js"></script>
   <!-- drag tests are buggy. moved to drag.html -->
@@ -88,6 +89,18 @@
   <h2>empty</h2>
 
   <div id="empty" class="gallery"></div>
+
+  <h2>getParentCell</h2>
+
+  <div id="get-parent-cell" class="gallery">
+    <div class="cell cell1"><span class="child1">1</span></div>
+    <div class="cell"><div><span class="child2">2</span></div></div>
+    <div class="cell cell3">3</div>
+    <div class="cell">4</div>
+    <div class="cell">5</div>
+    <div class="cell">6</div>
+  </div>
+  <div class="outside"></div>
 
   <h2>position cells</h2>
 

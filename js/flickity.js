@@ -515,8 +515,12 @@ Flickity.prototype.getCellElements = function() {
 Flickity.prototype.getParentCell = function( elem ) {
   // first check if elem is cell
   var cell = this.getCell( elem );
-  cell = cell || utils.getParent( elem, '.flickity-slider > *' );
-  return cell;
+  if ( cell ) {
+    return cell;
+  }
+  // try to get parent cell elem
+  elem = utils.getParent( elem, '.flickity-slider > *' );
+  return this.getCell( elem );
 };
 
 // -------------------------- events -------------------------- //
@@ -692,6 +696,8 @@ utils.htmlInit( Flickity, 'flickity' );
 if ( jQuery && jQuery.bridget ) {
   jQuery.bridget( 'flickity', Flickity );
 }
+
+Flickity.Cell = Cell;
 
 return Flickity;
 
