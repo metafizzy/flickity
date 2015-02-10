@@ -116,7 +116,7 @@ var is3d = !!getStyleProperty('perspective');
 proto.positionSlider = function() {
   var x = this.x;
   // wrap position around
-  if ( this.options.wrapAround ) {
+  if ( this.options.wrapAround && this.cells.length > 1 ) {
     x = utils.modulo( x, this.slideableWidth );
     x = x - this.slideableWidth;
     this.shiftWrapCells( x );
@@ -229,12 +229,13 @@ proto.getRestingPosition = function() {
 
 proto.applySelectedAttraction = function() {
   // do not attract if pointer down or no cells
-  if ( this.isPointerDown || this.isFreeScrolling || !this.cells.length ) {
+  var len = this.cells.length;
+  if ( this.isPointerDown || this.isFreeScrolling || !len ) {
     return;
   }
   var cell = this.cells[ this.selectedIndex ];
-  var wrap = this.options.wrapAround ?
-    this.slideableWidth * Math.floor( this.selectedIndex / this.cells.length ) : 0;
+  var wrap = this.options.wrapAround && len > 1 ?
+    this.slideableWidth * Math.floor( this.selectedIndex / len ) : 0;
   var distance = ( cell.target + wrap ) * -1 - this.x;
   var force = distance * this.options.selectedAttraction;
   this.applyForce( force );

@@ -419,16 +419,17 @@ Flickity.prototype.select = function( index, isWrap ) {
     return;
   }
   // wrap position so slider is within normal area
-  if ( this.options.wrapAround ) {
+  var len = this.cells.length;
+  if ( this.options.wrapAround && len > 1 ) {
     if ( index < 0 ) {
       this.x -= this.slideableWidth;
-    } else if ( index >= this.cells.length ) {
+    } else if ( index >= len ) {
       this.x += this.slideableWidth;
     }
   }
 
   if ( this.options.wrapAround || isWrap ) {
-    index = utils.modulo( index, this.cells.length );
+    index = utils.modulo( index, len );
   }
 
   if ( this.cells[ index ] ) {

@@ -180,12 +180,13 @@ PrevNextButton.prototype.disable = function() {
 };
 
 PrevNextButton.prototype.update = function() {
-  if ( this.parent.options.wrapAround ) {
+  // index of first or last cell, if previous or next
+  var cells = this.parent.cells;
+  // enable is wrapAround and at least 2 cells
+  if ( this.parent.options.wrapAround && cells.length > 1 ) {
     this.enable();
     return;
   }
-  // index of first or last cell, if previous or next
-  var cells = this.parent.cells;
   var lastIndex = cells.length ? cells.length - 1 : 0;
   var boundIndex = this.isPrevious ? 0 : lastIndex;
   var method = this.parent.selectedIndex == boundIndex ? 'disable' : 'enable';

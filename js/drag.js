@@ -323,13 +323,15 @@ proto._getClosestResting = function( restingX, distance, increment ) {
  */
 proto.getCellDistance = function( x, index ) {
   var len = this.cells.length;
-  var cellIndex = this.options.wrapAround ? utils.modulo( index, len ) : index;
+  // wrap around if at least 2 cells
+  var isWrapAround = this.options.wrapAround && len > 1;
+  var cellIndex = isWrapAround ? utils.modulo( index, len ) : index;
   var cell = this.cells[ cellIndex ];
   if ( !cell ) {
     return null;
   }
   // add distance for wrap-around cells
-  var wrap = this.options.wrapAround ? this.slideableWidth * Math.floor( index / len ) : 0;
+  var wrap = isWrapAround ? this.slideableWidth * Math.floor( index / len ) : 0;
   return x - ( cell.target + wrap );
 };
 
