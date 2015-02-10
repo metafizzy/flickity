@@ -3,20 +3,37 @@
 var fs = require('fs');
 var gulp = require('gulp');
 
-// ----- jshint ----- //
+// ----- hint ----- //
 
 var jshint = require('gulp-jshint');
 
-gulp.task( 'hint', function() {
-  // source
-  gulp.src('js/**/*.js')
-    .pipe( jshint() )
-    .pipe( jshint.reporter('default') );
-  // tests
-  gulp.src('test/unit/*.js')
+gulp.task( 'hint-js', function() {
+  return gulp.src('js/**/*.js')
     .pipe( jshint() )
     .pipe( jshint.reporter('default') );
 });
+
+gulp.task( 'hint-test', function() {
+  return gulp.src('test/unit/*.js')
+    .pipe( jshint() )
+    .pipe( jshint.reporter('default') );
+});
+
+gulp.task( 'hint-task', function() {
+  return gulp.src('gulpfile.js')
+    .pipe( jshint() )
+    .pipe( jshint.reporter('default') );
+});
+
+var jsonlint = require('gulp-json-lint');
+
+gulp.task( 'jsonlint', function() {
+  return gulp.src( '*.json' )
+    .pipe( jsonlint() )
+    .pipe( jsonlint.report('verbose') );
+});
+
+gulp.task( 'hint', [ 'hint-js', 'hint-test', 'hint-task', 'jsonlint' ]);
 
 // -------------------------- RequireJS makes pkgd -------------------------- //
 
@@ -131,17 +148,6 @@ gulp.task( 'uglify', [ 'requirejs' ], function() {
 gulp.task( 'copy-css', function() {
   gulp.src('css/flickity.css')
     .pipe( gulp.dest('dist') );
-});
-
-
-// ----- jsonlint ----- //
-
-var jsonlint = require('gulp-json-lint');
-
-gulp.task( 'jsonlint', function() {
-  gulp.src( '*.json' )
-    .pipe( jsonlint() )
-    .pipe( jsonlint.report('verbose') );
 });
 
 // ----- default ----- //
