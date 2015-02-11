@@ -105,7 +105,8 @@ Flickity.defaults = {
   // initialIndex: 0,
   percentPosition: true,
   resize: true,
-  selectedAttraction: 0.025
+  selectedAttraction: 0.025,
+  setGallerySize: true
   // watchCSS: false,
   // wrapAround: false
 };
@@ -181,7 +182,7 @@ Flickity.prototype.activate = function() {
   this.getSize();
   // get cells from children
   this.reloadCells();
-  this.setContainerSize();
+  this.setGallerySize();
 
   if ( this.options.accessibility ) {
     // allow element to focusable
@@ -215,7 +216,7 @@ Flickity.prototype.reloadCells = function() {
   this.cells = this._makeCells( this.slider.children );
   this.positionCells();
   this._getWrapShiftCells();
-  this.setContainerSize();
+  this.setGallerySize();
 };
 
 /**
@@ -321,8 +322,10 @@ Flickity.prototype.setCellAlign = function() {
   this.cellAlign = shorthand ? shorthand[ this.originSide ] : this.options.cellAlign;
 };
 
-Flickity.prototype.setContainerSize = function() {
-  this.viewport.style.height = this.maxCellHeight + 'px';
+Flickity.prototype.setGallerySize = function() {
+  if ( this.options.setGallerySize ) {
+    this.viewport.style.height = this.maxCellHeight + 'px';
+  }
 };
 
 Flickity.prototype._getWrapShiftCells = function() {
@@ -554,7 +557,7 @@ Flickity.prototype.resize = function() {
   }
   this.positionCells();
   this._getWrapShiftCells();
-  this.setContainerSize();
+  this.setGallerySize();
   this.positionSliderAtSelected();
 };
 

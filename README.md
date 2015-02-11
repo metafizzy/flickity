@@ -101,6 +101,10 @@ var flky = new Flickity( '.gallery', {
   rightToLeft: false,
   // enables right-to-left layout
 
+  setGallerySize: true,
+  // sets the height of gallery
+  // disable if gallery already has height set with CSS
+
   watchCSS: false,
   // watches the content of :after of the element
   // activates if #element:after { content: 'flickity' }

@@ -1,5 +1,7 @@
 # Changelog
 
++ Added [`setGallerySize` option](http://flickity.metafizzy.co/options#setgallerysize)
+
 ### v0.2.3
 
 + Prevented `wrapAround` if only one cell. Fixed [#40](https://github.com/metafizzy/flickity/issues/40)
