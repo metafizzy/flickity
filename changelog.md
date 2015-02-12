@@ -1,5 +1,7 @@
 # Changelog
 
++ Changed `select` event to `cellSelect`, to avoid conflict with [native `select` event](https://developer.mozilla.org/en-US/docs/Web/Events/select)
++ Removed `.flickity` event namespace from jQuery events
 + Added [`setGallerySize` option](http://flickity.metafizzy.co/options#setgallerysize)
 
 ### v0.2.3

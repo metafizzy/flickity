@@ -65,12 +65,16 @@ $( function() {
   //   console.log( event.type, pointer.pageX, pointer.pageY );
   // });
 
-  $gallery1.on( 'select', function() {
+  $gallery1.on( 'cellSelect', function() {
     console.log('selected', flkty.selectedIndex );
   });
 
-  $gallery1.on( 'settle', function() {
-    console.log('settled', flkty.x );
+  $gallery1.on( 'settle', function( event ) {
+    console.log('settled', flkty.x, event.type );
+  });
+
+  $gallery1.on( 'staticClick', function( event ) {
+    console.log('staticClick', event.type );
   });
 
   $('#gallery2').flickity({

@@ -32,23 +32,23 @@ test( 'auto play', function( assert ) {
             'auto-played to ' + flkty.selectedIndex );
         } else if ( selectCount == 5 ) {
           // HACK do async, should be able to stop after a tick
-          flkty.off( 'select', onSelect );
+          flkty.off( 'cellSelect', onSelect );
           nextTest();
         }
       };
-      flkty.on( 'select', onSelect );
+      flkty.on( 'cellSelect', onSelect );
     },
     // pause & unpause
     function() {
       function onPauseSelect() {
         ok( false, 'player ticked during pause' );
       }
-      flkty.on( 'select', onPauseSelect );
+      flkty.on( 'cellSelect', onPauseSelect );
       flkty.player.pause();
       setTimeout( function() {
         ok( true, 'player did not tick during pause' );
-        flkty.off( 'select', onPauseSelect );
-        flkty.once( 'select', function() {
+        flkty.off( 'cellSelect', onPauseSelect );
+        flkty.once( 'cellSelect', function() {
           ok( true, 'player resumed after unpausing' );
           nextTest();
         });

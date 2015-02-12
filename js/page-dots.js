@@ -55,10 +55,10 @@ PageDots.prototype._create = function() {
   this.dots = [];
   // update on select
   var _this = this;
-  this.onselect = function() {
+  this.onCellSelect = function() {
     _this.updateSelected();
   };
-  this.parent.on( 'select', this.onselect );
+  this.parent.on( 'cellSelect', this.onCellSelect );
   // tap
   this.on( 'tap', this.onTap );
   // pointerDown

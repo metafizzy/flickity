@@ -66,7 +66,7 @@ function getFakeDragTest( args ) {
 
   return function fakeDragTest() {
     var selectMsg = ( args.message ? args.message + '. ' : '' ) + 'selected ' + msgCell;
-    flkty.once( 'select', function() {
+    flkty.once( 'cellSelect', function() {
       assert.equal( flkty.selectedIndex, args.index, selectMsg );
     });
 

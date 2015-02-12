@@ -402,7 +402,7 @@ Flickity.prototype.dispatchEvent = function( type, event, args ) {
     if ( event ) {
       // create jQuery event
       var $event = jQuery.Event( event );
-      $event.type = type + '.flickity';
+      $event.type = type;
       this.$element.trigger( $event, args );
     } else {
       // just trigger with type if no event available
@@ -439,7 +439,7 @@ Flickity.prototype.select = function( index, isWrap ) {
     this.selectedIndex = index;
     this.setSelectedCell();
     this.startAnimation();
-    this.dispatchEvent('select');
+    this.dispatchEvent('cellSelect');
   }
 };
 

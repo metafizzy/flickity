@@ -92,10 +92,10 @@ PrevNextButton.prototype._create = function() {
   }
   // update on select
   var _this = this;
-  this.onselect = function() {
+  this.onCellSelect = function() {
     _this.update();
   };
-  this.parent.on( 'select', this.onselect );
+  this.parent.on( 'cellSelect', this.onCellSelect );
   // tap
   this.on( 'tap', this.onTap );
   // pointerDown
