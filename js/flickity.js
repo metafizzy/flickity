@@ -663,6 +663,9 @@ Flickity.prototype.destroy = function() {
     eventie.unbind( window, 'resize', this );
   }
   this.emit('destroy');
+  if ( jQuery && this.$element ) {
+    jQuery.removeData( this.element, 'flickity' );
+  }
   delete this.element.flickityGUID;
   delete instances[ this.guid ];
 };

@@ -4,6 +4,7 @@
 + Removed `.flickity` event namespace from jQuery events
 + Re-ordered `staticClick` callback parameters to be `function( event, pointer, cellElement, cellIndex )`
 + Added [`setGallerySize` option](http://flickity.metafizzy.co/options#setgallerysize)
++ Fix jQuery `.flickity('destroy')` bug, not removing data from `this.$element`
 
 ### v0.2.3
 
