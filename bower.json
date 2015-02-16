@@ -20,7 +20,7 @@
     "tap-listener": "~0.1.0"
   },
   "devDependencies": {
-    "flickity-imagesloaded": "~0.1.1",
+    "flickity-imagesloaded": "~0.1.3",
     "flickity-as-nav-for": "~0.1.1",
     "jquery-bridget": "~1.1.0",
     "qunit": "~1.16.0"
