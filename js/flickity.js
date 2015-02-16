@@ -376,13 +376,21 @@ Flickity.prototype._containCells = function() {
   var lastCell = this.getLastCell();
   var contentWidth = this.slideableWidth - lastCell.size[ endMargin ];
   var endLimit = contentWidth - this.size.innerWidth * ( 1 - this.cellAlign );
+  // content is less than gallery size
+  var isContentSmaller = contentWidth < this.size.innerWidth;
   // contain each cell target
   for ( var i=0, len = this.cells.length; i < len; i++ ) {
     var cell = this.cells[i];
     // reset default target
     cell.setDefaultTarget();
-    cell.target = Math.max( cell.target, this.cursorPosition + firstCellStartMargin );
-    cell.target = Math.min( cell.target, endLimit );
+    if ( isContentSmaller ) {
+      // all cells fit inside gallery
+      cell.target = contentWidth * this.cellAlign;
+    } else {
+      // contain to bounds
+      cell.target = Math.max( cell.target, this.cursorPosition + firstCellStartMargin );
+      cell.target = Math.min( cell.target, endLimit );
+    }
   }
 };
 

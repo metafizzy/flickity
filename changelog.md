@@ -4,7 +4,8 @@
 + Removed `.flickity` event namespace from jQuery events
 + Re-ordered `staticClick` callback parameters to be `function( event, pointer, cellElement, cellIndex )`
 + Added [`setGallerySize` option](http://flickity.metafizzy.co/options.html#setgallerysize)
-+ Fix jQuery [`.flickity('destroy')`](http://flickity.metafizzy.co/api.html#destroy) bug, not removing data from `this.$element`
++ Fixed `contain` bug when all cells can fit inside gallery. Fixed [#48](https://github.com/metafizzy/flickity/issues/48)
++ Fixed jQuery [`.flickity('destroy')`](http://flickity.metafizzy.co/api.html#destroy) bug, not removing data from `this.$element`
 
 ### v0.2.3
 
