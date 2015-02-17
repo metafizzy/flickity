@@ -145,8 +145,18 @@ gulp.task( 'uglify', [ 'requirejs' ], function() {
     .pipe( gulp.dest('dist') );
 });
 
-gulp.task( 'copy-css', function() {
+// ----- css ----- //
+
+var minifyCSS = require('gulp-minify-css');
+
+gulp.task( 'css', function() {
   gulp.src('css/flickity.css')
+    // copy to dist
+    .pipe( gulp.dest('dist') )
+    // minify
+    .pipe( minifyCSS({ advanced: false }) )
+    .pipe( rename('flickity.min.css') )
+    .pipe( replace( '*/', '*/\n' ) )
     .pipe( gulp.dest('dist') );
 });
 
@@ -156,5 +166,5 @@ gulp.task( 'default', [
   'hint',
   'jsonlint',
   'uglify',
-  'copy-css'
+  'css'
 ]);
