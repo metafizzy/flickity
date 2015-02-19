@@ -1,5 +1,5 @@
 /*!
- * Flickity v0.3.0
+ * Flickity v0.3.1
  * Touch, responsive, flickable galleries
  * http://flickity.metafizzy.co
  * Copyright 2015 Metafizzy

@@ -1,5 +1,9 @@
 # Changelog
 
+### v0.3.1
+
+Update [flickity-as-nav-for](https://github.com/metafizzy/flickity-as-nav-for) to work with `cellSelect` event, and changed `staticClick` arguments for Flickity v0.3.0
+
 ## v0.3.0
 
 + Changed `select` event to `cellSelect`, to avoid conflict with [native `select` event](https://developer.mozilla.org/en-US/docs/Web/Events/select)

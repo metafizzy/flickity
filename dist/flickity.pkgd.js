@@ -1,5 +1,5 @@
 /*!
- * Flickity PACKAGED v0.3.0
+ * Flickity PACKAGED v0.3.1
  * Touch, responsive, flickable galleries
  * http://flickity.metafizzy.co
  * Copyright 2015 Metafizzy
@@ -1893,7 +1893,7 @@ return proto;
 }));
 
 /*!
- * Flickity v0.3.0
+ * Flickity v0.3.1
  * Touch, responsive, flickable galleries
  * http://flickity.metafizzy.co
  * Copyright 2015 Metafizzy
@@ -4544,7 +4544,7 @@ return Flickity;
 });
 
 /*!
- * Flickity asNavFor v0.1.1
+ * Flickity asNavFor v0.2.0
  * enable asNavFor for Flickity
  */
 
@@ -4622,7 +4622,7 @@ Flickity.prototype.setNavCompanion = function( elem ) {
   this.onNavCompanionSelect = function() {
     _this.navCompanionSelect();
   };
-  companion.on( 'select', this.onNavCompanionSelect );
+  companion.on( 'cellSelect', this.onNavCompanionSelect );
   // click
   this.on( 'staticClick', this.onNavStaticClick );
 
@@ -4657,9 +4657,9 @@ Flickity.prototype.removeNavSelectedElement = function() {
   delete this.navSelectedElement;
 };
 
-Flickity.prototype.onNavStaticClick = function( event, pointer, clickedCellIndex ) {
-  if ( typeof clickedCellIndex == 'number' ) {
-    this.navCompanion.select( clickedCellIndex );
+Flickity.prototype.onNavStaticClick = function( event, pointer, cellElement, cellIndex ) {
+  if ( typeof cellIndex == 'number' ) {
+    this.navCompanion.select( cellIndex );
   }
 };
 
@@ -4671,7 +4671,7 @@ Flickity.prototype.destroyAsNavFor = function() {
   if ( !this.navCompanion ) {
     return;
   }
-  this.navCompanion.off( 'select', this.onNavCompanionSelect );
+  this.navCompanion.off( 'cellSelect', this.onNavCompanionSelect );
   this.off( 'staticClick', this.onNavStaticClick );
   delete this.navCompanion;
 };
@@ -5019,7 +5019,7 @@ function makeArray( obj ) {
 });
 
 /*!
- * Flickity imagesLoaded v0.1.3
+ * Flickity imagesLoaded v0.1.4
  * enables imagesLoaded option for Flickity
  */
 
