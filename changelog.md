@@ -1,5 +1,7 @@
 # Changelog
 
+## v0.3.0
+
 + Changed `select` event to `cellSelect`, to avoid conflict with [native `select` event](https://developer.mozilla.org/en-US/docs/Web/Events/select)
 + Removed `.flickity` event namespace from jQuery events
 + Re-ordered `staticClick` callback parameters to be `function( event, pointer, cellElement, cellIndex )`

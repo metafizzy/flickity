@@ -1,5 +1,5 @@
 /*!
- * Flickity PACKAGED v0.2.3
+ * Flickity PACKAGED v0.3.0
  * Touch, responsive, flickable galleries
  * http://flickity.metafizzy.co
  * Copyright 2015 Metafizzy
@@ -1893,7 +1893,7 @@ return proto;
 }));
 
 /*!
- * Flickity v0.2.3
+ * Flickity v0.3.0
  * Touch, responsive, flickable galleries
  * http://flickity.metafizzy.co
  * Copyright 2015 Metafizzy
@@ -1999,7 +1999,8 @@ Flickity.defaults = {
   // initialIndex: 0,
   percentPosition: true,
   resize: true,
-  selectedAttraction: 0.025
+  selectedAttraction: 0.025,
+  setGallerySize: true
   // watchCSS: false,
   // wrapAround: false
 };
@@ -2075,7 +2076,7 @@ Flickity.prototype.activate = function() {
   this.getSize();
   // get cells from children
   this.reloadCells();
-  this.setContainerSize();
+  this.setGallerySize();
 
   if ( this.options.accessibility ) {
     // allow element to focusable
@@ -2109,7 +2110,7 @@ Flickity.prototype.reloadCells = function() {
   this.cells = this._makeCells( this.slider.children );
   this.positionCells();
   this._getWrapShiftCells();
-  this.setContainerSize();
+  this.setGallerySize();
 };
 
 /**
@@ -2215,8 +2216,10 @@ Flickity.prototype.setCellAlign = function() {
   this.cellAlign = shorthand ? shorthand[ this.originSide ] : this.options.cellAlign;
 };
 
-Flickity.prototype.setContainerSize = function() {
-  this.viewport.style.height = this.maxCellHeight + 'px';
+Flickity.prototype.setGallerySize = function() {
+  if ( this.options.setGallerySize ) {
+    this.viewport.style.height = this.maxCellHeight + 'px';
+  }
 };
 
 Flickity.prototype._getWrapShiftCells = function() {
@@ -2267,13 +2270,21 @@ Flickity.prototype._containCells = function() {
   var lastCell = this.getLastCell();
   var contentWidth = this.slideableWidth - lastCell.size[ endMargin ];
   var endLimit = contentWidth - this.size.innerWidth * ( 1 - this.cellAlign );
+  // content is less than gallery size
+  var isContentSmaller = contentWidth < this.size.innerWidth;
   // contain each cell target
   for ( var i=0, len = this.cells.length; i < len; i++ ) {
     var cell = this.cells[i];
     // reset default target
     cell.setDefaultTarget();
-    cell.target = Math.max( cell.target, this.cursorPosition + firstCellStartMargin );
-    cell.target = Math.min( cell.target, endLimit );
+    if ( isContentSmaller ) {
+      // all cells fit inside gallery
+      cell.target = contentWidth * this.cellAlign;
+    } else {
+      // contain to bounds
+      cell.target = Math.max( cell.target, this.cursorPosition + firstCellStartMargin );
+      cell.target = Math.min( cell.target, endLimit );
+    }
   }
 };
 
@@ -2293,7 +2304,7 @@ Flickity.prototype.dispatchEvent = function( type, event, args ) {
     if ( event ) {
       // create jQuery event
       var $event = jQuery.Event( event );
-      $event.type = type + '.flickity';
+      $event.type = type;
       this.$element.trigger( $event, args );
     } else {
       // just trigger with type if no event available
@@ -2330,7 +2341,7 @@ Flickity.prototype.select = function( index, isWrap ) {
     this.selectedIndex = index;
     this.setSelectedCell();
     this.startAnimation();
-    this.dispatchEvent('select');
+    this.dispatchEvent('cellSelect');
   }
 };
 
@@ -2448,7 +2459,7 @@ Flickity.prototype.resize = function() {
   }
   this.positionCells();
   this._getWrapShiftCells();
-  this.setContainerSize();
+  this.setGallerySize();
   this.positionSliderAtSelected();
 };
 
@@ -2554,6 +2565,9 @@ Flickity.prototype.destroy = function() {
     eventie.unbind( window, 'resize', this );
   }
   this.emit('destroy');
+  if ( jQuery && this.$element ) {
+    jQuery.removeData( this.element, 'flickity' );
+  }
   delete this.element.flickityGUID;
   delete instances[ this.guid ];
 };
@@ -3584,11 +3598,9 @@ proto.dragEndBoostSelect = function() {
 proto.staticClick = function( event, pointer ) {
   // get clickedCell, if cell was clicked
   var clickedCell = this.getParentCell( event.target );
-  var clickedCellIndex = clickedCell &&
-    utils.indexOf( this.cells, clickedCell );
-  var clickedCellElem = clickedCell && clickedCell.element;
-  this.dispatchEvent( 'staticClick', event,
-    [ pointer, clickedCellIndex, clickedCellElem ] );
+  var cellElem = clickedCell && clickedCell.element;
+  var cellIndex = clickedCell && utils.indexOf( this.cells, clickedCell );
+  this.dispatchEvent( 'staticClick', event, [ pointer, cellElem, cellIndex ] );
 };
 
 // -----  ----- //
@@ -3797,10 +3809,10 @@ PrevNextButton.prototype._create = function() {
   }
   // update on select
   var _this = this;
-  this.onselect = function() {
+  this.onCellSelect = function() {
     _this.update();
   };
-  this.parent.on( 'select', this.onselect );
+  this.parent.on( 'cellSelect', this.onCellSelect );
   // tap
   this.on( 'tap', this.onTap );
   // pointerDown
@@ -4000,10 +4012,10 @@ PageDots.prototype._create = function() {
   this.dots = [];
   // update on select
   var _this = this;
-  this.onselect = function() {
+  this.onCellSelect = function() {
     _this.updateSelected();
   };
-  this.parent.on( 'select', this.onselect );
+  this.parent.on( 'cellSelect', this.onCellSelect );
   // tap
   this.on( 'tap', this.onTap );
   // pointerDown
@@ -4479,7 +4491,7 @@ Flickity.prototype.cellChange = function( changedCellIndex ) {
 
   this._positionCells( changedCellIndex );
   this._getWrapShiftCells();
-  this.setContainerSize();
+  this.setGallerySize();
   // position slider
   if ( this.options.freeScroll ) {
     this.positionSlider();
@@ -5007,7 +5019,7 @@ function makeArray( obj ) {
 });
 
 /*!
- * Flickity imagesLoaded v0.1.2
+ * Flickity imagesLoaded v0.1.3
  * enables imagesLoaded option for Flickity
  */
 
@@ -5022,30 +5034,27 @@ function makeArray( obj ) {
     // AMD
     define( [
       'flickity/js/index',
-      'imagesloaded/imagesloaded',
-      'fizzy-ui-utils/utils'
-    ], function( Flickity, imagesLoaded, utils ) {
-      return factory( window, Flickity, imagesLoaded, utils );
+      'imagesloaded/imagesloaded'
+    ], function( Flickity, imagesLoaded ) {
+      return factory( window, Flickity, imagesLoaded );
     });
   } else if ( typeof exports == 'object' ) {
     // CommonJS
     module.exports = factory(
       window,
       require('flickity'),
-      require('imagesloaded'),
-      require('fizzy-ui-utils')
+      require('imagesloaded')
     );
   } else {
     // browser global
     window.Flickity = factory(
       window,
       window.Flickity,
-      window.imagesLoaded,
-      window.fizzyUIUtils
+      window.imagesLoaded
     );
   }
 
-}( window, function factory( window, Flickity, imagesLoaded, utils ) {
+}( window, function factory( window, Flickity, imagesLoaded ) {
 
 
 Flickity.createMethods.push('_createImagesLoaded');
@@ -5060,12 +5069,8 @@ Flickity.prototype.imagesLoaded = function() {
   }
   var _this = this;
   function onImagesLoadedProgress( instance, image ) {
-    // check if image is a cell
-    var cell = _this.getCell( image.img );
-    // otherwise get its parents
-    var cellElem = cell && cell.element ||
-      utils.getParent( image.img, '.flickity-slider > *' );
-    _this.cellSizeChange( cellElem );
+    var cell = _this.getParentCell( image.img );
+    _this.cellSizeChange( cell && cell.element );
   }
   imagesLoaded( this.slider ).on( 'progress', onImagesLoadedProgress );
 };
