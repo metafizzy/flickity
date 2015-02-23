@@ -1,5 +1,7 @@
 # Changelog
 
++ Fixed clicking links on child elements of `<a>`. Fixed [#61](https://github.com/metafizzy/flickity/issues/61)
+
 ### v0.3.1
 
 Update [flickity-as-nav-for](https://github.com/metafizzy/flickity-as-nav-for) to work with `cellSelect` event, and changed `staticClick` arguments for Flickity v0.3.0

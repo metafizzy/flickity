@@ -14,9 +14,8 @@
     "get-style-property": "~1.0.4",
     "doc-ready": "~1.0.4",
     "classie": "~1.0.1",
-    "unidragger": "~0.2.0",
+    "unidragger": "~0.2.1",
     "fizzy-ui-utils": "~0.1.1",
-    "unipointer": "~0.1.0",
     "tap-listener": "~0.1.0"
   },
   "devDependencies": {

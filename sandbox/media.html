@@ -21,6 +21,21 @@
     height: 300px;
     width: auto;
   }
+
+  .image-gallery-contained .image-cell {
+    width: 100%;
+    height: 300px;
+    background: black;
+    text-align: center;
+  }
+
+  .image-gallery-contained .image-cell a {
+    margin: 0 auto;
+  }
+
+  .image-gallery-contained .image-cell img {
+    height: 300px;
+  }
   </style>
 
 </head>
@@ -30,20 +45,53 @@
 
 
   <div id="image-gallery1" class="container image-gallery js-flickity"
-    data-flickity-options='{ "wrapAround": false, "imagesLoaded": true, "percentPosition": false }'>
-    <!-- images from unsplash.com -->
-    <img src="http://i.imgur.com/r8p3Xgq.jpg" />
-    <img src="http://i.imgur.com/q9zO6tw.jpg" />
-    <img src="http://i.imgur.com/bwy74ok.jpg" />
-    <img src="http://i.imgur.com/hODreXI.jpg" />
-    <img src="http://i.imgur.com/UORFJ3w.jpg" />
-    <img src="http://i.imgur.com/bAZWoqx.jpg" />
-    <img src="http://i.imgur.com/PgmEBSB.jpg" />
-    <img src="http://i.imgur.com/aboaFoB.jpg" />
-    <img src="http://i.imgur.com/LkmcILl.jpg" />
-  </div>
+     data-flickity-options='{ "wrapAround": false, "imagesLoaded": true, "percentPosition": false }'>
+     <!-- images from unsplash.com -->
+     <img src="http://i.imgur.com/r8p3Xgq.jpg" />
+     <img src="http://i.imgur.com/q9zO6tw.jpg" />
+     <img src="http://i.imgur.com/bwy74ok.jpg" />
+     <img src="http://i.imgur.com/hODreXI.jpg" />
+     <img src="http://i.imgur.com/UORFJ3w.jpg" />
+     <img src="http://i.imgur.com/bAZWoqx.jpg" />
+     <img src="http://i.imgur.com/PgmEBSB.jpg" />
+     <img src="http://i.imgur.com/aboaFoB.jpg" />
+     <img src="http://i.imgur.com/LkmcILl.jpg" />
+   </div>
 
-  <!-- <div id="video-gallery1" class="container video-gallery js-flickity">
+  <div id="image-gallery2" class="container image-gallery-contained js-flickity"
+     data-flickity-options='{ "imagesLoaded": true, "percentPosition": false }'>
+     <!-- images from unsplash.com -->
+
+     <div class="image-cell">
+       <a href="http://example.com"><img src="http://i.imgur.com/r8p3Xgq.jpg" /></a>
+     </div>
+     <div class="image-cell">
+       <a href="http://example.com"><img src="http://i.imgur.com/q9zO6tw.jpg" /></a>
+     </div>
+     <div class="image-cell">
+       <a href="http://example.com"><img src="http://i.imgur.com/bwy74ok.jpg" /></a>
+     </div>
+     <div class="image-cell">
+       <a href="http://example.com"><img src="http://i.imgur.com/hODreXI.jpg" /></a>
+     </div>
+     <div class="image-cell">
+       <a href="http://example.com"><img src="http://i.imgur.com/UORFJ3w.jpg" /></a>
+     </div>
+     <div class="image-cell">
+       <a href="http://example.com"><img src="http://i.imgur.com/bAZWoqx.jpg" /></a>
+     </div>
+     <div class="image-cell">
+       <a href="http://example.com"><img src="http://i.imgur.com/PgmEBSB.jpg" /></a>
+     </div>
+     <div class="image-cell">
+       <a href="http://example.com"><img src="http://i.imgur.com/aboaFoB.jpg" /></a>
+     </div>
+     <div class="image-cell">
+       <a href="http://example.com"><img src="http://i.imgur.com/LkmcILl.jpg" /></a>
+     </div>
+   </div>
+
+   <!-- <div id="video-gallery1" class="container video-gallery js-flickity">
     <div class="cell">
       <iframe src="//player.vimeo.com/video/87701971" width="534" height="300" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe> <p><a href="http://vimeo.com/87701971">Yosemite HD II</a> from <a href="http://vimeo.com/projectyose">Project Yosemite</a> on <a href="https://vimeo.com">Vimeo</a>.</p>
     </div>

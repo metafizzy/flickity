@@ -11,9 +11,8 @@
     "get-size": "~1.2.2",
     "desandro-get-style-property": "~1.0.4",
     "wolfy87-eventemitter": "~4.2.11",
-    "unidragger": "~0.2.0",
+    "unidragger": "~0.2.1",
     "fizzy-ui-utils": "~0.1.1",
-    "unipointer": "~0.1.0",
     "tap-listener": "~0.1.0"
   },
   "devDependencies": {
