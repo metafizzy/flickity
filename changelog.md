@@ -1,5 +1,9 @@
 # Changelog
 
+## v1.0.0
+
++ Add commercial licensing
++ Update v0.x.x dependencies to v1.0.0
 + Fixed clicking links on child elements of `<a>`. Fixed [#61](https://github.com/metafizzy/flickity/issues/61)
 
 ### v0.3.1

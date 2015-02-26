@@ -1,6 +1,10 @@
 /*!
- * Flickity v0.3.1
+ * Flickity v1.0.0
  * Touch, responsive, flickable galleries
+ *
+ * Licensed GPLv3 for open source use
+ * or Flickity Commercial License for commercial use
+ *
  * http://flickity.metafizzy.co
  * Copyright 2015 Metafizzy
  */

@@ -2,36 +2,52 @@
 
 _Touch, responsive, flickable galleries_
 
-[flickity.metafizzy.co](http://flickity.metafizzy.co)
-
-## Beta testing
-
-Help make Flickity better for it’s v1.0 release. Try out Flickity and provide any feedback. We'll send you some Metafizzy stickers for helping us out.
-
-Did it work as expected? What trouble did you run into? Is there something else you'd like? Bugs, feature requests, questions — we're happy to hear it all.
-
-+ Submit an [issue on GitHub](https://github.com/metafizzy/flickity/issues)
-+ Email [yo@metafizzy.co](mailto:yo@metafizzy.co?subject=Flickity beta feedback)
-+ Tweet [@metafizzyco](https://twitter.com/metafizzyco)
-
-## Under development
-
-I'm making a carousel/slider/gallery library! [Follow @metafizzyco on Twitter for updates and news on releases](https://twitter.com/metafizzyco).
-
-I'm blogging development at [metafizzy.co/blog](http://metafizzy.co/blog).
+See [flickity.metafizzy.co](http://flickity.metafizzy.co) for complete docs and demos.
 
 ## Install
 
 ### Download
 
-+ JavaScript: [flickity.pkgd.js](https://github.com/metafizzy/flickity/raw/master/dist/flickity.pkgd.js) uncompressed or [flickity.pkgd.min.js](https://github.com/metafizzy/flickity/raw/master/dist/flickity.pkgd.min.js) minified
-+ CSS: [flickity.css](https://github.com/metafizzy/flickity/raw/master/dist/flickity.css)
++ CSS:
+  - [flickity.css](https://github.com/metafizzy/flickity/raw/master/dist/flickity.css) un-minified, or
+  - [flickity.css](https://github.com/metafizzy/flickity/raw/master/dist/flickity.min.css) minified
++ JavaScript:
+  - [flickity.pkgd.js](https://github.com/metafizzy/flickity/raw/master/dist/flickity.pkgd.js) un-minified, or
+  - [flickity.pkgd.min.js](https://github.com/metafizzy/flickity/raw/master/dist/flickity.pkgd.min.js) minified
+
+### CDN
+
+Link directly to [Flickity files on cdnjs](https://cdnjs.com/libraries/flickity).
+
+``` html
+<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/flickity/1.0.0/flickity.css">
+<!-- or -->
+<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/flickity/1.0.0/flickity.min.css">
+```
+
+``` html
+<script src="//cdnjs.cloudflare.com/ajax/libs/flickity/1.0.0/flickity.pkgd.js"></script>
+<!-- or -->
+<script src="//cdnjs.cloudflare.com/ajax/libs/flickity/1.0.0/flickity.pkgd.min.js"></script>
+```
 
 ### Package managers
 
 Bower: `bower install flickity --save`
 
 npm: `npm install flickity --save`
+
+## License
+
+### Commerical license
+
+If you want to use Flickity to develop commercial sites, themes, projects, and applications, the Commercial license is the appropriate license. With this option, your source code is kept proprietary. Purchase a Flickity Commercial License at [flickity.metafizzy.co](http://flickity.metafizzy.co/#commerical-license)
+
+### Open source license
+
+If you are creating an open source application under a license compatible with the [GNU GPL license v3](https://www.gnu.org/licenses/gpl-3.0.html), you may use Flickity under the terms of the GPLv3.
+
+[Read more about Flickity's license](http://flickity.metafizzy.co/license.html).
 
 ## Usage
 
@@ -45,6 +61,8 @@ Flickity works with a container element and a set of child cell elements
   ...
 </div>
 ```
+
+### Options
 
 ``` js
 var flky = new Flickity( '.gallery', {
@@ -116,10 +134,6 @@ var flky = new Flickity( '.gallery', {
 
 });
 ```
-
-## License
-
-Flickity is currently in development, v0. It is licensed GPL v3. With v1, Flickity will be dual-licensed: GPL, and a commercial license that exempts GPL.
 
 ---
 

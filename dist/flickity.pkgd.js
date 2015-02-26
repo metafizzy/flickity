@@ -1,6 +1,10 @@
 /*!
- * Flickity PACKAGED v0.3.1
+ * Flickity PACKAGED v1.0.0
  * Touch, responsive, flickable galleries
+ *
+ * Licensed GPLv3 for open source use
+ * or Flickity Commercial License for commercial use
+ *
  * http://flickity.metafizzy.co
  * Copyright 2015 Metafizzy
  */
@@ -1280,7 +1284,7 @@ if ( typeof define === 'function' && define.amd ) {
 })( Element.prototype );
 
 /**
- * Fizzy UI utils v0.1.1
+ * Fizzy UI utils v1.0.0
  * MIT license
  */
 
@@ -1380,7 +1384,7 @@ utils.indexOf = Array.prototype.indexOf ? function( ary, obj ) {
 
 // ----- removeFrom ----- //
 
-utils.removeFrom = function( obj, ary ) {
+utils.removeFrom = function( ary, obj ) {
   var index = utils.indexOf( ary, obj );
   if ( index != -1 ) {
     ary.splice( index, 1 );
@@ -1893,8 +1897,12 @@ return proto;
 }));
 
 /*!
- * Flickity v0.3.1
+ * Flickity v1.0.0
  * Touch, responsive, flickable galleries
+ *
+ * Licensed GPLv3 for open source use
+ * or Flickity Commercial License for commercial use
+ *
  * http://flickity.metafizzy.co
  * Copyright 2015 Metafizzy
  */
@@ -2613,7 +2621,7 @@ return Flickity;
 }));
 
 /*!
- * Unipointer v0.1.0
+ * Unipointer v1.0.0
  * base class for doing one thing with pointer event
  * MIT license
  */
@@ -2930,7 +2938,7 @@ return Unipointer;
 }));
 
 /*!
- * Unidragger v0.2.0
+ * Unidragger v1.0.0
  * Draggable base class
  * MIT license
  */
@@ -2980,6 +2988,15 @@ function preventDefaultEvent( event ) {
     event.preventDefault();
   } else {
     event.returnValue = false;
+  }
+}
+
+function getParentLink( elem ) {
+  while ( elem != document.body ) {
+    elem = elem.parentNode;
+    if ( elem.nodeName == 'A' ) {
+      return elem;
+    }
   }
 }
 
@@ -3094,8 +3111,9 @@ Unidragger.prototype._dragPointerDown = function( event, pointer ) {
   this.pointerDownPoint = Unipointer.getPointerPoint( pointer );
 
   var targetNodeName = event.target.nodeName;
-  // HACK iOS, allow clicks on buttons, inputs, and links
-  var isTouchstartNode = event.type == 'touchstart' && allowTouchstartNodes[ targetNodeName ];
+  // HACK iOS, allow clicks on buttons, inputs, and links, or children of links
+  var isTouchstartNode = event.type == 'touchstart' &&
+    ( allowTouchstartNodes[ targetNodeName ] || getParentLink( event.target ) );
   // do not prevent default on touchstart nodes or <select>
   if ( !isTouchstartNode && targetNodeName != 'SELECT' ) {
     preventDefaultEvent( event );
@@ -3614,7 +3632,7 @@ return Flickity;
 }));
 
 /*!
- * Tap listener v0.1.0
+ * Tap listener v1.0.0
  * listens to taps
  * MIT license
  */
@@ -4442,7 +4460,7 @@ Flickity.prototype.remove = function( elems ) {
     cell = cells[i];
     cell.remove();
     // remove item from collection
-    utils.removeFrom( cell, this.cells );
+    utils.removeFrom( this.cells, cell );
   }
 
   if ( cells.length ) {
@@ -4544,7 +4562,7 @@ return Flickity;
 });
 
 /*!
- * Flickity asNavFor v0.2.0
+ * Flickity asNavFor v1.0.0
  * enable asNavFor for Flickity
  */
 
@@ -5019,7 +5037,7 @@ function makeArray( obj ) {
 });
 
 /*!
- * Flickity imagesLoaded v0.1.4
+ * Flickity imagesLoaded v1.0.0
  * enables imagesLoaded option for Flickity
  */
 

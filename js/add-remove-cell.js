@@ -112,7 +112,7 @@ Flickity.prototype.remove = function( elems ) {
     cell = cells[i];
     cell.remove();
     // remove item from collection
-    utils.removeFrom( cell, this.cells );
+    utils.removeFrom( this.cells, cell );
   }
 
   if ( cells.length ) {

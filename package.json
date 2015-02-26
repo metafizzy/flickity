@@ -1,6 +1,6 @@
 {
   "name": "flickity",
-  "version": "0.3.1",
+  "version": "1.0.0",
   "description": "Touch, responsive, flickable galleries",
   "main": "js/index.js",
   "dependencies": {
@@ -11,13 +11,13 @@
     "get-size": "~1.2.2",
     "desandro-get-style-property": "~1.0.4",
     "wolfy87-eventemitter": "~4.2.11",
-    "unidragger": "~0.2.1",
-    "fizzy-ui-utils": "~0.1.1",
-    "tap-listener": "~0.1.0"
+    "unidragger": "~1.0.0",
+    "fizzy-ui-utils": "~1.0.0",
+    "tap-listener": "~1.0.0"
   },
   "devDependencies": {
-    "flickity-imagesloaded": "~0.1.3",
-    "flickity-as-nav-for": "~0.2.0",
+    "flickity-imagesloaded": "~1.0.0",
+    "flickity-as-nav-for": "~1.0.0",
     "jquery-bridget": "~1.1.0",
     "gulp": "^3.8.10",
     "gulp-jshint": "^1.9.0",
@@ -50,7 +50,7 @@
     "browser"
   ],
   "author": "Metafizzy",
-  "license": "GPL",
+  "license": "GPL-3.0",
   "bugs": {
     "url": "https://github.com/metafizzy/flickity/issues"
   },
