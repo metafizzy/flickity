@@ -186,7 +186,6 @@ Flickity.prototype.activate = function() {
   this.getSize();
   // get cells from children
   this.reloadCells();
-  this.setGallerySize();
 
   if ( this.options.accessibility ) {
     // allow element to focusable
