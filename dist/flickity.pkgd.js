@@ -1180,7 +1180,7 @@ if ( typeof define === 'function' && define.amd ) {
 })( window );
 
 /**
- * matchesSelector v1.0.2
+ * matchesSelector v1.0.3
  * matchesSelector( element, '.selector' )
  * MIT license
  */
@@ -1193,6 +1193,10 @@ if ( typeof define === 'function' && define.amd ) {
   
 
   var matchesMethod = ( function() {
+    // check for the standard method name first
+    if ( ElemProto.matches ) {
+      return 'matches';
+    }
     // check un-prefixed
     if ( ElemProto.matchesSelector ) {
       return 'matchesSelector';
@@ -4299,7 +4303,14 @@ Flickity.prototype._createPlayer = function() {
 
   this.on( 'activate', this.activatePlayer );
   this.on( 'uiChange', this.stopPlayer );
-  this.on( 'pointerDown', this.stopPlayer );
+
+  if ( this.options.stopOnClick ) {
+    this.on( 'pointerDown', this.stopPlayer );
+  } else {
+      this.on( 'pointerUp', this.unpausePlayer );
+      this.on( 'pointerDown', this.pausePlayer );
+  }
+
   this.on( 'deactivate', this.deactivatePlayer );
 };
 
@@ -4322,6 +4333,14 @@ Flickity.prototype.deactivatePlayer = function() {
     eventie.unbind( this.element, 'mouseenter', this );
     delete this.isMouseenterBound;
   }
+};
+
+Flickity.prototype.pausePlayer = function () {
+  this.player.pause();
+};
+
+Flickity.prototype.unpausePlayer = function () {
+  this.player.unpause();
 };
 
 // ----- mouseenter/leave ----- //
@@ -4562,7 +4581,7 @@ return Flickity;
 });
 
 /*!
- * Flickity asNavFor v1.0.0
+ * Flickity asNavFor v1.0.1
  * enable asNavFor for Flickity
  */
 
@@ -4586,7 +4605,7 @@ return Flickity;
     // CommonJS
     module.exports = factory(
       window,
-      require('dessandro-classie'),
+      require('desandro-classie'),
       require('flickity'),
       require('fizzy-ui-utils')
     );
