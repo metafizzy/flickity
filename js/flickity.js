@@ -110,7 +110,8 @@ Flickity.defaults = {
   percentPosition: true,
   resize: true,
   selectedAttraction: 0.025,
-  setGallerySize: true
+  setGallerySize: true,
+  dynamicGalleryHeight: false // change height according to selected item's height value
   // watchCSS: false,
   // wrapAround: false
 };
@@ -332,6 +333,13 @@ Flickity.prototype.setGallerySize = function() {
   }
 };
 
+Flickity.prototype.dynamicGalleryHeight = function() {
+  if ( this.options.dynamicGalleryHeight ) {
+    this.viewport.style.height = getSize( this.selectedElement ).outerHeight + 'px';
+  }
+};
+
+
 Flickity.prototype._getWrapShiftCells = function() {
   // only for wrap-around
   if ( !this.options.wrapAround ) {
@@ -450,6 +458,7 @@ Flickity.prototype.select = function( index, isWrap ) {
   if ( this.cells[ index ] ) {
     this.selectedIndex = index;
     this.setSelectedCell();
+    this.updateGallerySize();
     this.startAnimation();
     this.dispatchEvent('cellSelect');
   }
