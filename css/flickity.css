@@ -9,6 +9,8 @@ http://flickity.metafizzy.co
 .flickity-enabled:focus { outline: none; }
 
 .flickity-viewport {
+  -webkit-transition: height .3s ease-in-out;
+          transition: height .3s ease-in-out;
   overflow: hidden;
   position: relative;
   height: 100%;
