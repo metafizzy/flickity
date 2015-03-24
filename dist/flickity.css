@@ -1,4 +1,4 @@
-/*! Flickity v1.0.0
+/*! Flickity v1.0.1
 http://flickity.metafizzy.co
 ---------------------------------------------- */
 
@@ -9,6 +9,8 @@ http://flickity.metafizzy.co
 .flickity-enabled:focus { outline: none; }
 
 .flickity-viewport {
+  -webkit-transition: height .3s ease-in-out;
+          transition: height .3s ease-in-out;
   overflow: hidden;
   position: relative;
   height: 100%;
