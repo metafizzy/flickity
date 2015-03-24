@@ -2360,7 +2360,7 @@ Flickity.prototype.select = function( index, isWrap ) {
   if ( this.cells[ index ] ) {
     this.selectedIndex = index;
     this.setSelectedCell();
-    this.updateGallerySize();
+    this.dynamicGalleryHeight();
     this.startAnimation();
     this.dispatchEvent('cellSelect');
   }
