@@ -196,6 +196,10 @@ Flickity.prototype.activate = function() {
     eventie.bind( this.element, 'keydown', this );
   }
 
+  if ( this.options.dynamicGalleryHeight ) {
+    this.addListener( 'cellSelect', this.dynamicGalleryHeight );
+  }
+
   this.emit('activate');
 
   this.positionSliderAtSelected();
@@ -458,7 +462,6 @@ Flickity.prototype.select = function( index, isWrap ) {
   if ( this.cells[ index ] ) {
     this.selectedIndex = index;
     this.setSelectedCell();
-    this.dynamicGalleryHeight();
     this.startAnimation();
     this.dispatchEvent('cellSelect');
   }
