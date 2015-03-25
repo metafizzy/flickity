@@ -1,5 +1,5 @@
 /*!
- * Flickity v1.0.0
+ * Flickity v1.0.3
  * Touch, responsive, flickable galleries
  *
  * Licensed GPLv3 for open source use
@@ -110,7 +110,8 @@ Flickity.defaults = {
   percentPosition: true,
   resize: true,
   selectedAttraction: 0.025,
-  setGallerySize: true
+  setGallerySize: true,
+  dynamicGalleryHeight: false // change height according to selected item's height value
   // watchCSS: false,
   // wrapAround: false
 };
@@ -193,6 +194,10 @@ Flickity.prototype.activate = function() {
     this.element.tabIndex = 0;
     // listen for key presses
     eventie.bind( this.element, 'keydown', this );
+  }
+
+  if ( this.options.dynamicGalleryHeight ) {
+    this.addListener( 'cellSelect', this.dynamicGalleryHeight );
   }
 
   this.emit('activate');
@@ -331,6 +336,13 @@ Flickity.prototype.setGallerySize = function() {
     this.viewport.style.height = this.maxCellHeight + 'px';
   }
 };
+
+Flickity.prototype.dynamicGalleryHeight = function() {
+  if ( this.options.dynamicGalleryHeight ) {
+    this.viewport.style.height = this.getCell(this.selectedElement).size.outerHeight + 'px';
+  }
+};
+
 
 Flickity.prototype._getWrapShiftCells = function() {
   // only for wrap-around

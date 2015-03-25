@@ -1,5 +1,9 @@
 # Changelog
 
+### v1.0.1
+
++ Added `dynamicGallerySize` option
+
 ## v1.0.0
 
 + Add commercial licensing
