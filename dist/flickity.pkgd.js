@@ -1,5 +1,5 @@
 /*!
- * Flickity PACKAGED v1.0.2
+ * Flickity PACKAGED v1.0.3
  * Touch, responsive, flickable galleries
  *
  * Licensed GPLv3 for open source use
@@ -1901,7 +1901,7 @@ return proto;
 }));
 
 /*!
- * Flickity v1.0.2
+ * Flickity v1.0.3
  * Touch, responsive, flickable galleries
  *
  * Licensed GPLv3 for open source use
@@ -2098,6 +2098,10 @@ Flickity.prototype.activate = function() {
     eventie.bind( this.element, 'keydown', this );
   }
 
+  if ( this.options.dynamicGalleryHeight ) {
+    this.addListener( 'cellSelect', this.dynamicGalleryHeight );
+  }
+
   this.emit('activate');
 
   this.positionSliderAtSelected();
@@ -2237,7 +2241,7 @@ Flickity.prototype.setGallerySize = function() {
 
 Flickity.prototype.dynamicGalleryHeight = function() {
   if ( this.options.dynamicGalleryHeight ) {
-    this.viewport.style.height = getSize( this.selectedElement ).outerHeight + 'px';
+    this.viewport.style.height = this.getCell(this.selectedElement).size.outerHeight + 'px';
   }
 };
 
@@ -2360,7 +2364,6 @@ Flickity.prototype.select = function( index, isWrap ) {
   if ( this.cells[ index ] ) {
     this.selectedIndex = index;
     this.setSelectedCell();
-    this.dynamicGalleryHeight();
     this.startAnimation();
     this.dispatchEvent('cellSelect');
   }
