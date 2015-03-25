@@ -335,7 +335,7 @@ Flickity.prototype.setGallerySize = function() {
 
 Flickity.prototype.dynamicGalleryHeight = function() {
   if ( this.options.dynamicGalleryHeight ) {
-    this.viewport.style.height = getSize( this.selectedElement ).outerHeight + 'px';
+    this.viewport.style.height = this.getCell(this.selectedElement).size.outerHeight + 'px';
   }
 };
 
