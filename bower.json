@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "description": "Touch, responsive, flickable galleries",
   "main": [
-    "js/index.js",
+    "dist/flickity.pkgd.js",
     "css/flickity.css"
   ],
   "dependencies": {
