@@ -195,7 +195,7 @@ Flickity.prototype.activate = function() {
     eventie.bind( this.element, 'keydown', this );
   }
 
-  this.emit('activate');
+  this.dispatchEvent('activate');
 
   this.positionSliderAtSelected();
   this.select( this.selectedIndex );
@@ -408,6 +408,7 @@ Flickity.prototype._containCells = function() {
  */
 Flickity.prototype.dispatchEvent = function( type, event, args ) {
   var emitArgs = [ event ].concat( args );
+  type     = 'flickity:'+type;
   this.emitEvent( type, emitArgs );
 
   if ( jQuery && this.$element ) {
@@ -666,7 +667,7 @@ Flickity.prototype.deactivate = function() {
   }
   // set flags
   this.isActive = false;
-  this.emit('deactivate');
+  this.dispatchEvent('deactivate');
 };
 
 Flickity.prototype.destroy = function() {
