@@ -1,5 +1,12 @@
 # Changelog
 
+### v1.0.1
+
++ Allowed native scrolling for touch devices. Fixed [#67](https://github.com/metafizzy/flickity/issues/67), [#97](https://github.com/metafizzy/flickity/issues/97), [#41](https://github.com/metafizzy/flickity/issues/41)
++ Allowed clicks on all inputs and textareas, for [#105](https://github.com/metafizzy/flickity/issues/105)
++ Fixed IE10 `body.blur()` bug. Fixed #
++ Upgraded [Unidragger](https://github.com/metafizzy/unidragger) to `v1.1.3` [tap-listener](https://github.com/metafizzy/tap-listener) to `v1.1.0`
+
 ## v1.0.0
 
 + Add commercial licensing

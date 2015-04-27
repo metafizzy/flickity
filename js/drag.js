@@ -93,10 +93,6 @@ proto.unbindDrag = function() {
   delete this.isDragBound;
 };
 
-proto.hasDragStarted = function( moveVector ) {
-  return Math.abs( moveVector.x ) > 3;
-};
-
 proto._uiChangeDrag = function() {
   delete this.isFreeScrolling;
 };
@@ -145,12 +141,20 @@ proto.pointerDownFocus = function( event ) {
   }
 };
 
+// ----- move ----- //
+
 proto.pointerMove = function( event, pointer ) {
   var moveVector = this._dragPointerMove( event, pointer );
   this.touchVerticalScrollMove( event, pointer, moveVector );
   this._dragMove( event, pointer, moveVector );
   this.dispatchEvent( 'pointerMove', event, [ pointer, moveVector ] );
 };
+
+proto.hasDragStarted = function( moveVector ) {
+  return !this.isTouchScrolling && Math.abs( moveVector.x ) > 3;
+};
+
+// ----- up ----- //
 
 proto.pointerUp = function( event, pointer ) {
   delete this.isTouchScrolling;
@@ -175,11 +179,16 @@ function getPointerWindowY( pointer ) {
 }
 
 proto.touchVerticalScrollMove = function( event, pointer, moveVector ) {
-  if ( !this.options.touchVerticalScroll || !touchScrollEvents[ event.type ] ) {
+  // do not scroll if already dragging, if disabled
+  var touchVerticalScroll = this.options.touchVerticalScroll;
+  // if touchVerticalScroll is 'withDrag', allow scrolling and dragging
+  var canNotScroll = touchVerticalScroll == 'withDrag' ? !touchVerticalScroll :
+    this.isDragging || !touchVerticalScroll;
+  if ( canNotScroll || !touchScrollEvents[ event.type ] ) {
     return;
   }
-  // don't start vertical scrolling until pointer has moved 16 pixels in a direction
-  if ( !this.isTouchScrolling && Math.abs( moveVector.y ) > 16 ) {
+  // don't start vertical scrolling until pointer has moved 10 pixels in a direction
+  if ( !this.isTouchScrolling && Math.abs( moveVector.y ) > 10 ) {
     // start touch vertical scrolling
     // scroll & pointerY when started
     this.startScrollY = window.pageYOffset;
@@ -187,13 +196,6 @@ proto.touchVerticalScrollMove = function( event, pointer, moveVector ) {
     // start scroll animation
     this.isTouchScrolling = true;
   }
-  if ( !this.isTouchScrolling ) {
-    return;
-  }
-  // scroll window
-  var scrollDelta = this.pointerWindowStartY - getPointerWindowY( pointer );
-  var scrollY = this.startScrollY + scrollDelta;
-  window.scroll( window.pageXOffset, scrollY );
 };
 
 // -------------------------- dragging -------------------------- //
@@ -205,6 +207,8 @@ proto.dragStart = function( event, pointer ) {
 };
 
 proto.dragMove = function( event, pointer, moveVector ) {
+  preventDefaultEvent( event );
+
   this.previousDragX = this.x;
 
   var movedX = moveVector.x;
