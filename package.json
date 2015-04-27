@@ -11,9 +11,9 @@
     "get-size": "~1.2.2",
     "desandro-get-style-property": "~1.0.4",
     "wolfy87-eventemitter": "~4.2.11",
-    "unidragger": "~1.0.0",
+    "unidragger": "~1.1.0",
     "fizzy-ui-utils": "~1.0.0",
-    "tap-listener": "~1.0.0"
+    "tap-listener": "~1.1.0"
   },
   "devDependencies": {
     "flickity-imagesloaded": "~1.0.0",

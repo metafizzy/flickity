@@ -128,7 +128,7 @@ PageDots.prototype.updateSelected = function() {
   this.selectedDot.className = 'dot is-selected';
 };
 
-PageDots.prototype.onTap = function( instance, event ) {
+PageDots.prototype.onTap = function( event ) {
   var target = event.target;
   // only care about dot clicks
   if ( target.nodeName != 'LI' ) {

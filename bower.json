@@ -14,9 +14,9 @@
     "get-style-property": "~1.0.4",
     "doc-ready": "~1.0.4",
     "classie": "~1.0.1",
-    "unidragger": "~1.0.0",
+    "unidragger": "~1.1.0",
     "fizzy-ui-utils": "~1.0.0",
-    "tap-listener": "~1.0.0"
+    "tap-listener": "~1.1.0"
   },
   "devDependencies": {
     "flickity-imagesloaded": "~1.0.0",
