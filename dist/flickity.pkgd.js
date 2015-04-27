@@ -243,7 +243,7 @@ if ( typeof define === 'function' && define.amd ) {
  */
 
 ;(function () {
-    
+    'use strict';
 
     /**
      * Class for managing events.
@@ -1180,7 +1180,7 @@ if ( typeof define === 'function' && define.amd ) {
 })( window );
 
 /**
- * matchesSelector v1.0.2
+ * matchesSelector v1.0.3
  * matchesSelector( element, '.selector' )
  * MIT license
  */
@@ -1190,9 +1190,13 @@ if ( typeof define === 'function' && define.amd ) {
 
 ( function( ElemProto ) {
 
-  
+  'use strict';
 
   var matchesMethod = ( function() {
+    // check for the standard method name first
+    if ( ElemProto.matches ) {
+      return 'matches';
+    }
     // check un-prefixed
     if ( ElemProto.matchesSelector ) {
       return 'matchesSelector';
@@ -1284,7 +1288,7 @@ if ( typeof define === 'function' && define.amd ) {
 })( Element.prototype );
 
 /**
- * Fizzy UI utils v1.0.0
+ * Fizzy UI utils v1.0.1
  * MIT license
  */
 
@@ -1292,7 +1296,7 @@ if ( typeof define === 'function' && define.amd ) {
 
 ( function( window, factory ) {
   /*global define: false, module: false, require: false */
-  
+  'use strict';
   // universal module definition
 
   if ( typeof define == 'function' && define.amd ) {
@@ -1503,14 +1507,12 @@ utils.debounceMethod = function( _class, methodName, threshold ) {
 
 // ----- htmlInit ----- //
 
-var jQuery = window.jQuery;
-
 // http://jamesroberts.name/blog/2010/02/22/string-functions-for-javascript-trim-to-camel-case-to-dashed-and-to-underscore/
-function toDashed( str ) {
+utils.toDashed = function( str ) {
   return str.replace( /(.)([A-Z])/g, function( match, $1, $2 ) {
     return $1 + '-' + $2;
   }).toLowerCase();
-}
+};
 
 var console = window.console;
 /**
@@ -1520,7 +1522,7 @@ var console = window.console;
  */
 utils.htmlInit = function( WidgetClass, namespace ) {
   docReady( function() {
-    var dashedNamespace = toDashed( namespace );
+    var dashedNamespace = utils.toDashed( namespace );
     var elems = document.querySelectorAll( '.js-' + dashedNamespace );
     var dataAttr = 'data-' + dashedNamespace + '-options';
 
@@ -1542,6 +1544,7 @@ utils.htmlInit = function( WidgetClass, namespace ) {
       // initialize
       var instance = new WidgetClass( elem, options );
       // make available via $().data('layoutname')
+      var jQuery = window.jQuery;
       if ( jQuery ) {
         jQuery.data( elem, namespace, instance );
       }
@@ -1556,7 +1559,7 @@ return utils;
 }));
 
 ( function( window, factory ) {
-  
+  'use strict';
   // universal module definition
 
   if ( typeof define == 'function' && define.amd ) {
@@ -1650,7 +1653,7 @@ return Cell;
 }));
 
 ( function( window, factory ) {
-  
+  'use strict';
   // universal module definition
 
   if ( typeof define == 'function' && define.amd ) {
@@ -1908,7 +1911,7 @@ return proto;
  */
 
 ( function( window, factory ) {
-  
+  'use strict';
   // universal module definition
 
   if ( typeof define == 'function' && define.amd ) {
@@ -2093,7 +2096,7 @@ Flickity.prototype.activate = function() {
     eventie.bind( this.element, 'keydown', this );
   }
 
-  this.emit('activate');
+  this.dispatchEvent('activate');
 
   this.positionSliderAtSelected();
   this.select( this.selectedIndex );
@@ -2306,6 +2309,7 @@ Flickity.prototype._containCells = function() {
  */
 Flickity.prototype.dispatchEvent = function( type, event, args ) {
   var emitArgs = [ event ].concat( args );
+  type     = 'flickity:'+type;
   this.emitEvent( type, emitArgs );
 
   if ( jQuery && this.$element ) {
@@ -2564,7 +2568,7 @@ Flickity.prototype.deactivate = function() {
   }
   // set flags
   this.isActive = false;
-  this.emit('deactivate');
+  this.dispatchEvent('deactivate');
 };
 
 Flickity.prototype.destroy = function() {
@@ -2630,7 +2634,7 @@ return Flickity;
 /*global define: false, module: false, require: false */
 
 ( function( window, factory ) {
-  
+  'use strict';
   // universal module definition
 
   if ( typeof define == 'function' && define.amd ) {
@@ -2947,7 +2951,7 @@ return Unipointer;
 
 ( function( window, factory ) {
   /*global define: false, module: false, require: false */
-  
+  'use strict';
   // universal module definition
 
   if ( typeof define == 'function' && define.amd ) {
@@ -3263,7 +3267,7 @@ return Unidragger;
 }));
 
 ( function( window, factory ) {
-  
+  'use strict';
   // universal module definition
 
   if ( typeof define == 'function' && define.amd ) {
@@ -3641,7 +3645,7 @@ return Flickity;
 
 ( function( window, factory ) {
   /*global define: false, module: false, require: false */
-  
+  'use strict';
   // universal module definition
 
   if ( typeof define == 'function' && define.amd ) {
@@ -3736,7 +3740,7 @@ return TapListener;
 // -------------------------- prev/next button -------------------------- //
 
 ( function( window, factory ) {
-  
+  'use strict';
   // universal module definition
 
   if ( typeof define == 'function' && define.amd ) {
@@ -3974,7 +3978,7 @@ return PrevNextButton;
 }));
 
 ( function( window, factory ) {
-  
+  'use strict';
   // universal module definition
 
   if ( typeof define == 'function' && define.amd ) {
@@ -4160,7 +4164,7 @@ return PageDots;
 }));
 
 ( function( window, factory ) {
-  
+  'use strict';
   // universal module definition
 
   if ( typeof define == 'function' && define.amd ) {
@@ -4347,7 +4351,7 @@ return Player;
 }));
 
 ( function( window, factory ) {
-  
+  'use strict';
   // universal module definition
 
   if ( typeof define == 'function' && define.amd ) {
@@ -4531,7 +4535,7 @@ return Flickity;
  */
 
 ( function( window, factory ) {
-  
+  'use strict';
   // universal module definition
 
   if ( typeof define == 'function' && define.amd ) {
@@ -4562,7 +4566,7 @@ return Flickity;
 });
 
 /*!
- * Flickity asNavFor v1.0.0
+ * Flickity asNavFor v1.0.1
  * enable asNavFor for Flickity
  */
 
@@ -4570,7 +4574,7 @@ return Flickity;
 
 ( function( window, factory ) {
   /*global define: false, module: false, require: false */
-  
+  'use strict';
   // universal module definition
 
   if ( typeof define == 'function' && define.amd ) {
@@ -4586,7 +4590,7 @@ return Flickity;
     // CommonJS
     module.exports = factory(
       window,
-      require('dessandro-classie'),
+      require('desandro-classie'),
       require('flickity'),
       require('fizzy-ui-utils')
     );
@@ -4706,7 +4710,7 @@ return Flickity;
  * MIT License
  */
 
-( function( window, factory ) { 
+( function( window, factory ) { 'use strict';
   // universal module definition
 
   /*global define: false, module: false, require: false */
@@ -5045,7 +5049,7 @@ function makeArray( obj ) {
 
 ( function( window, factory ) {
   /*global define: false, module: false, require: false */
-  
+  'use strict';
   // universal module definition
 
   if ( typeof define == 'function' && define.amd ) {
@@ -5073,7 +5077,7 @@ function makeArray( obj ) {
   }
 
 }( window, function factory( window, Flickity, imagesLoaded ) {
-
+'use strict';
 
 Flickity.createMethods.push('_createImagesLoaded');
 
