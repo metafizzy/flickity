@@ -1,5 +1,5 @@
 /*!
- * Flickity PACKAGED v1.0.0
+ * Flickity PACKAGED v1.0.1
  * Touch, responsive, flickable galleries
  *
  * Licensed GPLv3 for open source use
@@ -1180,7 +1180,7 @@ if ( typeof define === 'function' && define.amd ) {
 })( window );
 
 /**
- * matchesSelector v1.0.2
+ * matchesSelector v1.0.3
  * matchesSelector( element, '.selector' )
  * MIT license
  */
@@ -1193,6 +1193,10 @@ if ( typeof define === 'function' && define.amd ) {
   
 
   var matchesMethod = ( function() {
+    // check for the standard method name first
+    if ( ElemProto.matches ) {
+      return 'matches';
+    }
     // check un-prefixed
     if ( ElemProto.matchesSelector ) {
       return 'matchesSelector';
@@ -1284,7 +1288,7 @@ if ( typeof define === 'function' && define.amd ) {
 })( Element.prototype );
 
 /**
- * Fizzy UI utils v1.0.0
+ * Fizzy UI utils v1.0.1
  * MIT license
  */
 
@@ -1503,14 +1507,12 @@ utils.debounceMethod = function( _class, methodName, threshold ) {
 
 // ----- htmlInit ----- //
 
-var jQuery = window.jQuery;
-
 // http://jamesroberts.name/blog/2010/02/22/string-functions-for-javascript-trim-to-camel-case-to-dashed-and-to-underscore/
-function toDashed( str ) {
+utils.toDashed = function( str ) {
   return str.replace( /(.)([A-Z])/g, function( match, $1, $2 ) {
     return $1 + '-' + $2;
   }).toLowerCase();
-}
+};
 
 var console = window.console;
 /**
@@ -1520,7 +1522,7 @@ var console = window.console;
  */
 utils.htmlInit = function( WidgetClass, namespace ) {
   docReady( function() {
-    var dashedNamespace = toDashed( namespace );
+    var dashedNamespace = utils.toDashed( namespace );
     var elems = document.querySelectorAll( '.js-' + dashedNamespace );
     var dataAttr = 'data-' + dashedNamespace + '-options';
 
@@ -1542,6 +1544,7 @@ utils.htmlInit = function( WidgetClass, namespace ) {
       // initialize
       var instance = new WidgetClass( elem, options );
       // make available via $().data('layoutname')
+      var jQuery = window.jQuery;
       if ( jQuery ) {
         jQuery.data( elem, namespace, instance );
       }
@@ -1897,7 +1900,7 @@ return proto;
 }));
 
 /*!
- * Flickity v1.0.0
+ * Flickity v1.0.1
  * Touch, responsive, flickable galleries
  *
  * Licensed GPLv3 for open source use
@@ -2084,7 +2087,6 @@ Flickity.prototype.activate = function() {
   this.getSize();
   // get cells from children
   this.reloadCells();
-  this.setGallerySize();
 
   if ( this.options.accessibility ) {
     // allow element to focusable
@@ -2621,7 +2623,7 @@ return Flickity;
 }));
 
 /*!
- * Unipointer v1.0.0
+ * Unipointer v1.1.0
  * base class for doing one thing with pointer event
  * MIT license
  */
@@ -2758,7 +2760,7 @@ Unipointer.prototype._pointerDown = function( event, pointer ) {
 
 Unipointer.prototype.pointerDown = function( event, pointer ) {
   this._bindPostStartEvents( event );
-  this.emitEvent( 'pointerDown', [ this, event, pointer ] );
+  this.emitEvent( 'pointerDown', [ event, pointer ] );
 };
 
 // hash of events to be bound after start event
@@ -2835,7 +2837,7 @@ Unipointer.prototype._pointerMove = function( event, pointer ) {
 
 // public
 Unipointer.prototype.pointerMove = function( event, pointer ) {
-  this.emitEvent( 'pointerMove', [ this, event, pointer ] );
+  this.emitEvent( 'pointerMove', [ event, pointer ] );
 };
 
 // ----- end event ----- //
@@ -2872,7 +2874,7 @@ Unipointer.prototype._pointerUp = function( event, pointer ) {
 
 // public
 Unipointer.prototype.pointerUp = function( event, pointer ) {
-  this.emitEvent( 'pointerUp', [ this, event, pointer ] );
+  this.emitEvent( 'pointerUp', [ event, pointer ] );
 };
 
 // ----- pointer done ----- //
@@ -2918,7 +2920,7 @@ Unipointer.prototype._pointerCancel = function( event, pointer ) {
 
 // public
 Unipointer.prototype.pointerCancel = function( event, pointer ) {
-  this.emitEvent( 'pointerCancel', [ this, event, pointer ] );
+  this.emitEvent( 'pointerCancel', [ event, pointer ] );
 };
 
 // -----  ----- //
@@ -2938,7 +2940,7 @@ return Unipointer;
 }));
 
 /*!
- * Unidragger v1.0.0
+ * Unidragger v1.1.3
  * Draggable base class
  * MIT license
  */
@@ -2988,15 +2990,6 @@ function preventDefaultEvent( event ) {
     event.preventDefault();
   } else {
     event.returnValue = false;
-  }
-}
-
-function getParentLink( elem ) {
-  while ( elem != document.body ) {
-    elem = elem.parentNode;
-    if ( elem.nodeName == 'A' ) {
-      return elem;
-    }
   }
 }
 
@@ -3081,13 +3074,6 @@ var disableImgOndragstart = !isIE8 ? noop : function( handle ) {
 
 // ----- start event ----- //
 
-var allowTouchstartNodes = Unidragger.allowTouchstartNodes = {
-  INPUT: true,
-  A: true,
-  BUTTON: true,
-  SELECT: true
-};
-
 /**
  * pointer start
  * @param {Event} event
@@ -3102,7 +3088,7 @@ Unidragger.prototype.pointerDown = function( event, pointer ) {
   }
   // bind move and end events
   this._bindPostStartEvents( event );
-  this.emitEvent( 'pointerDown', [ this, event, pointer ] );
+  this.emitEvent( 'pointerDown', [ event, pointer ] );
 };
 
 // base pointer down logic
@@ -3110,12 +3096,10 @@ Unidragger.prototype._dragPointerDown = function( event, pointer ) {
   // track to see when dragging starts
   this.pointerDownPoint = Unipointer.getPointerPoint( pointer );
 
+  // prevent default, unless touchstart or <select>
+  var isTouchstart = event.type == 'touchstart';
   var targetNodeName = event.target.nodeName;
-  // HACK iOS, allow clicks on buttons, inputs, and links, or children of links
-  var isTouchstartNode = event.type == 'touchstart' &&
-    ( allowTouchstartNodes[ targetNodeName ] || getParentLink( event.target ) );
-  // do not prevent default on touchstart nodes or <select>
-  if ( !isTouchstartNode && targetNodeName != 'SELECT' ) {
+  if ( !isTouchstart && targetNodeName != 'SELECT' ) {
     preventDefaultEvent( event );
   }
 };
@@ -3129,7 +3113,7 @@ Unidragger.prototype._dragPointerDown = function( event, pointer ) {
  */
 Unidragger.prototype.pointerMove = function( event, pointer ) {
   var moveVector = this._dragPointerMove( event, pointer );
-  this.emitEvent( 'pointerMove', [ this, event, pointer, moveVector ] );
+  this.emitEvent( 'pointerMove', [ event, pointer, moveVector ] );
   this._dragMove( event, pointer, moveVector );
 };
 
@@ -3161,7 +3145,7 @@ Unidragger.prototype.hasDragStarted = function( moveVector ) {
  * @param {Event or Touch} pointer
  */
 Unidragger.prototype.pointerUp = function( event, pointer ) {
-  this.emitEvent( 'pointerUp', [ this, event, pointer ] );
+  this.emitEvent( 'pointerUp', [ event, pointer ] );
   this._dragPointerUp( event, pointer );
 };
 
@@ -3187,7 +3171,7 @@ Unidragger.prototype._dragStart = function( event, pointer ) {
 };
 
 Unidragger.prototype.dragStart = function( event, pointer ) {
-  this.emitEvent( 'dragStart', [ this, event, pointer ] );
+  this.emitEvent( 'dragStart', [ event, pointer ] );
 };
 
 // dragMove
@@ -3201,7 +3185,8 @@ Unidragger.prototype._dragMove = function( event, pointer, moveVector ) {
 };
 
 Unidragger.prototype.dragMove = function( event, pointer, moveVector ) {
-  this.emitEvent( 'dragMove', [ this, event, pointer, moveVector ] );
+  preventDefaultEvent( event );
+  this.emitEvent( 'dragMove', [ event, pointer, moveVector ] );
 };
 
 // dragEnd
@@ -3218,7 +3203,7 @@ Unidragger.prototype._dragEnd = function( event, pointer ) {
 };
 
 Unidragger.prototype.dragEnd = function( event, pointer ) {
-  this.emitEvent( 'dragEnd', [ this, event, pointer ] );
+  this.emitEvent( 'dragEnd', [ event, pointer ] );
 };
 
 // ----- onclick ----- //
@@ -3234,15 +3219,16 @@ Unidragger.prototype.onclick = function( event ) {
 
 // triggered after pointer down & up with no/tiny movement
 Unidragger.prototype._staticClick = function( event, pointer ) {
-  // allow click in text input
-  if ( event.target.nodeName == 'INPUT' && event.target.type == 'text' ) {
+  // allow click in <input>s and <textarea>s
+  var nodeName = event.target.nodeName;
+  if ( nodeName == 'INPUT' || nodeName == 'TEXTAREA' ) {
     event.target.focus();
   }
   this.staticClick( event, pointer );
 };
 
 Unidragger.prototype.staticClick = function( event, pointer ) {
-  this.emitEvent( 'staticClick', [ this, event, pointer ] );
+  this.emitEvent( 'staticClick', [ event, pointer ] );
 };
 
 // -----  ----- //
@@ -3357,10 +3343,6 @@ proto.unbindDrag = function() {
   delete this.isDragBound;
 };
 
-proto.hasDragStarted = function( moveVector ) {
-  return Math.abs( moveVector.x ) > 3;
-};
-
 proto._uiChangeDrag = function() {
   delete this.isFreeScrolling;
 };
@@ -3377,7 +3359,9 @@ proto.pointerDown = function( event, pointer ) {
 
   // kludge to blur focused inputs in dragger
   var focused = document.activeElement;
-  if ( focused && focused.blur && focused != this.element ) {
+  if ( focused && focused.blur && focused != this.element &&
+    // do not blur body for IE9 & 10, #117
+    focused != document.body ) {
     focused.blur();
   }
   this.pointerDownFocus( event );
@@ -3407,12 +3391,20 @@ proto.pointerDownFocus = function( event ) {
   }
 };
 
+// ----- move ----- //
+
 proto.pointerMove = function( event, pointer ) {
   var moveVector = this._dragPointerMove( event, pointer );
   this.touchVerticalScrollMove( event, pointer, moveVector );
   this._dragMove( event, pointer, moveVector );
   this.dispatchEvent( 'pointerMove', event, [ pointer, moveVector ] );
 };
+
+proto.hasDragStarted = function( moveVector ) {
+  return !this.isTouchScrolling && Math.abs( moveVector.x ) > 3;
+};
+
+// ----- up ----- //
 
 proto.pointerUp = function( event, pointer ) {
   delete this.isTouchScrolling;
@@ -3437,11 +3429,16 @@ function getPointerWindowY( pointer ) {
 }
 
 proto.touchVerticalScrollMove = function( event, pointer, moveVector ) {
-  if ( !this.options.touchVerticalScroll || !touchScrollEvents[ event.type ] ) {
+  // do not scroll if already dragging, if disabled
+  var touchVerticalScroll = this.options.touchVerticalScroll;
+  // if touchVerticalScroll is 'withDrag', allow scrolling and dragging
+  var canNotScroll = touchVerticalScroll == 'withDrag' ? !touchVerticalScroll :
+    this.isDragging || !touchVerticalScroll;
+  if ( canNotScroll || !touchScrollEvents[ event.type ] ) {
     return;
   }
-  // don't start vertical scrolling until pointer has moved 16 pixels in a direction
-  if ( !this.isTouchScrolling && Math.abs( moveVector.y ) > 16 ) {
+  // don't start vertical scrolling until pointer has moved 10 pixels in a direction
+  if ( !this.isTouchScrolling && Math.abs( moveVector.y ) > 10 ) {
     // start touch vertical scrolling
     // scroll & pointerY when started
     this.startScrollY = window.pageYOffset;
@@ -3449,13 +3446,6 @@ proto.touchVerticalScrollMove = function( event, pointer, moveVector ) {
     // start scroll animation
     this.isTouchScrolling = true;
   }
-  if ( !this.isTouchScrolling ) {
-    return;
-  }
-  // scroll window
-  var scrollDelta = this.pointerWindowStartY - getPointerWindowY( pointer );
-  var scrollY = this.startScrollY + scrollDelta;
-  window.scroll( window.pageXOffset, scrollY );
 };
 
 // -------------------------- dragging -------------------------- //
@@ -3467,6 +3457,8 @@ proto.dragStart = function( event, pointer ) {
 };
 
 proto.dragMove = function( event, pointer, moveVector ) {
+  preventDefaultEvent( event );
+
   this.previousDragX = this.x;
 
   var movedX = moveVector.x;
@@ -3632,7 +3624,7 @@ return Flickity;
 }));
 
 /*!
- * Tap listener v1.0.0
+ * Tap listener v1.1.0
  * listens to taps
  * MIT license
  */
@@ -3718,7 +3710,7 @@ TapListener.prototype.pointerUp = function( event, pointer ) {
     pointerPoint.y <= boundingRect.bottom + scrollY;
   // trigger callback if pointer is inside element
   if ( isInside ) {
-    this.emitEvent( 'tap', [ this, event, pointer ] );
+    this.emitEvent( 'tap', [ event, pointer ] );
   }
 };
 
@@ -4103,7 +4095,7 @@ PageDots.prototype.updateSelected = function() {
   this.selectedDot.className = 'dot is-selected';
 };
 
-PageDots.prototype.onTap = function( instance, event ) {
+PageDots.prototype.onTap = function( event ) {
   var target = event.target;
   // only care about dot clicks
   if ( target.nodeName != 'LI' ) {
@@ -4562,7 +4554,7 @@ return Flickity;
 });
 
 /*!
- * Flickity asNavFor v1.0.0
+ * Flickity asNavFor v1.0.1
  * enable asNavFor for Flickity
  */
 
@@ -4586,7 +4578,7 @@ return Flickity;
     // CommonJS
     module.exports = factory(
       window,
-      require('dessandro-classie'),
+      require('desandro-classie'),
       require('flickity'),
       require('fizzy-ui-utils')
     );
