@@ -20,9 +20,9 @@ See [flickity.metafizzy.co](http://flickity.metafizzy.co) for complete docs and 
 Link directly to [Flickity files on cdnjs](https://cdnjs.com/libraries/flickity).
 
 ``` html
-<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/flickity/1.0.0/flickity.css">
+<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/flickity/1.0.1/flickity.css">
 <!-- or -->
-<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/flickity/1.0.0/flickity.min.css">
+<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/flickity/1.0.1/flickity.min.css">
 ```
 
 ``` html
