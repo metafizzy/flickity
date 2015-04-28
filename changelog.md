@@ -1,5 +1,9 @@
 # Changelog
 
+### v1.0.2
+
++ Fixed double move on prev/next button tap. Fixed [#122](https://github.com/metafizzy/flickity/issues/122)
+
 ### v1.0.1
 
 + Allowed native scrolling for touch devices. Fixed [#67](https://github.com/metafizzy/flickity/issues/67), [#97](https://github.com/metafizzy/flickity/issues/97), [#41](https://github.com/metafizzy/flickity/issues/41)

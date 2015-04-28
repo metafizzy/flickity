@@ -192,8 +192,8 @@ gulp.task( 'version', function() {
     .pipe( gulp.dest('.') );
   // replace CDN links in README
   gulp.src('README.md')
-    .pipe( replace( /ajax\/libs\/flickity\/\d\.\d\.\d/, 'ajax/libs/flickity/' + version ))
-    .pipe( gulp.dest('.') )
+    .pipe( replace( /ajax\/libs\/flickity\/\d\.\d\.\d/g, 'ajax/libs/flickity/' + version ))
+    .pipe( gulp.dest('.') );
 });
 
 // ----- default ----- //

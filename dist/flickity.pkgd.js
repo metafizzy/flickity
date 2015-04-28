@@ -1,5 +1,5 @@
 /*!
- * Flickity PACKAGED v1.0.1
+ * Flickity PACKAGED v1.0.2
  * Touch, responsive, flickable galleries
  *
  * Licensed GPLv3 for open source use
@@ -1900,7 +1900,7 @@ return proto;
 }));
 
 /*!
- * Flickity v1.0.1
+ * Flickity v1.0.2
  * Touch, responsive, flickable galleries
  *
  * Licensed GPLv3 for open source use
@@ -3624,7 +3624,7 @@ return Flickity;
 }));
 
 /*!
- * Tap listener v1.1.0
+ * Tap listener v1.1.1
  * listens to taps
  * MIT license
  */
@@ -3661,6 +3661,15 @@ return Flickity;
 
 
 
+// handle IE8 prevent default
+function preventDefaultEvent( event ) {
+  if ( event.preventDefault ) {
+    event.preventDefault();
+  } else {
+    event.returnValue = false;
+  }
+}
+
 // --------------------------  TapListener -------------------------- //
 
 function TapListener( elem ) {
@@ -3689,6 +3698,16 @@ TapListener.prototype.unbindTap = function() {
   }
   this._bindStartEvent( this.tapElement, true );
   delete this.tapElement;
+};
+
+var pointerDown = TapListener.prototype.pointerDown;
+
+TapListener.prototype.pointerDown = function( event ) {
+  // prevent default event for touch, disables tap then click
+  if ( event.type == 'touchstart' ) {
+    preventDefaultEvent( event );
+  }
+  pointerDown.apply( this, arguments );
 };
 
 var isPageOffset = window.pageYOffset !== undefined;

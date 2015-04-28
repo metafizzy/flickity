@@ -1,6 +1,6 @@
 {
   "name": "flickity",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "Touch, responsive, flickable galleries",
   "main": "js/index.js",
   "dependencies": {
@@ -13,7 +13,7 @@
     "wolfy87-eventemitter": "~4.2.11",
     "unidragger": "~1.1.2",
     "fizzy-ui-utils": "~1.0.0",
-    "tap-listener": "~1.1.0"
+    "tap-listener": "~1.1.1"
   },
   "devDependencies": {
     "flickity-imagesloaded": "~1.0.0",
