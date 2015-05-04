@@ -49,10 +49,10 @@ http://flickity.metafizzy.co
   top: 50%;
   width: 44px;
   height: 44px;
-  border: none;
+  border: 0;
   border-radius: 50%;
   background: white;
-  background: hsla(0, 0%, 100%, 0.75);
+  background: hsla(0, 0%, 100%, .75);
   cursor: pointer;
   /* vertically center */
   -webkit-transform: translateY(-50%);
@@ -69,7 +69,7 @@ http://flickity.metafizzy.co
 
 .flickity-prev-next-button:active {
   filter: alpha(opacity=60); /* IE8 */
-  opacity: 0.6;
+  opacity: .6;
 }
 
 .flickity-prev-next-button.previous { left: 10px; }
@@ -86,7 +86,7 @@ http://flickity.metafizzy.co
 
 .flickity-prev-next-button:disabled {
   filter: alpha(opacity=30); /* IE8 */
-  opacity: 0.3;
+  opacity: .3;
   cursor: auto;
 }
 
@@ -131,7 +131,7 @@ http://flickity.metafizzy.co
   background: #333;
   border-radius: 50%;
   filter: alpha(opacity=25); /* IE8 */
-  opacity: 0.25;
+  opacity: .25;
   cursor: pointer;
 }
 
