@@ -1,5 +1,7 @@
 # Changelog
 
++ Fixed bug with scrollbars. Fixed [#147](https://github.com/metafizzy/flickity/issues/122)
+
 ### v1.0.2
 
 + Fixed double move on prev/next button tap. Fixed [#122](https://github.com/metafizzy/flickity/issues/122)

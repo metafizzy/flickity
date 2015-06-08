@@ -177,13 +177,12 @@ Flickity.prototype.activate = function() {
     classie.add( this.element, 'flickity-rtl' );
   }
 
+  this.getSize();
   // move initial cell elements so they can be loaded as cells
   var cellElems = this._filterFindCellElements( this.element.children );
   moveElements( cellElems, this.slider );
   this.viewport.appendChild( this.slider );
   this.element.appendChild( this.viewport );
-
-  this.getSize();
   // get cells from children
   this.reloadCells();
 
