@@ -28,7 +28,7 @@ test( 'pageDots', function() {
   equal( getSelectedDotIndex(), 2, '3rd dot is selected' );
 
   // fake tap
-  flkty.pageDots.onTap( null, { target: dotsElems[4] });
+  flkty.pageDots.onTap( { target: dotsElems[4] } );
   equal( flkty.selectedIndex, 4, 'tap dot selects cell' );
 
 });
