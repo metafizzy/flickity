@@ -257,6 +257,7 @@ Flickity.prototype.positionCells = function() {
  * @param {Integer} index - which cell to start with
  */
 Flickity.prototype._positionCells = function( index ) {
+  index = index || 0;
   // also measure maxCellHeight
   // start 0 if positioning all cells
   this.maxCellHeight = index ? this.maxCellHeight || 0 : 0;
