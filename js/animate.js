@@ -84,6 +84,7 @@ proto.startAnimation = function() {
 };
 
 proto.animate = function() {
+  this.applyDragForce();
   this.applySelectedAttraction();
 
   var previousX = this.x;
@@ -226,6 +227,15 @@ proto.getRestingPosition = function() {
   return this.x + this.velocity / ( 1 - this.getFrictionFactor() );
 };
 
+proto.applyDragForce = function() {
+  if ( !this.isPointerDown ) {
+    return;
+  }
+  // change the position to drag position by applying force
+  var dragVelocity = this.dragX - this.x;
+  var dragForce = dragVelocity - this.velocity;
+  this.applyForce( dragForce );
+};
 
 proto.applySelectedAttraction = function() {
   // do not attract if pointer down or no cells
