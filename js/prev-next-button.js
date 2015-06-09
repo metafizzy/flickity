@@ -126,15 +126,32 @@ PrevNextButton.prototype.createSVG = function() {
   var svg = document.createElementNS( svgURI, 'svg');
   svg.setAttribute( 'viewBox', '0 0 100 100' );
   var path = document.createElementNS( svgURI, 'path');
-  path.setAttribute( 'd', 'M 50,0 L 60,10 L 20,50 L 60,90 L 50,100 L 0,50 Z' );
+  var pathMovements = getArrowMovements( this.parent.options.arrowShape );
+  path.setAttribute( 'd', pathMovements );
   path.setAttribute( 'class', 'arrow' );
-  // adjust arrow
-  var arrowTransform = this.isLeft ? 'translate(15,0)' :
-    'translate(85,100) rotate(180)';
-  path.setAttribute( 'transform', arrowTransform );
+  // rotate arrow
+  if ( !this.isLeft ) {
+    path.setAttribute( 'transform', 'translate(100, 100) rotate(180) ' );
+  }
   svg.appendChild( path );
   return svg;
 };
+
+// get SVG path movmement
+function getArrowMovements( shape ) {
+  // use shape as movement if string
+  if ( typeof shape == 'string' ) {
+    return shape;
+  }
+  // create movement string
+  return 'M ' + shape.x0 + ',50' +
+    ' L ' + shape.x1 + ',' + ( shape.y1 + 50 ) +
+    ' L ' + shape.x2 + ',' + ( shape.y2 + 50 ) +
+    ' L ' + shape.x3 + ',50 ' +
+    ' L ' + shape.x2 + ',' + ( 50 - shape.y2 ) +
+    ' L ' + shape.x1 + ',' + ( 50 - shape.y1 ) +
+    ' Z';
+}
 
 PrevNextButton.prototype.setArrowText = function() {
   var parentOptions = this.parent.options;
@@ -202,7 +219,13 @@ PrevNextButton.prototype.destroy = function() {
 utils.extend( Flickity.defaults, {
   prevNextButtons: true,
   leftArrowText: '‹',
-  rightArrowText: '›'
+  rightArrowText: '›',
+  arrowShape: {
+    x0: 10,
+    x1: 60, y1: 50,
+    x2: 70, y2: 40,
+    x3: 30
+  }
 });
 
 Flickity.createMethods.push('_createPrevNextButtons');
