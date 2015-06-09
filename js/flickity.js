@@ -538,6 +538,29 @@ Flickity.prototype.getParentCell = function( elem ) {
   return this.getCell( elem );
 };
 
+/**
+ * get cells adjacent to a cell
+ * @param {Integer} adjCount - number of adjacent cells
+ * @param {Integer} index - index of cell to start
+ * @returns {Array} cells - array of Flickity.Cells
+ */
+Flickity.prototype.getAdjacentCellElements = function( adjCount, index ) {
+  if ( !adjCount ) {
+    return [ this.selectedElement ];
+  }
+  index = index === undefined ? this.selectedIndex : index;
+  var cellElems = [];
+  var len = this.cells.length;
+  for ( var i = index - adjCount; i <= index + adjCount ; i++ ) {
+    var cellIndex = this.options.wrapAround ? utils.modulo( i, len ) : i;
+    var cell = this.cells[ cellIndex ];
+    if ( cell ) {
+      cellElems.push( cell.element );
+    }
+  }
+  return cellElems;
+};
+
 // -------------------------- events -------------------------- //
 
 Flickity.prototype.uiChange = function() {

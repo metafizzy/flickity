@@ -1,5 +1,7 @@
 # Changelog
 
++ Added `lazyLoad` feature. Fixed [#14](https://github.com/metafizzy/flickity/issues/14)
++ Added `getAdjacentCellElements`. Fixed [#69](https://github.com/metafizzy/flickity/issues/69)
 + Fixed bug with scrollbars. Fixed [#147](https://github.com/metafizzy/flickity/issues/122)
 
 ### v1.0.2

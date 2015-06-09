@@ -158,7 +158,6 @@ Flickity.prototype.cellChange = function( changedCellIndex ) {
   if ( this.options.freeScroll ) {
     this.positionSlider();
   } else {
-    this.positionSliderAtSelected();
     this.select( this.selectedIndex );
   }
 };
