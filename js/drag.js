@@ -116,7 +116,7 @@ proto.pointerDown = function( event, pointer ) {
   }
   this.pointerDownFocus( event );
   // stop if it was moving
-  this.velocity = 0;
+  this.dragX = this.x;
   classie.add( this.viewport, 'is-pointer-down' );
   // bind move and end events
   this._bindPostStartEvents( event );
@@ -209,20 +209,20 @@ proto.dragStart = function( event, pointer ) {
 proto.dragMove = function( event, pointer, moveVector ) {
   preventDefaultEvent( event );
 
-  this.previousDragX = this.x;
-
   var movedX = moveVector.x;
   // reverse if right-to-left
   var direction = this.options.rightToLeft ? -1 : 1;
-  this.x = this.dragStartPosition + movedX * direction;
+  var dragX = this.dragStartPosition + movedX * direction;
 
   if ( !this.options.wrapAround && this.cells.length ) {
     // slow drag
     var originBound = Math.max( -this.cells[0].target, this.dragStartPosition );
-    this.x = this.x > originBound ? ( this.x + originBound ) * 0.5 : this.x;
+    dragX = dragX > originBound ? ( dragX + originBound ) * 0.5 : dragX;
     var endBound = Math.min( -this.getLastCell().target, this.dragStartPosition );
-    this.x = this.x < endBound ? ( this.x + endBound ) * 0.5 : this.x;
+    dragX = dragX < endBound ? ( dragX + endBound ) * 0.5 : dragX;
   }
+
+  this.dragX = dragX;
 
   this.previousDragMoveTime = this.dragMoveTime;
   this.dragMoveTime = new Date();
@@ -230,7 +230,6 @@ proto.dragMove = function( event, pointer, moveVector ) {
 };
 
 proto.dragEnd = function( event, pointer ) {
-  this.dragEndFlick();
   if ( this.options.freeScroll ) {
     this.isFreeScrolling = true;
   }
@@ -252,26 +251,6 @@ proto.dragEnd = function( event, pointer ) {
   // TODO refactor this, selecting here feels weird
   this.select( index );
   this.dispatchEvent( 'dragEnd', event, [ pointer ] );
-};
-
-// apply velocity after dragging
-proto.dragEndFlick = function() {
-  if ( !isFinite( this.previousDragX ) ) {
-    return;
-  }
-  // set slider velocity
-  var timeDelta = this.dragMoveTime - this.previousDragMoveTime;
-  // prevent divide by 0, if dragMove & dragEnd happened at same time
-  if ( timeDelta ) {
-    // 60 frames per second, ideally
-    // TODO, velocity should be in pixels per millisecond
-    // currently in pixels per frame
-    timeDelta /= 1000 / 60;
-    var xDelta = this.x - this.previousDragX;
-    this.velocity = xDelta / timeDelta;
-  }
-  // reset
-  delete this.previousDragX;
 };
 
 proto.dragEndRestingSelect = function() {
