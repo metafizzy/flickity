@@ -114,7 +114,7 @@ test( 'drag', function( assert ) {
     getDragTest({
       message: 'big flick to 3rd cell',
       index: 2,
-      dragPositions: [ 0, -10, -100 ]
+      dragPositions: [ 0, -10, -80 ]
     }),
     // minimal movement to trigger static click
     function() {
@@ -177,7 +177,7 @@ test( 'drag with wrapAround', function( assert ) {
     getDragTest({
       message: 'big flick to 5th cell via wrap-around',
       index: 4,
-      dragPositions: [ 0, 10, 100 ]
+      dragPositions: [ 0, 10, 80 ]
     })
   ];
 

@@ -209,10 +209,10 @@ proto.dragStart = function( event, pointer ) {
 proto.dragMove = function( event, pointer, moveVector ) {
   preventDefaultEvent( event );
 
-  var movedX = moveVector.x;
+  this.previousDragX = this.dragX;
   // reverse if right-to-left
   var direction = this.options.rightToLeft ? -1 : 1;
-  var dragX = this.dragStartPosition + movedX * direction;
+  var dragX = this.dragStartPosition + moveVector.x * direction;
 
   if ( !this.options.wrapAround && this.cells.length ) {
     // slow drag
@@ -224,7 +224,6 @@ proto.dragMove = function( event, pointer, moveVector ) {
 
   this.dragX = dragX;
 
-  this.previousDragMoveTime = this.dragMoveTime;
   this.dragMoveTime = new Date();
   this.dispatchEvent( 'dragMove', event, [ pointer, moveVector ] );
 };
@@ -240,13 +239,14 @@ proto.dragEnd = function( event, pointer ) {
     // if free-scroll & not wrap around
     // do not free-scroll if going outside of bounding cells
     // so bounding cells can attract slider, and keep it in bounds
-    var restingX = this.getRestingPosition();
+    var restingX = this.getRestingDragPosition();
     this.isFreeScrolling = -restingX > this.cells[0].target &&
       -restingX < this.getLastCell().target;
   } else if ( !this.options.freeScroll && index == this.selectedIndex ) {
     // boost selection if selected index has not changed
     index += this.dragEndBoostSelect();
   }
+  delete this.previousDragX;
   // apply selection
   // TODO refactor this, selecting here feels weird
   this.select( index );
@@ -254,7 +254,7 @@ proto.dragEnd = function( event, pointer ) {
 };
 
 proto.dragEndRestingSelect = function() {
-  var restingX = this.getRestingPosition();
+  var restingX = this.getRestingDragPosition();
   // how far away from selected cell
   var distance = Math.abs( this.getCellDistance( -restingX, this.selectedIndex ) );
   // get closet resting going up and going down
@@ -264,6 +264,11 @@ proto.dragEndRestingSelect = function() {
   var index = positiveResting.distance < negativeResting.distance ?
     positiveResting.index : negativeResting.index;
   return index;
+};
+
+proto.getRestingDragPosition = function() {
+  var dragVelocity = this.dragX - this.x;
+  return this.x + dragVelocity / ( 1 - this.getFrictionFactor() );
 };
 
 /**
@@ -317,12 +322,20 @@ proto.getCellDistance = function( x, index ) {
 };
 
 proto.dragEndBoostSelect = function() {
-  var distance = this.getCellDistance( -this.x, this.selectedIndex );
-  if ( distance > 0 && this.velocity < -1 ) {
-    // if moving towards the right, and positive velocity, and the next attractor
+  // do not boost if no previousDragX or dragMoveTime
+  if ( this.previousDragX === undefined || !this.dragMoveTime ||
+    // or if drag was held for 100 ms
+    new Date() - this.dragMoveTime > 100 ) {
+    return 0;
+  }
+
+  var distance = this.getCellDistance( -this.dragX, this.selectedIndex );
+  var delta = this.previousDragX - this.dragX;
+  if ( distance > 0 && delta > 0 ) {
+    // boost to next if moving towards the right, and positive velocity
     return 1;
-  } else if ( distance < 0 && this.velocity > 1 ) {
-    // if moving towards the left, and negative velocity, and previous attractor
+  } else if ( distance < 0 && delta < 0 ) {
+    // boost to previous if moving towards the left, and negative velocity
     return -1;
   }
   return 0;
