@@ -19,8 +19,7 @@
     );
   } else {
     // browser global
-    window.Flickity = window.Flickity || {};
-    window.Flickity = factory(
+    factory(
       window,
       window.Flickity,
       window.fizzyUIUtils

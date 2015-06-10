@@ -25,8 +25,7 @@
     );
   } else {
     // browser global
-    window.Flickity = window.Flickity || {};
-    window.Flickity.dragPrototype = factory(
+    window.Flickity = factory(
       window,
       window.classie,
       window.eventie,
@@ -62,19 +61,18 @@ Flickity.createMethods.push('_createDrag');
 
 // -------------------------- drag prototype -------------------------- //
 
-var proto = {};
-utils.extend( proto, Unidragger.prototype );
+utils.extend( Flickity.prototype, Unidragger.prototype );
 
 // --------------------------  -------------------------- //
 
-proto._createDrag = function() {
+Flickity.prototype._createDrag = function() {
   this.on( 'activate', this.bindDrag );
   this.on( 'uiChange', this._uiChangeDrag );
   this.on( 'childUIPointerDown', this._childUIPointerDownDrag );
   this.on( 'deactivate', this.unbindDrag );
 };
 
-proto.bindDrag = function() {
+Flickity.prototype.bindDrag = function() {
   if ( !this.options.draggable || this.isDragBound ) {
     return;
   }
@@ -84,7 +82,7 @@ proto.bindDrag = function() {
   this.isDragBound = true;
 };
 
-proto.unbindDrag = function() {
+Flickity.prototype.unbindDrag = function() {
   if ( !this.isDragBound ) {
     return;
   }
@@ -93,18 +91,18 @@ proto.unbindDrag = function() {
   delete this.isDragBound;
 };
 
-proto._uiChangeDrag = function() {
+Flickity.prototype._uiChangeDrag = function() {
   delete this.isFreeScrolling;
 };
 
-proto._childUIPointerDownDrag = function( event ) {
+Flickity.prototype._childUIPointerDownDrag = function( event ) {
   preventDefaultEvent( event );
   this.pointerDownFocus( event );
 };
 
 // -------------------------- pointer events -------------------------- //
 
-proto.pointerDown = function( event, pointer ) {
+Flickity.prototype.pointerDown = function( event, pointer ) {
   this._dragPointerDown( event, pointer );
 
   // kludge to blur focused inputs in dragger
@@ -133,7 +131,7 @@ var focusNodes = {
   SELECT: true
 };
 
-proto.pointerDownFocus = function( event ) {
+Flickity.prototype.pointerDownFocus = function( event ) {
   // focus element, if not touch, and its not an input or select
   if ( this.options.accessibility && !touchStartEvents[ event.type ] &&
       !focusNodes[ event.target.nodeName ] ) {
@@ -143,20 +141,20 @@ proto.pointerDownFocus = function( event ) {
 
 // ----- move ----- //
 
-proto.pointerMove = function( event, pointer ) {
+Flickity.prototype.pointerMove = function( event, pointer ) {
   var moveVector = this._dragPointerMove( event, pointer );
   this.touchVerticalScrollMove( event, pointer, moveVector );
   this._dragMove( event, pointer, moveVector );
   this.dispatchEvent( 'pointerMove', event, [ pointer, moveVector ] );
 };
 
-proto.hasDragStarted = function( moveVector ) {
+Flickity.prototype.hasDragStarted = function( moveVector ) {
   return !this.isTouchScrolling && Math.abs( moveVector.x ) > 3;
 };
 
 // ----- up ----- //
 
-proto.pointerUp = function( event, pointer ) {
+Flickity.prototype.pointerUp = function( event, pointer ) {
   delete this.isTouchScrolling;
   classie.remove( this.viewport, 'is-pointer-down' );
   this.dispatchEvent( 'pointerUp', event, [ pointer ] );
@@ -178,7 +176,7 @@ function getPointerWindowY( pointer ) {
   return pointerPoint.y - window.pageYOffset;
 }
 
-proto.touchVerticalScrollMove = function( event, pointer, moveVector ) {
+Flickity.prototype.touchVerticalScrollMove = function( event, pointer, moveVector ) {
   // do not scroll if already dragging, if disabled
   var touchVerticalScroll = this.options.touchVerticalScroll;
   // if touchVerticalScroll is 'withDrag', allow scrolling and dragging
@@ -200,13 +198,13 @@ proto.touchVerticalScrollMove = function( event, pointer, moveVector ) {
 
 // -------------------------- dragging -------------------------- //
 
-proto.dragStart = function( event, pointer ) {
+Flickity.prototype.dragStart = function( event, pointer ) {
   this.dragStartPosition = this.x;
   this.startAnimation();
   this.dispatchEvent( 'dragStart', event, [ pointer ] );
 };
 
-proto.dragMove = function( event, pointer, moveVector ) {
+Flickity.prototype.dragMove = function( event, pointer, moveVector ) {
   preventDefaultEvent( event );
 
   this.previousDragX = this.dragX;
@@ -228,7 +226,7 @@ proto.dragMove = function( event, pointer, moveVector ) {
   this.dispatchEvent( 'dragMove', event, [ pointer, moveVector ] );
 };
 
-proto.dragEnd = function( event, pointer ) {
+Flickity.prototype.dragEnd = function( event, pointer ) {
   if ( this.options.freeScroll ) {
     this.isFreeScrolling = true;
   }
@@ -253,7 +251,7 @@ proto.dragEnd = function( event, pointer ) {
   this.dispatchEvent( 'dragEnd', event, [ pointer ] );
 };
 
-proto.dragEndRestingSelect = function() {
+Flickity.prototype.dragEndRestingSelect = function() {
   var restingX = this.getRestingDragPosition();
   // how far away from selected cell
   var distance = Math.abs( this.getCellDistance( -restingX, this.selectedIndex ) );
@@ -266,7 +264,7 @@ proto.dragEndRestingSelect = function() {
   return index;
 };
 
-proto.getRestingDragPosition = function() {
+Flickity.prototype.getRestingDragPosition = function() {
   var dragVelocity = this.dragX - this.x;
   return this.x + dragVelocity / ( 1 - this.getFrictionFactor() );
 };
@@ -279,7 +277,7 @@ proto.getRestingDragPosition = function() {
  * @param {Integer} increment - +1 or -1, going up or down
  * @returns {Object} - { distance: {Number}, index: {Integer} }
  */
-proto._getClosestResting = function( restingX, distance, increment ) {
+Flickity.prototype._getClosestResting = function( restingX, distance, increment ) {
   var index = this.selectedIndex;
   var minDistance = Infinity;
   var condition = this.options.contain && !this.options.wrapAround ?
@@ -307,7 +305,7 @@ proto._getClosestResting = function( restingX, distance, increment ) {
  * @param {Number} x
  * @param {Integer} index - cell index
  */
-proto.getCellDistance = function( x, index ) {
+Flickity.prototype.getCellDistance = function( x, index ) {
   var len = this.cells.length;
   // wrap around if at least 2 cells
   var isWrapAround = this.options.wrapAround && len > 1;
@@ -321,7 +319,7 @@ proto.getCellDistance = function( x, index ) {
   return x - ( cell.target + wrap );
 };
 
-proto.dragEndBoostSelect = function() {
+Flickity.prototype.dragEndBoostSelect = function() {
   // do not boost if no previousDragX or dragMoveTime
   if ( this.previousDragX === undefined || !this.dragMoveTime ||
     // or if drag was held for 100 ms
@@ -343,17 +341,13 @@ proto.dragEndBoostSelect = function() {
 
 // ----- staticClick ----- //
 
-proto.staticClick = function( event, pointer ) {
+Flickity.prototype.staticClick = function( event, pointer ) {
   // get clickedCell, if cell was clicked
   var clickedCell = this.getParentCell( event.target );
   var cellElem = clickedCell && clickedCell.element;
   var cellIndex = clickedCell && utils.indexOf( this.cells, clickedCell );
   this.dispatchEvent( 'staticClick', event, [ pointer, cellElem, cellIndex ] );
 };
-
-// -----  ----- //
-
-utils.extend( Flickity.prototype, proto );
 
 // -----  ----- //
 

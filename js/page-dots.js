@@ -23,8 +23,7 @@
     );
   } else {
     // browser global
-    window.Flickity = window.Flickity || {};
-    window.Flickity.PageDots = factory(
+    factory(
       window,
       window.eventie,
       window.Flickity,
@@ -180,6 +179,6 @@ Flickity.prototype.deactivatePageDots = function() {
 
 Flickity.PageDots = PageDots;
 
-return PageDots;
+return Flickity;
 
 }));

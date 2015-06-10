@@ -20,8 +20,7 @@
     );
   } else {
     // browser global
-    window.Flickity = window.Flickity || {};
-    window.Flickity.Player = factory(
+    factory(
       window.EventEmitter,
       window.eventie,
       window.Flickity
@@ -181,6 +180,6 @@ Flickity.prototype.onmouseleave = function() {
 
 Flickity.Player = Player;
 
-return Player;
+return Flickity;
 
 }));

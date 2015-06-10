@@ -23,7 +23,7 @@
     );
   } else {
     // browser global
-    window.Flickity = factory(
+    factory(
       window,
       window.classie,
       window.eventie,

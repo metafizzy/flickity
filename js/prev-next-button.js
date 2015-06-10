@@ -25,8 +25,7 @@
     );
   } else {
     // browser global
-    window.Flickity = window.Flickity || {};
-    window.Flickity.PrevNextButton = factory(
+    factory(
       window,
       window.eventie,
       window.Flickity,
@@ -257,6 +256,6 @@ Flickity.prototype.deactivatePrevNextButtons = function() {
 
 Flickity.PrevNextButton = PrevNextButton;
 
-return PrevNextButton;
+return Flickity;
 
 }));
