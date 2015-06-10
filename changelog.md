@@ -4,6 +4,7 @@
 + Added `arrowShape` option to customize previous/next button arrow shape. For [#50](https://github.com/metafizzy/flickity/issues/50)
 + Added `getAdjacentCellElements`. Fixed [#69](https://github.com/metafizzy/flickity/issues/69)
 + Fixed bug with scrollbars. Fixed [#147](https://github.com/metafizzy/flickity/issues/122)
++ Fixed bug with `contain` and `freescroll`. Fixed [#79](https://github.com/metafizzy/flickity/issues/79)
 
 ### v1.0.2
 

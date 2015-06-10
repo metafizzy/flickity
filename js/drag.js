@@ -263,10 +263,6 @@ proto.dragEndRestingSelect = function() {
   // use closer resting for wrap-around
   var index = positiveResting.distance < negativeResting.distance ?
     positiveResting.index : negativeResting.index;
-  // for contain, force boost if delta is not greater than 1
-  if ( this.options.contain && !this.options.wrapAround ) {
-    index = Math.abs( index - this.selectedIndex ) <= 1 ? this.selectedIndex : index;
-  }
   return index;
 };
 
