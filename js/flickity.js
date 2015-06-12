@@ -551,7 +551,9 @@ Flickity.prototype.getAdjacentCellElements = function( adjCount, index ) {
   index = index === undefined ? this.selectedIndex : index;
 
   var len = this.cells.length;
-  if ( 1 + ( adjCount * 2 ) >= len ) return this.getCellElements();
+  if ( 1 + ( adjCount * 2 ) >= len ) {
+    return this.getCellElements();
+  }
 
   var cellElems = [];
   for ( var i = index - adjCount; i <= index + adjCount ; i++ ) {
