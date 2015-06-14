@@ -539,6 +539,68 @@ Flickity.prototype.getParentCell = function( elem ) {
 };
 
 /**
+ * get cells including and following a cell
+ * @param {Integer} count - number of cells
+ * @param {Integer} index - index of cell to start
+ * @returns {Array} cells - array of Flickity.cells
+ */
+Flickity.prototype.getNextCellElements = function( count, index ) {
+  if ( !count ) {
+    return [ this.selectedElement ];
+  }
+  index = typeof index === 'undefined' ? this.selectedIndex : index;
+
+  var len = this.cells.length;
+  count = Math.min(count, len);
+
+  var cellElems = [],
+    cellIndex,
+    cell;
+
+  for ( var i=0; i < count; i++ ) {
+    if ( i + index >= len && ! this.options.wrapAround ) return cellElems;
+    cellIndex = ( i + index ) % len;
+    cell = this.cells[cellIndex];
+    if ( !! cell ) {
+      cellElems.push( cell.element );
+    }
+  }
+
+  return cellElems;
+};
+
+/**
+ * get cells including and following a cell
+ * @param {Integer} count - number of cells
+ * @param {Integer} index - index of cell to start
+ * @returns {Array} cells - array of Flickity.cells
+ */
+Flickity.prototype.getPrevCellElements = function( count, index ) {
+  if ( !count ) {
+    return [ this.selectedElement ];
+  }
+  index = typeof index === 'undefined' ? this.selectedIndex : index;
+
+  var len = this.cells.length;
+  count = Math.min(count, len);
+
+  var cellElems = [],
+    cellIndex,
+    cell;
+
+  for ( var i=0; i < count; i++ ) {
+    if ( index - i < 0 && ! this.options.wrapAround ) return cellElems;
+    cellIndex = ( ( ( index - i ) % len ) + len ) % len;
+    cell = this.cells[cellIndex];
+    if ( !! cell ) {
+      cellElems.push( cell.element );
+    }
+  }
+
+  return cellElems;
+};
+
+/**
  * get cells adjacent to a cell
  * @param {Integer} adjCount - number of adjacent cells
  * @param {Integer} index - index of cell to start
