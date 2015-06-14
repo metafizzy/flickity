@@ -243,7 +243,7 @@ if ( typeof define === 'function' && define.amd ) {
  */
 
 ;(function () {
-    
+    'use strict';
 
     /**
      * Class for managing events.
@@ -1190,7 +1190,7 @@ if ( typeof define === 'function' && define.amd ) {
 
 ( function( ElemProto ) {
 
-  
+  'use strict';
 
   var matchesMethod = ( function() {
     // check for the standard method name first
@@ -1296,7 +1296,7 @@ if ( typeof define === 'function' && define.amd ) {
 
 ( function( window, factory ) {
   /*global define: false, module: false, require: false */
-  
+  'use strict';
   // universal module definition
 
   if ( typeof define == 'function' && define.amd ) {
@@ -1559,7 +1559,7 @@ return utils;
 }));
 
 ( function( window, factory ) {
-  
+  'use strict';
   // universal module definition
 
   if ( typeof define == 'function' && define.amd ) {
@@ -1653,7 +1653,7 @@ return Cell;
 }));
 
 ( function( window, factory ) {
-  
+  'use strict';
   // universal module definition
 
   if ( typeof define == 'function' && define.amd ) {
@@ -1738,6 +1738,7 @@ proto.startAnimation = function() {
 };
 
 proto.animate = function() {
+  this.applyDragForce();
   this.applySelectedAttraction();
 
   var previousX = this.x;
@@ -1880,6 +1881,15 @@ proto.getRestingPosition = function() {
   return this.x + this.velocity / ( 1 - this.getFrictionFactor() );
 };
 
+proto.applyDragForce = function() {
+  if ( !this.isPointerDown ) {
+    return;
+  }
+  // change the position to drag position by applying force
+  var dragVelocity = this.dragX - this.x;
+  var dragForce = dragVelocity - this.velocity;
+  this.applyForce( dragForce );
+};
 
 proto.applySelectedAttraction = function() {
   // do not attract if pointer down or no cells
@@ -1911,7 +1921,7 @@ return proto;
  */
 
 ( function( window, factory ) {
-  
+  'use strict';
   // universal module definition
 
   if ( typeof define == 'function' && define.amd ) {
@@ -2078,13 +2088,12 @@ Flickity.prototype.activate = function() {
     classie.add( this.element, 'flickity-rtl' );
   }
 
+  this.getSize();
   // move initial cell elements so they can be loaded as cells
   var cellElems = this._filterFindCellElements( this.element.children );
   moveElements( cellElems, this.slider );
   this.viewport.appendChild( this.slider );
   this.element.appendChild( this.viewport );
-
-  this.getSize();
   // get cells from children
   this.reloadCells();
 
@@ -2159,6 +2168,7 @@ Flickity.prototype.positionCells = function() {
  * @param {Integer} index - which cell to start with
  */
 Flickity.prototype._positionCells = function( index ) {
+  index = index || 0;
   // also measure maxCellHeight
   // start 0 if positioning all cells
   this.maxCellHeight = index ? this.maxCellHeight || 0 : 0;
@@ -2439,6 +2449,96 @@ Flickity.prototype.getParentCell = function( elem ) {
   return this.getCell( elem );
 };
 
+/**
+ * get cells including and following a cell
+ * @param {Integer} count - number of cells
+ * @param {Integer} index - index of cell to start
+ * @returns {Array} cells - array of Flickity.cells
+ */
+Flickity.prototype.getNextCellElements = function( count, index ) {
+  if ( !count ) {
+    return [ this.selectedElement ];
+  }
+  index = typeof index === 'undefined' ? this.selectedIndex : index;
+
+  var len = this.cells.length;
+  count = Math.min(count, len);
+
+  var cellElems = [],
+    cellIndex,
+    cell;
+
+  for ( var i=0; i < count; i++ ) {
+    if ( i + index >= len && ! this.options.wrapAround ) return cellElems;
+    cellIndex = ( i + index ) % len;
+    cell = this.cells[cellIndex];
+    if ( !! cell ) {
+      cellElems.push( cell.element );
+    }
+  }
+
+  return cellElems;
+};
+
+/**
+ * get cells including and following a cell
+ * @param {Integer} count - number of cells
+ * @param {Integer} index - index of cell to start
+ * @returns {Array} cells - array of Flickity.cells
+ */
+Flickity.prototype.getPrevCellElements = function( count, index ) {
+  if ( !count ) {
+    return [ this.selectedElement ];
+  }
+  index = typeof index === 'undefined' ? this.selectedIndex : index;
+
+  var len = this.cells.length;
+  count = Math.min(count, len);
+
+  var cellElems = [],
+    cellIndex,
+    cell;
+
+  for ( var i=0; i < count; i++ ) {
+    if ( index - i < 0 && ! this.options.wrapAround ) return cellElems;
+    cellIndex = ( ( ( index - i ) % len ) + len ) % len;
+    cell = this.cells[cellIndex];
+    if ( !! cell ) {
+      cellElems.push( cell.element );
+    }
+  }
+
+  return cellElems;
+};
+
+/**
+ * get cells adjacent to a cell
+ * @param {Integer} adjCount - number of adjacent cells
+ * @param {Integer} index - index of cell to start
+ * @returns {Array} cells - array of Flickity.Cells
+ */
+Flickity.prototype.getAdjacentCellElements = function( adjCount, index ) {
+  if ( !adjCount ) {
+    return [ this.selectedElement ];
+  }
+  index = index === undefined ? this.selectedIndex : index;
+
+  var len = this.cells.length;
+  if ( 1 + ( adjCount * 2 ) >= len ) {
+    return this.getCellElements();
+  }
+
+  var cellElems = [];
+  for ( var i = index - adjCount; i <= index + adjCount ; i++ ) {
+    var cellIndex = this.options.wrapAround ? utils.modulo( i, len ) : i;
+    var cell = this.cells[ cellIndex ];
+    if ( cell ) {
+      cellElems.push( cell.element );
+    }
+  }
+  return cellElems;
+};
+
 // -------------------------- events -------------------------- //
 
 Flickity.prototype.uiChange = function() {
@@ -2632,7 +2732,7 @@ return Flickity;
 /*global define: false, module: false, require: false */
 
 ( function( window, factory ) {
-  
+  'use strict';
   // universal module definition
 
   if ( typeof define == 'function' && define.amd ) {
@@ -2949,7 +3049,7 @@ return Unipointer;
 
 ( function( window, factory ) {
   /*global define: false, module: false, require: false */
-  
+  'use strict';
   // universal module definition
 
   if ( typeof define == 'function' && define.amd ) {
@@ -3249,7 +3349,7 @@ return Unidragger;
 }));
 
 ( function( window, factory ) {
-  
+  'use strict';
   // universal module definition
 
   if ( typeof define == 'function' && define.amd ) {
@@ -3275,8 +3375,7 @@ return Unidragger;
     );
   } else {
     // browser global
-    window.Flickity = window.Flickity || {};
-    window.Flickity.dragPrototype = factory(
+    window.Flickity = factory(
       window,
       window.classie,
       window.eventie,
@@ -3312,19 +3411,18 @@ Flickity.createMethods.push('_createDrag');
 
 // -------------------------- drag prototype -------------------------- //
 
-var proto = {};
-utils.extend( proto, Unidragger.prototype );
+utils.extend( Flickity.prototype, Unidragger.prototype );
 
 // --------------------------  -------------------------- //
 
-proto._createDrag = function() {
+Flickity.prototype._createDrag = function() {
   this.on( 'activate', this.bindDrag );
   this.on( 'uiChange', this._uiChangeDrag );
   this.on( 'childUIPointerDown', this._childUIPointerDownDrag );
   this.on( 'deactivate', this.unbindDrag );
 };
 
-proto.bindDrag = function() {
+Flickity.prototype.bindDrag = function() {
   if ( !this.options.draggable || this.isDragBound ) {
     return;
   }
@@ -3334,7 +3432,7 @@ proto.bindDrag = function() {
   this.isDragBound = true;
 };
 
-proto.unbindDrag = function() {
+Flickity.prototype.unbindDrag = function() {
   if ( !this.isDragBound ) {
     return;
   }
@@ -3343,18 +3441,18 @@ proto.unbindDrag = function() {
   delete this.isDragBound;
 };
 
-proto._uiChangeDrag = function() {
+Flickity.prototype._uiChangeDrag = function() {
   delete this.isFreeScrolling;
 };
 
-proto._childUIPointerDownDrag = function( event ) {
+Flickity.prototype._childUIPointerDownDrag = function( event ) {
   preventDefaultEvent( event );
   this.pointerDownFocus( event );
 };
 
 // -------------------------- pointer events -------------------------- //
 
-proto.pointerDown = function( event, pointer ) {
+Flickity.prototype.pointerDown = function( event, pointer ) {
   this._dragPointerDown( event, pointer );
 
   // kludge to blur focused inputs in dragger
@@ -3366,7 +3464,7 @@ proto.pointerDown = function( event, pointer ) {
   }
   this.pointerDownFocus( event );
   // stop if it was moving
-  this.velocity = 0;
+  this.dragX = this.x;
   classie.add( this.viewport, 'is-pointer-down' );
   // bind move and end events
   this._bindPostStartEvents( event );
@@ -3383,7 +3481,7 @@ var focusNodes = {
   SELECT: true
 };
 
-proto.pointerDownFocus = function( event ) {
+Flickity.prototype.pointerDownFocus = function( event ) {
   // focus element, if not touch, and its not an input or select
   if ( this.options.accessibility && !touchStartEvents[ event.type ] &&
       !focusNodes[ event.target.nodeName ] ) {
@@ -3393,20 +3491,20 @@ proto.pointerDownFocus = function( event ) {
 
 // ----- move ----- //
 
-proto.pointerMove = function( event, pointer ) {
+Flickity.prototype.pointerMove = function( event, pointer ) {
   var moveVector = this._dragPointerMove( event, pointer );
   this.touchVerticalScrollMove( event, pointer, moveVector );
   this._dragMove( event, pointer, moveVector );
   this.dispatchEvent( 'pointerMove', event, [ pointer, moveVector ] );
 };
 
-proto.hasDragStarted = function( moveVector ) {
+Flickity.prototype.hasDragStarted = function( moveVector ) {
   return !this.isTouchScrolling && Math.abs( moveVector.x ) > 3;
 };
 
 // ----- up ----- //
 
-proto.pointerUp = function( event, pointer ) {
+Flickity.prototype.pointerUp = function( event, pointer ) {
   delete this.isTouchScrolling;
   classie.remove( this.viewport, 'is-pointer-down' );
   this.dispatchEvent( 'pointerUp', event, [ pointer ] );
@@ -3428,7 +3526,7 @@ function getPointerWindowY( pointer ) {
   return pointerPoint.y - window.pageYOffset;
 }
 
-proto.touchVerticalScrollMove = function( event, pointer, moveVector ) {
+Flickity.prototype.touchVerticalScrollMove = function( event, pointer, moveVector ) {
   // do not scroll if already dragging, if disabled
   var touchVerticalScroll = this.options.touchVerticalScroll;
   // if touchVerticalScroll is 'withDrag', allow scrolling and dragging
@@ -3450,37 +3548,35 @@ proto.touchVerticalScrollMove = function( event, pointer, moveVector ) {
 
 // -------------------------- dragging -------------------------- //
 
-proto.dragStart = function( event, pointer ) {
+Flickity.prototype.dragStart = function( event, pointer ) {
   this.dragStartPosition = this.x;
   this.startAnimation();
   this.dispatchEvent( 'dragStart', event, [ pointer ] );
 };
 
-proto.dragMove = function( event, pointer, moveVector ) {
+Flickity.prototype.dragMove = function( event, pointer, moveVector ) {
   preventDefaultEvent( event );
 
-  this.previousDragX = this.x;
-
-  var movedX = moveVector.x;
+  this.previousDragX = this.dragX;
   // reverse if right-to-left
   var direction = this.options.rightToLeft ? -1 : 1;
-  this.x = this.dragStartPosition + movedX * direction;
+  var dragX = this.dragStartPosition + moveVector.x * direction;
 
   if ( !this.options.wrapAround && this.cells.length ) {
     // slow drag
-    var originBound = Math.max( -this.cells[0].target, this.dragStartPosition);
-    this.x = this.x > originBound ? ( this.x - originBound ) * 0.5 + originBound : this.x;
+    var originBound = Math.max( -this.cells[0].target, this.dragStartPosition );
+    dragX = dragX > originBound ? ( dragX + originBound ) * 0.5 : dragX;
     var endBound = Math.min( -this.getLastCell().target, this.dragStartPosition );
-    this.x = this.x < endBound ? ( this.x - endBound ) * 0.5 + endBound : this.x;
+    dragX = dragX < endBound ? ( dragX + endBound ) * 0.5 : dragX;
   }
 
-  this.previousDragMoveTime = this.dragMoveTime;
+  this.dragX = dragX;
+
   this.dragMoveTime = new Date();
   this.dispatchEvent( 'dragMove', event, [ pointer, moveVector ] );
 };
 
-proto.dragEnd = function( event, pointer ) {
-  this.dragEndFlick();
+Flickity.prototype.dragEnd = function( event, pointer ) {
   if ( this.options.freeScroll ) {
     this.isFreeScrolling = true;
   }
@@ -3491,41 +3587,22 @@ proto.dragEnd = function( event, pointer ) {
     // if free-scroll & not wrap around
     // do not free-scroll if going outside of bounding cells
     // so bounding cells can attract slider, and keep it in bounds
-    var restingX = this.getRestingPosition();
+    var restingX = this.getRestingDragPosition();
     this.isFreeScrolling = -restingX > this.cells[0].target &&
       -restingX < this.getLastCell().target;
   } else if ( !this.options.freeScroll && index == this.selectedIndex ) {
     // boost selection if selected index has not changed
     index += this.dragEndBoostSelect();
   }
+  delete this.previousDragX;
   // apply selection
   // TODO refactor this, selecting here feels weird
   this.select( index );
   this.dispatchEvent( 'dragEnd', event, [ pointer ] );
 };
 
-// apply velocity after dragging
-proto.dragEndFlick = function() {
-  if ( !isFinite( this.previousDragX ) ) {
-    return;
-  }
-  // set slider velocity
-  var timeDelta = this.dragMoveTime - this.previousDragMoveTime;
-  // prevent divide by 0, if dragMove & dragEnd happened at same time
-  if ( timeDelta ) {
-    // 60 frames per second, ideally
-    // TODO, velocity should be in pixels per millisecond
-    // currently in pixels per frame
-    timeDelta /= 1000 / 60;
-    var xDelta = this.x - this.previousDragX;
-    this.velocity = xDelta / timeDelta;
-  }
-  // reset
-  delete this.previousDragX;
-};
-
-proto.dragEndRestingSelect = function() {
-  var restingX = this.getRestingPosition();
+Flickity.prototype.dragEndRestingSelect = function() {
+  var restingX = this.getRestingDragPosition();
   // how far away from selected cell
   var distance = Math.abs( this.getCellDistance( -restingX, this.selectedIndex ) );
   // get closet resting going up and going down
@@ -3534,11 +3611,12 @@ proto.dragEndRestingSelect = function() {
   // use closer resting for wrap-around
   var index = positiveResting.distance < negativeResting.distance ?
     positiveResting.index : negativeResting.index;
-  // for contain, force boost if delta is not greater than 1
-  if ( this.options.contain && !this.options.wrapAround ) {
-    index = Math.abs( index - this.selectedIndex ) <= 1 ? this.selectedIndex : index;
-  }
   return index;
+};
+
+Flickity.prototype.getRestingDragPosition = function() {
+  var dragVelocity = this.dragX - this.x;
+  return this.x + dragVelocity / ( 1 - this.getFrictionFactor() );
 };
 
 /**
@@ -3549,7 +3627,7 @@ proto.dragEndRestingSelect = function() {
  * @param {Integer} increment - +1 or -1, going up or down
  * @returns {Object} - { distance: {Number}, index: {Integer} }
  */
-proto._getClosestResting = function( restingX, distance, increment ) {
+Flickity.prototype._getClosestResting = function( restingX, distance, increment ) {
   var index = this.selectedIndex;
   var minDistance = Infinity;
   var condition = this.options.contain && !this.options.wrapAround ?
@@ -3577,7 +3655,7 @@ proto._getClosestResting = function( restingX, distance, increment ) {
  * @param {Number} x
  * @param {Integer} index - cell index
  */
-proto.getCellDistance = function( x, index ) {
+Flickity.prototype.getCellDistance = function( x, index ) {
   var len = this.cells.length;
   // wrap around if at least 2 cells
   var isWrapAround = this.options.wrapAround && len > 1;
@@ -3591,13 +3669,21 @@ proto.getCellDistance = function( x, index ) {
   return x - ( cell.target + wrap );
 };
 
-proto.dragEndBoostSelect = function() {
-  var distance = this.getCellDistance( -this.x, this.selectedIndex );
-  if ( distance > 0 && this.velocity < -1 ) {
-    // if moving towards the right, and positive velocity, and the next attractor
+Flickity.prototype.dragEndBoostSelect = function() {
+  // do not boost if no previousDragX or dragMoveTime
+  if ( this.previousDragX === undefined || !this.dragMoveTime ||
+    // or if drag was held for 100 ms
+    new Date() - this.dragMoveTime > 100 ) {
+    return 0;
+  }
+
+  var distance = this.getCellDistance( -this.dragX, this.selectedIndex );
+  var delta = this.previousDragX - this.dragX;
+  if ( distance > 0 && delta > 0 ) {
+    // boost to next if moving towards the right, and positive velocity
     return 1;
-  } else if ( distance < 0 && this.velocity > 1 ) {
-    // if moving towards the left, and negative velocity, and previous attractor
+  } else if ( distance < 0 && delta < 0 ) {
+    // boost to previous if moving towards the left, and negative velocity
     return -1;
   }
   return 0;
@@ -3605,17 +3691,13 @@ proto.dragEndBoostSelect = function() {
 
 // ----- staticClick ----- //
 
-proto.staticClick = function( event, pointer ) {
+Flickity.prototype.staticClick = function( event, pointer ) {
   // get clickedCell, if cell was clicked
   var clickedCell = this.getParentCell( event.target );
   var cellElem = clickedCell && clickedCell.element;
   var cellIndex = clickedCell && utils.indexOf( this.cells, clickedCell );
   this.dispatchEvent( 'staticClick', event, [ pointer, cellElem, cellIndex ] );
 };
-
-// -----  ----- //
-
-utils.extend( Flickity.prototype, proto );
 
 // -----  ----- //
 
@@ -3633,7 +3715,7 @@ return Flickity;
 
 ( function( window, factory ) {
   /*global define: false, module: false, require: false */
-  
+  'use strict';
   // universal module definition
 
   if ( typeof define == 'function' && define.amd ) {
@@ -3747,7 +3829,7 @@ return TapListener;
 // -------------------------- prev/next button -------------------------- //
 
 ( function( window, factory ) {
-  
+  'use strict';
   // universal module definition
 
   if ( typeof define == 'function' && define.amd ) {
@@ -3771,8 +3853,7 @@ return TapListener;
     );
   } else {
     // browser global
-    window.Flickity = window.Flickity || {};
-    window.Flickity.PrevNextButton = factory(
+    factory(
       window,
       window.eventie,
       window.Flickity,
@@ -3872,15 +3953,32 @@ PrevNextButton.prototype.createSVG = function() {
   var svg = document.createElementNS( svgURI, 'svg');
   svg.setAttribute( 'viewBox', '0 0 100 100' );
   var path = document.createElementNS( svgURI, 'path');
-  path.setAttribute( 'd', 'M 50,0 L 60,10 L 20,50 L 60,90 L 50,100 L 0,50 Z' );
+  var pathMovements = getArrowMovements( this.parent.options.arrowShape );
+  path.setAttribute( 'd', pathMovements );
   path.setAttribute( 'class', 'arrow' );
-  // adjust arrow
-  var arrowTransform = this.isLeft ? 'translate(15,0)' :
-    'translate(85,100) rotate(180)';
-  path.setAttribute( 'transform', arrowTransform );
+  // rotate arrow
+  if ( !this.isLeft ) {
+    path.setAttribute( 'transform', 'translate(100, 100) rotate(180) ' );
+  }
   svg.appendChild( path );
   return svg;
 };
+
+// get SVG path movmement
+function getArrowMovements( shape ) {
+  // use shape as movement if string
+  if ( typeof shape == 'string' ) {
+    return shape;
+  }
+  // create movement string
+  return 'M ' + shape.x0 + ',50' +
+    ' L ' + shape.x1 + ',' + ( shape.y1 + 50 ) +
+    ' L ' + shape.x2 + ',' + ( shape.y2 + 50 ) +
+    ' L ' + shape.x3 + ',50 ' +
+    ' L ' + shape.x2 + ',' + ( 50 - shape.y2 ) +
+    ' L ' + shape.x1 + ',' + ( 50 - shape.y1 ) +
+    ' Z';
+}
 
 PrevNextButton.prototype.setArrowText = function() {
   var parentOptions = this.parent.options;
@@ -3948,7 +4046,13 @@ PrevNextButton.prototype.destroy = function() {
 utils.extend( Flickity.defaults, {
   prevNextButtons: true,
   leftArrowText: '‹',
-  rightArrowText: '›'
+  rightArrowText: '›',
+  arrowShape: {
+    x0: 10,
+    x1: 60, y1: 50,
+    x2: 70, y2: 40,
+    x3: 30
+  }
 });
 
 Flickity.createMethods.push('_createPrevNextButtons');
@@ -3980,12 +4084,12 @@ Flickity.prototype.deactivatePrevNextButtons = function() {
 
 Flickity.PrevNextButton = PrevNextButton;
 
-return PrevNextButton;
+return Flickity;
 
 }));
 
 ( function( window, factory ) {
-  
+  'use strict';
   // universal module definition
 
   if ( typeof define == 'function' && define.amd ) {
@@ -4009,8 +4113,7 @@ return PrevNextButton;
     );
   } else {
     // browser global
-    window.Flickity = window.Flickity || {};
-    window.Flickity.PageDots = factory(
+    factory(
       window,
       window.eventie,
       window.Flickity,
@@ -4166,12 +4269,12 @@ Flickity.prototype.deactivatePageDots = function() {
 
 Flickity.PageDots = PageDots;
 
-return PageDots;
+return Flickity;
 
 }));
 
 ( function( window, factory ) {
-  
+  'use strict';
   // universal module definition
 
   if ( typeof define == 'function' && define.amd ) {
@@ -4192,8 +4295,7 @@ return PageDots;
     );
   } else {
     // browser global
-    window.Flickity = window.Flickity || {};
-    window.Flickity.Player = factory(
+    factory(
       window.EventEmitter,
       window.eventie,
       window.Flickity
@@ -4353,12 +4455,12 @@ Flickity.prototype.onmouseleave = function() {
 
 Flickity.Player = Player;
 
-return Player;
+return Flickity;
 
 }));
 
 ( function( window, factory ) {
-  
+  'use strict';
   // universal module definition
 
   if ( typeof define == 'function' && define.amd ) {
@@ -4378,8 +4480,7 @@ return Player;
     );
   } else {
     // browser global
-    window.Flickity = window.Flickity || {};
-    window.Flickity = factory(
+    factory(
       window,
       window.Flickity,
       window.fizzyUIUtils
@@ -4510,14 +4611,6 @@ Flickity.prototype.cellSizeChange = function( elem ) {
  * @param {Integer} changedCellIndex - index of the changed cell, optional
  */
 Flickity.prototype.cellChange = function( changedCellIndex ) {
-  // TODO maybe always size all cells unless isSkippingSizing
-  // size all cells if necessary
-  // if ( !isSkippingSizing ) {
-  //   this._sizeCells( this.cells );
-  // }
-
-  changedCellIndex = changedCellIndex || 0;
-
   this._positionCells( changedCellIndex );
   this._getWrapShiftCells();
   this.setGallerySize();
@@ -4525,12 +4618,145 @@ Flickity.prototype.cellChange = function( changedCellIndex ) {
   if ( this.options.freeScroll ) {
     this.positionSlider();
   } else {
-    this.positionSliderAtSelected();
     this.select( this.selectedIndex );
   }
 };
 
 // -----  ----- //
+
+return Flickity;
+
+}));
+
+( function( window, factory ) {
+  'use strict';
+  // universal module definition
+
+  if ( typeof define == 'function' && define.amd ) {
+    // AMD
+    define( 'flickity/js/lazyload',[
+      'classie/classie',
+      'eventie/eventie',
+      './flickity',
+      'fizzy-ui-utils/utils'
+    ], function( classie, eventie, Flickity, utils ) {
+      return factory( window, classie, eventie, Flickity, utils );
+    });
+  } else if ( typeof exports == 'object' ) {
+    // CommonJS
+    module.exports = factory(
+      window,
+      require('desandro-classie'),
+      require('eventie'),
+      require('./flickity'),
+      require('fizzy-ui-utils')
+    );
+  } else {
+    // browser global
+    factory(
+      window,
+      window.classie,
+      window.eventie,
+      window.Flickity,
+      window.fizzyUIUtils
+    );
+  }
+
+}( window, function factory( window, classie, eventie, Flickity, utils ) {
+'use strict';
+
+Flickity.createMethods.push('_createLazyload');
+
+Flickity.prototype._createLazyload = function() {
+  this.on( 'cellSelect', this.lazyLoad );
+};
+
+Flickity.prototype.lazyLoad = function() {
+  if ( !this.options.lazyLoad ) {
+    return;
+  }
+  // get adjacent cells
+  var cellElems;
+  switch (this.options.cellAlign.toLowerCase()) {
+    case 'left':
+      cellElems = this.getNextCellElements( this.options.lazyLoadAdjacent );
+      break;
+
+    case 'right':
+      cellElems = this.getPrevCellElements( this.options.lazyLoadAdjacent );
+      break;
+      
+    default:
+      cellElems = this.getAdjacentCellElements( this.options.lazyLoadAdjacent );
+  }
+
+  // get lazy images in those cells
+  var lazyImages = [];
+  for ( var i=0, len = cellElems.length; i < len; i++ ) {
+    var cellElem = cellElems[i];
+    var lazyCellImages = getCellLazyImages( cellElem );
+    lazyImages = lazyImages.concat( lazyCellImages );
+  }
+  // load lazy images
+  for ( i=0, len = lazyImages.length; i < len; i++ ) {
+    var img = lazyImages[i];
+    new LazyLoader( img, this );
+  }
+};
+
+function getCellLazyImages( cellElem ) {
+  // check if cell element is lazy image
+  if ( cellElem.nodeName == 'IMG' &&
+    cellElem.getAttribute('data-flickity-lazyload') ) {
+    return [ cellElem ];
+  }
+  // select lazy images in cell
+  var imgs = cellElem.querySelectorAll('img[data-flickity-lazyload]');
+  return utils.makeArray( imgs );
+}
+
+// -------------------------- LazyLoader -------------------------- //
+
+/**
+ * class to handle loading images
+ */
+function LazyLoader( img, flickity ) {
+  this.img = img;
+  this.flickity = flickity;
+  this.load();
+}
+
+LazyLoader.prototype.handleEvent = utils.handleEvent;
+
+LazyLoader.prototype.load = function() {
+  eventie.bind( this.img, 'load', this );
+  eventie.bind( this.img, 'error', this );
+  // load image
+  this.img.src = this.img.getAttribute('data-flickity-lazyload');
+  // remove attr
+  this.img.removeAttribute('data-flickity-lazyload');
+};
+
+LazyLoader.prototype.onload = function() {
+  this.unbindEvents();
+  var cell = this.flickity.getParentCell( this.img );
+  this.flickity.cellSizeChange( cell && cell.element );
+  classie.add( this.img, 'flickity-lazyloaded');
+};
+
+LazyLoader.prototype.onerror = function() {
+  this.unbindEvents();
+  classie.add( this.img, 'flickity-lazyerror');
+};
+
+LazyLoader.prototype.unbindEvents = function() {
+  eventie.unbind( this.img, 'load', this );
+  eventie.unbind( this.img, 'error', this );
+};
+
+// -----  ----- //
+
+Flickity.LazyLoader = LazyLoader;
 
 return Flickity;
 
@@ -4542,7 +4768,7 @@ return Flickity;
  */
 
 ( function( window, factory ) {
-  
+  'use strict';
   // universal module definition
 
   if ( typeof define == 'function' && define.amd ) {
@@ -4553,7 +4779,8 @@ return Flickity;
       './prev-next-button',
       './page-dots',
       './player',
-      './add-remove-cell'
+      './add-remove-cell',
+      './lazyload'
     ], factory );
   } else if ( typeof exports == 'object' ) {
     // CommonJS
@@ -4563,7 +4790,8 @@ return Flickity;
       require('./prev-next-button'),
       require('./page-dots'),
       require('./player'),
-      require('./add-remove-cell')
+      require('./add-remove-cell'),
+      require('./lazyload')
     );
   }
 
@@ -4581,7 +4809,7 @@ return Flickity;
 
 ( function( window, factory ) {
   /*global define: false, module: false, require: false */
-  
+  'use strict';
   // universal module definition
 
   if ( typeof define == 'function' && define.amd ) {
@@ -4717,7 +4945,7 @@ return Flickity;
  * MIT License
  */
 
-( function( window, factory ) { 
+( function( window, factory ) { 'use strict';
   // universal module definition
 
   /*global define: false, module: false, require: false */
@@ -5056,7 +5284,7 @@ function makeArray( obj ) {
 
 ( function( window, factory ) {
   /*global define: false, module: false, require: false */
-  
+  'use strict';
   // universal module definition
 
   if ( typeof define == 'function' && define.amd ) {
@@ -5084,7 +5312,7 @@ function makeArray( obj ) {
   }
 
 }( window, function factory( window, Flickity, imagesLoaded ) {
-
+'use strict';
 
 Flickity.createMethods.push('_createImagesLoaded');
 
