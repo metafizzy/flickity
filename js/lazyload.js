@@ -46,7 +46,20 @@ Flickity.prototype.lazyLoad = function() {
     return;
   }
   // get adjacent cells
-  var cellElems = this.getAdjacentCellElements( this.options.lazyLoadAdjacent );
+  var cellElems;
+  switch (this.options.cellAlign.toLowerCase()) {
+    case 'left':
+      cellElems = this.getNextCellElements( this.options.lazyLoadAdjacent );
+      break;
+
+    case 'right':
+      cellElems = this.getPrevCellElements( this.options.lazyLoadAdjacent );
+      break;
+      
+    default:
+      cellElems = this.getAdjacentCellElements( this.options.lazyLoadAdjacent );
+  }
+
   // get lazy images in those cells
   var lazyImages = [];
   for ( var i=0, len = cellElems.length; i < len; i++ ) {
