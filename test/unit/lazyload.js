@@ -1,34 +1,30 @@
 test( 'lazyload', function( assert ) {
   'use strict';
 
-  var gallery = document.querySelector('#lazyload');
-  var imgs = gallery.querySelectorAll('img');
-
   var done = assert.async();
-  var flkty;
+
+  var gallery = document.querySelector('#lazyload')
+  var flkty = new Flickity( gallery, {
+    lazyLoad: 1
+  });
 
   var loadCount = 0;
-  function onLoad() {
+  flkty.on( 'lazyLoad', function( event, cellElem ) {
     loadCount++;
-    if ( loadCount < 6 ) {
-      ok( true, 'img loaded' );
-    }
+
+    equal( event.type, 'load', 'event.type == load' );
+    ok( event.target.complete, 'img ' + loadCount + ' is complete' );
+    ok( cellElem, 'cellElement argument there' );
+
     // after first 2 have loaded, select 7th cell
     if ( loadCount == 2 ) {
       flkty.select( 6 );
     }
     if ( loadCount == 5 ) {
+      var loadedImgs = gallery.querySelectorAll('.flickity-lazyloaded');
+      equal( loadedImgs.length, '5', 'only 5 images loaded' );
       done();
     }
-  }
-
-  for ( var i=0, len = imgs.length; i < len; i++ ) {
-    var img = imgs[i];
-    img.onload = onLoad;
-  }
-
-  flkty = new Flickity( '#lazyload', {
-    lazyLoad: 1
   });
 
 });

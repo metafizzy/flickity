@@ -96,21 +96,25 @@ LazyLoader.prototype.load = function() {
   this.img.removeAttribute('data-flickity-lazyload');
 };
 
-LazyLoader.prototype.onload = function() {
-  this.unbindEvents();
-  var cell = this.flickity.getParentCell( this.img );
-  this.flickity.cellSizeChange( cell && cell.element );
-  classie.add( this.img, 'flickity-lazyloaded');
+LazyLoader.prototype.onload = function( event ) {
+  this.complete( event, 'flickity-lazyloaded', 'lazyLoad' );
 };
 
 LazyLoader.prototype.onerror = function() {
-  this.unbindEvents();
-  classie.add( this.img, 'flickity-lazyerror');
+  this.complete( event, 'flickity-lazyerror', 'lazyError' );
 };
 
-LazyLoader.prototype.unbindEvents = function() {
+LazyLoader.prototype.complete = function( event, className, eventName ) {
+  // unbind events
   eventie.unbind( this.img, 'load', this );
   eventie.unbind( this.img, 'error', this );
+
+  var cell = this.flickity.getParentCell( this.img );
+  var cellElem = cell && cell.element;
+  this.flickity.cellSizeChange( cellElem );
+
+  classie.add( this.img, className );
+  this.flickity.dispatchEvent( eventName, event, cellElem );
 };
 
 // -----  ----- //
