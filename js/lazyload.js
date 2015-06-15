@@ -42,11 +42,13 @@ Flickity.prototype._createLazyload = function() {
 };
 
 Flickity.prototype.lazyLoad = function() {
-  if ( !this.options.lazyLoad ) {
+  var lazyLoad = this.options.lazyLoad;
+  if ( !lazyLoad ) {
     return;
   }
-  // get adjacent cells
-  var cellElems = this.getAdjacentCellElements( this.options.lazyLoadAdjacent );
+  // get adjacent cells, use lazyLoad option for adjacent count
+  var adjCount = typeof lazyLoad == 'number' ? lazyLoad : 0;
+  var cellElems = this.getAdjacentCellElements( adjCount );
   // get lazy images in those cells
   var lazyImages = [];
   for ( var i=0, len = cellElems.length; i < len; i++ ) {

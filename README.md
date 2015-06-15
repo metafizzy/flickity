@@ -105,9 +105,7 @@ var flky = new Flickity( '.gallery', {
   lazyLoad: true,
   // enable lazy-loading images
   // set img data-flickity-lazyload="src.jpg"
-
-  lazyLoadAdjacent: 1,
-  // lazy-loads images in adjacent cells
+  // set to number to load images adjacent cells
 
   percentPosition: true,
   // sets positioning in percent values, rather than pixels

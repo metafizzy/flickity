@@ -28,8 +28,7 @@ test( 'lazyload', function( assert ) {
   }
 
   flkty = new Flickity( '#lazyload', {
-    lazyLoad: true,
-    lazyLoadAdjacent: 1
+    lazyLoad: 1
   });
 
 });
