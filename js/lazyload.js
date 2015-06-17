@@ -97,14 +97,14 @@ LazyLoader.prototype.load = function() {
 };
 
 LazyLoader.prototype.onload = function( event ) {
-  this.complete( event, 'flickity-lazyloaded', 'lazyLoad' );
+  this.complete( event, 'flickity-lazyloaded' );
 };
 
 LazyLoader.prototype.onerror = function() {
-  this.complete( event, 'flickity-lazyerror', 'lazyError' );
+  this.complete( event, 'flickity-lazyerror' );
 };
 
-LazyLoader.prototype.complete = function( event, className, eventName ) {
+LazyLoader.prototype.complete = function( event, className ) {
   // unbind events
   eventie.unbind( this.img, 'load', this );
   eventie.unbind( this.img, 'error', this );
@@ -114,7 +114,7 @@ LazyLoader.prototype.complete = function( event, className, eventName ) {
   this.flickity.cellSizeChange( cellElem );
 
   classie.add( this.img, className );
-  this.flickity.dispatchEvent( eventName, event, cellElem );
+  this.flickity.dispatchEvent( 'lazyLoad', event, cellElem );
 };
 
 // -----  ----- //

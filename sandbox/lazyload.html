@@ -98,6 +98,21 @@
     <img class="carousel__cell__image" data-flickity-lazyload="http://i.imgur.com/LkmcILl.jpg" /></div>
 </div>
 
+<div class="carousel carousel--jq">
+  <img class="carousel__image" data-flickity-lazyload="http://i.imgur.com/r8p3Xgq.jpg" />
+  <img class="carousel__image" data-flickity-lazyload="http://i.imgur.com/q9zO6tw.jpg" />
+  <img class="carousel__image" data-flickity-lazyload="foo.jpg" />
+  <img class="carousel__image" data-flickity-lazyload="http://i.imgur.com/hODreXI.jpg" />
+  <img class="carousel__image" data-flickity-lazyload="http://i.imgur.com/UORFJ3w.jpg" />
+  <img class="carousel__image" data-flickity-lazyload="http://i.imgur.com/bAZWoqx.jpg" />
+  <img class="carousel__image" data-flickity-lazyload="http://i.imgur.com/PgmEBSB.jpg" />
+  <img class="carousel__image" data-flickity-lazyload="http://i.imgur.com/aboaFoB.jpg" />
+  <img class="carousel__image" data-flickity-lazyload="http://i.imgur.com/LkmcILl.jpg" />
+</div>
+
+<!-- jQuery -->
+<script src="../bower_components/jquery/dist/jquery.js"></script>
+<script src="../bower_components/jquery-bridget/jquery.bridget.js"></script>
 <!-- dependencies -->
 <script src="../bower_components/get-style-property/get-style-property.js"></script>
 <script src="../bower_components/get-size/get-size.js"></script>
@@ -120,6 +135,19 @@
 <script src="../js/player.js"></script>
 <script src="../js/add-remove-cell.js"></script>
 <script src="../js/lazyload.js"></script>
+
+<script>
+docReady( function() {
+
+  var $jQCarousel = $('.carousel--jq').flickity({
+    lazyLoad: true
+  });
+
+  $jQCarousel.on( 'lazyLoad', function( event, cellElem ) {
+  });
+
+});
+</script>
 
 </body>
 </html>
