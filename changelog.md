@@ -1,5 +1,7 @@
 # Changelog
 
+## v1.1.0
+
 + Added `lazyLoad` feature. Fixed [#14](https://github.com/metafizzy/flickity/issues/14)
 + Added `arrowShape` option to customize previous/next button arrow shape. For [#50](https://github.com/metafizzy/flickity/issues/50)
 + Added `getAdjacentCellElements`. Fixed [#69](https://github.com/metafizzy/flickity/issues/69)

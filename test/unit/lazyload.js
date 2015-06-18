@@ -3,7 +3,7 @@ test( 'lazyload', function( assert ) {
 
   var done = assert.async();
 
-  var gallery = document.querySelector('#lazyload')
+  var gallery = document.querySelector('#lazyload');
   var flkty = new Flickity( gallery, {
     lazyLoad: 1
   });
