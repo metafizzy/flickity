@@ -20,15 +20,15 @@ See [flickity.metafizzy.co](http://flickity.metafizzy.co) for complete docs and 
 Link directly to [Flickity files on cdnjs](https://cdnjs.com/libraries/flickity).
 
 ``` html
-<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/flickity/1.0.0/flickity.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/flickity/1.1.0/flickity.css">
 <!-- or -->
-<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/flickity/1.0.0/flickity.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/flickity/1.1.0/flickity.min.css">
 ```
 
 ``` html
-<script src="//cdnjs.cloudflare.com/ajax/libs/flickity/1.0.0/flickity.pkgd.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/flickity/1.1.0/flickity.pkgd.js"></script>
 <!-- or -->
-<script src="//cdnjs.cloudflare.com/ajax/libs/flickity/1.0.0/flickity.pkgd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/flickity/1.1.0/flickity.pkgd.min.js"></script>
 ```
 
 ### Package managers
@@ -101,6 +101,11 @@ var flky = new Flickity( '.gallery', {
 
   initialIndex: 0,
   // zero-based index of the initial selected cell
+
+  lazyLoad: true,
+  // enable lazy-loading images
+  // set img data-flickity-lazyload="src.jpg"
+  // set to number to load images adjacent cells
 
   percentPosition: true,
   // sets positioning in percent values, rather than pixels

@@ -23,8 +23,7 @@
     );
   } else {
     // browser global
-    window.Flickity = window.Flickity || {};
-    window.Flickity.PageDots = factory(
+    factory(
       window,
       window.eventie,
       window.Flickity,
@@ -128,7 +127,7 @@ PageDots.prototype.updateSelected = function() {
   this.selectedDot.className = 'dot is-selected';
 };
 
-PageDots.prototype.onTap = function( instance, event ) {
+PageDots.prototype.onTap = function( event ) {
   var target = event.target;
   // only care about dot clicks
   if ( target.nodeName != 'LI' ) {
@@ -180,6 +179,6 @@ Flickity.prototype.deactivatePageDots = function() {
 
 Flickity.PageDots = PageDots;
 
-return PageDots;
+return Flickity;
 
 }));

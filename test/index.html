@@ -34,6 +34,7 @@
   <script src="../js/page-dots.js"></script>
   <script src="../js/player.js"></script>
   <script src="../js/add-remove-cell.js"></script>
+  <script src="../js/lazyload.js"></script>
   <!-- turn off accessibility for these tests
     was causing bugs with dragging tests -->
   <script>
@@ -56,6 +57,7 @@
   <script src="unit/resize.js"></script>
   <script src="unit/add-remove-cells.js"></script>
   <script src="unit/destroy.js"></script>
+  <script src="unit/lazyload.js"></script>
 
 </head>
 <body>
@@ -199,6 +201,19 @@
     <div class="cell">4</div>
     <div class="cell">5</div>
     <div class="cell">6</div>
+  </div>
+
+  <h2>lazyload</h2>
+  <div id="lazyload" class="gallery">
+    <div class="cell"><img data-flickity-lazyload="http://i.imgur.com/r8p3Xgq.jpg" /></div>
+    <img class="img-cell" data-flickity-lazyload="http://i.imgur.com/q9zO6tw.jpg" />
+    <div class="cell"><img data-flickity-lazyload="http://i.imgur.com/bwy74ok.jpg" /></div>
+    <div class="cell"><img data-flickity-lazyload="http://i.imgur.com/hODreXI.jpg" /></div>
+    <div class="cell"><img data-flickity-lazyload="http://i.imgur.com/UORFJ3w.jpg" /></div>
+    <div class="cell"><img data-flickity-lazyload="http://i.imgur.com/bAZWoqx.jpg" /></div>
+    <div class="cell"><img data-flickity-lazyload="http://i.imgur.com/PgmEBSB.jpg" /></div>
+    <img class="img-cell" data-flickity-lazyload="http://i.imgur.com/aboaFoB.jpg" />
+    <div class="cell"><img data-flickity-lazyload="http://i.imgur.com/LkmcILl.jpg" /></div>
   </div>
 
 </body>

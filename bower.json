@@ -1,6 +1,6 @@
 {
   "name": "flickity",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "Touch, responsive, flickable galleries",
   "main": [
     "dist/flickity.pkgd.js",
@@ -14,9 +14,9 @@
     "get-style-property": "~1.0.4",
     "doc-ready": "~1.0.4",
     "classie": "~1.0.1",
-    "unidragger": "~1.0.0",
+    "unidragger": "~1.1.2",
     "fizzy-ui-utils": "~1.0.0",
-    "tap-listener": "~1.0.0"
+    "tap-listener": "~1.1.1"
   },
   "devDependencies": {
     "flickity-imagesloaded": "~1.0.0",

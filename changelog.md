@@ -1,5 +1,24 @@
 # Changelog
 
+## v1.1.0
+
++ Added `lazyLoad` feature. Fixed [#14](https://github.com/metafizzy/flickity/issues/14)
++ Added `arrowShape` option to customize previous/next button arrow shape. For [#50](https://github.com/metafizzy/flickity/issues/50)
++ Added `getAdjacentCellElements`. Fixed [#69](https://github.com/metafizzy/flickity/issues/69)
++ Fixed bug with scrollbars. Fixed [#147](https://github.com/metafizzy/flickity/issues/122)
++ Fixed bug with `contain` and `freescroll`. Fixed [#79](https://github.com/metafizzy/flickity/issues/79)
+
+### v1.0.2
+
++ Fixed double move on prev/next button tap. Fixed [#122](https://github.com/metafizzy/flickity/issues/122)
+
+### v1.0.1
+
++ Allowed native scrolling for touch devices. Fixed [#67](https://github.com/metafizzy/flickity/issues/67), [#97](https://github.com/metafizzy/flickity/issues/97), [#41](https://github.com/metafizzy/flickity/issues/41)
++ Allowed clicks on all inputs and textareas, for [#105](https://github.com/metafizzy/flickity/issues/105)
++ Fixed IE10 `body.blur()` bug. Fixed #
++ Upgraded [Unidragger](https://github.com/metafizzy/unidragger) to `v1.1.3` [tap-listener](https://github.com/metafizzy/tap-listener) to `v1.1.0`
+
 ## v1.0.0
 
 + Add commercial licensing

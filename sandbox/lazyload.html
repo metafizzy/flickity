@@ -1,0 +1,153 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width" />
+
+  <title>lazyload</title>
+
+  <link rel="stylesheet" href="../css/flickity.css" />
+
+  <style>
+  * { box-sizing: border-box; }
+
+  .carousel {
+    border: 1px solid;
+    margin-bottom: 40px;
+  }
+
+  .carousel__image {
+    display: block;
+    margin-right: 20px;
+    height: 400px;
+    max-width: 100%;
+    min-width: 200px;
+    background: #DDD;
+    transition: opacity 0.8s;
+    opacity: 0;
+  }
+
+  .carousel__image.flickity-lazyloaded {
+    opacity: 1;
+  }
+
+  .carousel__cell {
+    width: 80%;
+    height: 400px;
+    margin-right: 20px;
+    background: #DDD;
+  }
+  
+  .carousel__cell__image {
+    display: block;
+    max-width: 100%;
+    max-height: 400px;
+    margin: 0 auto;
+  }
+  </style>
+
+</head>
+<body>
+
+<h1>lazyload</h1>
+
+<div class="carousel js-flickity" data-flickity-options='{ "lazyLoad": true }'>
+  <img class="carousel__image" data-flickity-lazyload="http://i.imgur.com/r8p3Xgq.jpg" />
+  <img class="carousel__image" data-flickity-lazyload="http://i.imgur.com/q9zO6tw.jpg" />
+  <img class="carousel__image" data-flickity-lazyload="http://i.imgur.com/bwy74ok.jpg" />
+  <img class="carousel__image" data-flickity-lazyload="http://i.imgur.com/hODreXI.jpg" />
+  <img class="carousel__image" data-flickity-lazyload="http://i.imgur.com/UORFJ3w.jpg" />
+  <img class="carousel__image" data-flickity-lazyload="http://i.imgur.com/bAZWoqx.jpg" />
+  <img class="carousel__image" data-flickity-lazyload="http://i.imgur.com/PgmEBSB.jpg" />
+  <img class="carousel__image" data-flickity-lazyload="http://i.imgur.com/aboaFoB.jpg" />
+  <img class="carousel__image" data-flickity-lazyload="http://i.imgur.com/LkmcILl.jpg" />
+</div>
+
+<div class="carousel js-flickity"
+  data-flickity-options='{ "lazyLoad": 1, "wrapAround": true }'>
+  <img class="carousel__image" data-flickity-lazyload="http://i.imgur.com/r8p3Xgq.jpg" />
+  <img class="carousel__image" data-flickity-lazyload="http://i.imgur.com/q9zO6tw.jpg" />
+  <img class="carousel__image" data-flickity-lazyload="http://i.imgur.com/bwy74ok.jpg" />
+  <img class="carousel__image" data-flickity-lazyload="http://i.imgur.com/hODreXI.jpg" />
+  <img class="carousel__image" data-flickity-lazyload="http://i.imgur.com/UORFJ3w.jpg" />
+  <img class="carousel__image" data-flickity-lazyload="http://i.imgur.com/bAZWoqx.jpg" />
+  <img class="carousel__image" data-flickity-lazyload="http://i.imgur.com/PgmEBSB.jpg" />
+  <img class="carousel__image" data-flickity-lazyload="http://i.imgur.com/aboaFoB.jpg" />
+  <img class="carousel__image" data-flickity-lazyload="http://i.imgur.com/LkmcILl.jpg" />
+</div>
+
+<div class="carousel js-flickity"
+  data-flickity-options='{ "lazyLoad": true }'>
+  <div class="carousel__cell">
+    <img class="carousel__cell__image" data-flickity-lazyload="http://i.imgur.com/r8p3Xgq.jpg" /></div>
+  <div class="carousel__cell">
+    <img class="carousel__cell__image" data-flickity-lazyload="http://i.imgur.com/q9zO6tw.jpg" /></div>
+  <div class="carousel__cell">
+    <img class="carousel__cell__image" data-flickity-lazyload="http://i.imgur.com/bwy74ok.jpg" /></div>
+  <div class="carousel__cell">
+    <img class="carousel__cell__image" data-flickity-lazyload="http://i.imgur.com/hODreXI.jpg" /></div>
+  <div class="carousel__cell">
+    <img class="carousel__cell__image" data-flickity-lazyload="http://i.imgur.com/UORFJ3w.jpg" /></div>
+  <div class="carousel__cell">
+    <img class="carousel__cell__image" data-flickity-lazyload="http://i.imgur.com/bAZWoqx.jpg" /></div>
+  <div class="carousel__cell">
+    <img class="carousel__cell__image" data-flickity-lazyload="http://i.imgur.com/PgmEBSB.jpg" /></div>
+  <div class="carousel__cell">
+    <img class="carousel__cell__image" data-flickity-lazyload="http://i.imgur.com/aboaFoB.jpg" /></div>
+  <div class="carousel__cell">
+    <img class="carousel__cell__image" data-flickity-lazyload="http://i.imgur.com/LkmcILl.jpg" /></div>
+</div>
+
+<div class="carousel carousel--jq">
+  <img class="carousel__image" data-flickity-lazyload="http://i.imgur.com/r8p3Xgq.jpg" />
+  <img class="carousel__image" data-flickity-lazyload="http://i.imgur.com/q9zO6tw.jpg" />
+  <img class="carousel__image" data-flickity-lazyload="foo.jpg" />
+  <img class="carousel__image" data-flickity-lazyload="http://i.imgur.com/hODreXI.jpg" />
+  <img class="carousel__image" data-flickity-lazyload="http://i.imgur.com/UORFJ3w.jpg" />
+  <img class="carousel__image" data-flickity-lazyload="http://i.imgur.com/bAZWoqx.jpg" />
+  <img class="carousel__image" data-flickity-lazyload="http://i.imgur.com/PgmEBSB.jpg" />
+  <img class="carousel__image" data-flickity-lazyload="http://i.imgur.com/aboaFoB.jpg" />
+  <img class="carousel__image" data-flickity-lazyload="http://i.imgur.com/LkmcILl.jpg" />
+</div>
+
+<!-- jQuery -->
+<script src="../bower_components/jquery/dist/jquery.js"></script>
+<script src="../bower_components/jquery-bridget/jquery.bridget.js"></script>
+<!-- dependencies -->
+<script src="../bower_components/get-style-property/get-style-property.js"></script>
+<script src="../bower_components/get-size/get-size.js"></script>
+<script src="../bower_components/matches-selector/matches-selector.js"></script>
+<script src="../bower_components/eventEmitter/EventEmitter.js"></script>
+<script src="../bower_components/eventie/eventie.js"></script>
+<script src="../bower_components/doc-ready/doc-ready.js"></script>
+<script src="../bower_components/classie/classie.js"></script>
+<script src="../bower_components/unipointer/unipointer.js"></script>
+<script src="../bower_components/unidragger/unidragger.js"></script>
+<script src="../bower_components/tap-listener/tap-listener.js"></script>
+<script src="../bower_components/fizzy-ui-utils/utils.js"></script>
+<!-- Flickity -->
+<script src="../js/cell.js"></script>
+<script src="../js/animate.js"></script>
+<script src="../js/flickity.js"></script>
+<script src="../js/drag.js"></script>
+<script src="../js/prev-next-button.js"></script>
+<script src="../js/page-dots.js"></script>
+<script src="../js/player.js"></script>
+<script src="../js/add-remove-cell.js"></script>
+<script src="../js/lazyload.js"></script>
+
+<script>
+docReady( function() {
+
+  var $jQCarousel = $('.carousel--jq').flickity({
+    lazyLoad: true
+  });
+
+  $jQCarousel.on( 'lazyLoad', function( event, cellElem ) {
+  });
+
+});
+</script>
+
+</body>
+</html>

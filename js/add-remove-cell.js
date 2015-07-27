@@ -19,8 +19,7 @@
     );
   } else {
     // browser global
-    window.Flickity = window.Flickity || {};
-    window.Flickity = factory(
+    factory(
       window,
       window.Flickity,
       window.fizzyUIUtils
@@ -151,14 +150,6 @@ Flickity.prototype.cellSizeChange = function( elem ) {
  * @param {Integer} changedCellIndex - index of the changed cell, optional
  */
 Flickity.prototype.cellChange = function( changedCellIndex ) {
-  // TODO maybe always size all cells unless isSkippingSizing
-  // size all cells if necessary
-  // if ( !isSkippingSizing ) {
-  //   this._sizeCells( this.cells );
-  // }
-
-  changedCellIndex = changedCellIndex || 0;
-
   this._positionCells( changedCellIndex );
   this._getWrapShiftCells();
   this.setGallerySize();
@@ -166,7 +157,6 @@ Flickity.prototype.cellChange = function( changedCellIndex ) {
   if ( this.options.freeScroll ) {
     this.positionSlider();
   } else {
-    this.positionSliderAtSelected();
     this.select( this.selectedIndex );
   }
 };

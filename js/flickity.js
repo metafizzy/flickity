@@ -1,5 +1,5 @@
 /*!
- * Flickity v1.0.0
+ * Flickity v1.1.0
  * Touch, responsive, flickable galleries
  *
  * Licensed GPLv3 for open source use
@@ -177,16 +177,14 @@ Flickity.prototype.activate = function() {
     classie.add( this.element, 'flickity-rtl' );
   }
 
+  this.getSize();
   // move initial cell elements so they can be loaded as cells
   var cellElems = this._filterFindCellElements( this.element.children );
   moveElements( cellElems, this.slider );
   this.viewport.appendChild( this.slider );
   this.element.appendChild( this.viewport );
-
-  this.getSize();
   // get cells from children
   this.reloadCells();
-  this.setGallerySize();
 
   if ( this.options.accessibility ) {
     // allow element to focusable
@@ -259,6 +257,7 @@ Flickity.prototype.positionCells = function() {
  * @param {Integer} index - which cell to start with
  */
 Flickity.prototype._positionCells = function( index ) {
+  index = index || 0;
   // also measure maxCellHeight
   // start 0 if positioning all cells
   this.maxCellHeight = index ? this.maxCellHeight || 0 : 0;
@@ -537,6 +536,34 @@ Flickity.prototype.getParentCell = function( elem ) {
   // try to get parent cell elem
   elem = utils.getParent( elem, '.flickity-slider > *' );
   return this.getCell( elem );
+};
+
+/**
+ * get cells adjacent to a cell
+ * @param {Integer} adjCount - number of adjacent cells
+ * @param {Integer} index - index of cell to start
+ * @returns {Array} cells - array of Flickity.Cells
+ */
+Flickity.prototype.getAdjacentCellElements = function( adjCount, index ) {
+  if ( !adjCount ) {
+    return [ this.selectedElement ];
+  }
+  index = index === undefined ? this.selectedIndex : index;
+
+  var len = this.cells.length;
+  if ( 1 + ( adjCount * 2 ) >= len ) {
+    return this.getCellElements();
+  }
+
+  var cellElems = [];
+  for ( var i = index - adjCount; i <= index + adjCount ; i++ ) {
+    var cellIndex = this.options.wrapAround ? utils.modulo( i, len ) : i;
+    var cell = this.cells[ cellIndex ];
+    if ( cell ) {
+      cellElems.push( cell.element );
+    }
+  }
+  return cellElems;
 };
 
 // -------------------------- events -------------------------- //

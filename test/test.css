@@ -32,3 +32,8 @@ body {
   content: 'flickity';
   display: none;
 }
+
+#lazyload img {
+  display: block;
+  max-height: 100px;
+}
