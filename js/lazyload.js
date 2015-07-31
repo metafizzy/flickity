@@ -70,8 +70,7 @@ function getCellLazyImages( cellElem ) {
   }
 
   // select lazy images in cell
-  var imgs = cellElem.querySelectorAll('img[data-flickity-lazyload]')
-    || cellElem.querySelectorAll('[data-flickity-lazyload]');
+  var imgs = cellElem.querySelectorAll('[data-flickity-lazyload]');
 
   return utils.makeArray( imgs );
 }
@@ -99,7 +98,7 @@ LazyLoader.prototype.load = function() {
   if(this.img.nodeName == 'IMG') {
     this.img.src = imgSrc;
   } else {
-    this.img.style.backgroundImage = 'url("' + imgsrc + '")';
+    this.img.style.backgroundImage = 'url("' + imgSrc + '")';
   }
 
   // remove attr
