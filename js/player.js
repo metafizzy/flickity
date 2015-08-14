@@ -48,6 +48,7 @@ if ( 'hidden' in document ) {
 function Player( parent ) {
   this.isPlaying = false;
   this.parent = parent;
+  this.freePlay = parent.options.freePlay;
   // visibility change event handler
   if ( visibilityEvent ) {
     var _this = this;
@@ -69,7 +70,12 @@ Player.prototype.play = function() {
     document.addEventListener( visibilityEvent, this.onVisibilityChange, false );
   }
   // start ticking
-  this.tick();
+  if(this.freePlay) {
+    var speed = typeof this.freePlay === 'number' ? this.freePlay : 50;
+    this.parent.startContinuousAnimation(speed);
+  } else {
+    this.tick();
+  }
 };
 
 Player.prototype.tick = function() {
@@ -98,6 +104,9 @@ Player.prototype.stop = function() {
   if ( visibilityEvent ) {
     document.removeEventListener( visibilityEvent, this.onVisibilityChange, false );
   }
+  if(this.freePlay) {
+    this.parent.stopContinuousAnimation();
+  }
 };
 
 Player.prototype.clear = function() {
@@ -108,6 +117,9 @@ Player.prototype.pause = function() {
   if ( this.isPlaying ) {
     this.isPaused = true;
     this.clear();
+    if(this.freePlay) {
+      this.parent.stopContinuousAnimation();
+    }
   }
 };
 

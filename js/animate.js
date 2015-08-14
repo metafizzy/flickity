@@ -79,19 +79,47 @@ proto.startAnimation = function() {
   }
 
   this.isAnimating = true;
+  this.isContinuous = false;
   this.restingFrames = 0;
   this.animate();
 };
 
+proto.startContinuousAnimation = function(speed) {
+  if( this.isAnimating ) {
+      return;
+  }
+  this.isContinuous = true;
+  this.isAnimating = true;
+  this.lastAnimate = +new Date();
+  this.freePlaySpeed = speed;
+  this.animate();
+};
+
+proto.stopContinuousAnimation = function() {
+  this.isContinuous = false;
+
+  if ( this.isAnimating ) {
+    this.isAnimating = false;
+  }
+};
+
 proto.animate = function() {
-  this.applyDragForce();
-  this.applySelectedAttraction();
+  if(this.isContinuous) {
+    var passed = +new Date() - this.lastAnimate;
+    this.x += Math.min((1 / passed) * this.freePlaySpeed, 10);
+    this.positionSlider();
+    this.lastAnimate = +new Date();
+  } else {
+    this.applyDragForce();
+    this.applySelectedAttraction();
 
-  var previousX = this.x;
+    var previousX = this.x;
 
-  this.integratePhysics();
-  this.positionSlider();
-  this.settle( previousX );
+    this.integratePhysics();
+    this.positionSlider();
+    this.settle( previousX );
+  }
+
   // animate next frame
   if ( this.isAnimating ) {
     var _this = this;
