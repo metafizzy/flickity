@@ -1755,12 +1755,14 @@ proto.stopContinuousAnimation = function() {
   if ( this.isAnimating ) {
     this.isAnimating = false;
   }
+
+  cancelAnimationFrame(this.anim_frame_id);
 };
 
 proto.animate = function() {
   if(this.isContinuous) {
     var passed = +new Date() - this.lastAnimate;
-    this.x += Math.min((1 / passed) * this.freePlaySpeed, 10);
+    this.x += Math.max(-10, Math.min((1 / passed) * this.freePlaySpeed, 10));
     this.positionSlider();
     this.lastAnimate = +new Date();
   } else {
@@ -1777,7 +1779,7 @@ proto.animate = function() {
   // animate next frame
   if ( this.isAnimating ) {
     var _this = this;
-    requestAnimationFrame( function animateFrame() {
+    this.anim_frame_id = requestAnimationFrame( function animateFrame() {
       _this.animate();
     });
   }
