@@ -1,11 +1,13 @@
 # Changelog
 
++ Fixed freeScroll bug flicking past ends. Fixed [#181](https://github.com/metafizzy/flickity/issues/181)
+
 ## v1.1.0
 
 + Added `lazyLoad` feature. Fixed [#14](https://github.com/metafizzy/flickity/issues/14)
 + Added `arrowShape` option to customize previous/next button arrow shape. For [#50](https://github.com/metafizzy/flickity/issues/50)
 + Added `getAdjacentCellElements`. Fixed [#69](https://github.com/metafizzy/flickity/issues/69)
-+ Fixed bug with scrollbars. Fixed [#147](https://github.com/metafizzy/flickity/issues/122)
++ Fixed bug with scrollbars. Fixed [#147](https://github.com/metafizzy/flickity/issues/147)
 + Fixed bug with `contain` and `freescroll`. Fixed [#79](https://github.com/metafizzy/flickity/issues/79)
 
 ### v1.0.2

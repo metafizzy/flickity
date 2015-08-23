@@ -266,7 +266,8 @@ Flickity.prototype.dragEndRestingSelect = function() {
 
 Flickity.prototype.getRestingDragPosition = function() {
   var dragVelocity = this.dragX - this.x;
-  return this.x + dragVelocity / ( 1 - this.getFrictionFactor() );
+  var velocity = this.velocity + dragVelocity;
+  return this.x + velocity / ( 1 - this.getFrictionFactor() );
 };
 
 /**
