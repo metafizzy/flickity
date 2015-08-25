@@ -84,7 +84,7 @@ proto.startAnimation = function() {
   this.animate();
 };
 
-proto.startContinuousAnimation = function(speed) {
+proto.startContinuousAnimation = function( speed ) {
   if( this.isAnimating ) {
       return;
   }
@@ -96,19 +96,19 @@ proto.startContinuousAnimation = function(speed) {
 };
 
 proto.stopContinuousAnimation = function() {
-  this.isContinuous = false;
-
-  if ( this.isAnimating ) {
+  if( this.isContinuous ) {
+    this.isContinuous = false;
     this.isAnimating = false;
-  }
 
-  cancelAnimationFrame(this.anim_frame_id);
+    cancelAnimationFrame( this.anim_frame_id );
+  }
 };
 
 proto.animate = function() {
-  if(this.isContinuous) {
+  if( this.isContinuous ) {
     var passed = +new Date() - this.lastAnimate;
-    this.x += Math.max(-10, Math.min((1 / passed) * this.freePlaySpeed, 10));
+    this.x += Math.max( -10, Math.min( ( 1 / passed ) * this.freePlaySpeed, 10 ) );
+    this.x = utils.modulo( this.x, this.slideableWidth );
     this.positionSlider();
     this.lastAnimate = +new Date();
   } else {
