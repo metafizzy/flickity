@@ -107,7 +107,14 @@ proto.stopContinuousAnimation = function() {
 proto.animate = function() {
   if( this.isContinuous ) {
     var passed = +new Date() - this.lastAnimate;
-    this.x += Math.max( -10, Math.min( ( 1 / passed ) * this.freePlaySpeed, 10 ) );
+    var move = Math.min( ( 1 / passed ) * Math.abs( this.freePlaySpeed ), 10 );
+
+    if( this.freePlaySpeed < 0 ) {
+        this.x -= move;
+    } else {
+        this.x += move;
+    }
+
     this.x = utils.modulo( this.x, this.slideableWidth );
     this.positionSlider();
     this.lastAnimate = +new Date();
