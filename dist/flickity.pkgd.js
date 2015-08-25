@@ -1738,7 +1738,7 @@ proto.startAnimation = function() {
   this.animate();
 };
 
-proto.startContinuousAnimation = function(speed) {
+proto.startContinuousAnimation = function( speed ) {
   if( this.isAnimating ) {
       return;
   }
@@ -1750,19 +1750,26 @@ proto.startContinuousAnimation = function(speed) {
 };
 
 proto.stopContinuousAnimation = function() {
-  this.isContinuous = false;
-
-  if ( this.isAnimating ) {
+  if( this.isContinuous ) {
+    this.isContinuous = false;
     this.isAnimating = false;
-  }
 
-  cancelAnimationFrame(this.anim_frame_id);
+    cancelAnimationFrame( this.anim_frame_id );
+  }
 };
 
 proto.animate = function() {
-  if(this.isContinuous) {
+  if( this.isContinuous ) {
     var passed = +new Date() - this.lastAnimate;
-    this.x += Math.max(-10, Math.min((1 / passed) * this.freePlaySpeed, 10));
+    var move = Math.min( ( 1 / passed ) * Math.abs( this.freePlaySpeed ), 10 );
+
+    if( this.freePlaySpeed < 0 ) {
+        this.x -= move;
+    } else {
+        this.x += move;
+    }
+
+    this.x = utils.modulo( this.x, this.slideableWidth );
     this.positionSlider();
     this.lastAnimate = +new Date();
   } else {
@@ -4392,7 +4399,9 @@ Flickity.prototype._createPlayer = function() {
 
   this.on( 'activate', this.activatePlayer );
   this.on( 'uiChange', this.stopPlayer );
-  this.on( 'pointerDown', this.stopPlayer );
+  this.on( 'pointerDown', this.pausePlayer );
+  this.on( 'pointerUp', this.unpausePlayer );
+  this.on( 'dragStart', this.stopPlayer );
   this.on( 'deactivate', this.deactivatePlayer );
 };
 
@@ -4403,6 +4412,14 @@ Flickity.prototype.activatePlayer = function() {
   this.player.play();
   eventie.bind( this.element, 'mouseenter', this );
   this.isMouseenterBound = true;
+};
+
+Flickity.prototype.pausePlayer = function() {
+  this.player.pause();
+};
+
+Flickity.prototype.unpausePlayer = function() {
+  this.player.unpause();
 };
 
 Flickity.prototype.stopPlayer = function() {
