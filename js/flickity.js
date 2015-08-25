@@ -448,7 +448,7 @@ Flickity.prototype.select = function( index, isWrap ) {
 
   if ( this.cells[ index ] ) {
     this.selectedIndex = index;
-    this.setSelectedCell();
+    this.setCells();
     this.startAnimation();
     this.dispatchEvent('cellSelect');
   }
@@ -462,18 +462,40 @@ Flickity.prototype.next = function( isWrap ) {
   this.select( this.selectedIndex + 1, isWrap );
 };
 
-Flickity.prototype.setSelectedCell = function() {
-  this._removeSelectedCellClass();
+Flickity.prototype.setCells = function() {
+  this._removeCellClasses();
+
   this.selectedCell = this.cells[ this.selectedIndex ];
   this.selectedElement = this.selectedCell.element;
+
+  this.previousCell = this.cells[ this.selectedIndex - 1 ];
+  this.nextCell = this.cells[ this.selectedIndex + 1 ];
+
   classie.add( this.selectedElement, 'is-selected' );
+
+  if ( this.previousCell ) {
+    classie.add( this.previousCell.element, 'is-previous' );
+  }
+
+  if ( this.nextCell ) {
+    classie.add( this.nextCell.element, 'is-next' );
+  }
 };
 
-Flickity.prototype._removeSelectedCellClass = function() {
+Flickity.prototype._removeCellClasses = function() {
   if ( this.selectedCell ) {
     classie.remove( this.selectedCell.element, 'is-selected' );
   }
+
+  if ( this.previousCell ) {
+    classie.remove( this.previousCell.element, 'is-previous' );
+  }
+
+  if ( this.nextCell ) {
+    classie.remove( this.nextCell.element, 'is-next' );
+  }
 };
+
 
 // -------------------------- get cells -------------------------- //
 
@@ -683,7 +705,7 @@ Flickity.prototype.deactivate = function() {
     var cell = this.cells[i];
     cell.destroy();
   }
-  this._removeSelectedCellClass();
+  this._removeCellClasses();
   this.element.removeChild( this.viewport );
   // move child elements back into element
   moveElements( this.slider.children, this.element );
