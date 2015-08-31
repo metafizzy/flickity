@@ -660,13 +660,13 @@ Flickity.prototype.onkeydown = function( event ) {
     // go left
     var leftMethod = this.options.rightToLeft ? 'next' : 'previous';
     this.uiChange();
-    this.dispatchEvent( 'keyLeft' );
+    this.dispatchEvent( 'keyLeft', event );
     this[ leftMethod ]();
   } else if ( event.keyCode == 39 ) {
     // go right
     var rightMethod = this.options.rightToLeft ? 'previous' : 'next';
     this.uiChange();
-    this.dispatchEvent( 'keyRight' );
+    this.dispatchEvent( 'keyRight', event );
     this[ rightMethod ]();
   }
 };
