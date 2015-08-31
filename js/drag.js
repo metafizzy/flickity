@@ -237,7 +237,7 @@ Flickity.prototype.dragEnd = function( event, pointer ) {
     // if free-scroll & not wrap around
     // do not free-scroll if going outside of bounding cells
     // so bounding cells can attract slider, and keep it in bounds
-    var restingX = this.getRestingDragPosition();
+    var restingX = this.getRestingPosition();
     this.isFreeScrolling = -restingX > this.cells[0].target &&
       -restingX < this.getLastCell().target;
   } else if ( !this.options.freeScroll && index == this.selectedIndex ) {
@@ -252,7 +252,7 @@ Flickity.prototype.dragEnd = function( event, pointer ) {
 };
 
 Flickity.prototype.dragEndRestingSelect = function() {
-  var restingX = this.getRestingDragPosition();
+  var restingX = this.getRestingPosition();
   // how far away from selected cell
   var distance = Math.abs( this.getCellDistance( -restingX, this.selectedIndex ) );
   // get closet resting going up and going down
@@ -262,12 +262,6 @@ Flickity.prototype.dragEndRestingSelect = function() {
   var index = positiveResting.distance < negativeResting.distance ?
     positiveResting.index : negativeResting.index;
   return index;
-};
-
-Flickity.prototype.getRestingDragPosition = function() {
-  var dragVelocity = this.dragX - this.x;
-  var velocity = this.velocity + dragVelocity;
-  return this.x + velocity / ( 1 - this.getFrictionFactor() );
 };
 
 /**
