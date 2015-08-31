@@ -127,7 +127,7 @@ Flickity.prototype._cellAddedRemoved = function( changedCellIndex, selectedIndex
   this.selectedIndex = Math.max( 0, Math.min( this.cells.length - 1, this.selectedIndex ) );
 
   this.emitEvent( 'cellAddedRemoved', [ changedCellIndex, selectedIndexDelta ] );
-  this.cellChange( changedCellIndex );
+  this.cellChange( changedCellIndex, true );
 };
 
 /**
@@ -149,14 +149,23 @@ Flickity.prototype.cellSizeChange = function( elem ) {
  * logic any time a cell is changed: added, removed, or size changed
  * @param {Integer} changedCellIndex - index of the changed cell, optional
  */
-Flickity.prototype.cellChange = function( changedCellIndex ) {
+Flickity.prototype.cellChange = function( changedCellIndex, isPositioningSlider ) {
+  var prevSlideableWidth = this.slideableWidth;
+  var prevX = this.x;
   this._positionCells( changedCellIndex );
   this._getWrapShiftCells();
   this.setGallerySize();
   // position slider
   if ( this.options.freeScroll ) {
+    // shift x by change in slideableWidth
+    // TODO fix position shifts when prepending w/ freeScroll
+    this.x += prevSlideableWidth - this.slideableWidth;
     this.positionSlider();
   } else {
+    // do not position slider after lazy load
+    if ( isPositioningSlider ) {
+      this.positionSliderAtSelected();
+    }
     this.select( this.selectedIndex );
   }
 };

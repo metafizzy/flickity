@@ -1,6 +1,9 @@
 # Changelog
 
+### v1.1.1
+
 + Fixed freeScroll bug flicking past ends. Fixed [#181](https://github.com/metafizzy/flickity/issues/181)
++ Fix regression with prepend animation. Fixed [#201](https://github.com/metafizzy/flickity/issues/201)
 
 ## v1.1.0
 
