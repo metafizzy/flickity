@@ -243,7 +243,7 @@ if ( typeof define === 'function' && define.amd ) {
  */
 
 ;(function () {
-    
+    'use strict';
 
     /**
      * Class for managing events.
@@ -1190,7 +1190,7 @@ if ( typeof define === 'function' && define.amd ) {
 
 ( function( ElemProto ) {
 
-  
+  'use strict';
 
   var matchesMethod = ( function() {
     // check for the standard method name first
@@ -1296,7 +1296,7 @@ if ( typeof define === 'function' && define.amd ) {
 
 ( function( window, factory ) {
   /*global define: false, module: false, require: false */
-  
+  'use strict';
   // universal module definition
 
   if ( typeof define == 'function' && define.amd ) {
@@ -1559,7 +1559,7 @@ return utils;
 }));
 
 ( function( window, factory ) {
-  
+  'use strict';
   // universal module definition
 
   if ( typeof define == 'function' && define.amd ) {
@@ -1653,7 +1653,7 @@ return Cell;
 }));
 
 ( function( window, factory ) {
-  
+  'use strict';
   // universal module definition
 
   if ( typeof define == 'function' && define.amd ) {
@@ -1733,23 +1733,60 @@ proto.startAnimation = function() {
   }
 
   this.isAnimating = true;
+  this.isContinuous = false;
   this.restingFrames = 0;
   this.animate();
 };
 
+proto.startContinuousAnimation = function( speed ) {
+  if( this.isAnimating ) {
+      return;
+  }
+  this.isContinuous = true;
+  this.isAnimating = true;
+  this.lastAnimate = +new Date();
+  this.freePlaySpeed = speed;
+  this.animate();
+};
+
+proto.stopContinuousAnimation = function() {
+  if( this.isContinuous ) {
+    this.isContinuous = false;
+    this.isAnimating = false;
+
+    cancelAnimationFrame( this.anim_frame_id );
+  }
+};
+
 proto.animate = function() {
-  this.applyDragForce();
-  this.applySelectedAttraction();
+  if( this.isContinuous ) {
+    var passed = +new Date() - this.lastAnimate;
+    var move = Math.min( ( 1 / passed ) * Math.abs( this.freePlaySpeed ), 10 );
 
-  var previousX = this.x;
+    if( this.freePlaySpeed < 0 ) {
+        this.x -= move;
+    } else {
+        this.x += move;
+    }
 
-  this.integratePhysics();
-  this.positionSlider();
-  this.settle( previousX );
+    this.x = utils.modulo( this.x, this.slideableWidth );
+    this.positionSlider();
+    this.lastAnimate = +new Date();
+  } else {
+    this.applyDragForce();
+    this.applySelectedAttraction();
+
+    var previousX = this.x;
+
+    this.integratePhysics();
+    this.positionSlider();
+    this.settle( previousX );
+  }
+
   // animate next frame
   if ( this.isAnimating ) {
     var _this = this;
-    requestAnimationFrame( function animateFrame() {
+    this.anim_frame_id = requestAnimationFrame( function animateFrame() {
       _this.animate();
     });
   }
@@ -1921,7 +1958,7 @@ return proto;
  */
 
 ( function( window, factory ) {
-  
+  'use strict';
   // universal module definition
 
   if ( typeof define == 'function' && define.amd ) {
@@ -2670,7 +2707,7 @@ return Flickity;
 /*global define: false, module: false, require: false */
 
 ( function( window, factory ) {
-  
+  'use strict';
   // universal module definition
 
   if ( typeof define == 'function' && define.amd ) {
@@ -2987,7 +3024,7 @@ return Unipointer;
 
 ( function( window, factory ) {
   /*global define: false, module: false, require: false */
-  
+  'use strict';
   // universal module definition
 
   if ( typeof define == 'function' && define.amd ) {
@@ -3287,7 +3324,7 @@ return Unidragger;
 }));
 
 ( function( window, factory ) {
-  
+  'use strict';
   // universal module definition
 
   if ( typeof define == 'function' && define.amd ) {
@@ -3653,7 +3690,7 @@ return Flickity;
 
 ( function( window, factory ) {
   /*global define: false, module: false, require: false */
-  
+  'use strict';
   // universal module definition
 
   if ( typeof define == 'function' && define.amd ) {
@@ -3767,7 +3804,7 @@ return TapListener;
 // -------------------------- prev/next button -------------------------- //
 
 ( function( window, factory ) {
-  
+  'use strict';
   // universal module definition
 
   if ( typeof define == 'function' && define.amd ) {
@@ -4027,7 +4064,7 @@ return Flickity;
 }));
 
 ( function( window, factory ) {
-  
+  'use strict';
   // universal module definition
 
   if ( typeof define == 'function' && define.amd ) {
@@ -4212,7 +4249,7 @@ return Flickity;
 }));
 
 ( function( window, factory ) {
-  
+  'use strict';
   // universal module definition
 
   if ( typeof define == 'function' && define.amd ) {
@@ -4261,6 +4298,7 @@ if ( 'hidden' in document ) {
 function Player( parent ) {
   this.isPlaying = false;
   this.parent = parent;
+  this.freePlay = parent.options.freePlay;
   // visibility change event handler
   if ( visibilityEvent ) {
     var _this = this;
@@ -4282,7 +4320,12 @@ Player.prototype.play = function() {
     document.addEventListener( visibilityEvent, this.onVisibilityChange, false );
   }
   // start ticking
-  this.tick();
+  if(this.freePlay) {
+    var speed = typeof this.freePlay === 'number' ? this.freePlay : 50;
+    this.parent.startContinuousAnimation(speed);
+  } else {
+    this.tick();
+  }
 };
 
 Player.prototype.tick = function() {
@@ -4311,6 +4354,9 @@ Player.prototype.stop = function() {
   if ( visibilityEvent ) {
     document.removeEventListener( visibilityEvent, this.onVisibilityChange, false );
   }
+  if(this.freePlay) {
+    this.parent.stopContinuousAnimation();
+  }
 };
 
 Player.prototype.clear = function() {
@@ -4321,6 +4367,9 @@ Player.prototype.pause = function() {
   if ( this.isPlaying ) {
     this.isPaused = true;
     this.clear();
+    if(this.freePlay) {
+      this.parent.stopContinuousAnimation();
+    }
   }
 };
 
@@ -4350,7 +4399,9 @@ Flickity.prototype._createPlayer = function() {
 
   this.on( 'activate', this.activatePlayer );
   this.on( 'uiChange', this.stopPlayer );
-  this.on( 'pointerDown', this.stopPlayer );
+  this.on( 'pointerDown', this.pausePlayer );
+  this.on( 'pointerUp', this.unpausePlayer );
+  this.on( 'dragStart', this.stopPlayer );
   this.on( 'deactivate', this.deactivatePlayer );
 };
 
@@ -4361,6 +4412,14 @@ Flickity.prototype.activatePlayer = function() {
   this.player.play();
   eventie.bind( this.element, 'mouseenter', this );
   this.isMouseenterBound = true;
+};
+
+Flickity.prototype.pausePlayer = function() {
+  this.player.pause();
+};
+
+Flickity.prototype.unpausePlayer = function() {
+  this.player.unpause();
 };
 
 Flickity.prototype.stopPlayer = function() {
@@ -4398,7 +4457,7 @@ return Flickity;
 }));
 
 ( function( window, factory ) {
-  
+  'use strict';
   // universal module definition
 
   if ( typeof define == 'function' && define.amd ) {
@@ -4567,7 +4626,7 @@ return Flickity;
 }));
 
 ( function( window, factory ) {
-  
+  'use strict';
   // universal module definition
 
   if ( typeof define == 'function' && define.amd ) {
@@ -4601,7 +4660,7 @@ return Flickity;
   }
 
 }( window, function factory( window, classie, eventie, Flickity, utils ) {
-
+'use strict';
 
 Flickity.createMethods.push('_createLazyload');
 
@@ -4699,7 +4758,7 @@ return Flickity;
  */
 
 ( function( window, factory ) {
-  
+  'use strict';
   // universal module definition
 
   if ( typeof define == 'function' && define.amd ) {
@@ -4732,7 +4791,7 @@ return Flickity;
 });
 
 /*!
- * Flickity asNavFor v1.0.1
+ * Flickity asNavFor v1.0.2
  * enable asNavFor for Flickity
  */
 
@@ -4740,7 +4799,7 @@ return Flickity;
 
 ( function( window, factory ) {
   /*global define: false, module: false, require: false */
-  
+  'use strict';
   // universal module definition
 
   if ( typeof define == 'function' && define.amd ) {
@@ -4876,7 +4935,7 @@ return Flickity;
  * MIT License
  */
 
-( function( window, factory ) { 
+( function( window, factory ) { 'use strict';
   // universal module definition
 
   /*global define: false, module: false, require: false */
@@ -5207,7 +5266,7 @@ function makeArray( obj ) {
 });
 
 /*!
- * Flickity imagesLoaded v1.0.0
+ * Flickity imagesLoaded v1.0.1
  * enables imagesLoaded option for Flickity
  */
 
@@ -5215,7 +5274,7 @@ function makeArray( obj ) {
 
 ( function( window, factory ) {
   /*global define: false, module: false, require: false */
-  
+  'use strict';
   // universal module definition
 
   if ( typeof define == 'function' && define.amd ) {
@@ -5243,7 +5302,7 @@ function makeArray( obj ) {
   }
 
 }( window, function factory( window, Flickity, imagesLoaded ) {
-
+'use strict';
 
 Flickity.createMethods.push('_createImagesLoaded');
 
@@ -5259,6 +5318,9 @@ Flickity.prototype.imagesLoaded = function() {
   function onImagesLoadedProgress( instance, image ) {
     var cell = _this.getParentCell( image.img );
     _this.cellSizeChange( cell && cell.element );
+    if ( !_this.options.freeScroll ) {
+      _this.positionSliderAtSelected();
+    }
   }
   imagesLoaded( this.slider ).on( 'progress', onImagesLoadedProgress );
 };

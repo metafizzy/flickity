@@ -79,23 +79,60 @@ proto.startAnimation = function() {
   }
 
   this.isAnimating = true;
+  this.isContinuous = false;
   this.restingFrames = 0;
   this.animate();
 };
 
+proto.startContinuousAnimation = function( speed ) {
+  if( this.isAnimating ) {
+      return;
+  }
+  this.isContinuous = true;
+  this.isAnimating = true;
+  this.lastAnimate = +new Date();
+  this.freePlaySpeed = speed;
+  this.animate();
+};
+
+proto.stopContinuousAnimation = function() {
+  if( this.isContinuous ) {
+    this.isContinuous = false;
+    this.isAnimating = false;
+
+    cancelAnimationFrame( this.anim_frame_id );
+  }
+};
+
 proto.animate = function() {
-  this.applyDragForce();
-  this.applySelectedAttraction();
+  if( this.isContinuous ) {
+    var passed = +new Date() - this.lastAnimate;
+    var move = Math.min( ( 1 / passed ) * Math.abs( this.freePlaySpeed ), 10 );
 
-  var previousX = this.x;
+    if( this.freePlaySpeed < 0 ) {
+        this.x -= move;
+    } else {
+        this.x += move;
+    }
 
-  this.integratePhysics();
-  this.positionSlider();
-  this.settle( previousX );
+    this.x = utils.modulo( this.x, this.slideableWidth );
+    this.positionSlider();
+    this.lastAnimate = +new Date();
+  } else {
+    this.applyDragForce();
+    this.applySelectedAttraction();
+
+    var previousX = this.x;
+
+    this.integratePhysics();
+    this.positionSlider();
+    this.settle( previousX );
+  }
+
   // animate next frame
   if ( this.isAnimating ) {
     var _this = this;
-    requestAnimationFrame( function animateFrame() {
+    this.anim_frame_id = requestAnimationFrame( function animateFrame() {
       _this.animate();
     });
   }
