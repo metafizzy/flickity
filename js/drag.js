@@ -103,6 +103,14 @@ Flickity.prototype._childUIPointerDownDrag = function( event ) {
 // -------------------------- pointer events -------------------------- //
 
 Flickity.prototype.pointerDown = function( event, pointer ) {
+  // dismiss range sliders
+  if ( event.target.nodeName == 'INPUT' && event.target.type == 'range' ) {
+    // reset pointerDown logic
+    this.isPointerDown = false;
+    delete this.pointerIdentifier;
+    return;
+  }
+
   this._dragPointerDown( event, pointer );
 
   // kludge to blur focused inputs in dragger
@@ -118,6 +126,10 @@ Flickity.prototype.pointerDown = function( event, pointer ) {
   classie.add( this.viewport, 'is-pointer-down' );
   // bind move and end events
   this._bindPostStartEvents( event );
+  // track scrolling
+  this.pointerDownScroll = Unidragger.getScrollPosition();
+  eventie.bind( window, 'scroll', this );
+
   this.dispatchEvent( 'pointerDown', event, [ pointer ] );
 };
 

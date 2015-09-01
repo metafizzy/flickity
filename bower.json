@@ -1,6 +1,6 @@
 {
   "name": "flickity",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "description": "Touch, responsive, flickable galleries",
   "main": [
     "js/index.js",
@@ -14,7 +14,7 @@
     "get-style-property": "~1.0.4",
     "doc-ready": "~1.0.4",
     "classie": "~1.0.1",
-    "unidragger": "~1.1.2",
+    "unidragger": "~1.1.5",
     "fizzy-ui-utils": "~1.0.0",
     "tap-listener": "~1.1.1"
   },

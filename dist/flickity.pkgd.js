@@ -1,5 +1,5 @@
 /*!
- * Flickity PACKAGED v1.1.0
+ * Flickity PACKAGED v1.1.1
  * Touch, responsive, flickable galleries
  *
  * Licensed GPLv3 for open source use
@@ -1910,7 +1910,7 @@ return proto;
 }));
 
 /*!
- * Flickity v1.1.0
+ * Flickity v1.1.1
  * Touch, responsive, flickable galleries
  *
  * Licensed GPLv3 for open source use
@@ -2978,7 +2978,7 @@ return Unipointer;
 }));
 
 /*!
- * Unidragger v1.1.3
+ * Unidragger v1.1.5
  * Draggable base class
  * MIT license
  */
@@ -3118,6 +3118,14 @@ var disableImgOndragstart = !isIE8 ? noop : function( handle ) {
  * @param {Event or Touch} pointer
  */
 Unidragger.prototype.pointerDown = function( event, pointer ) {
+  // dismiss range sliders
+  if ( event.target.nodeName == 'INPUT' && event.target.type == 'range' ) {
+    // reset pointerDown logic
+    this.isPointerDown = false;
+    delete this.pointerIdentifier;
+    return;
+  }
+
   this._dragPointerDown( event, pointer );
   // kludge to blur focused inputs in dragger
   var focused = document.activeElement;
@@ -3126,6 +3134,10 @@ Unidragger.prototype.pointerDown = function( event, pointer ) {
   }
   // bind move and end events
   this._bindPostStartEvents( event );
+  // track scrolling
+  this.pointerDownScroll = Unidragger.getScrollPosition();
+  eventie.bind( window, 'scroll', this );
+
   this.emitEvent( 'pointerDown', [ event, pointer ] );
 };
 
@@ -3196,6 +3208,10 @@ Unidragger.prototype._dragPointerUp = function( event, pointer ) {
   }
 };
 
+Unipointer.prototype.pointerDone = function() {
+  eventie.unbind( window, 'scroll', this );
+};
+
 // -------------------------- drag -------------------------- //
 
 // dragStart
@@ -3244,6 +3260,11 @@ Unidragger.prototype.dragEnd = function( event, pointer ) {
   this.emitEvent( 'dragEnd', [ event, pointer ] );
 };
 
+Unidragger.prototype.pointerDone = function() {
+  eventie.unbind( window, 'scroll', this );
+  delete this.pointerDownScroll;
+};
+
 // ----- onclick ----- //
 
 // handle all clicks and prevent clicks when dragging
@@ -3257,24 +3278,61 @@ Unidragger.prototype.onclick = function( event ) {
 
 // triggered after pointer down & up with no/tiny movement
 Unidragger.prototype._staticClick = function( event, pointer ) {
+  // ignore emulated mouse up clicks
+  if ( this.isIgnoringMouseUp && event.type == 'mouseup' ) {
+    return;
+  }
+
   // allow click in <input>s and <textarea>s
   var nodeName = event.target.nodeName;
   if ( nodeName == 'INPUT' || nodeName == 'TEXTAREA' ) {
     event.target.focus();
   }
   this.staticClick( event, pointer );
+
+  // set flag for emulated clicks 300ms after touchend
+  if ( event.type != 'mouseup' ) {
+    this.isIgnoringMouseUp = true;
+    var _this = this;
+    // reset flag after 300ms
+    setTimeout( function() {
+      delete _this.isIgnoringMouseUp;
+    }, 400 );
+  }
 };
 
 Unidragger.prototype.staticClick = function( event, pointer ) {
   this.emitEvent( 'staticClick', [ event, pointer ] );
 };
 
-// -----  ----- //
+// ----- scroll ----- //
+
+Unidragger.prototype.onscroll = function() {
+  var scroll = Unidragger.getScrollPosition();
+  var scrollMoveX = this.pointerDownScroll.x - scroll.x;
+  var scrollMoveY = this.pointerDownScroll.y - scroll.y;
+  // cancel click/tap if scroll is too much
+  if ( Math.abs( scrollMoveX ) > 3 || Math.abs( scrollMoveY ) > 3 ) {
+    this._pointerDone();
+  }
+};
+
+// ----- utils ----- //
 
 Unidragger.getPointerPoint = function( pointer ) {
   return {
     x: pointer.pageX !== undefined ? pointer.pageX : pointer.clientX,
     y: pointer.pageY !== undefined ? pointer.pageY : pointer.clientY
+  };
+};
+
+var isPageOffset = window.pageYOffset !== undefined;
+
+// get scroll in { x, y }
+Unidragger.getScrollPosition = function() {
+  return {
+    x: isPageOffset ? window.pageXOffset : document.body.scrollLeft,
+    y: isPageOffset ? window.pageYOffset : document.body.scrollTop
   };
 };
 
@@ -3391,6 +3449,14 @@ Flickity.prototype._childUIPointerDownDrag = function( event ) {
 // -------------------------- pointer events -------------------------- //
 
 Flickity.prototype.pointerDown = function( event, pointer ) {
+  // dismiss range sliders
+  if ( event.target.nodeName == 'INPUT' && event.target.type == 'range' ) {
+    // reset pointerDown logic
+    this.isPointerDown = false;
+    delete this.pointerIdentifier;
+    return;
+  }
+
   this._dragPointerDown( event, pointer );
 
   // kludge to blur focused inputs in dragger
@@ -3406,6 +3472,10 @@ Flickity.prototype.pointerDown = function( event, pointer ) {
   classie.add( this.viewport, 'is-pointer-down' );
   // bind move and end events
   this._bindPostStartEvents( event );
+  // track scrolling
+  this.pointerDownScroll = Unidragger.getScrollPosition();
+  eventie.bind( window, 'scroll', this );
+
   this.dispatchEvent( 'pointerDown', event, [ pointer ] );
 };
 
@@ -3525,7 +3595,7 @@ Flickity.prototype.dragEnd = function( event, pointer ) {
     // if free-scroll & not wrap around
     // do not free-scroll if going outside of bounding cells
     // so bounding cells can attract slider, and keep it in bounds
-    var restingX = this.getRestingDragPosition();
+    var restingX = this.getRestingPosition();
     this.isFreeScrolling = -restingX > this.cells[0].target &&
       -restingX < this.getLastCell().target;
   } else if ( !this.options.freeScroll && index == this.selectedIndex ) {
@@ -3540,7 +3610,7 @@ Flickity.prototype.dragEnd = function( event, pointer ) {
 };
 
 Flickity.prototype.dragEndRestingSelect = function() {
-  var restingX = this.getRestingDragPosition();
+  var restingX = this.getRestingPosition();
   // how far away from selected cell
   var distance = Math.abs( this.getCellDistance( -restingX, this.selectedIndex ) );
   // get closet resting going up and going down
@@ -3550,11 +3620,6 @@ Flickity.prototype.dragEndRestingSelect = function() {
   var index = positiveResting.distance < negativeResting.distance ?
     positiveResting.index : negativeResting.index;
   return index;
-};
-
-Flickity.prototype.getRestingDragPosition = function() {
-  var dragVelocity = this.dragX - this.x;
-  return this.x + dragVelocity / ( 1 - this.getFrictionFactor() );
 };
 
 /**
@@ -4526,7 +4591,7 @@ Flickity.prototype._cellAddedRemoved = function( changedCellIndex, selectedIndex
   this.selectedIndex = Math.max( 0, Math.min( this.cells.length - 1, this.selectedIndex ) );
 
   this.emitEvent( 'cellAddedRemoved', [ changedCellIndex, selectedIndexDelta ] );
-  this.cellChange( changedCellIndex );
+  this.cellChange( changedCellIndex, true );
 };
 
 /**
@@ -4548,14 +4613,22 @@ Flickity.prototype.cellSizeChange = function( elem ) {
  * logic any time a cell is changed: added, removed, or size changed
  * @param {Integer} changedCellIndex - index of the changed cell, optional
  */
-Flickity.prototype.cellChange = function( changedCellIndex ) {
+Flickity.prototype.cellChange = function( changedCellIndex, isPositioningSlider ) {
+  var prevSlideableWidth = this.slideableWidth;
   this._positionCells( changedCellIndex );
   this._getWrapShiftCells();
   this.setGallerySize();
   // position slider
   if ( this.options.freeScroll ) {
+    // shift x by change in slideableWidth
+    // TODO fix position shifts when prepending w/ freeScroll
+    this.x += prevSlideableWidth - this.slideableWidth;
     this.positionSlider();
   } else {
+    // do not position slider after lazy load
+    if ( isPositioningSlider ) {
+      this.positionSliderAtSelected();
+    }
     this.select( this.selectedIndex );
   }
 };
@@ -4732,7 +4805,7 @@ return Flickity;
 });
 
 /*!
- * Flickity asNavFor v1.0.1
+ * Flickity asNavFor v1.0.2
  * enable asNavFor for Flickity
  */
 
@@ -5207,7 +5280,7 @@ function makeArray( obj ) {
 });
 
 /*!
- * Flickity imagesLoaded v1.0.0
+ * Flickity imagesLoaded v1.0.1
  * enables imagesLoaded option for Flickity
  */
 
@@ -5259,6 +5332,9 @@ Flickity.prototype.imagesLoaded = function() {
   function onImagesLoadedProgress( instance, image ) {
     var cell = _this.getParentCell( image.img );
     _this.cellSizeChange( cell && cell.element );
+    if ( !_this.options.freeScroll ) {
+      _this.positionSliderAtSelected();
+    }
   }
   imagesLoaded( this.slider ).on( 'progress', onImagesLoadedProgress );
 };

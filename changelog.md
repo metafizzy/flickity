@@ -3,7 +3,10 @@
 ### v1.1.1
 
 + Fixed freeScroll bug flicking past ends. Fixed [#181](https://github.com/metafizzy/flickity/issues/181)
-+ Fix regression with prepend animation. Fixed [#201](https://github.com/metafizzy/flickity/issues/201)
++ Fixed prepend animation regression. Fixed [#201](https://github.com/metafizzy/flickity/issues/201)
++ Allow range input sliding. Fixed [#216](https://github.com/metafizzy/flickity/issues/216)
++ Disable emulated click event triggering on iOS. Fixed bug with asNavFor on iOS [#189](https://github.com/metafizzy/flickity/issues/189)
++ Fixed staticClick triggering after scroll on touch devices. Fixed [#123](https://github.com/metafizzy/flickity/issues/123)
 
 ## v1.1.0
 

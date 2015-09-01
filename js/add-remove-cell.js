@@ -151,7 +151,6 @@ Flickity.prototype.cellSizeChange = function( elem ) {
  */
 Flickity.prototype.cellChange = function( changedCellIndex, isPositioningSlider ) {
   var prevSlideableWidth = this.slideableWidth;
-  var prevX = this.x;
   this._positionCells( changedCellIndex );
   this._getWrapShiftCells();
   this.setGallerySize();
