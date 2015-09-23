@@ -566,6 +566,45 @@ Flickity.prototype.getAdjacentCellElements = function( adjCount, index ) {
   return cellElems;
 };
 
+/**
+ * get visible cells adjacent to the selected cell, assumes cell at index is visible.
+ *
+ * @param {Integer} extraCount - number of additional not visible cells
+ * @returns {Array} cells - array of Flickity.Cells
+ */
+Flickity.prototype.getVisibleCells = function( extraCount ) {
+  extraCount = extraCount || 0;
+
+  var len = this.cells.length;
+  var visibleSize = this.size.width;
+  var cellElems = [];
+  var cellIndex;
+  var cell;
+
+  var firstVisibleIndex = this.selectedIndex;
+  for ( cellIndex = 0; cellIndex < len && firstVisibleIndex < 0; cellIndex++) {
+    cell = this.cells[ cellIndex ];
+    if ( (cell.x + cell.size.width) > this.x ) {
+      firstVisibleIndex = cellIndex;
+    }
+  }
+
+  if ( firstVisibleIndex >= 0 ) {
+    for ( cellIndex = firstVisibleIndex; cellIndex < len && visibleSize > 0; cellIndex++ ) {
+      cell = this.cells[cellIndex];
+      visibleSize -= cell.size.width;
+      cellElems.push(cell.element);
+    }
+  }
+
+  for ( ; extraCount > 0; extraCount-- ) {
+    cell = this.cells[cellIndex++];
+    cellElems.push(cell.element);
+  }
+
+  return cellElems;
+};
+
 // -------------------------- events -------------------------- //
 
 Flickity.prototype.uiChange = function() {
