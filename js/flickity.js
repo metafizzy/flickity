@@ -432,6 +432,9 @@ Flickity.prototype.select = function( index, isWrap ) {
   if ( !this.isActive ) {
     return;
   }
+  // make sure index type is integer
+  index = parseInt(index);
+  
   // wrap position so slider is within normal area
   var len = this.cells.length;
   if ( this.options.wrapAround && len > 1 ) {
