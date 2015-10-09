@@ -278,6 +278,7 @@ Flickity.prototype._positionCells = function( index ) {
   this.slideableWidth = cellX;
   // contain cell target
   this._containCells();
+  this.setSlides();
 };
 
 /**
@@ -288,6 +289,58 @@ Flickity.prototype._sizeCells = function( cells ) {
   for ( var i=0, len = cells.length; i < len; i++ ) {
     var cell = cells[i];
     cell.getSize();
+  }
+};
+
+// --------------------------  -------------------------- //
+
+function Slide() {
+  this.cells = [];
+  this.width = 0;
+}
+
+Slide.prototype.addCell = function( cell ) {
+  this.cells.push( cell );
+  if ( this.cells.length == 1 ) {
+    this.width = cell.size.width;
+    this.x = cell.x;
+  }
+};
+
+// --------------------------  -------------------------- //
+
+Flickity.prototype.setSlides = function() {
+  this.slides = [];
+  var slide = new Slide();
+  this.slides.push( slide );
+  var prevMargin = this.originSide == 'left' ? 'marginLeft' : 'marginRight';
+  var nextMargin = this.originSide == 'left' ? 'marginRight' : 'marginLeft';
+
+  for ( var i=0, len = this.cells.length; i < len; i++ ) {
+    var cell = this.cells[i];
+
+    if ( slide.width === 0 ) {
+      slide.addCell( cell );
+      continue;
+    }
+
+    var prevSlideCell = slide.cells[ slide.cells.length - 1 ];
+    var prevCellMarginX = prevSlideCell ? prevSlideCell.size[ nextMargin ] : 0;
+    var marginX = prevCellMarginX + cell.size[ prevMargin ];
+    var slideX = slide.width + marginX + cell.size.width;
+
+    if ( slideX <= this.size.width ) {
+      // cell fits in slide
+      slide.addCell( cell );
+      slide.width = slideX;
+    } else {
+      // doesn't fit, new slide
+      slide.target = slide.x + slide.width
+
+      slide = new Slide();
+      this.slides.push( slide );
+      slide.addCell( cell );
+    }
   }
 };
 
