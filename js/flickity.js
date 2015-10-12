@@ -108,6 +108,7 @@ Flickity.defaults = {
   friction: 0.28, // friction when selecting
   // initialIndex: 0,
   percentPosition: true,
+  prevNextStepBy: 1,
   resize: true,
   selectedAttraction: 0.025,
   setGallerySize: true
@@ -455,11 +456,19 @@ Flickity.prototype.select = function( index, isWrap ) {
 };
 
 Flickity.prototype.previous = function( isWrap ) {
-  this.select( this.selectedIndex - 1, isWrap );
+  var newIndex = this.selectedIndex - this.options.prevNextStepBy;
+  if ( ! isWrap && newIndex < 0 ) {
+    newIndex =  this.selectedIndex - 1;
+  }
+  this.select( newIndex, isWrap );
 };
 
 Flickity.prototype.next = function( isWrap ) {
-  this.select( this.selectedIndex + 1, isWrap );
+  var newIndex = this.selectedIndex + this.options.prevNextStepBy;
+  if ( ! isWrap && newIndex > this.cells.length ) {
+    newIndex =  this.selectedIndex + 1;
+  }
+  this.select( newIndex, isWrap );
 };
 
 Flickity.prototype.setSelectedCell = function() {
