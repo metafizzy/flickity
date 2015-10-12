@@ -566,6 +566,68 @@ Flickity.prototype.getAdjacentCellElements = function( adjCount, index ) {
   return cellElems;
 };
 
+/**
+ * Check and report the specified Cell is visible and returns false if the
+ * cell is completely hidden, otherwise:
+ *
+ *  - 'clippedLeft'
+ *  - 'clippedRight'
+ *  - true - fully visible
+ *
+ * @param cellIndex - index of the cell in the Flickity
+ * @returns {truthy} - that is false if not visible, truthy if visible
+ */
+Flickity.prototype.cellVisibility = function( cellIndex ) {
+  var value = false;
+  var cell = this.cells[ cellIndex ];
+  var cellViewportX;
+
+  if (cell) {
+    cellViewportX = cell.x + this.x;  // translate cell coordinates to viewport
+    if (cellViewportX >= 0) {
+      if ((cellViewportX + cell.size.width) < this.size.width) {
+        value = true;
+      } else if (cellViewportX < this.size.width) {
+        value = 'clippedRight';
+      }
+    } else if ((cellViewportX + cell.size.width) > 0) {
+      value = 'clippedLeft';
+    }
+  }
+
+  console.log("cell[" + cellIndex + "] visible: " + value, cell, cellViewportX);
+  return value;
+};
+
+/**
+ * get visible cells plus any extra as requested by extraCount following the last visible
+ *
+ * @param {Integer} extraCount - number of additional not visible cells
+ * @returns {Array} cells - array of Flickity.Cells
+ */
+Flickity.prototype.getVisibleCellElements = function( extraCount ) {
+  extraCount = extraCount || 0;
+
+  var len = this.cells.length;
+  var cellElems = [];
+  var cellIndex;
+
+  for ( cellIndex = 0; cellIndex < len; cellIndex++ ) {
+    if ( this.cellVisibility( cellIndex ) ) {
+      cellElems.push( this.cells[ cellIndex ].element );
+    }
+  }
+
+  if ( cellElems.length > 0 ) {
+    for ( ; extraCount > 0 && cellIndex < this.cells.length; extraCount-- ) {
+      var cell = this.cells[ cellIndex++ ];
+      cellElems.push( cell.element );
+    }
+  }
+
+  return cellElems;
+};
+
 // -------------------------- events -------------------------- //
 
 Flickity.prototype.uiChange = function() {
