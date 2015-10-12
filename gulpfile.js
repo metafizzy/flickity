@@ -92,7 +92,7 @@ function rjsOptimize( options ) {
 var reBannerComment = new RegExp('^\\s*(?:\\/\\*[\\s\\S]*?\\*\\/)\\s*');
 
 function getBanner() {
-  var src = fs.readFileSync( 'js/flickity.js', 'utf8' );
+  var src = fs.readFileSync( 'js/index.js', 'utf8' );
   var matches = src.match( reBannerComment );
   var banner = matches[0].replace( 'Flickity', 'Flickity PACKAGED' );
   return banner;
@@ -179,7 +179,7 @@ gulp.task( 'version', function() {
     return replace( /Flickity v\d\.\d\.\d/, 'Flickity v' + version );
   }
 
-  gulp.src('js/flickity.js')
+  gulp.src('js/index.js')
     .pipe( sourceReplace() )
     .pipe( gulp.dest('js') );
 
