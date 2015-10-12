@@ -243,7 +243,7 @@ if ( typeof define === 'function' && define.amd ) {
  */
 
 ;(function () {
-    
+    'use strict';
 
     /**
      * Class for managing events.
@@ -1190,7 +1190,7 @@ if ( typeof define === 'function' && define.amd ) {
 
 ( function( ElemProto ) {
 
-  
+  'use strict';
 
   var matchesMethod = ( function() {
     // check for the standard method name first
@@ -1296,7 +1296,7 @@ if ( typeof define === 'function' && define.amd ) {
 
 ( function( window, factory ) {
   /*global define: false, module: false, require: false */
-  
+  'use strict';
   // universal module definition
 
   if ( typeof define == 'function' && define.amd ) {
@@ -1559,7 +1559,7 @@ return utils;
 }));
 
 ( function( window, factory ) {
-  
+  'use strict';
   // universal module definition
 
   if ( typeof define == 'function' && define.amd ) {
@@ -1653,7 +1653,7 @@ return Cell;
 }));
 
 ( function( window, factory ) {
-  
+  'use strict';
   // universal module definition
 
   if ( typeof define == 'function' && define.amd ) {
@@ -1921,7 +1921,7 @@ return proto;
  */
 
 ( function( window, factory ) {
-  
+  'use strict';
   // universal module definition
 
   if ( typeof define == 'function' && define.amd ) {
@@ -2477,6 +2477,45 @@ Flickity.prototype.getAdjacentCellElements = function( adjCount, index ) {
   return cellElems;
 };
 
+/**
+ * get visible cells adjacent to the selected cell, assumes cell at index is visible.
+ *
+ * @param {Integer} extraCount - number of additional not visible cells
+ * @returns {Array} cells - array of Flickity.Cells
+ */
+Flickity.prototype.getVisibleCells = function( extraCount ) {
+  extraCount = extraCount || 0;
+
+  var len = this.cells.length;
+  var visibleSize = this.size.width;
+  var cellElems = [];
+  var cellIndex;
+  var cell;
+
+  var firstVisibleIndex = this.selectedIndex;
+  for ( cellIndex = 0; cellIndex < len && firstVisibleIndex < 0; cellIndex++) {
+    cell = this.cells[ cellIndex ];
+    if ( (cell.x + cell.size.width) > this.x ) {
+      firstVisibleIndex = cellIndex;
+    }
+  }
+
+  if ( firstVisibleIndex >= 0 ) {
+    for ( cellIndex = firstVisibleIndex; cellIndex < len && visibleSize > 0; cellIndex++ ) {
+      cell = this.cells[cellIndex];
+      visibleSize -= cell.size.width;
+      cellElems.push(cell.element);
+    }
+  }
+
+  for ( ; extraCount > 0; extraCount-- ) {
+    cell = this.cells[cellIndex++];
+    cellElems.push(cell.element);
+  }
+
+  return cellElems;
+};
+
 // -------------------------- events -------------------------- //
 
 Flickity.prototype.uiChange = function() {
@@ -2670,7 +2709,7 @@ return Flickity;
 /*global define: false, module: false, require: false */
 
 ( function( window, factory ) {
-  
+  'use strict';
   // universal module definition
 
   if ( typeof define == 'function' && define.amd ) {
@@ -2987,7 +3026,7 @@ return Unipointer;
 
 ( function( window, factory ) {
   /*global define: false, module: false, require: false */
-  
+  'use strict';
   // universal module definition
 
   if ( typeof define == 'function' && define.amd ) {
@@ -3345,7 +3384,7 @@ return Unidragger;
 }));
 
 ( function( window, factory ) {
-  
+  'use strict';
   // universal module definition
 
   if ( typeof define == 'function' && define.amd ) {
@@ -3718,7 +3757,7 @@ return Flickity;
 
 ( function( window, factory ) {
   /*global define: false, module: false, require: false */
-  
+  'use strict';
   // universal module definition
 
   if ( typeof define == 'function' && define.amd ) {
@@ -3832,7 +3871,7 @@ return TapListener;
 // -------------------------- prev/next button -------------------------- //
 
 ( function( window, factory ) {
-  
+  'use strict';
   // universal module definition
 
   if ( typeof define == 'function' && define.amd ) {
@@ -4092,7 +4131,7 @@ return Flickity;
 }));
 
 ( function( window, factory ) {
-  
+  'use strict';
   // universal module definition
 
   if ( typeof define == 'function' && define.amd ) {
@@ -4277,7 +4316,7 @@ return Flickity;
 }));
 
 ( function( window, factory ) {
-  
+  'use strict';
   // universal module definition
 
   if ( typeof define == 'function' && define.amd ) {
@@ -4463,7 +4502,7 @@ return Flickity;
 }));
 
 ( function( window, factory ) {
-  
+  'use strict';
   // universal module definition
 
   if ( typeof define == 'function' && define.amd ) {
@@ -4640,7 +4679,7 @@ return Flickity;
 }));
 
 ( function( window, factory ) {
-  
+  'use strict';
   // universal module definition
 
   if ( typeof define == 'function' && define.amd ) {
@@ -4674,7 +4713,7 @@ return Flickity;
   }
 
 }( window, function factory( window, classie, eventie, Flickity, utils ) {
-
+'use strict';
 
 Flickity.createMethods.push('_createLazyload');
 
@@ -4687,9 +4726,17 @@ Flickity.prototype.lazyLoad = function() {
   if ( !lazyLoad ) {
     return;
   }
+
   // get adjacent cells, use lazyLoad option for adjacent count
   var adjCount = typeof lazyLoad == 'number' ? lazyLoad : 0;
-  var cellElems = this.getAdjacentCellElements( adjCount );
+  var cellElems;
+
+  if ( lazyLoad === 'visible' ) {
+    cellElems = this.getVisibleCells( 1 );
+  } else {
+    cellElems = this.getAdjacentCellElements( adjCount );
+  }
+
   // get lazy images in those cells
   var lazyImages = [];
   for ( var i=0, len = cellElems.length; i < len; i++ ) {
@@ -4741,7 +4788,7 @@ LazyLoader.prototype.onload = function( event ) {
   this.complete( event, 'flickity-lazyloaded' );
 };
 
-LazyLoader.prototype.onerror = function() {
+LazyLoader.prototype.onerror = function( event ) {
   this.complete( event, 'flickity-lazyerror' );
 };
 
@@ -4772,7 +4819,7 @@ return Flickity;
  */
 
 ( function( window, factory ) {
-  
+  'use strict';
   // universal module definition
 
   if ( typeof define == 'function' && define.amd ) {
@@ -4813,7 +4860,7 @@ return Flickity;
 
 ( function( window, factory ) {
   /*global define: false, module: false, require: false */
-  
+  'use strict';
   // universal module definition
 
   if ( typeof define == 'function' && define.amd ) {
@@ -4949,7 +4996,7 @@ return Flickity;
  * MIT License
  */
 
-( function( window, factory ) { 
+( function( window, factory ) { 'use strict';
   // universal module definition
 
   /*global define: false, module: false, require: false */
@@ -5288,7 +5335,7 @@ function makeArray( obj ) {
 
 ( function( window, factory ) {
   /*global define: false, module: false, require: false */
-  
+  'use strict';
   // universal module definition
 
   if ( typeof define == 'function' && define.amd ) {
@@ -5316,7 +5363,7 @@ function makeArray( obj ) {
   }
 
 }( window, function factory( window, Flickity, imagesLoaded ) {
-
+'use strict';
 
 Flickity.createMethods.push('_createImagesLoaded');
 
