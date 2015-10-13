@@ -589,7 +589,6 @@ Flickity.prototype.cellVisibility = function( cellIndex ) {
     }
   }
 
-  console.log("cell[" + cellIndex + "] visible: " + value, cell, cellViewportX);
   return value;
 };
 
