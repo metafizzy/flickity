@@ -166,14 +166,18 @@ Flickity.prototype.deactivatePlayer = function() {
 
 // pause auto-play on hover
 Flickity.prototype.onmouseenter = function() {
-  this.player.pause();
-  eventie.bind( this.element, 'mouseleave', this );
+  if(this.options.pauseOnHover){
+    this.player.pause();
+    eventie.bind( this.element, 'mouseleave', this );
+  }
 };
 
 // resume auto-play on hover off
 Flickity.prototype.onmouseleave = function() {
-  this.player.unpause();
-  eventie.unbind( this.element, 'mouseleave', this );
+  if(this.options.pauseOnHover){
+    this.player.unpause();
+    eventie.unbind( this.element, 'mouseleave', this );
+  }
 };
 
 // -----  ----- //
