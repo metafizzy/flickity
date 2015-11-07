@@ -7,15 +7,17 @@
     define( [
       'eventEmitter/EventEmitter',
       'eventie/eventie',
+      'fizzy-ui-utils/utils',
       './flickity'
-    ], function( EventEmitter, eventie, Flickity ) {
-      return factory( EventEmitter, eventie, Flickity );
+    ], function( EventEmitter, eventie, utils, Flickity ) {
+      return factory( EventEmitter, eventie, utils, Flickity );
     });
   } else if ( typeof exports == 'object' ) {
     // CommonJS
     module.exports = factory(
       require('wolfy87-eventemitter'),
       require('eventie'),
+      require('fizzy-ui-utils'),
       require('./flickity')
     );
   } else {
@@ -23,11 +25,12 @@
     factory(
       window.EventEmitter,
       window.eventie,
+      window.fizzyUIUtils,
       window.Flickity
     );
   }
 
-}( window, function factory( EventEmitter, eventie, Flickity ) {
+}( window, function factory( EventEmitter, eventie, utils, Flickity ) {
 
 'use strict';
 
@@ -126,9 +129,9 @@ Player.prototype.visibilityChange = function() {
 
 // -------------------------- Flickity -------------------------- //
 
-// utils.extend( Flickity.defaults, {
-//   autoPlay: false
-// });
+utils.extend( Flickity.defaults, {
+  pauseAutoPlayOnHover: true
+});
 
 Flickity.createMethods.push('_createPlayer');
 
@@ -166,6 +169,9 @@ Flickity.prototype.deactivatePlayer = function() {
 
 // pause auto-play on hover
 Flickity.prototype.onmouseenter = function() {
+  if ( !this.options.pauseAutoPlayOnHover ) {
+    return;
+  }
   this.player.pause();
   eventie.bind( this.element, 'mouseleave', this );
 };
