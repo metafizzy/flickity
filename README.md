@@ -10,7 +10,7 @@ See [flickity.metafizzy.co](http://flickity.metafizzy.co) for complete docs and 
 
 + CSS:
   - [flickity.css](https://github.com/metafizzy/flickity/raw/master/dist/flickity.css) un-minified, or
-  - [flickity.css](https://github.com/metafizzy/flickity/raw/master/dist/flickity.min.css) minified
+  - [flickity.min.css](https://github.com/metafizzy/flickity/raw/master/dist/flickity.min.css) minified
 + JavaScript:
   - [flickity.pkgd.js](https://github.com/metafizzy/flickity/raw/master/dist/flickity.pkgd.js) un-minified, or
   - [flickity.pkgd.min.js](https://github.com/metafizzy/flickity/raw/master/dist/flickity.pkgd.min.js) minified
