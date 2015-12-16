@@ -1,5 +1,5 @@
 /*!
- * Flickity PACKAGED v1.1.1
+ * Flickity PACKAGED v1.1.2
  * Touch, responsive, flickable galleries
  *
  * Licensed GPLv3 for open source use
@@ -4791,7 +4791,7 @@ return Flickity;
 }));
 
 /*!
- * Flickity v1.1.1
+ * Flickity v1.1.2
  * Touch, responsive, flickable galleries
  *
  * Licensed GPLv3 for open source use
