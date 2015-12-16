@@ -120,7 +120,7 @@ Flickity.prototype._create = function() {
   this.element.flickityGUID = id; // expando
   instances[ id ] = this; // associate via id
   // initial properties
-  this.selectedIndex = this.options.initialIndex || 0;
+  this.selectedIndex = 0;
   // how many frames slider has been in same position
   this.restingFrames = 0;
   // initial physics properties
@@ -188,8 +188,19 @@ Flickity.prototype.activate = function() {
 
   this.emit('activate');
 
-  this.positionSliderAtSelected();
-  this.select( this.selectedIndex );
+  var index;
+  var initialIndex = this.options.initialIndex;
+  if ( this.isInitActivated ) {
+    index = this.selectedIndex;
+  } else if ( initialIndex !== undefined ) {
+    index = this.cells[ initialIndex ] ? initialIndex : 0;
+  } else {
+    index = 0;
+  }
+  // select instantly
+  this.select( index, false, true );
+  // flag for initial activation, for using initialIndex
+  this.isInitActivated = true;
 };
 
 // slider positions the cells
@@ -420,8 +431,9 @@ Flickity.prototype.dispatchEvent = function( type, event, args ) {
 /**
  * @param {Integer} index - index of the cell
  * @param {Boolean} isWrap - will wrap-around to last/first if at the end
+ * @param {Boolean} isInstant - will immediately set position at selected cell
  */
-Flickity.prototype.select = function( index, isWrap ) {
+Flickity.prototype.select = function( index, isWrap, isInstant ) {
   if ( !this.isActive ) {
     return;
   }
@@ -439,13 +451,18 @@ Flickity.prototype.select = function( index, isWrap ) {
   if ( this.options.wrapAround || isWrap ) {
     index = utils.modulo( index, len );
   }
-
-  if ( this.cells[ index ] ) {
-    this.selectedIndex = index;
-    this.setSelectedCell();
-    this.startAnimation();
-    this.dispatchEvent('cellSelect');
+  // bail if invalid index
+  if ( !this.cells[ index ] ) {
+    return;
   }
+  this.selectedIndex = index;
+  this.setSelectedCell();
+  if ( isInstant ) {
+    this.positionSliderAtSelected();
+  } else {
+    this.startAnimation();
+  }
+  this.dispatchEvent('cellSelect');
 };
 
 Flickity.prototype.previous = function( isWrap ) {

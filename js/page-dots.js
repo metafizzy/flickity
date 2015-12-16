@@ -68,7 +68,6 @@ PageDots.prototype._create = function() {
 
 PageDots.prototype.activate = function() {
   this.setDots();
-  this.updateSelected();
   this.bindTap( this.holder );
   // add to DOM
   this.parent.element.appendChild( this.holder );
