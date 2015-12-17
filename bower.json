@@ -3,26 +3,24 @@
   "version": "1.1.2",
   "description": "Touch, responsive, flickable galleries",
   "main": [
-    "js/index.js",
-    "css/flickity.css"
+    "dist/flickity.pkgd.js",
+    "dist/flickity.css"
   ],
-  "dependencies": {
+  "devDependencies": {
     "classie": "~1.0.1",
     "doc-ready": "~1.0.4",
     "eventEmitter": "~4.2.11",
     "eventie": "~1.0.5",
     "fizzy-ui-utils": "~1.0.1",
-    "get-size": "~1.2.2",
-    "get-style-property": "~1.0.4",
-    "matches-selector": "~1.0.2",
-    "tap-listener": "~1.1.1",
-    "unidragger": "~1.1.5"
-  },
-  "devDependencies": {
     "flickity-imagesloaded": "~1.0.0",
     "flickity-as-nav-for": "~1.0.0",
+    "get-size": "~1.2.2",
+    "get-style-property": "~1.0.4",
     "jquery-bridget": "~1.1.0",
-    "qunit": "~1.16.0"
+    "matches-selector": "~1.0.2",
+    "qunit": "~1.16.0",
+    "tap-listener": "~1.1.1",
+    "unidragger": "~1.1.5"
   },
   "moduleType": [
     "amd",
