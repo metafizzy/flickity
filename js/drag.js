@@ -127,7 +127,7 @@ Flickity.prototype.pointerDown = function( event, pointer ) {
   // bind move and end events
   this._bindPostStartEvents( event );
   // track scrolling
-  this.pointerDownScroll = Unidragger.getScrollPosition();
+  this.pointerDownScroll = getScrollPosition();
   eventie.bind( window, 'scroll', this );
 
   this.dispatchEvent( 'pointerDown', event, [ pointer ] );
@@ -155,6 +155,13 @@ Flickity.prototype.pointerDownFocus = function( event ) {
   if ( window.pageYOffset != prevScrollY ) {
     window.scrollTo( window.pageXOffset, prevScrollY );
   }
+};
+
+Flickity.prototype.canPreventDefaultOnPointerDown = function( event ) {
+  // prevent default, unless touchstart or <select>
+  var isTouchstart = event.type == 'touchstart';
+  var targetNodeName = event.target.nodeName;
+  return !isTouchstart && targetNodeName != 'SELECT';
 };
 
 // ----- move ----- //
@@ -361,6 +368,27 @@ Flickity.prototype.staticClick = function( event, pointer ) {
   var cellIndex = clickedCell && utils.indexOf( this.cells, clickedCell );
   this.dispatchEvent( 'staticClick', event, [ pointer, cellElem, cellIndex ] );
 };
+
+// ----- scroll ----- //
+
+Flickity.prototype.onscroll = function() {
+  var scroll = getScrollPosition();
+  var scrollMoveX = this.pointerDownScroll.x - scroll.x;
+  var scrollMoveY = this.pointerDownScroll.y - scroll.y;
+  // cancel click/tap if scroll is too much
+  if ( Math.abs( scrollMoveX ) > 3 || Math.abs( scrollMoveY ) > 3 ) {
+    this._pointerDone();
+  }
+};
+
+// ----- utils ----- //
+
+function getScrollPosition() {
+  return {
+    x: window.pageXOffset,
+    y: window.pageYOffset
+  };
+}
 
 // -----  ----- //
 
