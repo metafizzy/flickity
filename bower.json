@@ -13,7 +13,6 @@
     "eventie": "~1.0.5",
     "fizzy-ui-utils": "~1.0.1",
     "get-size": "~1.2.2",
-    "get-style-property": "~1.0.4",
     "matches-selector": "~1.0.2",
     "tap-listener": "~1.1.1",
     "unidragger": "~1.1.5"
