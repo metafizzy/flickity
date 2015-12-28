@@ -8,7 +8,6 @@
   ],
   "dependencies": {
     "classie": "~1.0.1",
-    "doc-ready": "~1.0.4",
     "eventEmitter": "~4.2.11",
     "eventie": "~1.0.5",
     "fizzy-ui-utils": "~1.0.1",
