@@ -167,7 +167,7 @@ Flickity.prototype.pointerMove = function( event, pointer ) {
 };
 
 Flickity.prototype.hasDragStarted = function( moveVector ) {
-  return !this.isTouchScrolling && Math.abs( moveVector.x ) > 3;
+  return !this.isTouchScrolling && Math.abs( moveVector.x ) > this.options.dragThreshold;
 };
 
 // ----- up ----- //

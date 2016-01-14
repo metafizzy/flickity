@@ -92,6 +92,11 @@ var flky = new Flickity( '.gallery', {
   draggable: true,
   // enables dragging & flicking
 
+  dragThreshold: 3,
+  // number of pixels a user must scroll in the x direction
+  // to trigger a cellSelect event. 
+  // Used on touch devices only.
+
   freeScroll: false,
   // enables content to be freely scrolled and flicked
   // without aligning cells
