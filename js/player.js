@@ -153,8 +153,22 @@ Flickity.prototype.activatePlayer = function() {
   this.isMouseenterBound = true;
 };
 
+// Player API, don't hate the ... thanks I know where the door is
+
+Flickity.prototype.playPlayer = function() {
+  this.player.play();
+};
+
 Flickity.prototype.stopPlayer = function() {
   this.player.stop();
+};
+
+Flickity.prototype.pausePlayer = function() {
+  this.player.pause();
+};
+
+Flickity.prototype.unpausePlayer = function() {
+  this.player.unpause();
 };
 
 Flickity.prototype.deactivatePlayer = function() {
