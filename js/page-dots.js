@@ -134,7 +134,7 @@ PageDots.prototype.onTap = function( event ) {
   }
 
   this.parent.uiChange();
-  var index = utils.indexOf( this.dots, target );
+  var index = this.dots.indexOf( target );
   this.parent.select( index );
 };
 

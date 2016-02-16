@@ -5,32 +5,29 @@
   if ( typeof define == 'function' && define.amd ) {
     // AMD
     define( [
-      'eventEmitter/EventEmitter',
-      'eventie/eventie',
+      'ev-emitter/ev-emitter',
       'fizzy-ui-utils/utils',
       './flickity'
-    ], function( EventEmitter, eventie, utils, Flickity ) {
-      return factory( EventEmitter, eventie, utils, Flickity );
+    ], function( EvEmitter, utils, Flickity ) {
+      return factory( EvEmitter, utils, Flickity );
     });
   } else if ( typeof exports == 'object' ) {
     // CommonJS
     module.exports = factory(
-      require('wolfy87-eventemitter'),
-      require('eventie'),
+      require('ev-emitter'),
       require('fizzy-ui-utils'),
       require('./flickity')
     );
   } else {
     // browser global
     factory(
-      window.EventEmitter,
-      window.eventie,
+      window.EvEmitter,
       window.fizzyUIUtils,
       window.Flickity
     );
   }
 
-}( window, function factory( EventEmitter, eventie, utils, Flickity ) {
+}( window, function factory( EvEmitter, utils, Flickity ) {
 
 'use strict';
 
@@ -60,7 +57,7 @@ function Player( parent ) {
   }
 }
 
-Player.prototype = new EventEmitter();
+Player.prototype = Object.create( EvEmitter.prototype );
 
 // start play
 Player.prototype.play = function() {
@@ -149,8 +146,7 @@ Flickity.prototype.activatePlayer = function() {
     return;
   }
   this.player.play();
-  eventie.bind( this.element, 'mouseenter', this );
-  this.isMouseenterBound = true;
+  this.element.addEventListener( 'mouseenter', this );
 };
 
 Flickity.prototype.stopPlayer = function() {
@@ -159,10 +155,7 @@ Flickity.prototype.stopPlayer = function() {
 
 Flickity.prototype.deactivatePlayer = function() {
   this.player.stop();
-  if ( this.isMouseenterBound ) {
-    eventie.unbind( this.element, 'mouseenter', this );
-    delete this.isMouseenterBound;
-  }
+  this.element.removeEventListener( 'mouseenter', this );
 };
 
 // ----- mouseenter/leave ----- //
@@ -173,13 +166,13 @@ Flickity.prototype.onmouseenter = function() {
     return;
   }
   this.player.pause();
-  eventie.bind( this.element, 'mouseleave', this );
+  this.element.addEventListener( 'mouseleave', this );
 };
 
 // resume auto-play on hover off
 Flickity.prototype.onmouseleave = function() {
   this.player.unpause();
-  eventie.unbind( this.element, 'mouseleave', this );
+  this.element.removeEventListener( 'mouseleave', this );
 };
 
 // -----  ----- //

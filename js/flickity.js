@@ -9,23 +9,19 @@
   if ( typeof define == 'function' && define.amd ) {
     // AMD
     define( [
-      'classie/classie',
       'eventEmitter/EventEmitter',
-      'eventie/eventie',
       'get-size/get-size',
       'fizzy-ui-utils/utils',
       './cell',
       './animate'
-    ], function( classie, EventEmitter, eventie, getSize, utils, Cell, animatePrototype ) {
-      return factory( window, classie, EventEmitter, eventie, getSize, utils, Cell, animatePrototype );
+    ], function( EvEmitter, getSize, utils, Cell, animatePrototype ) {
+      return factory( window, EvEmitter, getSize, utils, Cell, animatePrototype );
     });
   } else if ( typeof exports == 'object' ) {
     // CommonJS
     module.exports = factory(
       window,
-      require('desandro-classie'),
-      require('wolfy87-eventemitter'),
-      require('eventie'),
+      require('ev-emitter'),
       require('get-size'),
       require('fizzy-ui-utils'),
       require('./cell'),
@@ -37,9 +33,7 @@
 
     window.Flickity = factory(
       window,
-      window.classie,
-      window.EventEmitter,
-      window.eventie,
+      window.EvEmitter,
       window.getSize,
       window.fizzyUIUtils,
       _Flickity.Cell,
@@ -47,7 +41,7 @@
     );
   }
 
-}( window, function factory( window, classie, EventEmitter, eventie, getSize,
+}( window, function factory( window, EvEmitter, getSize,
   utils, Cell, animatePrototype ) {
 
 'use strict';
@@ -112,7 +106,7 @@ Flickity.defaults = {
 Flickity.createMethods = [];
 
 // inherit EventEmitter
-utils.extend( Flickity.prototype, EventEmitter.prototype );
+utils.extend( Flickity.prototype, EvEmitter.prototype );
 
 Flickity.prototype._create = function() {
   // add id for Flickity.data
@@ -135,8 +129,7 @@ Flickity.prototype._create = function() {
   this._createSlider();
 
   if ( this.options.resize || this.options.watchCSS ) {
-    eventie.bind( window, 'resize', this );
-    this.isResizeBound = true;
+    window.addEventListener( 'resize', this );
   }
 
   for ( var i=0, len = Flickity.createMethods.length; i < len; i++ ) {
@@ -165,9 +158,9 @@ Flickity.prototype.activate = function() {
     return;
   }
   this.isActive = true;
-  classie.add( this.element, 'flickity-enabled' );
+  this.element.classList.add('flickity-enabled');
   if ( this.options.rightToLeft ) {
-    classie.add( this.element, 'flickity-rtl' );
+    this.element.classList.add('flickity-rtl');
   }
 
   this.getSize();
@@ -183,10 +176,10 @@ Flickity.prototype.activate = function() {
     // allow element to focusable
     this.element.tabIndex = 0;
     // listen for key presses
-    eventie.bind( this.element, 'keydown', this );
+    this.element.addEventListener( 'keydown', this );
   }
 
-  this.emit('activate');
+  this.emitEvent('activate');
 
   var index;
   var initialIndex = this.options.initialIndex;
@@ -477,12 +470,12 @@ Flickity.prototype.setSelectedCell = function() {
   this._removeSelectedCellClass();
   this.selectedCell = this.cells[ this.selectedIndex ];
   this.selectedElement = this.selectedCell.element;
-  classie.add( this.selectedElement, 'is-selected' );
+  this.selectedElement.classList.add('is-selected');
 };
 
 Flickity.prototype._removeSelectedCellClass = function() {
   if ( this.selectedCell ) {
-    classie.remove( this.selectedCell.element, 'is-selected' );
+    this.selectedCell.element.classList.remove('is-selected');
   }
 };
 
@@ -580,7 +573,7 @@ Flickity.prototype.getAdjacentCellElements = function( adjCount, index ) {
 // -------------------------- events -------------------------- //
 
 Flickity.prototype.uiChange = function() {
-  this.emit('uiChange');
+  this.emitEvent('uiChange');
 };
 
 Flickity.prototype.childUIPointerDown = function( event ) {
@@ -687,8 +680,8 @@ Flickity.prototype.deactivate = function() {
   if ( !this.isActive ) {
     return;
   }
-  classie.remove( this.element, 'flickity-enabled' );
-  classie.remove( this.element, 'flickity-rtl' );
+  this.element.classList.remove('flickity-enabled');
+  this.element.classList.remove('flickity-rtl');
   // destroy cells
   for ( var i=0, len = this.cells.length; i < len; i++ ) {
     var cell = this.cells[i];
@@ -700,19 +693,17 @@ Flickity.prototype.deactivate = function() {
   moveElements( this.slider.children, this.element );
   if ( this.options.accessibility ) {
     this.element.removeAttribute('tabIndex');
-    eventie.unbind( this.element, 'keydown', this );
+    this.element.removeEventListener( 'keydown', this );
   }
   // set flags
   this.isActive = false;
-  this.emit('deactivate');
+  this.emitEvent('deactivate');
 };
 
 Flickity.prototype.destroy = function() {
   this.deactivate();
-  if ( this.isResizeBound ) {
-    eventie.unbind( window, 'resize', this );
-  }
-  this.emit('destroy');
+  window.removeEventListener( 'resize', this );
+  this.emitEvent('destroy');
   if ( jQuery && this.$element ) {
     jQuery.removeData( this.element, 'flickity' );
   }

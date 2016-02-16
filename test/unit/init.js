@@ -17,7 +17,7 @@ test( 'init', function() {
 
   equal( flkty.element, elem, '.element is proper element' );
   var children = utils.makeArray( flkty.element.children );
-  notEqual( utils.indexOf( children, flkty.viewport ), -1, 'viewport element is a child element' );
+  notEqual( children.indexOf( flkty.viewport ), -1, 'viewport element is a child element' );
   equal( flkty.viewport.children[0], flkty.slider, 'slider is in viewport' );
   equal( flkty.viewport.style.height, '100px', 'viewport height set' );
 

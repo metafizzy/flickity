@@ -7,18 +7,16 @@
   if ( typeof define == 'function' && define.amd ) {
     // AMD
     define( [
-      'eventie/eventie',
       './flickity',
       'tap-listener/tap-listener',
       'fizzy-ui-utils/utils'
-    ], function( eventie, Flickity, TapListener, utils ) {
-      return factory( window, eventie, Flickity, TapListener, utils );
+    ], function( Flickity, TapListener, utils ) {
+      return factory( window, Flickity, TapListener, utils );
     });
   } else if ( typeof exports == 'object' ) {
     // CommonJS
     module.exports = factory(
       window,
-      require('eventie'),
       require('./flickity'),
       require('tap-listener'),
       require('fizzy-ui-utils')
@@ -27,14 +25,13 @@
     // browser global
     factory(
       window,
-      window.eventie,
       window.Flickity,
       window.TapListener,
       window.fizzyUIUtils
     );
   }
 
-}( window, function factory( window, eventie, Flickity, TapListener, utils ) {
+}( window, function factory( window, Flickity, TapListener, utils ) {
 
 'use strict';
 
@@ -109,7 +106,7 @@ PrevNextButton.prototype._create = function() {
 PrevNextButton.prototype.activate = function() {
   this.bindTap( this.element );
   // click events from keyboard
-  eventie.bind( this.element, 'click', this );
+  this.element.addEventListener( 'click', this );
   // add to DOM
   this.parent.element.appendChild( this.element );
 };
@@ -120,7 +117,7 @@ PrevNextButton.prototype.deactivate = function() {
   // do regular TapListener destroy
   TapListener.prototype.destroy.call( this );
   // click events from keyboard
-  eventie.unbind( this.element, 'click', this );
+  this.element.removeEventListener( 'click', this );
 };
 
 PrevNextButton.prototype.createSVG = function() {

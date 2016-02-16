@@ -5,20 +5,16 @@
   if ( typeof define == 'function' && define.amd ) {
     // AMD
     define( [
-      'classie/classie',
-      'eventie/eventie',
       './flickity',
       'unidragger/unidragger',
       'fizzy-ui-utils/utils'
-    ], function( classie, eventie, Flickity, Unidragger, utils ) {
-      return factory( window, classie, eventie, Flickity, Unidragger, utils );
+    ], function( Flickity, Unidragger, utils ) {
+      return factory( window, Flickity, Unidragger, utils );
     });
   } else if ( typeof exports == 'object' ) {
     // CommonJS
     module.exports = factory(
       window,
-      require('desandro-classie'),
-      require('eventie'),
       require('./flickity'),
       require('unidragger'),
       require('fizzy-ui-utils')
@@ -27,26 +23,15 @@
     // browser global
     window.Flickity = factory(
       window,
-      window.classie,
-      window.eventie,
       window.Flickity,
       window.Unidragger,
       window.fizzyUIUtils
     );
   }
 
-}( window, function factory( window, classie, eventie, Flickity, Unidragger, utils ) {
+}( window, function factory( window, Flickity, Unidragger, utils ) {
 
 'use strict';
-
-// handle IE8 prevent default
-function preventDefaultEvent( event ) {
-  if ( event.preventDefault ) {
-    event.preventDefault();
-  } else {
-    event.returnValue = false;
-  }
-}
 
 // ----- defaults ----- //
 
@@ -76,7 +61,7 @@ Flickity.prototype.bindDrag = function() {
   if ( !this.options.draggable || this.isDragBound ) {
     return;
   }
-  classie.add( this.element, 'is-draggable' );
+  this.element.classList.add('is-draggable');
   this.handles = [ this.viewport ];
   this.bindHandles();
   this.isDragBound = true;
@@ -86,7 +71,7 @@ Flickity.prototype.unbindDrag = function() {
   if ( !this.isDragBound ) {
     return;
   }
-  classie.remove( this.element, 'is-draggable' );
+  this.element.classList.remove('is-draggable');
   this.unbindHandles();
   delete this.isDragBound;
 };
@@ -96,7 +81,7 @@ Flickity.prototype._uiChangeDrag = function() {
 };
 
 Flickity.prototype._childUIPointerDownDrag = function( event ) {
-  preventDefaultEvent( event );
+  event.preventDefault();
   this.pointerDownFocus( event );
 };
 
@@ -123,12 +108,12 @@ Flickity.prototype.pointerDown = function( event, pointer ) {
   this.pointerDownFocus( event );
   // stop if it was moving
   this.dragX = this.x;
-  classie.add( this.viewport, 'is-pointer-down' );
+  this.viewport.classList.add('is-pointer-down');
   // bind move and end events
   this._bindPostStartEvents( event );
   // track scrolling
   this.pointerDownScroll = getScrollPosition();
-  eventie.bind( window, 'scroll', this );
+  window.addEventListener( 'scroll', this );
 
   this.dispatchEvent( 'pointerDown', event, [ pointer ] );
 };
@@ -181,7 +166,7 @@ Flickity.prototype.hasDragStarted = function( moveVector ) {
 
 Flickity.prototype.pointerUp = function( event, pointer ) {
   delete this.isTouchScrolling;
-  classie.remove( this.viewport, 'is-pointer-down' );
+  this.viewport.classList.remove('is-pointer-down');
   this.dispatchEvent( 'pointerUp', event, [ pointer ] );
   this._dragPointerUp( event, pointer );
 };
@@ -230,7 +215,7 @@ Flickity.prototype.dragStart = function( event, pointer ) {
 };
 
 Flickity.prototype.dragMove = function( event, pointer, moveVector ) {
-  preventDefaultEvent( event );
+  event.preventDefault();
 
   this.previousDragX = this.dragX;
   // reverse if right-to-left
