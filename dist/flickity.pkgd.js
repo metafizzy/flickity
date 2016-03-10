@@ -1603,6 +1603,15 @@ Cell.prototype.create = function() {
   if ( isIE8 ) {
     this.element.setAttribute( 'unselectable', 'on' );
   }
+
+  var e = this.element;
+  var p = this.parent;
+
+  e.addEventListener('focus', function(evt) {
+    p.select($(e).index());
+  }, true);
+
+
   this.x = 0;
   this.shift = 0;
 };
@@ -4807,7 +4816,7 @@ return Flickity;
 });
 
 /*!
- * Flickity asNavFor v1.0.4
+ * Flickity asNavFor v1.0.2
  * enable asNavFor for Flickity
  */
 
@@ -5331,7 +5340,7 @@ function makeArray( obj ) {
 });
 
 /*!
- * Flickity imagesLoaded v1.0.4
+ * Flickity imagesLoaded v1.0.2
  * enables imagesLoaded option for Flickity
  */
 
