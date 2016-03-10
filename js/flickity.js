@@ -621,15 +621,20 @@ var supportsConditionalCSS = Flickity.supportsConditionalCSS = ( function() {
       supports = false;
       return;
     }
-    // style body's :after and check that
+    // create a test element and check its :after
     var style = document.createElement('style');
-    var cssText = document.createTextNode('body:after { content: "foo"; display: none; }');
+    var cssText = document.createTextNode('#flickity-test:after { content: "foo"; display: none; }');
+    var element = document.createElement('div');
+    var afterContent;
+    element.id = 'flickity-test';
     style.appendChild( cssText );
     document.head.appendChild( style );
-    var afterContent = getComputedStyle( document.body, ':after' ).content;
+    document.body.appendChild( element );
+    afterContent = getComputedStyle( element, ':after' ).content;
     // check if able to get :after content
     supports = afterContent.indexOf('foo') != -1;
     document.head.removeChild( style );
+    document.body.removeChild( element );
     return supports;
   };
 })();
