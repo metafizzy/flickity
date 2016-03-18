@@ -176,7 +176,7 @@ gulp.task( 'version', function() {
   gutil.log( 'ticking version to ' + chalk.green( version ) );
 
   function sourceReplace() {
-    return replace( /Flickity v\d\.\d\.\d/, 'Flickity v' + version );
+    return replace( /Flickity v\d\.\d+\.\d+/, 'Flickity v' + version );
   }
 
   gulp.src('js/index.js')
@@ -188,11 +188,12 @@ gulp.task( 'version', function() {
     .pipe( gulp.dest('css') );
 
   gulp.src( [ 'bower.json', 'package.json' ] )
-    .pipe( replace( /"version": "\d\.\d\.\d"/, '"version": "' + version + '"' ) )
+    .pipe( replace( /"version": "\d\.\d+\.\d+"/, '"version": "' + version + '"' ) )
     .pipe( gulp.dest('.') );
   // replace CDN links in README
+  var minorVersion = version.match( /^\d\.\d+/ )[0];
   gulp.src('README.md')
-    .pipe( replace( /ajax\/libs\/flickity\/\d\.\d\.\d/g, 'ajax/libs/flickity/' + version ))
+    .pipe( replace( /flickity@\d\.\d+/g, 'flickity@' + minorVersion ))
     .pipe( gulp.dest('.') );
 });
 
