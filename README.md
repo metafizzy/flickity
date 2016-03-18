@@ -20,15 +20,15 @@ See [flickity.metafizzy.co](http://flickity.metafizzy.co) for complete docs and 
 Link directly to [Flickity files on cdnjs](https://cdnjs.com/libraries/flickity).
 
 ``` html
-<link rel="stylesheet" href="https://npmcdn.com/flickity@1.1/dist/flickity.pkgd.css">
+<link rel="stylesheet" href="https://npmcdn.com/flickity@1.2/dist/flickity.pkgd.css">
 <!-- or -->
-<link rel="stylesheet" href="https://npmcdn.com/flickity@1.1/dist/flickity.pkgd.min.css">
+<link rel="stylesheet" href="https://npmcdn.com/flickity@1.2/dist/flickity.pkgd.min.css">
 ```
 
 ``` html
-<script src="https://npmcdn.com/flickity@1.1/dist/flickity.pkgd.js"></script>
+<script src="https://npmcdn.com/flickity@1.2/dist/flickity.pkgd.js"></script>
 <!-- or -->
-<script src="https://npmcdn.com/flickity@1.1/dist/flickity.pkgd.min.js"></script>
+<script src="https://npmcdn.com/flickity@1.2/dist/flickity.pkgd.min.js"></script>
 ```
 
 ### Package managers
