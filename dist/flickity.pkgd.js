@@ -1,5 +1,5 @@
 /*!
- * Flickity PACKAGED v1.1.2
+ * Flickity PACKAGED v1.2.0
  * Touch, responsive, flickable galleries
  *
  * Licensed GPLv3 for open source use
@@ -3408,8 +3408,7 @@ function preventDefaultEvent( event ) {
 // ----- defaults ----- //
 
 utils.extend( Flickity.defaults, {
-  draggable: true,
-  touchVerticalScroll: true
+  draggable: true
 });
 
 // ----- create ----- //
@@ -3516,59 +3515,21 @@ Flickity.prototype.pointerDownFocus = function( event ) {
 
 // ----- move ----- //
 
-Flickity.prototype.pointerMove = function( event, pointer ) {
-  var moveVector = this._dragPointerMove( event, pointer );
-  this.touchVerticalScrollMove( event, pointer, moveVector );
-  this._dragMove( event, pointer, moveVector );
-  this.dispatchEvent( 'pointerMove', event, [ pointer, moveVector ] );
-};
-
 Flickity.prototype.hasDragStarted = function( moveVector ) {
-  return !this.isTouchScrolling && Math.abs( moveVector.x ) > 3;
+  return Math.abs( moveVector.x ) > 3;
 };
 
 // ----- up ----- //
 
 Flickity.prototype.pointerUp = function( event, pointer ) {
-  delete this.isTouchScrolling;
   classie.remove( this.viewport, 'is-pointer-down' );
   this.dispatchEvent( 'pointerUp', event, [ pointer ] );
   this._dragPointerUp( event, pointer );
 };
 
-// -------------------------- vertical scroll -------------------------- //
-
-var touchScrollEvents = {
-  // move events
-  // mousemove: true,
-  touchmove: true,
-  MSPointerMove: true
-};
-
-// position of pointer, relative to window
-function getPointerWindowY( pointer ) {
-  var pointerPoint = Unidragger.getPointerPoint( pointer );
-  return pointerPoint.y - window.pageYOffset;
-}
-
-Flickity.prototype.touchVerticalScrollMove = function( event, pointer, moveVector ) {
-  // do not scroll if already dragging, if disabled
-  var touchVerticalScroll = this.options.touchVerticalScroll;
-  // if touchVerticalScroll is 'withDrag', allow scrolling and dragging
-  var canNotScroll = touchVerticalScroll == 'withDrag' ? !touchVerticalScroll :
-    this.isDragging || !touchVerticalScroll;
-  if ( canNotScroll || !touchScrollEvents[ event.type ] ) {
-    return;
-  }
-  // don't start vertical scrolling until pointer has moved 10 pixels in a direction
-  if ( !this.isTouchScrolling && Math.abs( moveVector.y ) > 10 ) {
-    // start touch vertical scrolling
-    // scroll & pointerY when started
-    this.startScrollY = window.pageYOffset;
-    this.pointerWindowStartY = getPointerWindowY( pointer );
-    // start scroll animation
-    this.isTouchScrolling = true;
-  }
+Flickity.prototype.pointerDone = function() {
+  eventie.unbind( window, 'scroll', this );
+  delete this.pointerDownScroll;
 };
 
 // -------------------------- dragging -------------------------- //
@@ -3726,7 +3687,7 @@ return Flickity;
 }));
 
 /*!
- * Tap listener v1.1.1
+ * Tap listener v1.1.2
  * listens to taps
  * MIT license
  */
@@ -3734,9 +3695,8 @@ return Flickity;
 /*jshint browser: true, unused: true, undef: true, strict: true */
 
 ( function( window, factory ) {
-  /*global define: false, module: false, require: false */
-  'use strict';
   // universal module definition
+  /*jshint strict: false*/ /*globals define, module, require */
 
   if ( typeof define == 'function' && define.amd ) {
     // AMD
@@ -3762,15 +3722,6 @@ return Flickity;
 }( window, function factory( window, Unipointer ) {
 
 
-
-// handle IE8 prevent default
-function preventDefaultEvent( event ) {
-  if ( event.preventDefault ) {
-    event.preventDefault();
-  } else {
-    event.returnValue = false;
-  }
-}
 
 // --------------------------  TapListener -------------------------- //
 
@@ -3802,16 +3753,6 @@ TapListener.prototype.unbindTap = function() {
   delete this.tapElement;
 };
 
-var pointerDown = TapListener.prototype.pointerDown;
-
-TapListener.prototype.pointerDown = function( event ) {
-  // prevent default event for touch, disables tap then click
-  if ( event.type == 'touchstart' ) {
-    preventDefaultEvent( event );
-  }
-  pointerDown.apply( this, arguments );
-};
-
 var isPageOffset = window.pageYOffset !== undefined;
 /**
  * pointer up
@@ -3819,6 +3760,11 @@ var isPageOffset = window.pageYOffset !== undefined;
  * @param {Event or Touch} pointer
  */
 TapListener.prototype.pointerUp = function( event, pointer ) {
+  // ignore emulated mouse up clicks
+  if ( this.isIgnoringMouseUp && event.type == 'mouseup' ) {
+    return;
+  }
+
   var pointerPoint = Unipointer.getPointerPoint( pointer );
   var boundingRect = this.tapElement.getBoundingClientRect();
   // standard or IE8 scroll positions
@@ -3832,6 +3778,15 @@ TapListener.prototype.pointerUp = function( event, pointer ) {
   // trigger callback if pointer is inside element
   if ( isInside ) {
     this.emitEvent( 'tap', [ event, pointer ] );
+  }
+
+  // set flag for emulated clicks 300ms after touchend
+  if ( event.type != 'mouseup' ) {
+    this.isIgnoringMouseUp = true;
+    // reset flag after 300ms
+    setTimeout( function() {
+      delete this.isIgnoringMouseUp;
+    }.bind( this ), 320 );
   }
 };
 
@@ -3929,6 +3884,8 @@ PrevNextButton.prototype._create = function() {
   element.setAttribute( 'type', 'button' );
   // init as disabled
   this.disable();
+
+  element.setAttribute( 'aria-label', this.isPrevious ? 'previous' : 'next' );
 
   Flickity.setUnselectable( element );
   // create arrow
@@ -4449,8 +4406,22 @@ Flickity.prototype.activatePlayer = function() {
   this.isMouseenterBound = true;
 };
 
+// Player API, don't hate the ... thanks I know where the door is
+
+Flickity.prototype.playPlayer = function() {
+  this.player.play();
+};
+
 Flickity.prototype.stopPlayer = function() {
   this.player.stop();
+};
+
+Flickity.prototype.pausePlayer = function() {
+  this.player.pause();
+};
+
+Flickity.prototype.unpausePlayer = function() {
+  this.player.unpause();
 };
 
 Flickity.prototype.deactivatePlayer = function() {
@@ -4646,7 +4617,8 @@ Flickity.prototype.cellChange = function( changedCellIndex, isPositioningSlider 
   if ( this.options.freeScroll ) {
     // shift x by change in slideableWidth
     // TODO fix position shifts when prepending w/ freeScroll
-    this.x += prevSlideableWidth - this.slideableWidth;
+    var deltaX = prevSlideableWidth - this.slideableWidth;
+    this.x += deltaX * this.cellAlign;
     this.positionSlider();
   } else {
     // do not position slider after lazy load
@@ -4791,7 +4763,7 @@ return Flickity;
 }));
 
 /*!
- * Flickity v1.1.2
+ * Flickity v1.2.0
  * Touch, responsive, flickable galleries
  *
  * Licensed GPLv3 for open source use
@@ -4835,7 +4807,7 @@ return Flickity;
 });
 
 /*!
- * Flickity asNavFor v1.0.2
+ * Flickity asNavFor v1.0.3
  * enable asNavFor for Flickity
  */
 
@@ -5359,7 +5331,7 @@ function makeArray( obj ) {
 });
 
 /*!
- * Flickity imagesLoaded v1.0.2
+ * Flickity imagesLoaded v1.0.4
  * enables imagesLoaded option for Flickity
  */
 

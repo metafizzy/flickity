@@ -1,6 +1,6 @@
 {
   "name": "flickity",
-  "version": "1.1.2",
+  "version": "1.2.0",
   "description": "Touch, responsive, flickable galleries",
   "main": [
     "js/index.js",
@@ -46,9 +46,7 @@
     "tests",
     "sandbox",
     "package.json",
-    "Gruntfile.js",
     "gulpfile.js",
-    "changelog.md",
     "notes.md"
   ]
 }
