@@ -45,6 +45,10 @@ Cell.prototype.create = function() {
   }
   this.x = 0;
   this.shift = 0;
+  // default each cell to aria hidden
+  // determination of selected cell
+  // will change this state
+  this.element.setAttribute('aria-hidden', true);
 };
 
 Cell.prototype.destroy = function() {
@@ -62,6 +66,10 @@ Cell.prototype.setPosition = function( x ) {
   this.x = x;
   this.setDefaultTarget();
   this.renderPosition( x );
+};
+
+Cell.prototype.setAriaHidden = function ( val ) {
+  this.element.setAttribute('aria-hidden', val);
 };
 
 Cell.prototype.setDefaultTarget = function() {
