@@ -477,11 +477,19 @@ Flickity.prototype.setSelectedCell = function() {
   this._removeSelectedCellClass();
   this.selectedCell = this.cells[ this.selectedIndex ];
   this.selectedElement = this.selectedCell.element;
+  // set aria hidden to false now that
+  // the cell is selected and then add
+  // the is-selected class
+  this.selectedCell.setAriaHidden( false );
   classie.add( this.selectedElement, 'is-selected' );
 };
 
 Flickity.prototype._removeSelectedCellClass = function() {
   if ( this.selectedCell ) {
+    // set aria hidden to true now that
+    // the previously selected cell is
+    // no longer selected
+    this.selectedCell.setAriaHidden( true );
     classie.remove( this.selectedCell.element, 'is-selected' );
   }
 };
