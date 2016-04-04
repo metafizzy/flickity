@@ -146,14 +146,14 @@ gulp.task( 'uglify', [ 'requirejs' ], function() {
 
 // ----- css ----- //
 
-var minifyCSS = require('gulp-minify-css');
+var cleanCss = require('gulp-clean-css');
 
 gulp.task( 'css', function() {
   gulp.src('css/flickity.css')
     // copy to dist
     .pipe( gulp.dest('dist') )
     // minify
-    .pipe( minifyCSS({ advanced: false }) )
+    .pipe( cleanCss({ advanced: false }) )
     .pipe( rename('flickity.min.css') )
     .pipe( replace( '*/', '*/\n' ) )
     .pipe( gulp.dest('dist') );
