@@ -146,7 +146,7 @@ gulp.task( 'uglify', [ 'requirejs' ], function() {
 
 // ----- css ----- //
 
-var cleanCSS = require('gulp-minify-css');
+var cleanCSS = require('gulp-clean-css');
 
 gulp.task( 'css', function() {
   gulp.src('css/flickity.css')
