@@ -101,6 +101,7 @@ Flickity.defaults = {
   friction: 0.28, // friction when selecting
   // initialIndex: 0,
   percentPosition: true,
+  prevNextStepBy: 1,
   resize: true,
   selectedAttraction: 0.025,
   setGallerySize: true
@@ -465,12 +466,31 @@ Flickity.prototype.select = function( index, isWrap, isInstant ) {
   this.dispatchEvent('cellSelect');
 };
 
+Flickity.prototype._prevNextStepBy = function( direction, isWrap ) {
+  var stepBy = this.options.prevNextStepBy;
+  if ( typeof stepBy === 'function' ) {
+    stepBy = stepBy.call( this, direction, isWrap );
+  } else {
+    stepBy = parseInt( stepBy, 10 );
+  }
+
+  return stepBy;
+};
+
 Flickity.prototype.previous = function( isWrap ) {
-  this.select( this.selectedIndex - 1, isWrap );
+  var newIndex = this.selectedIndex - this._prevNextStepBy( -1, isWrap );
+  if ( ! isWrap && newIndex < 0 ) {
+    newIndex =  this.selectedIndex - 1;
+  }
+  this.select( newIndex, isWrap );
 };
 
 Flickity.prototype.next = function( isWrap ) {
-  this.select( this.selectedIndex + 1, isWrap );
+  var newIndex = this.selectedIndex + this._prevNextStepBy( 1, isWrap );
+  if ( ! isWrap && newIndex > this.cells.length ) {
+    newIndex =  this.selectedIndex + 1;
+  }
+  this.select( newIndex, isWrap );
 };
 
 Flickity.prototype.setSelectedCell = function() {
@@ -574,6 +594,67 @@ Flickity.prototype.getAdjacentCellElements = function( adjCount, index ) {
       cellElems.push( cell.element );
     }
   }
+  return cellElems;
+};
+
+/**
+ * Check and report the specified Cell is visible and returns false if the
+ * cell is completely hidden, otherwise:
+ *
+ *  - 'clippedLeft'
+ *  - 'clippedRight'
+ *  - true - fully visible
+ *
+ * @param cellIndex - index of the cell in the Flickity
+ * @returns {truthy} - that is false if not visible, truthy if visible
+ */
+Flickity.prototype.cellVisibility = function( cellIndex ) {
+  var value = false;
+  var cell = this.cells[ cellIndex ];
+  var cellViewportX;
+
+  if (cell) {
+    cellViewportX = cell.x + this.x;  // translate cell coordinates to viewport
+    if (cellViewportX >= 0) {
+      if ((cellViewportX + cell.size.width) < this.size.width) {
+        value = true;
+      } else if (cellViewportX < this.size.width) {
+        value = 'clippedRight';
+      }
+    } else if ((cellViewportX + cell.size.width) > 0) {
+      value = 'clippedLeft';
+    }
+  }
+
+  return value;
+};
+
+/**
+ * get visible cells plus any extra as requested by extraCount following the last visible
+ *
+ * @param {Integer} extraCount - number of additional not visible cells
+ * @returns {Array} cells - array of Flickity.Cells
+ */
+Flickity.prototype.getVisibleCellElements = function( extraCount ) {
+  extraCount = extraCount || 0;
+
+  var len = this.cells.length;
+  var cellElems = [];
+  var cellIndex;
+
+  for ( cellIndex = 0; cellIndex < len; cellIndex++ ) {
+    if ( this.cellVisibility( cellIndex ) ) {
+      cellElems.push( this.cells[ cellIndex ].element );
+    }
+  }
+
+  if ( cellElems.length > 0 ) {
+    for ( ; extraCount > 0 && cellIndex < this.cells.length; extraCount-- ) {
+      var cell = this.cells[ cellIndex++ ];
+      cellElems.push( cell.element );
+    }
+  }
+
   return cellElems;
 };
 
