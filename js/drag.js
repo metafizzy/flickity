@@ -320,7 +320,10 @@ Flickity.prototype.staticClick = function( event, pointer ) {
   var clickedCell = this.getParentCell( event.target );
   var cellElem = clickedCell && clickedCell.element;
   var cellIndex = clickedCell && utils.indexOf( this.cells, clickedCell );
-  this.dispatchEvent( 'staticClick', event, [ pointer, cellElem, cellIndex ] );
+
+  if (event && pointer && cellElem && cellIndex) {
+    this.dispatchEvent( 'staticClick', event, [ pointer, cellElem, cellIndex ] );
+  }
 };
 
 // -----  ----- //
