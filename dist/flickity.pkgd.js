@@ -3894,7 +3894,8 @@ PrevNextButton.prototype._create = function() {
   // init as disabled
   this.disable();
 
-  element.setAttribute( 'aria-label', this.isPrevious ? 'previous' : 'next' );
+  element.setAttribute( 'tabindex', '-1' );
+  element.setAttribute( 'role', 'presentation' );
 
   Flickity.setUnselectable( element );
   // create arrow
