@@ -105,7 +105,8 @@ Flickity.defaults = {
   selectedAttraction: 0.025,
   setGallerySize: true
   // watchCSS: false,
-  // wrapAround: false
+  // wrapAround: false,
+  // noDomMod: false
 };
 
 // hash of methods triggered on _create()
@@ -129,8 +130,16 @@ Flickity.prototype._create = function() {
   this.accel = 0;
   this.originSide = this.options.rightToLeft ? 'right' : 'left';
   // create viewport & slider
-  this.viewport = document.createElement('div');
-  this.viewport.className = 'flickity-viewport';
+  if (this.options.noDomMod) {
+    this.viewport = document.querySelector('.flickity-viewport');
+    if ( !this.viewport && console ) {
+      console.error( 'Could not find ".flickity-viewport"' );
+      return
+    }
+  } else {
+    this.viewport = document.createElement('div');
+    this.viewport.className = 'flickity-viewport';
+  }
   Flickity.setUnselectable( this.viewport );
   this._createSlider();
 
@@ -173,9 +182,11 @@ Flickity.prototype.activate = function() {
   this.getSize();
   // move initial cell elements so they can be loaded as cells
   var cellElems = this._filterFindCellElements( this.element.children );
-  moveElements( cellElems, this.slider );
-  this.viewport.appendChild( this.slider );
-  this.element.appendChild( this.viewport );
+  if (! this.options.noDomMod) {
+    moveElements( cellElems, this.slider );
+    this.viewport.appendChild( this.slider );
+    this.element.appendChild( this.viewport );
+  }
   // get cells from children
   this.reloadCells();
 
@@ -206,10 +217,17 @@ Flickity.prototype.activate = function() {
 // slider positions the cells
 Flickity.prototype._createSlider = function() {
   // slider element does all the positioning
-  var slider = document.createElement('div');
-  slider.className = 'flickity-slider';
-  slider.style[ this.originSide ] = 0;
-  this.slider = slider;
+  if (this.options.noDomMod) {
+    this.slider = document.querySelector('.flickity-slider');
+    if ( !this.slider && console ) {
+      console.error( 'Could not find ".flickity-slider"' );
+      return
+    }
+  } else {
+    this.slider = document.createElement('div');
+    this.slider.className = 'flickity-slider';
+  }
+  this.slider.style[ this.originSide ] = 0;
 };
 
 Flickity.prototype._filterFindCellElements = function( elems ) {
@@ -695,9 +713,9 @@ Flickity.prototype.deactivate = function() {
     cell.destroy();
   }
   this._removeSelectedCellClass();
-  this.element.removeChild( this.viewport );
+  this.options.noDomMod || this.element.removeChild( this.viewport );
   // move child elements back into element
-  moveElements( this.slider.children, this.element );
+  this.options.noDomMod || moveElements( this.slider.children, this.element );
   if ( this.options.accessibility ) {
     this.element.removeAttribute('tabIndex');
     eventie.unbind( this.element, 'keydown', this );
