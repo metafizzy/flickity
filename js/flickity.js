@@ -131,7 +131,7 @@ Flickity.prototype._create = function() {
   this.originSide = this.options.rightToLeft ? 'right' : 'left';
   // create viewport & slider
   if (this.options.noDomMod) {
-    this.viewport = document.querySelector('.flickity-viewport');
+    this.viewport = this.element.querySelector('.flickity-viewport');
     if ( !this.viewport && console ) {
       console.error( 'Could not find ".flickity-viewport"' );
       return
@@ -218,7 +218,7 @@ Flickity.prototype.activate = function() {
 Flickity.prototype._createSlider = function() {
   // slider element does all the positioning
   if (this.options.noDomMod) {
-    this.slider = document.querySelector('.flickity-slider');
+    this.slider = this.element.querySelector('.flickity-slider');
     if ( !this.slider && console ) {
       console.error( 'Could not find ".flickity-slider"' );
       return
