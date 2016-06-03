@@ -91,6 +91,7 @@ LazyLoader.prototype.load = function() {
   eventie.bind( this.img, 'load', this );
   eventie.bind( this.img, 'error', this );
   // load image
+  classie.add( this.img, 'flickity-lazyloading' );
   this.img.src = this.img.getAttribute('data-flickity-lazyload');
   // remove attr
   this.img.removeAttribute('data-flickity-lazyload');
@@ -114,6 +115,7 @@ LazyLoader.prototype.complete = function( event, className ) {
   this.flickity.cellSizeChange( cellElem );
 
   classie.add( this.img, className );
+  classie.remove( this.img, 'flickity-lazyloading' );
   this.flickity.dispatchEvent( 'lazyLoad', event, cellElem );
 };
 
