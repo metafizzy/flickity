@@ -123,8 +123,8 @@ Player.prototype.unpause = function() {
 
 // pause if page visibility is hidden, unpause if visible
 Player.prototype.visibilityChange = function() {
-  var isHidden = document[ hiddenProperty ];
-  this[ isHidden ? 'pause' : 'unpause' ]();
+  // var isHidden = document[ hiddenProperty ];
+  // this[ isHidden ? 'pause' : 'unpause' ]();
 };
 
 // -------------------------- Flickity -------------------------- //
