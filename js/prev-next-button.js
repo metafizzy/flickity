@@ -196,14 +196,14 @@ PrevNextButton.prototype.disable = function() {
 };
 
 PrevNextButton.prototype.update = function() {
-  // index of first or last cell, if previous or next
-  var cells = this.parent.cells;
-  // enable is wrapAround and at least 2 cells
-  if ( this.parent.options.wrapAround && cells.length > 1 ) {
+  // index of first or last slide, if previous or next
+  var slides = this.parent.slides;
+  // enable is wrapAround and at least 2 slides
+  if ( this.parent.options.wrapAround && slides.length > 1 ) {
     this.enable();
     return;
   }
-  var lastIndex = cells.length ? cells.length - 1 : 0;
+  var lastIndex = slides.length ? slides.length - 1 : 0;
   var boundIndex = this.isPrevious ? 0 : lastIndex;
   var method = this.parent.selectedIndex == boundIndex ? 'disable' : 'enable';
   this[ method ]();

@@ -144,7 +144,7 @@ proto.positionSliderAtSelected = function() {
   if ( !this.cells.length ) {
     return;
   }
-  var selectedCell = this.cells[ this.selectedIndex ];
+  var selectedCell = this.slides[ this.selectedIndex ];
   this.x = -selectedCell.target;
   this.positionSlider();
 };
@@ -243,10 +243,10 @@ proto.applySelectedAttraction = function() {
   if ( this.isPointerDown || this.isFreeScrolling || !len ) {
     return;
   }
-  var cell = this.cells[ this.selectedIndex ];
+  var slide = this.slides[ this.selectedIndex ];
   var wrap = this.options.wrapAround && len > 1 ?
     this.slideableWidth * Math.floor( this.selectedIndex / len ) : 0;
-  var distance = ( cell.target + wrap ) * -1 - this.x;
+  var distance = ( slide.target + wrap ) * -1 - this.x;
   var force = distance * this.options.selectedAttraction;
   this.applyForce( force );
 };

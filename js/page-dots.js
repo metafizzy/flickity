@@ -81,8 +81,8 @@ PageDots.prototype.deactivate = function() {
 };
 
 PageDots.prototype.setDots = function() {
-  // get difference between number of cells and number of dots
-  var delta = this.parent.cells.length - this.dots.length;
+  // get difference between number of slides and number of dots
+  var delta = this.parent.slides.length - this.dots.length;
   if ( delta > 0 ) {
     this.addDots( delta );
   } else if ( delta < 0 ) {

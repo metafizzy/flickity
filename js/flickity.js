@@ -244,6 +244,10 @@ Flickity.prototype.getLastCell = function() {
   return this.cells[ this.cells.length - 1 ];
 };
 
+Flickity.prototype.getLastSlide = function() {
+  return this.slides[ this.slides.length - 1 ];
+};
+
 // positions all cells
 Flickity.prototype.positionCells = function() {
   // size all cells
@@ -278,7 +282,7 @@ Flickity.prototype._positionCells = function( index ) {
   this.slideableWidth = cellX;
   // contain cell target
   this._containCells();
-  this.setSlides();
+  this.updateSlides();
 };
 
 /**
@@ -294,29 +298,15 @@ Flickity.prototype._sizeCells = function( cells ) {
 
 // --------------------------  -------------------------- //
 
-function Slide() {
-  this.cells = [];
-  this.width = 0;
-}
-
-Slide.prototype.addCell = function( cell ) {
-  this.cells.push( cell );
-  if ( this.cells.length == 1 ) {
-    this.width = cell.size.width;
-    this.x = cell.x;
-  }
-};
-
-// --------------------------  -------------------------- //
-
-Flickity.prototype.setSlides = function() {
+Flickity.prototype.updateSlides = function() {
   this.slides = [];
-  var slide = new Slide();
+  var slide = new Slide( this );
   this.slides.push( slide );
-  var prevMargin = this.originSide == 'left' ? 'marginLeft' : 'marginRight';
-  var nextMargin = this.originSide == 'left' ? 'marginRight' : 'marginLeft';
+  var isOriginLeft = this.originSide == 'left';
+  var prevMargin = isOriginLeft ? 'marginLeft' : 'marginRight';
+  var nextMargin = isOriginLeft ? 'marginRight' : 'marginLeft';
 
-  for ( var i=0, len = this.cells.length; i < len; i++ ) {
+  for ( var i=0; i < this.cells.length; i++ ) {
     var cell = this.cells[i];
 
     if ( slide.width === 0 ) {
@@ -329,19 +319,21 @@ Flickity.prototype.setSlides = function() {
     var marginX = prevCellMarginX + cell.size[ prevMargin ];
     var slideX = slide.width + marginX + cell.size.width;
 
-    if ( slideX <= this.size.width ) {
-      // cell fits in slide
+    if ( slideX <= this.size.width + 1 ) {
+      // cell fits in slide, +1 for rounding errors
       slide.addCell( cell );
       slide.width = slideX;
     } else {
       // doesn't fit, new slide
-      slide.target = slide.x + slide.width
+      slide.updateTarget();
 
-      slide = new Slide();
+      slide = new Slide( this );
       this.slides.push( slide );
       slide.addCell( cell );
     }
   }
+  // last slide
+  slide.updateTarget();
 };
 
 // alias _init for jQuery plugin .flickity()
@@ -478,7 +470,7 @@ Flickity.prototype.dispatchEvent = function( type, event, args ) {
 // -------------------------- select -------------------------- //
 
 /**
- * @param {Integer} index - index of the cell
+ * @param {Integer} index - index of the slide
  * @param {Boolean} isWrap - will wrap-around to last/first if at the end
  */
 Flickity.prototype.select = function( index, isWrap ) {
@@ -486,7 +478,7 @@ Flickity.prototype.select = function( index, isWrap ) {
     return;
   }
   // wrap position so slider is within normal area
-  var len = this.cells.length;
+  var len = this.slides.length;
   if ( this.options.wrapAround && len > 1 ) {
     if ( index < 0 ) {
       this.x -= this.slideableWidth;
@@ -499,9 +491,9 @@ Flickity.prototype.select = function( index, isWrap ) {
     index = utils.modulo( index, len );
   }
 
-  if ( this.cells[ index ] ) {
+  if ( this.slides[ index ] ) {
     this.selectedIndex = index;
-    this.setSelectedCell();
+    // this.setSelectedCell();
     this.startAnimation();
     this.dispatchEvent('cellSelect');
   }

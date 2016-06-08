@@ -224,11 +224,11 @@ Flickity.prototype.dragMove = function( event, pointer, moveVector ) {
   var direction = this.options.rightToLeft ? -1 : 1;
   var dragX = this.dragStartPosition + moveVector.x * direction;
 
-  if ( !this.options.wrapAround && this.cells.length ) {
+  if ( !this.options.wrapAround && this.slides.length ) {
     // slow drag
-    var originBound = Math.max( -this.cells[0].target, this.dragStartPosition );
+    var originBound = Math.max( -this.slides[0].target, this.dragStartPosition );
     dragX = dragX > originBound ? ( dragX + originBound ) * 0.5 : dragX;
-    var endBound = Math.min( -this.getLastCell().target, this.dragStartPosition );
+    var endBound = Math.min( -this.getLastSlide().target, this.dragStartPosition );
     dragX = dragX < endBound ? ( dragX + endBound ) * 0.5 : dragX;
   }
 
@@ -247,11 +247,11 @@ Flickity.prototype.dragEnd = function( event, pointer ) {
 
   if ( this.options.freeScroll && !this.options.wrapAround ) {
     // if free-scroll & not wrap around
-    // do not free-scroll if going outside of bounding cells
-    // so bounding cells can attract slider, and keep it in bounds
+    // do not free-scroll if going outside of bounding slides
+    // so bounding slides can attract slider, and keep it in bounds
     var restingX = this.getRestingPosition();
-    this.isFreeScrolling = -restingX > this.cells[0].target &&
-      -restingX < this.getLastCell().target;
+    this.isFreeScrolling = -restingX > this.slides[0].target &&
+      -restingX < this.getLastSlide().target;
   } else if ( !this.options.freeScroll && index == this.selectedIndex ) {
     // boost selection if selected index has not changed
     index += this.dragEndBoostSelect();
@@ -265,8 +265,8 @@ Flickity.prototype.dragEnd = function( event, pointer ) {
 
 Flickity.prototype.dragEndRestingSelect = function() {
   var restingX = this.getRestingPosition();
-  // how far away from selected cell
-  var distance = Math.abs( this.getCellDistance( -restingX, this.selectedIndex ) );
+  // how far away from selected slide
+  var distance = Math.abs( this.getSlideDistance( -restingX, this.selectedIndex ) );
   // get closet resting going up and going down
   var positiveResting = this._getClosestResting( restingX, distance, 1 );
   var negativeResting = this._getClosestResting( restingX, distance, -1 );
@@ -294,7 +294,7 @@ Flickity.prototype._getClosestResting = function( restingX, distance, increment 
     // measure distance to next cell
     index += increment;
     minDistance = distance;
-    distance = this.getCellDistance( -restingX, index );
+    distance = this.getSlideDistance( -restingX, index );
     if ( distance === null ) {
       break;
     }
@@ -308,22 +308,22 @@ Flickity.prototype._getClosestResting = function( restingX, distance, increment 
 };
 
 /**
- * measure distance between x and a cell target
+ * measure distance between x and a slide target
  * @param {Number} x
- * @param {Integer} index - cell index
+ * @param {Integer} index - slide index
  */
-Flickity.prototype.getCellDistance = function( x, index ) {
-  var len = this.cells.length;
-  // wrap around if at least 2 cells
+Flickity.prototype.getSlideDistance = function( x, index ) {
+  var len = this.slides.length;
+  // wrap around if at least 2 slides
   var isWrapAround = this.options.wrapAround && len > 1;
-  var cellIndex = isWrapAround ? utils.modulo( index, len ) : index;
-  var cell = this.cells[ cellIndex ];
-  if ( !cell ) {
+  var slideIndex = isWrapAround ? utils.modulo( index, len ) : index;
+  var slide = this.slides[ slideIndex ];
+  if ( !slide ) {
     return null;
   }
-  // add distance for wrap-around cells
+  // add distance for wrap-around slides
   var wrap = isWrapAround ? this.slideableWidth * Math.floor( index / len ) : 0;
-  return x - ( cell.target + wrap );
+  return x - ( slide.target + wrap );
 };
 
 Flickity.prototype.dragEndBoostSelect = function() {
@@ -334,7 +334,7 @@ Flickity.prototype.dragEndBoostSelect = function() {
     return 0;
   }
 
-  var distance = this.getCellDistance( -this.dragX, this.selectedIndex );
+  var distance = this.getSlideDistance( -this.dragX, this.selectedIndex );
   var delta = this.previousDragX - this.dragX;
   if ( distance > 0 && delta > 0 ) {
     // boost to next if moving towards the right, and positive velocity
