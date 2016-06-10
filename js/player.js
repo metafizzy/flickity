@@ -89,8 +89,8 @@ Player.prototype.tick = function() {
   // HACK: reset ticks if stopped and started within interval
   this.clear();
   this.timeout = setTimeout( function() {
-    // _this.parent.next( true );
-    _this.parent.next();
+    _this.parent.next( true );
+    // _this.parent.next();
     _this.tick();
   }, time );
 };
@@ -125,6 +125,7 @@ Player.prototype.unpause = function() {
 // pause if page visibility is hidden, unpause if visible
 Player.prototype.visibilityChange = function() {
   var isHidden = document[ hiddenProperty ];
+  this.parent.select( 0, false, true );
   this[ isHidden ? 'pause' : 'unpause' ]();
 };
 
