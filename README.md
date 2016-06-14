@@ -20,15 +20,15 @@ See [flickity.metafizzy.co](http://flickity.metafizzy.co) for complete docs and 
 Link directly to [Flickity files on cdnjs](https://cdnjs.com/libraries/flickity).
 
 ``` html
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/flickity/1.1.1/flickity.css">
+<link rel="stylesheet" href="https://npmcdn.com/flickity@1.2/dist/flickity.pkgd.css">
 <!-- or -->
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/flickity/1.1.1/flickity.min.css">
+<link rel="stylesheet" href="https://npmcdn.com/flickity@1.2/dist/flickity.pkgd.min.css">
 ```
 
 ``` html
-<script src="https://cdnjs.cloudflare.com/ajax/libs/flickity/1.1.1/flickity.pkgd.js"></script>
+<script src="https://npmcdn.com/flickity@1.2/dist/flickity.pkgd.js"></script>
 <!-- or -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/flickity/1.1.1/flickity.pkgd.min.js"></script>
+<script src="https://npmcdn.com/flickity@1.2/dist/flickity.pkgd.min.js"></script>
 ```
 
 ### Package managers
@@ -39,9 +39,9 @@ npm: `npm install flickity --save`
 
 ## License
 
-### Commerical license
+### Commercial license
 
-If you want to use Flickity to develop commercial sites, themes, projects, and applications, the Commercial license is the appropriate license. With this option, your source code is kept proprietary. Purchase a Flickity Commercial License at [flickity.metafizzy.co](http://flickity.metafizzy.co/#commerical-license)
+If you want to use Flickity to develop commercial sites, themes, projects, and applications, the Commercial license is the appropriate license. With this option, your source code is kept proprietary. Purchase a Flickity Commercial License at [flickity.metafizzy.co](http://flickity.metafizzy.co/#commercial-license)
 
 ### Open source license
 

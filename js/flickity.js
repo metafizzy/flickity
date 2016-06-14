@@ -1,12 +1,5 @@
-/*!
- * Flickity v1.1.1
- * Touch, responsive, flickable galleries
- *
- * Licensed GPLv3 for open source use
- * or Flickity Commercial License for commercial use
- *
- * http://flickity.metafizzy.co
- * Copyright 2015 Metafizzy
+/**
+ * Flickity main
  */
 
 ( function( window, factory ) {
@@ -16,23 +9,19 @@
   if ( typeof define == 'function' && define.amd ) {
     // AMD
     define( [
-      'classie/classie',
       'eventEmitter/EventEmitter',
-      'eventie/eventie',
       'get-size/get-size',
       'fizzy-ui-utils/utils',
       './cell',
       './animate'
-    ], function( classie, EventEmitter, eventie, getSize, utils, Cell, animatePrototype ) {
-      return factory( window, classie, EventEmitter, eventie, getSize, utils, Cell, animatePrototype );
+    ], function( EvEmitter, getSize, utils, Cell, animatePrototype ) {
+      return factory( window, EvEmitter, getSize, utils, Cell, animatePrototype );
     });
   } else if ( typeof exports == 'object' ) {
     // CommonJS
     module.exports = factory(
       window,
-      require('desandro-classie'),
-      require('wolfy87-eventemitter'),
-      require('eventie'),
+      require('ev-emitter'),
       require('get-size'),
       require('fizzy-ui-utils'),
       require('./cell'),
@@ -44,9 +33,7 @@
 
     window.Flickity = factory(
       window,
-      window.classie,
-      window.EventEmitter,
-      window.eventie,
+      window.EvEmitter,
       window.getSize,
       window.fizzyUIUtils,
       _Flickity.Cell,
@@ -54,7 +41,7 @@
     );
   }
 
-}( window, function factory( window, classie, EventEmitter, eventie, getSize,
+}( window, function factory( window, EvEmitter, getSize,
   utils, Cell, animatePrototype ) {
 
 'use strict';
@@ -119,7 +106,7 @@ Flickity.defaults = {
 Flickity.createMethods = [];
 
 // inherit EventEmitter
-utils.extend( Flickity.prototype, EventEmitter.prototype );
+utils.extend( Flickity.prototype, EvEmitter.prototype );
 
 Flickity.prototype._create = function() {
   // add id for Flickity.data
@@ -127,7 +114,7 @@ Flickity.prototype._create = function() {
   this.element.flickityGUID = id; // expando
   instances[ id ] = this; // associate via id
   // initial properties
-  this.selectedIndex = this.options.initialIndex || 0;
+  this.selectedIndex = 0;
   // how many frames slider has been in same position
   this.restingFrames = 0;
   // initial physics properties
@@ -142,8 +129,7 @@ Flickity.prototype._create = function() {
   this._createSlider();
 
   if ( this.options.resize || this.options.watchCSS ) {
-    eventie.bind( window, 'resize', this );
-    this.isResizeBound = true;
+    window.addEventListener( 'resize', this );
   }
 
   for ( var i=0, len = Flickity.createMethods.length; i < len; i++ ) {
@@ -172,9 +158,9 @@ Flickity.prototype.activate = function() {
     return;
   }
   this.isActive = true;
-  classie.add( this.element, 'flickity-enabled' );
+  this.element.classList.add('flickity-enabled');
   if ( this.options.rightToLeft ) {
-    classie.add( this.element, 'flickity-rtl' );
+    this.element.classList.add('flickity-rtl');
   }
 
   this.getSize();
@@ -190,13 +176,24 @@ Flickity.prototype.activate = function() {
     // allow element to focusable
     this.element.tabIndex = 0;
     // listen for key presses
-    eventie.bind( this.element, 'keydown', this );
+    this.element.addEventListener( 'keydown', this );
   }
 
-  this.emit('activate');
+  this.emitEvent('activate');
 
-  this.positionSliderAtSelected();
-  this.select( this.selectedIndex );
+  var index;
+  var initialIndex = this.options.initialIndex;
+  if ( this.isInitActivated ) {
+    index = this.selectedIndex;
+  } else if ( initialIndex !== undefined ) {
+    index = this.cells[ initialIndex ] ? initialIndex : 0;
+  } else {
+    index = 0;
+  }
+  // select instantly
+  this.select( index, false, true );
+  // flag for initial activation, for using initialIndex
+  this.isInitActivated = true;
 };
 
 // slider positions the cells
@@ -472,11 +469,13 @@ Flickity.prototype.dispatchEvent = function( type, event, args ) {
 /**
  * @param {Integer} index - index of the slide
  * @param {Boolean} isWrap - will wrap-around to last/first if at the end
+ * @param {Boolean} isInstant - will immediately set position at selected cell
  */
-Flickity.prototype.select = function( index, isWrap ) {
+Flickity.prototype.select = function( index, isWrap, isInstant ) {
   if ( !this.isActive ) {
     return;
   }
+  index = parseInt( index, 10 );
   // wrap position so slider is within normal area
   var len = this.slides.length;
   if ( this.options.wrapAround && len > 1 ) {
@@ -491,12 +490,18 @@ Flickity.prototype.select = function( index, isWrap ) {
     index = utils.modulo( index, len );
   }
 
-  if ( this.slides[ index ] ) {
-    this.selectedIndex = index;
-    // this.setSelectedCell();
-    this.startAnimation();
-    this.dispatchEvent('cellSelect');
+  // bail if invalid index
+  if ( !this.slides[ index ] ) {
+    return;
   }
+  this.selectedIndex = index;
+  // this.setSelectedCell();
+  if ( isInstant ) {
+    this.positionSliderAtSelected();
+  } else {
+    this.startAnimation();
+  }
+  this.dispatchEvent('cellSelect');
 };
 
 Flickity.prototype.previous = function( isWrap ) {
@@ -511,12 +516,12 @@ Flickity.prototype.setSelectedCell = function() {
   this._removeSelectedCellClass();
   this.selectedCell = this.cells[ this.selectedIndex ];
   this.selectedElement = this.selectedCell.element;
-  classie.add( this.selectedElement, 'is-selected' );
+  this.selectedElement.classList.add('is-selected');
 };
 
 Flickity.prototype._removeSelectedCellClass = function() {
   if ( this.selectedCell ) {
-    classie.remove( this.selectedCell.element, 'is-selected' );
+    this.selectedCell.element.classList.remove('is-selected');
   }
 };
 
@@ -614,7 +619,7 @@ Flickity.prototype.getAdjacentCellElements = function( adjCount, index ) {
 // -------------------------- events -------------------------- //
 
 Flickity.prototype.uiChange = function() {
-  this.emit('uiChange');
+  this.emitEvent('uiChange');
 };
 
 Flickity.prototype.childUIPointerDown = function( event ) {
@@ -645,40 +650,10 @@ Flickity.prototype.resize = function() {
   this.positionSliderAtSelected();
 };
 
-var supportsConditionalCSS = Flickity.supportsConditionalCSS = ( function() {
-  var supports;
-  return function checkSupport() {
-    if ( supports !== undefined ) {
-      return supports;
-    }
-    if ( !getComputedStyle ) {
-      supports = false;
-      return;
-    }
-    // style body's :after and check that
-    var style = document.createElement('style');
-    var cssText = document.createTextNode('body:after { content: "foo"; display: none; }');
-    style.appendChild( cssText );
-    document.head.appendChild( style );
-    var afterContent = getComputedStyle( document.body, ':after' ).content;
-    // check if able to get :after content
-    supports = afterContent.indexOf('foo') != -1;
-    document.head.removeChild( style );
-    return supports;
-  };
-})();
-
 // watches the :after property, activates/deactivates
 Flickity.prototype.watchCSS = function() {
   var watchOption = this.options.watchCSS;
   if ( !watchOption ) {
-    return;
-  }
-  var supports = supportsConditionalCSS();
-  if ( !supports ) {
-    // activate if watch option is fallbackOn
-    var method = watchOption == 'fallbackOn' ? 'activate' : 'deactivate';
-    this[ method ]();
     return;
   }
 
@@ -721,8 +696,8 @@ Flickity.prototype.deactivate = function() {
   if ( !this.isActive ) {
     return;
   }
-  classie.remove( this.element, 'flickity-enabled' );
-  classie.remove( this.element, 'flickity-rtl' );
+  this.element.classList.remove('flickity-enabled');
+  this.element.classList.remove('flickity-rtl');
   // destroy cells
   for ( var i=0, len = this.cells.length; i < len; i++ ) {
     var cell = this.cells[i];
@@ -734,19 +709,17 @@ Flickity.prototype.deactivate = function() {
   moveElements( this.slider.children, this.element );
   if ( this.options.accessibility ) {
     this.element.removeAttribute('tabIndex');
-    eventie.unbind( this.element, 'keydown', this );
+    this.element.removeEventListener( 'keydown', this );
   }
   // set flags
   this.isActive = false;
-  this.emit('deactivate');
+  this.emitEvent('deactivate');
 };
 
 Flickity.prototype.destroy = function() {
   this.deactivate();
-  if ( this.isResizeBound ) {
-    eventie.unbind( window, 'resize', this );
-  }
-  this.emit('destroy');
+  window.removeEventListener( 'resize', this );
+  this.emitEvent('destroy');
   if ( jQuery && this.$element ) {
     jQuery.removeData( this.element, 'flickity' );
   }

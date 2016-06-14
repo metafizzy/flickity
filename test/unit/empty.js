@@ -27,4 +27,13 @@ test('empty', function() {
   ok( flkty.nextButton.element.disabled, 'next button disabled' );
   equal( flkty.pageDots.dots.length, 1, '1 page dots');
 
+  // destroy and re-init with higher initialIndex
+  flkty.destroy();
+  flkty = new Flickity( gallery, {
+    initialIndex: 2
+  });
+
+  // #291
+  ok( true, 'initializing with initialIndex > cells doesnt throw error' );
+
 });

@@ -33,16 +33,16 @@ test( 'position cells', function() {
 
   ok( checkCellPositions( flkty, [ 0, 40, 65, 125, 165, 225 ] ), 'percent cell position' );
   // .cell { margin: 0 2%; }
-  classie.add( flkty.element, 'percent-margin' );
+  flkty.element.classList.add('percent-margin');
   flkty.positionCells();
   ok( checkCellPositions( flkty, [ 0, 44, 73, 137, 181, 245 ] ), 'percent cell position with margin' );
-  classie.remove( flkty.element, 'percent-margin' );
+  flkty.element.classList.remove('percent-margin');
   // pixel-based position
   flkty.options.percentPosition = false;
   flkty.positionCells();
   ok( checkCellPositions( flkty, [ 0, 160, 260, 500, 660, 900 ] ), 'pixel cell position' );
   // pixel margin, { margin: 0 10px; }
-  classie.add( flkty.element, 'pixel-margin' );
+  flkty.element.classList.add('pixel-margin');
   flkty.positionCells();
   ok( checkCellPositions( flkty, [ 0, 180, 300, 560, 740, 1000 ] ), 'pixel cell position with margin' );
 

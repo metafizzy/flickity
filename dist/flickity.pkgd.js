@@ -1,5 +1,5 @@
 /*!
- * Flickity PACKAGED v1.1.1
+ * Flickity PACKAGED v1.2.1
  * Touch, responsive, flickable galleries
  *
  * Licensed GPLv3 for open source use
@@ -243,7 +243,7 @@ if ( typeof define === 'function' && define.amd ) {
  */
 
 ;(function () {
-    
+    'use strict';
 
     /**
      * Class for managing events.
@@ -1190,7 +1190,7 @@ if ( typeof define === 'function' && define.amd ) {
 
 ( function( ElemProto ) {
 
-  
+  'use strict';
 
   var matchesMethod = ( function() {
     // check for the standard method name first
@@ -1296,7 +1296,7 @@ if ( typeof define === 'function' && define.amd ) {
 
 ( function( window, factory ) {
   /*global define: false, module: false, require: false */
-  
+  'use strict';
   // universal module definition
 
   if ( typeof define == 'function' && define.amd ) {
@@ -1559,7 +1559,7 @@ return utils;
 }));
 
 ( function( window, factory ) {
-  
+  'use strict';
   // universal module definition
 
   if ( typeof define == 'function' && define.amd ) {
@@ -1653,7 +1653,7 @@ return Cell;
 }));
 
 ( function( window, factory ) {
-  
+  'use strict';
   // universal module definition
 
   if ( typeof define == 'function' && define.amd ) {
@@ -1909,19 +1909,12 @@ return proto;
 
 }));
 
-/*!
- * Flickity v1.1.1
- * Touch, responsive, flickable galleries
- *
- * Licensed GPLv3 for open source use
- * or Flickity Commercial License for commercial use
- *
- * http://flickity.metafizzy.co
- * Copyright 2015 Metafizzy
+/**
+ * Flickity main
  */
 
 ( function( window, factory ) {
-  
+  'use strict';
   // universal module definition
 
   if ( typeof define == 'function' && define.amd ) {
@@ -2038,7 +2031,7 @@ Flickity.prototype._create = function() {
   this.element.flickityGUID = id; // expando
   instances[ id ] = this; // associate via id
   // initial properties
-  this.selectedIndex = this.options.initialIndex || 0;
+  this.selectedIndex = 0;
   // how many frames slider has been in same position
   this.restingFrames = 0;
   // initial physics properties
@@ -2106,8 +2099,19 @@ Flickity.prototype.activate = function() {
 
   this.emit('activate');
 
-  this.positionSliderAtSelected();
-  this.select( this.selectedIndex );
+  var index;
+  var initialIndex = this.options.initialIndex;
+  if ( this.isInitActivated ) {
+    index = this.selectedIndex;
+  } else if ( initialIndex !== undefined ) {
+    index = this.cells[ initialIndex ] ? initialIndex : 0;
+  } else {
+    index = 0;
+  }
+  // select instantly
+  this.select( index, false, true );
+  // flag for initial activation, for using initialIndex
+  this.isInitActivated = true;
 };
 
 // slider positions the cells
@@ -2338,11 +2342,13 @@ Flickity.prototype.dispatchEvent = function( type, event, args ) {
 /**
  * @param {Integer} index - index of the cell
  * @param {Boolean} isWrap - will wrap-around to last/first if at the end
+ * @param {Boolean} isInstant - will immediately set position at selected cell
  */
-Flickity.prototype.select = function( index, isWrap ) {
+Flickity.prototype.select = function( index, isWrap, isInstant ) {
   if ( !this.isActive ) {
     return;
   }
+  index = parseInt( index, 10 );
   // wrap position so slider is within normal area
   var len = this.cells.length;
   if ( this.options.wrapAround && len > 1 ) {
@@ -2356,13 +2362,18 @@ Flickity.prototype.select = function( index, isWrap ) {
   if ( this.options.wrapAround || isWrap ) {
     index = utils.modulo( index, len );
   }
-
-  if ( this.cells[ index ] ) {
-    this.selectedIndex = index;
-    this.setSelectedCell();
-    this.startAnimation();
-    this.dispatchEvent('cellSelect');
+  // bail if invalid index
+  if ( !this.cells[ index ] ) {
+    return;
   }
+  this.selectedIndex = index;
+  this.setSelectedCell();
+  if ( isInstant ) {
+    this.positionSliderAtSelected();
+  } else {
+    this.startAnimation();
+  }
+  this.dispatchEvent('cellSelect');
 };
 
 Flickity.prototype.previous = function( isWrap ) {
@@ -2670,7 +2681,7 @@ return Flickity;
 /*global define: false, module: false, require: false */
 
 ( function( window, factory ) {
-  
+  'use strict';
   // universal module definition
 
   if ( typeof define == 'function' && define.amd ) {
@@ -2978,7 +2989,7 @@ return Unipointer;
 }));
 
 /*!
- * Unidragger v1.1.5
+ * Unidragger v1.1.6
  * Draggable base class
  * MIT license
  */
@@ -2987,7 +2998,7 @@ return Unipointer;
 
 ( function( window, factory ) {
   /*global define: false, module: false, require: false */
-  
+  'use strict';
   // universal module definition
 
   if ( typeof define == 'function' && define.amd ) {
@@ -3208,7 +3219,7 @@ Unidragger.prototype._dragPointerUp = function( event, pointer ) {
   }
 };
 
-Unipointer.prototype.pointerDone = function() {
+Unidragger.prototype.pointerDone = function() {
   eventie.unbind( window, 'scroll', this );
 };
 
@@ -3345,7 +3356,7 @@ return Unidragger;
 }));
 
 ( function( window, factory ) {
-  
+  'use strict';
   // universal module definition
 
   if ( typeof define == 'function' && define.amd ) {
@@ -3397,8 +3408,7 @@ function preventDefaultEvent( event ) {
 // ----- defaults ----- //
 
 utils.extend( Flickity.defaults, {
-  draggable: true,
-  touchVerticalScroll: true
+  draggable: true
 });
 
 // ----- create ----- //
@@ -3491,67 +3501,35 @@ var focusNodes = {
 
 Flickity.prototype.pointerDownFocus = function( event ) {
   // focus element, if not touch, and its not an input or select
-  if ( this.options.accessibility && !touchStartEvents[ event.type ] &&
-      !focusNodes[ event.target.nodeName ] ) {
-    this.element.focus();
+  if ( !this.options.accessibility || touchStartEvents[ event.type ] ||
+      focusNodes[ event.target.nodeName ] ) {
+    return;
+  }
+  var prevScrollY = window.pageYOffset;
+  this.element.focus();
+  // hack to fix scroll jump after focus, #76
+  if ( window.pageYOffset != prevScrollY ) {
+    window.scrollTo( window.pageXOffset, prevScrollY );
   }
 };
 
 // ----- move ----- //
 
-Flickity.prototype.pointerMove = function( event, pointer ) {
-  var moveVector = this._dragPointerMove( event, pointer );
-  this.touchVerticalScrollMove( event, pointer, moveVector );
-  this._dragMove( event, pointer, moveVector );
-  this.dispatchEvent( 'pointerMove', event, [ pointer, moveVector ] );
-};
-
 Flickity.prototype.hasDragStarted = function( moveVector ) {
-  return !this.isTouchScrolling && Math.abs( moveVector.x ) > 3;
+  return Math.abs( moveVector.x ) > 3;
 };
 
 // ----- up ----- //
 
 Flickity.prototype.pointerUp = function( event, pointer ) {
-  delete this.isTouchScrolling;
   classie.remove( this.viewport, 'is-pointer-down' );
   this.dispatchEvent( 'pointerUp', event, [ pointer ] );
   this._dragPointerUp( event, pointer );
 };
 
-// -------------------------- vertical scroll -------------------------- //
-
-var touchScrollEvents = {
-  // move events
-  // mousemove: true,
-  touchmove: true,
-  MSPointerMove: true
-};
-
-// position of pointer, relative to window
-function getPointerWindowY( pointer ) {
-  var pointerPoint = Unidragger.getPointerPoint( pointer );
-  return pointerPoint.y - window.pageYOffset;
-}
-
-Flickity.prototype.touchVerticalScrollMove = function( event, pointer, moveVector ) {
-  // do not scroll if already dragging, if disabled
-  var touchVerticalScroll = this.options.touchVerticalScroll;
-  // if touchVerticalScroll is 'withDrag', allow scrolling and dragging
-  var canNotScroll = touchVerticalScroll == 'withDrag' ? !touchVerticalScroll :
-    this.isDragging || !touchVerticalScroll;
-  if ( canNotScroll || !touchScrollEvents[ event.type ] ) {
-    return;
-  }
-  // don't start vertical scrolling until pointer has moved 10 pixels in a direction
-  if ( !this.isTouchScrolling && Math.abs( moveVector.y ) > 10 ) {
-    // start touch vertical scrolling
-    // scroll & pointerY when started
-    this.startScrollY = window.pageYOffset;
-    this.pointerWindowStartY = getPointerWindowY( pointer );
-    // start scroll animation
-    this.isTouchScrolling = true;
-  }
+Flickity.prototype.pointerDone = function() {
+  eventie.unbind( window, 'scroll', this );
+  delete this.pointerDownScroll;
 };
 
 // -------------------------- dragging -------------------------- //
@@ -3709,7 +3687,7 @@ return Flickity;
 }));
 
 /*!
- * Tap listener v1.1.1
+ * Tap listener v1.1.2
  * listens to taps
  * MIT license
  */
@@ -3717,9 +3695,8 @@ return Flickity;
 /*jshint browser: true, unused: true, undef: true, strict: true */
 
 ( function( window, factory ) {
-  /*global define: false, module: false, require: false */
-  
   // universal module definition
+  /*jshint strict: false*/ /*globals define, module, require */
 
   if ( typeof define == 'function' && define.amd ) {
     // AMD
@@ -3745,15 +3722,6 @@ return Flickity;
 }( window, function factory( window, Unipointer ) {
 
 
-
-// handle IE8 prevent default
-function preventDefaultEvent( event ) {
-  if ( event.preventDefault ) {
-    event.preventDefault();
-  } else {
-    event.returnValue = false;
-  }
-}
 
 // --------------------------  TapListener -------------------------- //
 
@@ -3785,16 +3753,6 @@ TapListener.prototype.unbindTap = function() {
   delete this.tapElement;
 };
 
-var pointerDown = TapListener.prototype.pointerDown;
-
-TapListener.prototype.pointerDown = function( event ) {
-  // prevent default event for touch, disables tap then click
-  if ( event.type == 'touchstart' ) {
-    preventDefaultEvent( event );
-  }
-  pointerDown.apply( this, arguments );
-};
-
 var isPageOffset = window.pageYOffset !== undefined;
 /**
  * pointer up
@@ -3802,6 +3760,11 @@ var isPageOffset = window.pageYOffset !== undefined;
  * @param {Event or Touch} pointer
  */
 TapListener.prototype.pointerUp = function( event, pointer ) {
+  // ignore emulated mouse up clicks
+  if ( this.isIgnoringMouseUp && event.type == 'mouseup' ) {
+    return;
+  }
+
   var pointerPoint = Unipointer.getPointerPoint( pointer );
   var boundingRect = this.tapElement.getBoundingClientRect();
   // standard or IE8 scroll positions
@@ -3815,6 +3778,15 @@ TapListener.prototype.pointerUp = function( event, pointer ) {
   // trigger callback if pointer is inside element
   if ( isInside ) {
     this.emitEvent( 'tap', [ event, pointer ] );
+  }
+
+  // set flag for emulated clicks 300ms after touchend
+  if ( event.type != 'mouseup' ) {
+    this.isIgnoringMouseUp = true;
+    // reset flag after 300ms
+    setTimeout( function() {
+      delete this.isIgnoringMouseUp;
+    }.bind( this ), 320 );
   }
 };
 
@@ -3832,7 +3804,7 @@ return TapListener;
 // -------------------------- prev/next button -------------------------- //
 
 ( function( window, factory ) {
-  
+  'use strict';
   // universal module definition
 
   if ( typeof define == 'function' && define.amd ) {
@@ -3910,6 +3882,11 @@ PrevNextButton.prototype._create = function() {
   element.className += this.isPrevious ? ' previous' : ' next';
   // prevent button from submitting form http://stackoverflow.com/a/10836076/182183
   element.setAttribute( 'type', 'button' );
+  // init as disabled
+  this.disable();
+
+  element.setAttribute( 'aria-label', this.isPrevious ? 'previous' : 'next' );
+
   Flickity.setUnselectable( element );
   // create arrow
   if ( supportsInlineSVG() ) {
@@ -3935,7 +3912,6 @@ PrevNextButton.prototype._create = function() {
 };
 
 PrevNextButton.prototype.activate = function() {
-  this.update();
   this.bindTap( this.element );
   // click events from keyboard
   eventie.bind( this.element, 'click', this );
@@ -4092,7 +4068,7 @@ return Flickity;
 }));
 
 ( function( window, factory ) {
-  
+  'use strict';
   // universal module definition
 
   if ( typeof define == 'function' && define.amd ) {
@@ -4161,7 +4137,6 @@ PageDots.prototype._create = function() {
 
 PageDots.prototype.activate = function() {
   this.setDots();
-  this.updateSelected();
   this.bindTap( this.holder );
   // add to DOM
   this.parent.element.appendChild( this.holder );
@@ -4277,7 +4252,7 @@ return Flickity;
 }));
 
 ( function( window, factory ) {
-  
+  'use strict';
   // universal module definition
 
   if ( typeof define == 'function' && define.amd ) {
@@ -4285,15 +4260,17 @@ return Flickity;
     define( 'flickity/js/player',[
       'eventEmitter/EventEmitter',
       'eventie/eventie',
+      'fizzy-ui-utils/utils',
       './flickity'
-    ], function( EventEmitter, eventie, Flickity ) {
-      return factory( EventEmitter, eventie, Flickity );
+    ], function( EventEmitter, eventie, utils, Flickity ) {
+      return factory( EventEmitter, eventie, utils, Flickity );
     });
   } else if ( typeof exports == 'object' ) {
     // CommonJS
     module.exports = factory(
       require('wolfy87-eventemitter'),
       require('eventie'),
+      require('fizzy-ui-utils'),
       require('./flickity')
     );
   } else {
@@ -4301,11 +4278,12 @@ return Flickity;
     factory(
       window.EventEmitter,
       window.eventie,
+      window.fizzyUIUtils,
       window.Flickity
     );
   }
 
-}( window, function factory( EventEmitter, eventie, Flickity ) {
+}( window, function factory( EventEmitter, eventie, utils, Flickity ) {
 
 
 
@@ -4324,8 +4302,8 @@ if ( 'hidden' in document ) {
 // -------------------------- Player -------------------------- //
 
 function Player( parent ) {
-  this.isPlaying = false;
   this.parent = parent;
+  this.state = 'stopped';
   // visibility change event handler
   if ( visibilityEvent ) {
     var _this = this;
@@ -4339,9 +4317,10 @@ Player.prototype = new EventEmitter();
 
 // start play
 Player.prototype.play = function() {
-  this.isPlaying = true;
-  // playing kills pauses
-  delete this.isPaused;
+  if ( this.state == 'playing' ) {
+    return;
+  }
+  this.state = 'playing';
   // listen to visibility change
   if ( visibilityEvent ) {
     document.addEventListener( visibilityEvent, this.onVisibilityChange, false );
@@ -4351,16 +4330,17 @@ Player.prototype.play = function() {
 };
 
 Player.prototype.tick = function() {
-  // do not tick if paused or not playing
-  if ( !this.isPlaying || this.isPaused ) {
+  // do not tick if not playing
+  if ( this.state != 'playing' ) {
     return;
   }
-  // keep track of when .tick()
-  this.tickTime = new Date();
+
   var time = this.parent.options.autoPlay;
   // default to 3 seconds
   time = typeof time == 'number' ? time : 3000;
   var _this = this;
+  // HACK: reset ticks if stopped and started within interval
+  this.clear();
   this.timeout = setTimeout( function() {
     _this.parent.next( true );
     _this.tick();
@@ -4368,9 +4348,7 @@ Player.prototype.tick = function() {
 };
 
 Player.prototype.stop = function() {
-  this.isPlaying = false;
-  // stopping kills pauses
-  delete this.isPaused;
+  this.state = 'stopped';
   this.clear();
   // remove visibility change event
   if ( visibilityEvent ) {
@@ -4383,15 +4361,15 @@ Player.prototype.clear = function() {
 };
 
 Player.prototype.pause = function() {
-  if ( this.isPlaying ) {
-    this.isPaused = true;
+  if ( this.state == 'playing' ) {
+    this.state = 'paused';
     this.clear();
   }
 };
 
 Player.prototype.unpause = function() {
   // re-start play if in unpaused state
-  if ( this.isPaused ) {
+  if ( this.state == 'paused' ) {
     this.play();
   }
 };
@@ -4404,9 +4382,9 @@ Player.prototype.visibilityChange = function() {
 
 // -------------------------- Flickity -------------------------- //
 
-// utils.extend( Flickity.defaults, {
-//   autoPlay: false
-// });
+utils.extend( Flickity.defaults, {
+  pauseAutoPlayOnHover: true
+});
 
 Flickity.createMethods.push('_createPlayer');
 
@@ -4428,8 +4406,22 @@ Flickity.prototype.activatePlayer = function() {
   this.isMouseenterBound = true;
 };
 
+// Player API, don't hate the ... thanks I know where the door is
+
+Flickity.prototype.playPlayer = function() {
+  this.player.play();
+};
+
 Flickity.prototype.stopPlayer = function() {
   this.player.stop();
+};
+
+Flickity.prototype.pausePlayer = function() {
+  this.player.pause();
+};
+
+Flickity.prototype.unpausePlayer = function() {
+  this.player.unpause();
 };
 
 Flickity.prototype.deactivatePlayer = function() {
@@ -4444,6 +4436,9 @@ Flickity.prototype.deactivatePlayer = function() {
 
 // pause auto-play on hover
 Flickity.prototype.onmouseenter = function() {
+  if ( !this.options.pauseAutoPlayOnHover ) {
+    return;
+  }
   this.player.pause();
   eventie.bind( this.element, 'mouseleave', this );
 };
@@ -4463,7 +4458,7 @@ return Flickity;
 }));
 
 ( function( window, factory ) {
-  
+  'use strict';
   // universal module definition
 
   if ( typeof define == 'function' && define.amd ) {
@@ -4622,7 +4617,8 @@ Flickity.prototype.cellChange = function( changedCellIndex, isPositioningSlider 
   if ( this.options.freeScroll ) {
     // shift x by change in slideableWidth
     // TODO fix position shifts when prepending w/ freeScroll
-    this.x += prevSlideableWidth - this.slideableWidth;
+    var deltaX = prevSlideableWidth - this.slideableWidth;
+    this.x += deltaX * this.cellAlign;
     this.positionSlider();
   } else {
     // do not position slider after lazy load
@@ -4640,7 +4636,7 @@ return Flickity;
 }));
 
 ( function( window, factory ) {
-  
+  'use strict';
   // universal module definition
 
   if ( typeof define == 'function' && define.amd ) {
@@ -4674,7 +4670,7 @@ return Flickity;
   }
 
 }( window, function factory( window, classie, eventie, Flickity, utils ) {
-
+'use strict';
 
 Flickity.createMethods.push('_createLazyload');
 
@@ -4741,7 +4737,7 @@ LazyLoader.prototype.onload = function( event ) {
   this.complete( event, 'flickity-lazyloaded' );
 };
 
-LazyLoader.prototype.onerror = function() {
+LazyLoader.prototype.onerror = function( event ) {
   this.complete( event, 'flickity-lazyerror' );
 };
 
@@ -4766,13 +4762,19 @@ return Flickity;
 
 }));
 
-/**
- * Flickity index
- * used for AMD and CommonJS exports
+/*!
+ * Flickity v1.2.1
+ * Touch, responsive, flickable galleries
+ *
+ * Licensed GPLv3 for open source use
+ * or Flickity Commercial License for commercial use
+ *
+ * http://flickity.metafizzy.co
+ * Copyright 2015 Metafizzy
  */
 
 ( function( window, factory ) {
-  
+  'use strict';
   // universal module definition
 
   if ( typeof define == 'function' && define.amd ) {
@@ -4805,7 +4807,7 @@ return Flickity;
 });
 
 /*!
- * Flickity asNavFor v1.0.2
+ * Flickity asNavFor v1.0.4
  * enable asNavFor for Flickity
  */
 
@@ -4813,7 +4815,7 @@ return Flickity;
 
 ( function( window, factory ) {
   /*global define: false, module: false, require: false */
-  
+  'use strict';
   // universal module definition
 
   if ( typeof define == 'function' && define.amd ) {
@@ -4944,17 +4946,17 @@ return Flickity;
 }));
 
 /*!
- * imagesLoaded v3.1.8
+ * imagesLoaded v3.2.0
  * JavaScript is all like "You images are done yet or what?"
  * MIT License
  */
 
-( function( window, factory ) { 
+( function( window, factory ) { 'use strict';
   // universal module definition
 
   /*global define: false, module: false, require: false */
 
-  if ( typeof define === 'function' && define.amd ) {
+  if ( typeof define == 'function' && define.amd ) {
     // AMD
     define( 'imagesloaded/imagesloaded',[
       'eventEmitter/EventEmitter',
@@ -4962,7 +4964,7 @@ return Flickity;
     ], function( EventEmitter, eventie ) {
       return factory( window, EventEmitter, eventie );
     });
-  } else if ( typeof exports === 'object' ) {
+  } else if ( typeof module == 'object' && module.exports ) {
     // CommonJS
     module.exports = factory(
       window,
@@ -4988,7 +4990,6 @@ function factory( window, EventEmitter, eventie ) {
 
 var $ = window.jQuery;
 var console = window.console;
-var hasConsole = typeof console !== 'undefined';
 
 // -------------------------- helpers -------------------------- //
 
@@ -5002,7 +5003,7 @@ function extend( a, b ) {
 
 var objToString = Object.prototype.toString;
 function isArray( obj ) {
-  return objToString.call( obj ) === '[object Array]';
+  return objToString.call( obj ) == '[object Array]';
 }
 
 // turn element or nodeList into an array
@@ -5011,9 +5012,9 @@ function makeArray( obj ) {
   if ( isArray( obj ) ) {
     // use object if already an array
     ary = obj;
-  } else if ( typeof obj.length === 'number' ) {
+  } else if ( typeof obj.length == 'number' ) {
     // convert nodeList to array
-    for ( var i=0, len = obj.length; i < len; i++ ) {
+    for ( var i=0; i < obj.length; i++ ) {
       ary.push( obj[i] );
     }
   } else {
@@ -5033,17 +5034,17 @@ function makeArray( obj ) {
   function ImagesLoaded( elem, options, onAlways ) {
     // coerce ImagesLoaded() without new, to be new ImagesLoaded()
     if ( !( this instanceof ImagesLoaded ) ) {
-      return new ImagesLoaded( elem, options );
+      return new ImagesLoaded( elem, options, onAlways );
     }
     // use elem as selector string
-    if ( typeof elem === 'string' ) {
+    if ( typeof elem == 'string' ) {
       elem = document.querySelectorAll( elem );
     }
 
     this.elements = makeArray( elem );
     this.options = extend( {}, this.options );
 
-    if ( typeof options === 'function' ) {
+    if ( typeof options == 'function' ) {
       onAlways = options;
     } else {
       extend( this.options, options );
@@ -5075,25 +5076,71 @@ function makeArray( obj ) {
     this.images = [];
 
     // filter & find items if we have an item selector
-    for ( var i=0, len = this.elements.length; i < len; i++ ) {
+    for ( var i=0; i < this.elements.length; i++ ) {
       var elem = this.elements[i];
-      // filter siblings
-      if ( elem.nodeName === 'IMG' ) {
-        this.addImage( elem );
-      }
-      // find children
-      // no non-element nodes, #143
-      var nodeType = elem.nodeType;
-      if ( !nodeType || !( nodeType === 1 || nodeType === 9 || nodeType === 11 ) ) {
-        continue;
-      }
-      var childElems = elem.querySelectorAll('img');
-      // concat childElems to filterFound array
-      for ( var j=0, jLen = childElems.length; j < jLen; j++ ) {
-        var img = childElems[j];
-        this.addImage( img );
+      this.addElementImages( elem );
+    }
+  };
+
+  /**
+   * @param {Node} element
+   */
+  ImagesLoaded.prototype.addElementImages = function( elem ) {
+    // filter siblings
+    if ( elem.nodeName == 'IMG' ) {
+      this.addImage( elem );
+    }
+    // get background image on element
+    if ( this.options.background === true ) {
+      this.addElementBackgroundImages( elem );
+    }
+
+    // find children
+    // no non-element nodes, #143
+    var nodeType = elem.nodeType;
+    if ( !nodeType || !elementNodeTypes[ nodeType ] ) {
+      return;
+    }
+    var childImgs = elem.querySelectorAll('img');
+    // concat childElems to filterFound array
+    for ( var i=0; i < childImgs.length; i++ ) {
+      var img = childImgs[i];
+      this.addImage( img );
+    }
+
+    // get child background images
+    if ( typeof this.options.background == 'string' ) {
+      var children = elem.querySelectorAll( this.options.background );
+      for ( i=0; i < children.length; i++ ) {
+        var child = children[i];
+        this.addElementBackgroundImages( child );
       }
     }
+  };
+
+  var elementNodeTypes = {
+    1: true,
+    9: true,
+    11: true
+  };
+
+  ImagesLoaded.prototype.addElementBackgroundImages = function( elem ) {
+    var style = getStyle( elem );
+    // get url inside url("...")
+    var reURL = /url\(['"]*([^'"\)]+)['"]*\)/gi;
+    var matches = reURL.exec( style.backgroundImage );
+    while ( matches !== null ) {
+      var url = matches && matches[1];
+      if ( url ) {
+        this.addBackground( url, elem );
+      }
+      matches = reURL.exec( style.backgroundImage );
+    }
+  };
+
+  // IE8
+  var getStyle = window.getComputedStyle || function( elem ) {
+    return elem.currentStyle;
   };
 
   /**
@@ -5104,73 +5151,63 @@ function makeArray( obj ) {
     this.images.push( loadingImage );
   };
 
+  ImagesLoaded.prototype.addBackground = function( url, elem ) {
+    var background = new Background( url, elem );
+    this.images.push( background );
+  };
+
   ImagesLoaded.prototype.check = function() {
     var _this = this;
-    var checkedCount = 0;
-    var length = this.images.length;
+    this.progressedCount = 0;
     this.hasAnyBroken = false;
     // complete if no images
-    if ( !length ) {
+    if ( !this.images.length ) {
       this.complete();
       return;
     }
 
-    function onConfirm( image, message ) {
-      if ( _this.options.debug && hasConsole ) {
-        console.log( 'confirm', image, message );
-      }
-
-      _this.progress( image );
-      checkedCount++;
-      if ( checkedCount === length ) {
-        _this.complete();
-      }
-      return true; // bind once
+    function onProgress( image, elem, message ) {
+      // HACK - Chrome triggers event before object properties have changed. #83
+      setTimeout( function() {
+        _this.progress( image, elem, message );
+      });
     }
 
-    for ( var i=0; i < length; i++ ) {
+    for ( var i=0; i < this.images.length; i++ ) {
       var loadingImage = this.images[i];
-      loadingImage.on( 'confirm', onConfirm );
+      loadingImage.once( 'progress', onProgress );
       loadingImage.check();
     }
   };
 
-  ImagesLoaded.prototype.progress = function( image ) {
+  ImagesLoaded.prototype.progress = function( image, elem, message ) {
+    this.progressedCount++;
     this.hasAnyBroken = this.hasAnyBroken || !image.isLoaded;
-    // HACK - Chrome triggers event before object properties have changed. #83
-    var _this = this;
-    setTimeout( function() {
-      _this.emit( 'progress', _this, image );
-      if ( _this.jqDeferred && _this.jqDeferred.notify ) {
-        _this.jqDeferred.notify( _this, image );
-      }
-    });
+    // progress event
+    this.emit( 'progress', this, image, elem );
+    if ( this.jqDeferred && this.jqDeferred.notify ) {
+      this.jqDeferred.notify( this, image );
+    }
+    // check if completed
+    if ( this.progressedCount == this.images.length ) {
+      this.complete();
+    }
+
+    if ( this.options.debug && console ) {
+      console.log( 'progress: ' + message, image, elem );
+    }
   };
 
   ImagesLoaded.prototype.complete = function() {
     var eventName = this.hasAnyBroken ? 'fail' : 'done';
     this.isComplete = true;
-    var _this = this;
-    // HACK - another setTimeout so that confirm happens after progress
-    setTimeout( function() {
-      _this.emit( eventName, _this );
-      _this.emit( 'always', _this );
-      if ( _this.jqDeferred ) {
-        var jqMethod = _this.hasAnyBroken ? 'reject' : 'resolve';
-        _this.jqDeferred[ jqMethod ]( _this );
-      }
-    });
+    this.emit( eventName, this );
+    this.emit( 'always', this );
+    if ( this.jqDeferred ) {
+      var jqMethod = this.hasAnyBroken ? 'reject' : 'resolve';
+      this.jqDeferred[ jqMethod ]( this );
+    }
   };
-
-  // -------------------------- jquery -------------------------- //
-
-  if ( $ ) {
-    $.fn.imagesLoaded = function( options, callback ) {
-      var instance = new ImagesLoaded( this, options, callback );
-      return instance.jqDeferred.promise( $(this) );
-    };
-  }
-
 
   // --------------------------  -------------------------- //
 
@@ -5181,106 +5218,120 @@ function makeArray( obj ) {
   LoadingImage.prototype = new EventEmitter();
 
   LoadingImage.prototype.check = function() {
-    // first check cached any previous images that have same src
-    var resource = cache[ this.img.src ] || new Resource( this.img.src );
-    if ( resource.isConfirmed ) {
-      this.confirm( resource.isLoaded, 'cached was confirmed' );
-      return;
-    }
-
     // If complete is true and browser supports natural sizes,
     // try to check for image status manually.
-    if ( this.img.complete && this.img.naturalWidth !== undefined ) {
+    var isComplete = this.getIsImageComplete();
+    if ( isComplete ) {
       // report based on naturalWidth
       this.confirm( this.img.naturalWidth !== 0, 'naturalWidth' );
       return;
     }
 
     // If none of the checks above matched, simulate loading on detached element.
-    var _this = this;
-    resource.on( 'confirm', function( resrc, message ) {
-      _this.confirm( resrc.isLoaded, message );
-      return true;
-    });
+    this.proxyImage = new Image();
+    eventie.bind( this.proxyImage, 'load', this );
+    eventie.bind( this.proxyImage, 'error', this );
+    // bind to image as well for Firefox. #191
+    eventie.bind( this.img, 'load', this );
+    eventie.bind( this.img, 'error', this );
+    this.proxyImage.src = this.img.src;
+  };
 
-    resource.check();
+  LoadingImage.prototype.getIsImageComplete = function() {
+    return this.img.complete && this.img.naturalWidth !== undefined;
   };
 
   LoadingImage.prototype.confirm = function( isLoaded, message ) {
     this.isLoaded = isLoaded;
-    this.emit( 'confirm', this, message );
-  };
-
-  // -------------------------- Resource -------------------------- //
-
-  // Resource checks each src, only once
-  // separate class from LoadingImage to prevent memory leaks. See #115
-
-  var cache = {};
-
-  function Resource( src ) {
-    this.src = src;
-    // add to cache
-    cache[ src ] = this;
-  }
-
-  Resource.prototype = new EventEmitter();
-
-  Resource.prototype.check = function() {
-    // only trigger checking once
-    if ( this.isChecked ) {
-      return;
-    }
-    // simulate loading on detached element
-    var proxyImage = new Image();
-    eventie.bind( proxyImage, 'load', this );
-    eventie.bind( proxyImage, 'error', this );
-    proxyImage.src = this.src;
-    // set flag
-    this.isChecked = true;
+    this.emit( 'progress', this, this.img, message );
   };
 
   // ----- events ----- //
 
   // trigger specified handler for event type
-  Resource.prototype.handleEvent = function( event ) {
+  LoadingImage.prototype.handleEvent = function( event ) {
     var method = 'on' + event.type;
     if ( this[ method ] ) {
       this[ method ]( event );
     }
   };
 
-  Resource.prototype.onload = function( event ) {
+  LoadingImage.prototype.onload = function() {
     this.confirm( true, 'onload' );
-    this.unbindProxyEvents( event );
+    this.unbindEvents();
   };
 
-  Resource.prototype.onerror = function( event ) {
+  LoadingImage.prototype.onerror = function() {
     this.confirm( false, 'onerror' );
-    this.unbindProxyEvents( event );
+    this.unbindEvents();
   };
 
-  // ----- confirm ----- //
+  LoadingImage.prototype.unbindEvents = function() {
+    eventie.unbind( this.proxyImage, 'load', this );
+    eventie.unbind( this.proxyImage, 'error', this );
+    eventie.unbind( this.img, 'load', this );
+    eventie.unbind( this.img, 'error', this );
+  };
 
-  Resource.prototype.confirm = function( isLoaded, message ) {
-    this.isConfirmed = true;
+  // -------------------------- Background -------------------------- //
+
+  function Background( url, element ) {
+    this.url = url;
+    this.element = element;
+    this.img = new Image();
+  }
+
+  // inherit LoadingImage prototype
+  Background.prototype = new LoadingImage();
+
+  Background.prototype.check = function() {
+    eventie.bind( this.img, 'load', this );
+    eventie.bind( this.img, 'error', this );
+    this.img.src = this.url;
+    // check if image is already complete
+    var isComplete = this.getIsImageComplete();
+    if ( isComplete ) {
+      this.confirm( this.img.naturalWidth !== 0, 'naturalWidth' );
+      this.unbindEvents();
+    }
+  };
+
+  Background.prototype.unbindEvents = function() {
+    eventie.unbind( this.img, 'load', this );
+    eventie.unbind( this.img, 'error', this );
+  };
+
+  Background.prototype.confirm = function( isLoaded, message ) {
     this.isLoaded = isLoaded;
-    this.emit( 'confirm', this, message );
+    this.emit( 'progress', this, this.element, message );
   };
 
-  Resource.prototype.unbindProxyEvents = function( event ) {
-    eventie.unbind( event.target, 'load', this );
-    eventie.unbind( event.target, 'error', this );
-  };
+  // -------------------------- jQuery -------------------------- //
 
-  // -----  ----- //
+  ImagesLoaded.makeJQueryPlugin = function( jQuery ) {
+    jQuery = jQuery || window.jQuery;
+    if ( !jQuery ) {
+      return;
+    }
+    // set local variable
+    $ = jQuery;
+    // $().imagesLoaded()
+    $.fn.imagesLoaded = function( options, callback ) {
+      var instance = new ImagesLoaded( this, options, callback );
+      return instance.jqDeferred.promise( $(this) );
+    };
+  };
+  // try making plugin
+  ImagesLoaded.makeJQueryPlugin();
+
+  // --------------------------  -------------------------- //
 
   return ImagesLoaded;
 
 });
 
 /*!
- * Flickity imagesLoaded v1.0.1
+ * Flickity imagesLoaded v1.0.4
  * enables imagesLoaded option for Flickity
  */
 
@@ -5288,7 +5339,7 @@ function makeArray( obj ) {
 
 ( function( window, factory ) {
   /*global define: false, module: false, require: false */
-  
+  'use strict';
   // universal module definition
 
   if ( typeof define == 'function' && define.amd ) {
@@ -5316,7 +5367,7 @@ function makeArray( obj ) {
   }
 
 }( window, function factory( window, Flickity, imagesLoaded ) {
-
+'use strict';
 
 Flickity.createMethods.push('_createImagesLoaded');
 

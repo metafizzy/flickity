@@ -5,16 +5,14 @@
   if ( typeof define == 'function' && define.amd ) {
     // AMD
     define( [
-      'get-style-property/get-style-property',
       'fizzy-ui-utils/utils'
-    ], function( getStyleProperty, utils ) {
-      return factory( window, getStyleProperty, utils );
+    ], function( utils ) {
+      return factory( window, utils );
     });
   } else if ( typeof exports == 'object' ) {
     // CommonJS
     module.exports = factory(
       window,
-      require('desandro-get-style-property'),
       require('fizzy-ui-utils')
     );
   } else {
@@ -22,12 +20,11 @@
     window.Flickity = window.Flickity || {};
     window.Flickity.animatePrototype = factory(
       window,
-      window.getStyleProperty,
       window.fizzyUIUtils
     );
   }
 
-}( window, function factory( window, getStyleProperty, utils ) {
+}( window, function factory( window, utils ) {
 
 'use strict';
 
@@ -111,8 +108,13 @@ proto.animate = function() {
 };
 
 
-var transformProperty = getStyleProperty('transform');
-var is3d = !!getStyleProperty('perspective');
+var transformProperty = ( function () {
+  var style = document.documentElement.style;
+  if ( typeof style.transform == 'string' ) {
+    return 'transform';
+  }
+  return 'WebkitTransform';
+})();
 
 proto.positionSlider = function() {
   var x = this.x;
@@ -133,7 +135,7 @@ proto.positionSlider = function() {
   if ( transformProperty ) {
     // use 3D tranforms for hardware acceleration on iOS
     // but use 2D when settled, for better font-rendering
-    this.slider.style[ transformProperty ] = is3d && this.isAnimating ?
+    this.slider.style[ transformProperty ] = this.isAnimating ?
       'translate3d(' + value + ',0,0)' : 'translateX(' + value + ')';
   } else {
     this.slider.style[ this.originSide ] = value;
@@ -169,9 +171,7 @@ proto.settle = function( previousX ) {
     this.isAnimating = false;
     delete this.isFreeScrolling;
     // render position with translateX when settled
-    if ( is3d ) {
-      this.positionSlider();
-    }
+    this.positionSlider();
     this.dispatchEvent('settle');
   }
 };
