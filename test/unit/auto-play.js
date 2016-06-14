@@ -17,7 +17,7 @@ test( 'auto play', function( assert ) {
       var next = tests.shift();
       next();
     } else {
-      flkty.player.stop();
+      flkty.stopPlayer();
       done();
     }
   }
@@ -44,7 +44,7 @@ test( 'auto play', function( assert ) {
         ok( false, 'player ticked during pause' );
       }
       flkty.on( 'cellSelect', onPauseSelect );
-      flkty.player.pause();
+      flkty.pausePlayer();
       setTimeout( function() {
         ok( true, 'player did not tick during pause' );
         flkty.off( 'cellSelect', onPauseSelect );
@@ -52,7 +52,23 @@ test( 'auto play', function( assert ) {
           ok( true, 'player resumed after unpausing' );
           nextTest();
         });
-        flkty.player.unpause();
+        flkty.unpausePlayer();
+      }, flkty.options.autoPlay + 100 );
+    },
+    // double playPlayer()
+    function() {
+      var ticks = 0;
+      function onSelect() {
+        ticks++;
+      }
+      flkty.stopPlayer();
+      flkty.on( 'cellSelect', onSelect );
+      flkty.playPlayer();
+      flkty.playPlayer();
+      setTimeout( function() {
+        flkty.off( 'cellSelect', onSelect );
+        equal( ticks, 1, 'only one tick after double playPlayer' );
+        nextTest();
       }, flkty.options.autoPlay + 100 );
     }
   ];

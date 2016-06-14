@@ -41,9 +41,7 @@
     "tests",
     "sandbox",
     "package.json",
-    "Gruntfile.js",
     "gulpfile.js",
-    "changelog.md",
     "notes.md"
   ]
 }

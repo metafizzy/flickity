@@ -46,8 +46,8 @@ if ( 'hidden' in document ) {
 // -------------------------- Player -------------------------- //
 
 function Player( parent ) {
-  this.isPlaying = false;
   this.parent = parent;
+  this.state = 'stopped';
   // visibility change event handler
   if ( visibilityEvent ) {
     var _this = this;
@@ -61,9 +61,10 @@ Player.prototype = Object.create( EvEmitter.prototype );
 
 // start play
 Player.prototype.play = function() {
-  this.isPlaying = true;
-  // playing kills pauses
-  delete this.isPaused;
+  if ( this.state == 'playing' ) {
+    return;
+  }
+  this.state = 'playing';
   // listen to visibility change
   if ( visibilityEvent ) {
     document.addEventListener( visibilityEvent, this.onVisibilityChange, false );
@@ -73,16 +74,17 @@ Player.prototype.play = function() {
 };
 
 Player.prototype.tick = function() {
-  // do not tick if paused or not playing
-  if ( !this.isPlaying || this.isPaused ) {
+  // do not tick if not playing
+  if ( this.state != 'playing' ) {
     return;
   }
-  // keep track of when .tick()
-  this.tickTime = new Date();
+
   var time = this.parent.options.autoPlay;
   // default to 3 seconds
   time = typeof time == 'number' ? time : 3000;
   var _this = this;
+  // HACK: reset ticks if stopped and started within interval
+  this.clear();
   this.timeout = setTimeout( function() {
     _this.parent.next( true );
     _this.tick();
@@ -90,9 +92,7 @@ Player.prototype.tick = function() {
 };
 
 Player.prototype.stop = function() {
-  this.isPlaying = false;
-  // stopping kills pauses
-  delete this.isPaused;
+  this.state = 'stopped';
   this.clear();
   // remove visibility change event
   if ( visibilityEvent ) {
@@ -105,15 +105,15 @@ Player.prototype.clear = function() {
 };
 
 Player.prototype.pause = function() {
-  if ( this.isPlaying ) {
-    this.isPaused = true;
+  if ( this.state == 'playing' ) {
+    this.state = 'paused';
     this.clear();
   }
 };
 
 Player.prototype.unpause = function() {
   // re-start play if in unpaused state
-  if ( this.isPaused ) {
+  if ( this.state == 'paused' ) {
     this.play();
   }
 };
@@ -149,8 +149,22 @@ Flickity.prototype.activatePlayer = function() {
   this.element.addEventListener( 'mouseenter', this );
 };
 
+// Player API, don't hate the ... thanks I know where the door is
+
+Flickity.prototype.playPlayer = function() {
+  this.player.play();
+};
+
 Flickity.prototype.stopPlayer = function() {
   this.player.stop();
+};
+
+Flickity.prototype.pausePlayer = function() {
+  this.player.pause();
+};
+
+Flickity.prototype.unpausePlayer = function() {
+  this.player.unpause();
 };
 
 Flickity.prototype.deactivatePlayer = function() {

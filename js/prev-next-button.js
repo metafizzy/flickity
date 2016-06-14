@@ -79,6 +79,8 @@ PrevNextButton.prototype._create = function() {
   // init as disabled
   this.disable();
 
+  element.setAttribute( 'aria-label', this.isPrevious ? 'previous' : 'next' );
+
   Flickity.setUnselectable( element );
   // create arrow
   if ( supportsInlineSVG() ) {

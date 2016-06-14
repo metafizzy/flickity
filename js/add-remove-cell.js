@@ -158,7 +158,8 @@ Flickity.prototype.cellChange = function( changedCellIndex, isPositioningSlider 
   if ( this.options.freeScroll ) {
     // shift x by change in slideableWidth
     // TODO fix position shifts when prepending w/ freeScroll
-    this.x += prevSlideableWidth - this.slideableWidth;
+    var deltaX = prevSlideableWidth - this.slideableWidth;
+    this.x += deltaX * this.cellAlign;
     this.positionSlider();
   } else {
     // do not position slider after lazy load
