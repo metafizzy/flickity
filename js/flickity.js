@@ -302,6 +302,8 @@ Flickity.prototype.updateSlides = function() {
   var isOriginLeft = this.originSide == 'left';
   var nextMargin = isOriginLeft ? 'marginRight' : 'marginLeft';
 
+  var canCellFit = this._getCanCellFit();
+
   for ( var i=0; i < this.cells.length; i++ ) {
     var cell = this.cells[i];
     // just add cell if first cell in slide
@@ -313,8 +315,7 @@ Flickity.prototype.updateSlides = function() {
     var slideWidth = ( slide.outerWidth - slide.firstMargin ) +
       ( cell.size.outerWidth - cell.size[ nextMargin ] );
 
-    if ( slideWidth <= this.size.width + 1 ) {
-      // cell fits in slide, +1 for rounding errors
+    if ( canCellFit.call( this, i, slideWidth ) ) {
       slide.addCell( cell );
     } else {
       // doesn't fit, new slide
@@ -327,6 +328,29 @@ Flickity.prototype.updateSlides = function() {
   }
   // last slide
   slide.updateTarget();
+};
+
+Flickity.prototype._getCanCellFit = function() {
+  var groupCells = this.options.groupCells;
+  if ( !groupCells ) {
+    return function() {
+      return false;
+    };
+  } else if ( typeof groupCells == 'number' ) {
+    // group by number. 3 -> [0,1,2], [3,4,5], ...
+    var number = parseInt( groupCells, 10 );
+    return function( i ) {
+      return ( i % number ) !== 0;
+    };
+  }
+  // default, group by width of slide
+  // parse '75%
+  var percentMatch = typeof groupCells == 'string' &&
+    groupCells.match(/^(\d+)%$/);
+  var percent = percentMatch ? parseInt( percentMatch[1], 10 ) / 100 : 1;
+  return function( i, slideWidth ) {
+    return slideWidth <= ( this.size.innerWidth + 1 ) * percent;
+  };
 };
 
 // alias _init for jQuery plugin .flickity()

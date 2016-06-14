@@ -99,6 +99,9 @@ var flky = new Flickity( '.gallery', {
   friction: 0.2,
   // smaller number = easier to flick farther
 
+  groupCells: false,
+  // group cells together in slides
+
   initialIndex: 0,
   // zero-based index of the initial selected cell
 
