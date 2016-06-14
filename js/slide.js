@@ -4,24 +4,31 @@
 
 function Slide( parent ) {
   this.parent = parent;
+  this.isOriginLeft = parent.originSide == 'left';
   this.cells = [];
-  this.width = 0;
+  this.outerWidth = 0;
 }
 
 Slide.prototype.addCell = function( cell ) {
   this.cells.push( cell );
-  // first cell logic
+  this.outerWidth += cell.size.outerWidth;
+  // first cell stuff
   if ( this.cells.length == 1 ) {
-    this.width = cell.size.width;
-    this.x = cell.x;
+    this.x = cell.x; // x comes from first cell
+    var beginMargin = this.isOriginLeft ? 'marginLeft' : 'marginRight';
+    this.firstMargin = cell.size[ beginMargin ];
   }
 };
 
 Slide.prototype.updateTarget = function() {
-  var marginProperty = this.parent.originSide == 'left' ?
-    'marginLeft' : 'marginRight';
-  var firstMargin = this.cells[0].size[ marginProperty ];
-  this.target = this.x + firstMargin + this.width * this.parent.cellAlign;
+  var endMargin = this.isOriginLeft ? 'marginRight' : 'marginLeft';
+  var lastMargin = this.getLastCell().size[ endMargin ];
+  var slideWidth = this.outerWidth - ( this.firstMargin + lastMargin );
+  this.target = this.x + this.firstMargin + slideWidth * this.parent.cellAlign;
+};
+
+Slide.prototype.getLastCell = function() {
+  return this.cells[ this.cells.length - 1 ];
 };
 
 Slide.prototype.select = function() {

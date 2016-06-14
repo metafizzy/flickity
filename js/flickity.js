@@ -300,26 +300,22 @@ Flickity.prototype.updateSlides = function() {
   var slide = new Slide( this );
   this.slides.push( slide );
   var isOriginLeft = this.originSide == 'left';
-  var prevMargin = isOriginLeft ? 'marginLeft' : 'marginRight';
   var nextMargin = isOriginLeft ? 'marginRight' : 'marginLeft';
 
   for ( var i=0; i < this.cells.length; i++ ) {
     var cell = this.cells[i];
-
-    if ( slide.width === 0 ) {
+    // just add cell if first cell in slide
+    if ( !slide.cells.length ) {
       slide.addCell( cell );
       continue;
     }
 
-    var prevSlideCell = slide.cells[ slide.cells.length - 1 ];
-    var prevCellMarginX = prevSlideCell ? prevSlideCell.size[ nextMargin ] : 0;
-    var marginX = prevCellMarginX + cell.size[ prevMargin ];
-    var slideX = slide.width + marginX + cell.size.width;
+    var slideWidth = ( slide.outerWidth - slide.firstMargin ) +
+      ( cell.size.outerWidth - cell.size[ nextMargin ] );
 
-    if ( slideX <= this.size.width + 1 ) {
+    if ( slideWidth <= this.size.width + 1 ) {
       // cell fits in slide, +1 for rounding errors
       slide.addCell( cell );
-      slide.width = slideX;
     } else {
       // doesn't fit, new slide
       slide.updateTarget();
@@ -426,8 +422,8 @@ Flickity.prototype._containCells = function() {
   // contain each cell target
   for ( var i=0, len = this.cells.length; i < len; i++ ) {
     var cell = this.cells[i];
-    // reset default target
-    cell.setDefaultTarget();
+    // update cell target
+    cell.updateTarget();
     if ( isContentSmaller ) {
       // all cells fit inside gallery
       cell.target = contentWidth * this.cellAlign;

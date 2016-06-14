@@ -60,10 +60,12 @@ Cell.prototype.getSize = function() {
 
 Cell.prototype.setPosition = function( x ) {
   this.x = x;
-  this.setDefaultTarget();
+  this.updateTarget();
   this.renderPosition( x );
 };
 
+Cell.prototype.updateTarget =
+// setDefaultTarget v1 method, backwards compatibility, remove in v3
 Cell.prototype.setDefaultTarget = function() {
   var marginProperty = this.parent.originSide == 'left' ? 'marginLeft' : 'marginRight';
   this.target = this.x + this.size[ marginProperty ] +
