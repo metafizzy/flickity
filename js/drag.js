@@ -164,7 +164,7 @@ Flickity.prototype.pointerUp = function( event, pointer ) {
 };
 
 Flickity.prototype.pointerDone = function() {
-  eventie.unbind( window, 'scroll', this );
+  window.removeEventListener( 'scroll', this );
   delete this.pointerDownScroll;
 };
 
@@ -312,7 +312,7 @@ Flickity.prototype.staticClick = function( event, pointer ) {
   // get clickedCell, if cell was clicked
   var clickedCell = this.getParentCell( event.target );
   var cellElem = clickedCell && clickedCell.element;
-  var cellIndex = clickedCell && utils.indexOf( this.cells, clickedCell );
+  var cellIndex = clickedCell && this.cells.indexOf( clickedCell );
   this.dispatchEvent( 'staticClick', event, [ pointer, cellElem, cellIndex ] );
 };
 

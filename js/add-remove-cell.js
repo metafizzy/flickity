@@ -103,7 +103,7 @@ Flickity.prototype.remove = function( elems ) {
   // calculate selectedIndexDelta, easier if done in seperate loop
   for ( i=0, len = cells.length; i < len; i++ ) {
     cell = cells[i];
-    var wasBefore = utils.indexOf( this.cells, cell ) < this.selectedIndex;
+    var wasBefore = this.cells.indexOf( cell ) < this.selectedIndex;
     selectedIndexDelta -= wasBefore ? 1 : 0;
   }
 
@@ -141,7 +141,7 @@ Flickity.prototype.cellSizeChange = function( elem ) {
   }
   cell.getSize();
 
-  var index = utils.indexOf( this.cells, cell );
+  var index = this.cells.indexOf( cell );
   this.cellChange( index );
 };
 
