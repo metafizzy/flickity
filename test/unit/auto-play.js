@@ -1,5 +1,4 @@
 test( 'auto play', function( assert ) {
-
   'use strict';
 
   var done = assert.async();
@@ -9,9 +8,10 @@ test( 'auto play', function( assert ) {
   });
 
   var selectCount = 0;
+  var testDelay = flkty.options.autoPlay + 100;
 
   var tests;
-  
+
   function nextTest() {
     if ( tests.length ) {
       var next = tests.shift();
@@ -21,7 +21,7 @@ test( 'auto play', function( assert ) {
       done();
     }
   }
-  
+
   tests = [
     // check that player runs
     function() {
@@ -53,7 +53,20 @@ test( 'auto play', function( assert ) {
           nextTest();
         });
         flkty.unpausePlayer();
-      }, flkty.options.autoPlay + 100 );
+      }, testDelay );
+    },
+    // stopPlayer
+    function() {
+      var ticks = 0;
+      function onSelect() {
+        ticks++;
+      }
+      flkty.stopPlayer();
+      setTimeout( function() {
+        flkty.off( 'cellSelect', onSelect );
+        equal( ticks, 0, 'no ticks after stopped' );
+        nextTest();
+      }, testDelay * 2 );
     },
     // double playPlayer()
     function() {
@@ -69,8 +82,8 @@ test( 'auto play', function( assert ) {
         flkty.off( 'cellSelect', onSelect );
         equal( ticks, 1, 'only one tick after double playPlayer' );
         nextTest();
-      }, flkty.options.autoPlay + 100 );
-    }
+      }, testDelay );
+    },
   ];
 
   nextTest();
