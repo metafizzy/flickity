@@ -251,6 +251,7 @@ Flickity.prototype.positionCells = function() {
   this._sizeCells( this.cells );
   // position all cells
   this._positionCells( 0 );
+  this.updateSlides();
 };
 
 /**
@@ -279,7 +280,6 @@ Flickity.prototype._positionCells = function( index ) {
   this.slideableWidth = cellX;
   // contain cell target
   this._containCells();
-  this.updateSlides();
 };
 
 /**
@@ -495,7 +495,7 @@ Flickity.prototype.select = function( index, isWrap, isInstant ) {
     return;
   }
   this.selectedIndex = index;
-  // this.setSelectedCell();
+  this.updateSelectedSlide();
   if ( isInstant ) {
     this.positionSliderAtSelected();
   } else {
@@ -512,16 +512,23 @@ Flickity.prototype.next = function( isWrap ) {
   this.select( this.selectedIndex + 1, isWrap );
 };
 
-Flickity.prototype.setSelectedCell = function() {
-  this._removeSelectedCellClass();
-  this.selectedCell = this.cells[ this.selectedIndex ];
-  this.selectedElement = this.selectedCell.element;
-  this.selectedElement.classList.add('is-selected');
+Flickity.prototype.updateSelectedSlide = function() {
+  // unselect previous selected slide
+  this.unselectSelectedSlide();
+  // update new selected slide
+  var slide = this.selectedSlide = this.slides[ this.selectedIndex ];
+  slide.select();
+  this.selectedCells = slide.cells;
+  this.selectedElements = slide.getCellElements();
+  // HACK: selectedCell & selectedElement is first cell in slide, backwards compatibility
+  // Remove in v3?
+  this.selectedCell = slide.cells[0];
+  this.selectedElement = this.selectedElements[0];
 };
 
-Flickity.prototype._removeSelectedCellClass = function() {
-  if ( this.selectedCell ) {
-    this.selectedCell.element.classList.remove('is-selected');
+Flickity.prototype.unselectSelectedSlide = function() {
+  if ( this.selectedSlide ) {
+    this.selectedSlide.unselect();
   }
 };
 
@@ -703,7 +710,7 @@ Flickity.prototype.deactivate = function() {
     var cell = this.cells[i];
     cell.destroy();
   }
-  this._removeSelectedCellClass();
+  this.unselectSelectedSlide();
   this.element.removeChild( this.viewport );
   // move child elements back into element
   moveElements( this.slider.children, this.element );

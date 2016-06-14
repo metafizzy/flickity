@@ -153,6 +153,7 @@ Flickity.prototype.cellChange = function( changedCellIndex, isPositioningSlider 
   var prevSlideableWidth = this.slideableWidth;
   this._positionCells( changedCellIndex );
   this._getWrapShiftCells();
+  this.updateSlides();
   this.setGallerySize();
   // position slider
   if ( this.options.freeScroll ) {

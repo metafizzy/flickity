@@ -24,6 +24,26 @@ Slide.prototype.updateTarget = function() {
   this.target = this.x + firstMargin + this.width * this.parent.cellAlign;
 };
 
+Slide.prototype.select = function() {
+  this.changeSelectedClass('add');
+};
+
+Slide.prototype.unselect = function() {
+  this.changeSelectedClass('remove');
+};
+
+Slide.prototype.changeSelectedClass = function( method ) {
+  this.cells.forEach( function( cell ) {
+    cell.element.classList[ method ]('is-selected');
+  });
+};
+
+Slide.prototype.getCellElements = function() {
+  return this.cells.map( function( cell ) {
+    return cell.element;
+  });
+};
+
 window.Slide = Slide;
 
 })();
