@@ -7,7 +7,4 @@ test( 'watch fallback', function() {
   });
 
   ok( !flkty.isActive, 'fallback not active, watchCSS: true' );
-  flkty.options.watchCSS = 'fallbackOn';
-  flkty.watchCSS();
-  ok( flkty.isActive, 'active with watchCSS: "fallbackOn" ');
 });

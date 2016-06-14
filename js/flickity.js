@@ -604,40 +604,10 @@ Flickity.prototype.resize = function() {
   this.positionSliderAtSelected();
 };
 
-var supportsConditionalCSS = Flickity.supportsConditionalCSS = ( function() {
-  var supports;
-  return function checkSupport() {
-    if ( supports !== undefined ) {
-      return supports;
-    }
-    if ( !getComputedStyle ) {
-      supports = false;
-      return;
-    }
-    // style body's :after and check that
-    var style = document.createElement('style');
-    var cssText = document.createTextNode('body:after { content: "foo"; display: none; }');
-    style.appendChild( cssText );
-    document.head.appendChild( style );
-    var afterContent = getComputedStyle( document.body, ':after' ).content;
-    // check if able to get :after content
-    supports = afterContent.indexOf('foo') != -1;
-    document.head.removeChild( style );
-    return supports;
-  };
-})();
-
 // watches the :after property, activates/deactivates
 Flickity.prototype.watchCSS = function() {
   var watchOption = this.options.watchCSS;
   if ( !watchOption ) {
-    return;
-  }
-  var supports = supportsConditionalCSS();
-  if ( !supports ) {
-    // activate if watch option is fallbackOn
-    var method = watchOption == 'fallbackOn' ? 'activate' : 'deactivate';
-    this[ method ]();
     return;
   }
 
