@@ -50,17 +50,19 @@ PageDots.prototype._create = function() {
   // create dots, array of elements
   this.dots = [];
   // update on select
-  var _this = this;
-  this.onCellSelect = function() {
-    _this.updateSelected();
-  };
-  this.parent.on( 'cellSelect', this.onCellSelect );
+  this.parent.on( 'cellSelect', function() {
+    this.updateSelected();
+  }.bind( this ));
+  // set dots on resize
+  this.parent.on( 'resize', function() {
+    this.setDots();
+  }.bind( this ));
   // tap
   this.on( 'tap', this.onTap );
   // pointerDown
   this.on( 'pointerDown', function onPointerDown( button, event ) {
-    _this.parent.childUIPointerDown( event );
-  });
+    this.parent.childUIPointerDown( event );
+  }.bind( this ));
 };
 
 PageDots.prototype.activate = function() {

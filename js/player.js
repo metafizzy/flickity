@@ -50,10 +50,9 @@ function Player( parent ) {
   this.state = 'stopped';
   // visibility change event handler
   if ( visibilityEvent ) {
-    var _this = this;
     this.onVisibilityChange = function() {
-      _this.visibilityChange();
-    };
+      this.visibilityChange();
+    }.bind( this );
   }
 }
 
@@ -67,7 +66,7 @@ Player.prototype.play = function() {
   this.state = 'playing';
   // listen to visibility change
   if ( visibilityEvent ) {
-    document.addEventListener( visibilityEvent, this.onVisibilityChange, false );
+    document.addEventListener( visibilityEvent, this.onVisibilityChange );
   }
   // start ticking
   this.tick();
@@ -96,7 +95,7 @@ Player.prototype.stop = function() {
   this.clear();
   // remove visibility change event
   if ( visibilityEvent ) {
-    document.removeEventListener( visibilityEvent, this.onVisibilityChange, false );
+    document.removeEventListener( visibilityEvent, this.onVisibilityChange );
   }
 };
 

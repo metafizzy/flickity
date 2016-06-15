@@ -552,7 +552,7 @@ Flickity.prototype.unselectSelectedSlide = function() {
  * select slide from number or cell element
  * @param {Element or Number} elem
  */
-Flickity.prototype.selectCell = function( value ) {
+Flickity.prototype.selectCell = function( value, isWrap, isInstant ) {
   // get cell
   var cell = typeof value == 'number' ? this.cells[ value ] :
     this.getCell( value );
@@ -561,7 +561,7 @@ Flickity.prototype.selectCell = function( value ) {
     var slide = this.slides[i];
     var index = slide.cells.indexOf( cell );
     if ( index != -1 ) {
-      this.select( i );
+      this.select( i, isWrap, isInstant );
       return;
     }
   }
@@ -686,7 +686,11 @@ Flickity.prototype.resize = function() {
   this.positionCells();
   this._getWrapShiftCells();
   this.setGallerySize();
-  this.positionSliderAtSelected();
+  this.emitEvent('resize');
+  // update selected index for group slides, instant
+  // TODO: position can be lost between groups of various numbers
+  var selectedElement = this.selectedElements && this.selectedElements[0]
+  this.selectCell( selectedElement, false, true );
 };
 
 // watches the :after property, activates/deactivates

@@ -90,17 +90,15 @@ PrevNextButton.prototype._create = function() {
     element.className += ' no-svg';
   }
   // update on select
-  var _this = this;
-  this.onCellSelect = function() {
-    _this.update();
-  };
-  this.parent.on( 'cellSelect', this.onCellSelect );
+  this.parent.on( 'cellSelect', function() {
+    this.update();
+  }.bind( this ));
   // tap
   this.on( 'tap', this.onTap );
   // pointerDown
   this.on( 'pointerDown', function onPointerDown( button, event ) {
-    _this.parent.childUIPointerDown( event );
-  });
+    this.parent.childUIPointerDown( event );
+  }.bind( this ));
 };
 
 PrevNextButton.prototype.activate = function() {
