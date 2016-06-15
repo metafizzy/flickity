@@ -7,11 +7,13 @@ function Slide( parent ) {
   this.isOriginLeft = parent.originSide == 'left';
   this.cells = [];
   this.outerWidth = 0;
+  this.height = 0;
 }
 
 Slide.prototype.addCell = function( cell ) {
   this.cells.push( cell );
   this.outerWidth += cell.size.outerWidth;
+  this.height = Math.max( cell.size.outerHeight, this.height );
   // first cell stuff
   if ( this.cells.length == 1 ) {
     this.x = cell.x; // x comes from first cell
