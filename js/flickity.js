@@ -1,15 +1,11 @@
-/**
- * Flickity main
- */
-
+// Flickity main
 ( function( window, factory ) {
-  'use strict';
   // universal module definition
-
+  /* jshint strict: false */
   if ( typeof define == 'function' && define.amd ) {
     // AMD
     define( [
-      'eventEmitter/EventEmitter',
+      'ev-emitter/ev-emitter',
       'get-size/get-size',
       'fizzy-ui-utils/utils',
       './cell',
@@ -18,7 +14,7 @@
     ], function( EvEmitter, getSize, utils, Cell, Slide, animatePrototype ) {
       return factory( window, EvEmitter, getSize, utils, Cell, Slide, animatePrototype );
     });
-  } else if ( typeof exports == 'object' ) {
+  } else if ( typeof module == 'object' && module.exports ) {
     // CommonJS
     module.exports = factory(
       window,

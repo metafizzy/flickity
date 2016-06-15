@@ -1,7 +1,7 @@
+// player & autoPlay
 ( function( window, factory ) {
-  'use strict';
   // universal module definition
-
+  /* jshint strict: false */
   if ( typeof define == 'function' && define.amd ) {
     // AMD
     define( [
@@ -11,7 +11,7 @@
     ], function( EvEmitter, utils, Flickity ) {
       return factory( EvEmitter, utils, Flickity );
     });
-  } else if ( typeof exports == 'object' ) {
+  } else if ( typeof module == 'object' && module.exports ) {
     // CommonJS
     module.exports = factory(
       require('ev-emitter'),

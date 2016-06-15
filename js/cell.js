@@ -1,7 +1,7 @@
+// Flickity.Cell
 ( function( window, factory ) {
-  'use strict';
   // universal module definition
-
+  /* jshint strict: false */
   if ( typeof define == 'function' && define.amd ) {
     // AMD
     define( [
@@ -9,7 +9,7 @@
     ], function( getSize ) {
       return factory( window, getSize );
     });
-  } else if ( typeof exports == 'object' ) {
+  } else if ( typeof module == 'object' && module.exports ) {
     // CommonJS
     module.exports = factory(
       window,
