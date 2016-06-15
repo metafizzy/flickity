@@ -1,4 +1,4 @@
-test( 'auto play', function( assert ) {
+QUnit.test( 'auto play', function( assert ) {
   'use strict';
 
   var done = assert.async();
@@ -28,7 +28,7 @@ test( 'auto play', function( assert ) {
       var onSelect = function() {
         selectCount++;
         if ( selectCount < 5 ) {
-          equal( flkty.selectedIndex, selectCount % flkty.cells.length,
+          assert.equal( flkty.selectedIndex, selectCount % flkty.cells.length,
             'auto-played to ' + flkty.selectedIndex );
         } else if ( selectCount == 5 ) {
           // HACK do async, should be able to stop after a tick
@@ -41,15 +41,15 @@ test( 'auto play', function( assert ) {
     // pause & unpause
     function() {
       function onPauseSelect() {
-        ok( false, 'player ticked during pause' );
+        assert.ok( false, 'player ticked during pause' );
       }
       flkty.on( 'cellSelect', onPauseSelect );
       flkty.pausePlayer();
       setTimeout( function() {
-        ok( true, 'player did not tick during pause' );
+        assert.ok( true, 'player did not tick during pause' );
         flkty.off( 'cellSelect', onPauseSelect );
         flkty.once( 'cellSelect', function() {
-          ok( true, 'player resumed after unpausing' );
+          assert.ok( true, 'player resumed after unpausing' );
           nextTest();
         });
         flkty.unpausePlayer();
@@ -64,7 +64,7 @@ test( 'auto play', function( assert ) {
       flkty.stopPlayer();
       setTimeout( function() {
         flkty.off( 'cellSelect', onSelect );
-        equal( ticks, 0, 'no ticks after stopped' );
+        assert.equal( ticks, 0, 'no ticks after stopped' );
         nextTest();
       }, testDelay * 2 );
     },
@@ -80,7 +80,7 @@ test( 'auto play', function( assert ) {
       flkty.playPlayer();
       setTimeout( function() {
         flkty.off( 'cellSelect', onSelect );
-        equal( ticks, 1, 'only one tick after double playPlayer' );
+        assert.equal( ticks, 1, 'only one tick after double playPlayer' );
         nextTest();
       }, testDelay );
     },

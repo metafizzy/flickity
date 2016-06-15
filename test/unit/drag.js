@@ -83,7 +83,7 @@ function getFakeDragTest( args ) {
 
 
 
-test( 'drag', function( assert ) {
+QUnit.test( 'drag', function( assert ) {
   // async test
   var done = assert.async();
 
@@ -119,8 +119,8 @@ test( 'drag', function( assert ) {
     // minimal movement to trigger static click
     function() {
       flkty.once( 'staticClick', function() {
-        ok( true, 'staticClick fired on non-drag');
-        equal( flkty.selectedIndex, 2, 'selected index still at 2 after click' );
+        assert.ok( true, 'staticClick fired on non-drag');
+        assert.equal( flkty.selectedIndex, 2, 'selected index still at 2 after click' );
         setTimeout( doNextDragTest );
       });
       fakeDrag( flkty, [ 0, 1, 0, -2, -1 ] );
@@ -128,7 +128,7 @@ test( 'drag', function( assert ) {
     // move out then back to where it started
     function() {
       flkty.once( 'settle', function() {
-        equal( flkty.selectedIndex, 2, 'move out then back. same cell' );
+        assert.equal( flkty.selectedIndex, 2, 'move out then back. same cell' );
         setTimeout( doNextDragTest );
       });
       fakeDrag( flkty, [ 0, 10, 20, 30, 20 ] );
@@ -144,7 +144,7 @@ test( 'drag', function( assert ) {
 
 });
 
-test( 'drag with wrapAround', function( assert ) {
+QUnit.test( 'drag with wrapAround', function( assert ) {
   // async test
   var done = assert.async();
 

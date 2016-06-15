@@ -1,4 +1,4 @@
-test( 'watch fallback', function() {
+QUnit.test( 'watch fallback', function( assert ) {
   'use strict';
 
   var elem = document.querySelector('#watch');
@@ -6,5 +6,5 @@ test( 'watch fallback', function() {
     watchCSS: true
   });
 
-  ok( !flkty.isActive, 'fallback not active, watchCSS: true' );
+  assert.ok( !flkty.isActive, 'fallback not active, watchCSS: true' );
 });

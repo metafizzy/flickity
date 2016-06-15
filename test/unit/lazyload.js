@@ -1,4 +1,4 @@
-test( 'lazyload', function( assert ) {
+QUnit.test( 'lazyload', function( assert ) {
   'use strict';
 
   var done = assert.async();
@@ -12,9 +12,9 @@ test( 'lazyload', function( assert ) {
   flkty.on( 'lazyLoad', function( event, cellElem ) {
     loadCount++;
 
-    equal( event.type, 'load', 'event.type == load' );
-    ok( event.target.complete, 'img ' + loadCount + ' is complete' );
-    ok( cellElem, 'cellElement argument there' );
+    assert.equal( event.type, 'load', 'event.type == load' );
+    assert.ok( event.target.complete, 'img ' + loadCount + ' is complete' );
+    assert.ok( cellElem, 'cellElement argument there' );
 
     // after first 2 have loaded, select 7th cell
     if ( loadCount == 2 ) {
@@ -22,7 +22,7 @@ test( 'lazyload', function( assert ) {
     }
     if ( loadCount == 5 ) {
       var loadedImgs = gallery.querySelectorAll('.flickity-lazyloaded');
-      equal( loadedImgs.length, '5', 'only 5 images loaded' );
+      assert.equal( loadedImgs.length, '5', 'only 5 images loaded' );
       done();
     }
   });

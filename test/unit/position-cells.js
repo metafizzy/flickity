@@ -27,24 +27,24 @@ function checkCellPositions( flkty, expecteds ) {
   return isOK;
 }
 
-test( 'position cells', function() {
+QUnit.test( 'position cells', function( assert ) {
 
   var flkty = new Flickity('#position-cells');
 
-  ok( checkCellPositions( flkty, [ 0, 40, 65, 125, 165, 225 ] ), 'percent cell position' );
+  assert.ok( checkCellPositions( flkty, [ 0, 40, 65, 125, 165, 225 ] ), 'percent cell position' );
   // .cell { margin: 0 2%; }
   flkty.element.classList.add('percent-margin');
   flkty.positionCells();
-  ok( checkCellPositions( flkty, [ 0, 44, 73, 137, 181, 245 ] ), 'percent cell position with margin' );
+  assert.ok( checkCellPositions( flkty, [ 0, 44, 73, 137, 181, 245 ] ), 'percent cell position with margin' );
   flkty.element.classList.remove('percent-margin');
   // pixel-based position
   flkty.options.percentPosition = false;
   flkty.positionCells();
-  ok( checkCellPositions( flkty, [ 0, 160, 260, 500, 660, 900 ] ), 'pixel cell position' );
+  assert.ok( checkCellPositions( flkty, [ 0, 160, 260, 500, 660, 900 ] ), 'pixel cell position' );
   // pixel margin, { margin: 0 10px; }
   flkty.element.classList.add('pixel-margin');
   flkty.positionCells();
-  ok( checkCellPositions( flkty, [ 0, 180, 300, 560, 740, 1000 ] ), 'pixel cell position with margin' );
+  assert.ok( checkCellPositions( flkty, [ 0, 180, 300, 560, 740, 1000 ] ), 'pixel cell position with margin' );
 
 });
 
