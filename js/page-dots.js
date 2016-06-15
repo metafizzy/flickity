@@ -104,10 +104,9 @@ PageDots.prototype.removeDots = function( count ) {
   // remove from this.dots collection
   var removeDots = this.dots.splice( this.dots.length - count, count );
   // remove from DOM
-  for ( var i=0, len = removeDots.length; i < len; i++ ) {
-    var dot = removeDots[i];
+  removeDots.forEach( function( dot ) {
     this.holder.removeChild( dot );
-  }
+  }, this );
 };
 
 PageDots.prototype.updateSelected = function() {

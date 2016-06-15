@@ -33,10 +33,9 @@
 // append cells to a document fragment
 function getCellsFragment( cells ) {
   var fragment = document.createDocumentFragment();
-  for ( var i=0, len = cells.length; i < len; i++ ) {
-    var cell = cells[i];
+  cells.forEach( function( cell ) {
     fragment.appendChild( cell.element );
-  }
+  });
   return fragment;
 }
 
@@ -99,15 +98,16 @@ Flickity.prototype.prepend = function( elems ) {
 Flickity.prototype.remove = function( elems ) {
   var cells = this.getCells( elems );
   var selectedIndexDelta = 0;
-  var i, len, cell;
+  var len = cells.length;
+  var i, cell;
   // calculate selectedIndexDelta, easier if done in seperate loop
-  for ( i=0, len = cells.length; i < len; i++ ) {
+  for ( i=0; i < len; i++ ) {
     cell = cells[i];
     var wasBefore = this.cells.indexOf( cell ) < this.selectedIndex;
     selectedIndexDelta -= wasBefore ? 1 : 0;
   }
 
-  for ( i=0, len = cells.length; i < len; i++ ) {
+  for ( i=0; i < len; i++ ) {
     cell = cells[i];
     cell.remove();
     // remove item from collection

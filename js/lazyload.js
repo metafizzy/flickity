@@ -45,16 +45,14 @@ Flickity.prototype.lazyLoad = function() {
   var cellElems = this.getAdjacentCellElements( adjCount );
   // get lazy images in those cells
   var lazyImages = [];
-  for ( var i=0, len = cellElems.length; i < len; i++ ) {
-    var cellElem = cellElems[i];
+  cellElems.forEach( function( cellElem ) {
     var lazyCellImages = getCellLazyImages( cellElem );
     lazyImages = lazyImages.concat( lazyCellImages );
-  }
+  });
   // load lazy images
-  for ( i=0, len = lazyImages.length; i < len; i++ ) {
-    var img = lazyImages[i];
+  lazyImages.forEach( function( img ) {
     new LazyLoader( img, this );
-  }
+  }, this );
 };
 
 function getCellLazyImages( cellElem ) {

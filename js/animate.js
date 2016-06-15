@@ -186,7 +186,7 @@ proto.shiftWrapCells = function( x ) {
 };
 
 proto._shiftCells = function( cells, gap, shift ) {
-  for ( var i=0, len = cells.length; i < len; i++ ) {
+  for ( var i=0; i < cells.length; i++ ) {
     var cell = cells[i];
     var cellShift = gap > 0 ? shift : 0;
     cell.wrapShift( cellShift );
@@ -198,7 +198,7 @@ proto._unshiftCells = function( cells ) {
   if ( !cells || !cells.length ) {
     return;
   }
-  for ( var i=0, len = cells.length; i < len; i++ ) {
+  for ( var i=0; i < cells.length; i++ ) {
     cells[i].wrapShift( 0 );
   }
 };

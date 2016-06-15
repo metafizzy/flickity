@@ -131,10 +131,9 @@ Flickity.prototype._create = function() {
     window.addEventListener( 'resize', this );
   }
 
-  for ( var i=0, len = Flickity.createMethods.length; i < len; i++ ) {
-    var method = Flickity.createMethods[i];
+  Flickity.createMethods.forEach( function( method ) {
     this[ method ]();
-  }
+  }, this );
 
   if ( this.options.watchCSS ) {
     this.watchCSS();
@@ -226,12 +225,9 @@ Flickity.prototype._makeCells = function( elems ) {
   var cellElems = this._filterFindCellElements( elems );
 
   // create new Flickity for collection
-  var cells = [];
-  for ( var i=0, len = cellElems.length; i < len; i++ ) {
-    var elem = cellElems[i];
-    var cell = new Cell( elem, this );
-    cells.push( cell );
-  }
+  var cells = cellElems.map( function( cellElem ) {
+    return new Cell( cellElem, this );
+  }, this );
 
   return cells;
 };
@@ -287,10 +283,9 @@ Flickity.prototype._positionCells = function( index ) {
  * @param {Array} cells
  */
 Flickity.prototype._sizeCells = function( cells ) {
-  for ( var i=0, len = cells.length; i < len; i++ ) {
-    var cell = cells[i];
+  cells.forEach( function( cell ) {
     cell.getSize();
-  }
+  });
 };
 
 // --------------------------  -------------------------- //
@@ -308,12 +303,11 @@ Flickity.prototype.updateSlides = function() {
 
   var canCellFit = this._getCanCellFit();
 
-  for ( var i=0; i < this.cells.length; i++ ) {
-    var cell = this.cells[i];
+  this.cells.forEach( function( cell, i ) {
     // just add cell if first cell in slide
     if ( !slide.cells.length ) {
       slide.addCell( cell );
-      continue;
+      return;
     }
 
     var slideWidth = ( slide.outerWidth - slide.firstMargin ) +
@@ -329,7 +323,7 @@ Flickity.prototype.updateSlides = function() {
       this.slides.push( slide );
       slide.addCell( cell );
     }
-  }
+  }, this );
   // last slide
   slide.updateTarget();
 };
@@ -449,8 +443,7 @@ Flickity.prototype._containSlides = function() {
   var beginBound = this.cursorPosition + this.cells[0].size[ beginMargin ];
   var endBound = contentWidth - this.size.innerWidth * ( 1 - this.cellAlign );
   // contain each cell target
-  for ( var i=0; i < this.slides.length; i++ ) {
-    var slide = this.slides[i];
+  this.slides.forEach( function( slide ) {
     if ( isContentSmaller ) {
       // all cells fit inside gallery
       slide.target = contentWidth * this.cellAlign;
@@ -459,7 +452,7 @@ Flickity.prototype._containSlides = function() {
       slide.target = Math.max( slide.target, beginBound );
       slide.target = Math.min( slide.target, endBound );
     }
-  }
+  }, this );
 };
 
 // -----  ----- //
@@ -583,7 +576,7 @@ Flickity.prototype.selectCell = function( value ) {
  */
 Flickity.prototype.getCell = function( elem ) {
   // loop through cells to get the one that matches
-  for ( var i=0, len = this.cells.length; i < len; i++ ) {
+  for ( var i=0; i < this.cells.length; i++ ) {
     var cell = this.cells[i];
     if ( cell.element == elem ) {
       return cell;
@@ -599,13 +592,12 @@ Flickity.prototype.getCell = function( elem ) {
 Flickity.prototype.getCells = function( elems ) {
   elems = utils.makeArray( elems );
   var cells = [];
-  for ( var i=0, len = elems.length; i < len; i++ ) {
-    var elem = elems[i];
+  elems.forEach( function( elem ) {
     var cell = this.getCell( elem );
     if ( cell ) {
       cells.push( cell );
     }
-  }
+  }, this );
   return cells;
 };
 
@@ -614,11 +606,9 @@ Flickity.prototype.getCells = function( elems ) {
  * @returns {Array} cellElems
  */
 Flickity.prototype.getCellElements = function() {
-  var cellElems = [];
-  for ( var i=0, len = this.cells.length; i < len; i++ ) {
-    cellElems.push( this.cells[i].element );
-  }
-  return cellElems;
+  return this.cells.map( function( cell ) {
+    return cell.element;
+  });
 };
 
 /**
@@ -748,10 +738,9 @@ Flickity.prototype.deactivate = function() {
   this.element.classList.remove('flickity-enabled');
   this.element.classList.remove('flickity-rtl');
   // destroy cells
-  for ( var i=0, len = this.cells.length; i < len; i++ ) {
-    var cell = this.cells[i];
+  this.cells.forEach( function( cell ) {
     cell.destroy();
-  }
+  });
   this.unselectSelectedSlide();
   this.element.removeChild( this.viewport );
   // move child elements back into element
