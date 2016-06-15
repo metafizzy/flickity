@@ -30,27 +30,9 @@
   }
 
 }( window, function factory( window, Flickity, TapListener, utils ) {
-
 'use strict';
 
-// ----- inline SVG support ----- //
-
 var svgURI = 'http://www.w3.org/2000/svg';
-
-// only check on demand, not on script load
-var supportsInlineSVG = ( function() {
-  var supports;
-  function checkSupport() {
-    if ( supports !== undefined ) {
-      return supports;
-    }
-    var div = document.createElement('div');
-    div.innerHTML = '<svg/>';
-    supports = ( div.firstChild && div.firstChild.namespaceURI ) == svgURI;
-    return supports;
-  }
-  return checkSupport;
-})();
 
 // -------------------------- PrevNextButton -------------------------- //
 
@@ -79,16 +61,9 @@ PrevNextButton.prototype._create = function() {
 
   element.setAttribute( 'aria-label', this.isPrevious ? 'previous' : 'next' );
 
-  Flickity.setUnselectable( element );
   // create arrow
-  if ( supportsInlineSVG() ) {
-    var svg = this.createSVG();
-    element.appendChild( svg );
-  } else {
-    // SVG not supported, set button text
-    this.setArrowText();
-    element.className += ' no-svg';
-  }
+  var svg = this.createSVG();
+  element.appendChild( svg );
   // update on select
   this.parent.on( 'cellSelect', function() {
     this.update();
@@ -149,12 +124,6 @@ function getArrowMovements( shape ) {
     ' Z';
 }
 
-PrevNextButton.prototype.setArrowText = function() {
-  var parentOptions = this.parent.options;
-  var arrowText = this.isLeft ? parentOptions.leftArrowText : parentOptions.rightArrowText;
-  utils.setText( this.element, arrowText );
-};
-
 PrevNextButton.prototype.onTap = function() {
   if ( !this.isEnabled ) {
     return;
@@ -214,8 +183,6 @@ PrevNextButton.prototype.destroy = function() {
 
 utils.extend( Flickity.defaults, {
   prevNextButtons: true,
-  leftArrowText: '‹',
-  rightArrowText: '›',
   arrowShape: {
     x0: 10,
     x1: 60, y1: 50,

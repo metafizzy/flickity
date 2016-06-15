@@ -46,7 +46,6 @@ PageDots.prototype._create = function() {
   // create holder element
   this.holder = document.createElement('ol');
   this.holder.className = 'flickity-page-dots';
-  Flickity.setUnselectable( this.holder );
   // create dots, array of elements
   this.dots = [];
   // update on select

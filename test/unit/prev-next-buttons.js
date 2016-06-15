@@ -12,11 +12,6 @@ QUnit.test( 'prev-next-buttons', function( assert ) {
   assert.equal( flkty.nextButton.element, nextElem, 'next button element matches nextButton.element' );
   assert.ok( prevElem.disabled, 'previous button is disabled at first index' );
 
-  var isIE8 = 'attachEvent' in window;
-  // cannot focus disabled button in IE8
-  if ( isIE8 ) {
-    prevElem.disabled = false;
-  }
   prevElem.focus();
   prevElem.click();
   assert.equal( flkty.selectedIndex, 0, 'selectedIndex still at 0' );
