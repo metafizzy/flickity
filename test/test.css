@@ -37,3 +37,12 @@ body {
   display: block;
   max-height: 100px;
 }
+
+#group-cells .cell { width: 100px; }
+#group-cells .cell--width2 { width: 200px; }
+#group-cells .cell--width3 { width: 300px; }
+#group-cells .cell--width4 { width: 400px; }
+
+#group-cells.is-expanded { width: 600px; }
+
+#group-cells .cell:nth-child(2n) { background: #09F; }
