@@ -122,12 +122,13 @@ Flickity.prototype.remove = function( elems ) {
 
 // updates when cells are added or removed
 Flickity.prototype._cellAddedRemoved = function( changedCellIndex, selectedIndexDelta ) {
+  // TODO this math isn't perfect with grouped slides
   selectedIndexDelta = selectedIndexDelta || 0;
   this.selectedIndex += selectedIndexDelta;
-  this.selectedIndex = Math.max( 0, Math.min( this.cells.length - 1, this.selectedIndex ) );
+  this.selectedIndex = Math.max( 0, Math.min( this.slides.length - 1, this.selectedIndex ) );
 
-  this.emitEvent( 'cellAddedRemoved', [ changedCellIndex, selectedIndexDelta ] );
   this.cellChange( changedCellIndex, true );
+  this.emitEvent( 'cellAddedRemoved', [ changedCellIndex, selectedIndexDelta ] );
 };
 
 /**

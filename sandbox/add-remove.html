@@ -125,6 +125,7 @@
 <script src="../bower_components/fizzy-ui-utils/utils.js"></script>
 
 <script src="../js/cell.js"></script>
+<script src="../js/slide.js"></script>
 <script src="../js/animate.js"></script>
 <script src="../js/flickity.js"></script>
 <script src="../js/drag.js"></script>
@@ -135,7 +136,6 @@
 
 <script>
 
-var utils = fizzyUIUtils;
 var cellCount = 6;
 
 function randInt( num ) {
@@ -154,11 +154,11 @@ function makeCell() {
   var cell = document.createElement('div');
   cell.className = 'cell ' + getRandom( widthClasses ) + ' ' + getRandom( nClasses );
   var b = document.createElement('b');
-  utils.setText( b, ++cellCount );
+  b.textContent = ++cellCount;
   cell.appendChild( b );
   var removeButton = document.createElement('button');
   removeButton.className = 'remove-button';
-  utils.setText( removeButton, '×' );
+  removeButton.textContent = '×';
   cell.appendChild( removeButton );
   return cell;
 }
@@ -204,19 +204,15 @@ function onAppendClick( event ) {
   flkty.append([ makeCell(), makeCell(), makeCell() ]);
 }
 
-window.onload = function() {
-
-  var demos = document.querySelectorAll('.demo');
-  for ( var i=0, len = demos.length; i < len; i++ ) {
-    var demo = demos[i];
-    eventie.bind( demo.querySelector('.container'), 'click', onContainerClick );
-    eventie.bind( demo.querySelector('.prepend-button'), 'click', onPrependClick );
-    eventie.bind( demo.querySelector('.insert-button'), 'click', onInsertClick );
-    eventie.bind( demo.querySelector('.append-button'), 'click', onAppendClick );
-  }
-
-};
-
+// init
+var demos = document.querySelectorAll('.demo');
+for ( var i=0, len = demos.length; i < len; i++ ) {
+  var demo = demos[i];
+  eventie.bind( demo.querySelector('.container'), 'click', onContainerClick );
+  eventie.bind( demo.querySelector('.prepend-button'), 'click', onPrependClick );
+  eventie.bind( demo.querySelector('.insert-button'), 'click', onInsertClick );
+  eventie.bind( demo.querySelector('.append-button'), 'click', onAppendClick );
+}
 
 </script>
 
