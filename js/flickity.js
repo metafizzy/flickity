@@ -104,10 +104,11 @@ Flickity.defaults = {
 // hash of methods triggered on _create()
 Flickity.createMethods = [];
 
+var proto = Flickity.prototype;
 // inherit EventEmitter
-utils.extend( Flickity.prototype, EvEmitter.prototype );
+utils.extend( proto, EvEmitter.prototype );
 
-Flickity.prototype._create = function() {
+proto._create = function() {
   // add id for Flickity.data
   var id = this.guid = ++GUID;
   this.element.flickityGUID = id; // expando
@@ -147,11 +148,11 @@ Flickity.prototype._create = function() {
  * set options
  * @param {Object} opts
  */
-Flickity.prototype.option = function( opts ) {
+proto.option = function( opts ) {
   utils.extend( this.options, opts );
 };
 
-Flickity.prototype.activate = function() {
+proto.activate = function() {
   if ( this.isActive ) {
     return;
   }
@@ -195,7 +196,7 @@ Flickity.prototype.activate = function() {
 };
 
 // slider positions the cells
-Flickity.prototype._createSlider = function() {
+proto._createSlider = function() {
   // slider element does all the positioning
   var slider = document.createElement('div');
   slider.className = 'flickity-slider';
@@ -203,12 +204,12 @@ Flickity.prototype._createSlider = function() {
   this.slider = slider;
 };
 
-Flickity.prototype._filterFindCellElements = function( elems ) {
+proto._filterFindCellElements = function( elems ) {
   return utils.filterFindElements( elems, this.options.cellSelector );
 };
 
 // goes through all children
-Flickity.prototype.reloadCells = function() {
+proto.reloadCells = function() {
   // collection of item elements
   this.cells = this._makeCells( this.slider.children );
   this.positionCells();
@@ -221,7 +222,7 @@ Flickity.prototype.reloadCells = function() {
  * @param {Array or NodeList or HTMLElement} elems
  * @returns {Array} items - collection of new Flickity Cells
  */
-Flickity.prototype._makeCells = function( elems ) {
+proto._makeCells = function( elems ) {
   var cellElems = this._filterFindCellElements( elems );
 
   // create new Flickity for collection
@@ -232,16 +233,16 @@ Flickity.prototype._makeCells = function( elems ) {
   return cells;
 };
 
-Flickity.prototype.getLastCell = function() {
+proto.getLastCell = function() {
   return this.cells[ this.cells.length - 1 ];
 };
 
-Flickity.prototype.getLastSlide = function() {
+proto.getLastSlide = function() {
   return this.slides[ this.slides.length - 1 ];
 };
 
 // positions all cells
-Flickity.prototype.positionCells = function() {
+proto.positionCells = function() {
   // size all cells
   this._sizeCells( this.cells );
   // position all cells
@@ -252,7 +253,7 @@ Flickity.prototype.positionCells = function() {
  * position certain cells
  * @param {Integer} index - which cell to start with
  */
-Flickity.prototype._positionCells = function( index ) {
+proto._positionCells = function( index ) {
   index = index || 0;
   // also measure maxCellHeight
   // start 0 if positioning all cells
@@ -282,7 +283,7 @@ Flickity.prototype._positionCells = function( index ) {
  * cell.getSize() on multiple cells
  * @param {Array} cells
  */
-Flickity.prototype._sizeCells = function( cells ) {
+proto._sizeCells = function( cells ) {
   cells.forEach( function( cell ) {
     cell.getSize();
   });
@@ -290,7 +291,7 @@ Flickity.prototype._sizeCells = function( cells ) {
 
 // --------------------------  -------------------------- //
 
-Flickity.prototype.updateSlides = function() {
+proto.updateSlides = function() {
   this.slides = [];
   if ( !this.cells.length ) {
     return;
@@ -328,7 +329,7 @@ Flickity.prototype.updateSlides = function() {
   slide.updateTarget();
 };
 
-Flickity.prototype._getCanCellFit = function() {
+proto._getCanCellFit = function() {
   var groupCells = this.options.groupCells;
   if ( !groupCells ) {
     return function() {
@@ -352,13 +353,13 @@ Flickity.prototype._getCanCellFit = function() {
 };
 
 // alias _init for jQuery plugin .flickity()
-Flickity.prototype._init =
-Flickity.prototype.reposition = function() {
+proto._init =
+proto.reposition = function() {
   this.positionCells();
   this.positionSliderAtSelected();
 };
 
-Flickity.prototype.getSize = function() {
+proto.getSize = function() {
   this.size = getSize( this.element );
   this.setCellAlign();
   this.cursorPosition = this.size.innerWidth * this.cellAlign;
@@ -380,18 +381,18 @@ var cellAlignShorthands = {
   }
 };
 
-Flickity.prototype.setCellAlign = function() {
+proto.setCellAlign = function() {
   var shorthand = cellAlignShorthands[ this.options.cellAlign ];
   this.cellAlign = shorthand ? shorthand[ this.originSide ] : this.options.cellAlign;
 };
 
-Flickity.prototype.setGallerySize = function() {
+proto.setGallerySize = function() {
   if ( this.options.setGallerySize ) {
     this.viewport.style.height = this.maxCellHeight + 'px';
   }
 };
 
-Flickity.prototype._getWrapShiftCells = function() {
+proto._getWrapShiftCells = function() {
   // only for wrap-around
   if ( !this.options.wrapAround ) {
     return;
@@ -411,7 +412,7 @@ Flickity.prototype._getWrapShiftCells = function() {
   this.afterShiftCells = this._getGapCells( gapX, 0, 1 );
 };
 
-Flickity.prototype._getGapCells = function( gapX, cellIndex, increment ) {
+proto._getGapCells = function( gapX, cellIndex, increment ) {
   // keep adding cells until the cover the initial gap
   var cells = [];
   while ( gapX > 0 ) {
@@ -429,7 +430,7 @@ Flickity.prototype._getGapCells = function( gapX, cellIndex, increment ) {
 // ----- contain ----- //
 
 // contain cell targets so no excess sliding
-Flickity.prototype._containSlides = function() {
+proto._containSlides = function() {
   if ( !this.options.contain || this.options.wrapAround || !this.cells.length ) {
     return;
   }
@@ -463,7 +464,7 @@ Flickity.prototype._containSlides = function() {
  * @param {Event} event - original event
  * @param {Array} args - extra arguments
  */
-Flickity.prototype.dispatchEvent = function( type, event, args ) {
+proto.dispatchEvent = function( type, event, args ) {
   var emitArgs = [ event ].concat( args );
   this.emitEvent( type, emitArgs );
 
@@ -487,7 +488,7 @@ Flickity.prototype.dispatchEvent = function( type, event, args ) {
  * @param {Boolean} isWrap - will wrap-around to last/first if at the end
  * @param {Boolean} isInstant - will immediately set position at selected cell
  */
-Flickity.prototype.select = function( index, isWrap, isInstant ) {
+proto.select = function( index, isWrap, isInstant ) {
   if ( !this.isActive ) {
     return;
   }
@@ -520,15 +521,15 @@ Flickity.prototype.select = function( index, isWrap, isInstant ) {
   this.dispatchEvent('cellSelect');
 };
 
-Flickity.prototype.previous = function( isWrap ) {
+proto.previous = function( isWrap ) {
   this.select( this.selectedIndex - 1, isWrap );
 };
 
-Flickity.prototype.next = function( isWrap ) {
+proto.next = function( isWrap ) {
   this.select( this.selectedIndex + 1, isWrap );
 };
 
-Flickity.prototype.updateSelectedSlide = function() {
+proto.updateSelectedSlide = function() {
   // unselect previous selected slide
   this.unselectSelectedSlide();
   // update new selected slide
@@ -542,7 +543,7 @@ Flickity.prototype.updateSelectedSlide = function() {
   this.selectedElement = this.selectedElements[0];
 };
 
-Flickity.prototype.unselectSelectedSlide = function() {
+proto.unselectSelectedSlide = function() {
   if ( this.selectedSlide ) {
     this.selectedSlide.unselect();
   }
@@ -552,7 +553,7 @@ Flickity.prototype.unselectSelectedSlide = function() {
  * select slide from number or cell element
  * @param {Element or Number} elem
  */
-Flickity.prototype.selectCell = function( value, isWrap, isInstant ) {
+proto.selectCell = function( value, isWrap, isInstant ) {
   // get cell
   var cell = typeof value == 'number' ? this.cells[ value ] :
     this.getCell( value );
@@ -574,7 +575,7 @@ Flickity.prototype.selectCell = function( value, isWrap, isInstant ) {
  * @param {Element} elem
  * @returns {Flickity.Cell} item
  */
-Flickity.prototype.getCell = function( elem ) {
+proto.getCell = function( elem ) {
   // loop through cells to get the one that matches
   for ( var i=0; i < this.cells.length; i++ ) {
     var cell = this.cells[i];
@@ -589,7 +590,7 @@ Flickity.prototype.getCell = function( elem ) {
  * @param {Element, Array, NodeList} elems
  * @returns {Array} cells - Flickity.Cells
  */
-Flickity.prototype.getCells = function( elems ) {
+proto.getCells = function( elems ) {
   elems = utils.makeArray( elems );
   var cells = [];
   elems.forEach( function( elem ) {
@@ -605,7 +606,7 @@ Flickity.prototype.getCells = function( elems ) {
  * get cell elements
  * @returns {Array} cellElems
  */
-Flickity.prototype.getCellElements = function() {
+proto.getCellElements = function() {
   return this.cells.map( function( cell ) {
     return cell.element;
   });
@@ -616,7 +617,7 @@ Flickity.prototype.getCellElements = function() {
  * @param {Element} elem
  * @returns {Flickit.Cell} cell
  */
-Flickity.prototype.getParentCell = function( elem ) {
+proto.getParentCell = function( elem ) {
   // first check if elem is cell
   var cell = this.getCell( elem );
   if ( cell ) {
@@ -633,7 +634,7 @@ Flickity.prototype.getParentCell = function( elem ) {
  * @param {Integer} index - index of cell to start
  * @returns {Array} cells - array of Flickity.Cells
  */
-Flickity.prototype.getAdjacentCellElements = function( adjCount, index ) {
+proto.getAdjacentCellElements = function( adjCount, index ) {
   if ( !adjCount ) {
     return [ this.selectedElement ];
   }
@@ -657,24 +658,24 @@ Flickity.prototype.getAdjacentCellElements = function( adjCount, index ) {
 
 // -------------------------- events -------------------------- //
 
-Flickity.prototype.uiChange = function() {
+proto.uiChange = function() {
   this.emitEvent('uiChange');
 };
 
-Flickity.prototype.childUIPointerDown = function( event ) {
+proto.childUIPointerDown = function( event ) {
   this.emitEvent( 'childUIPointerDown', [ event ] );
 };
 
 // ----- resize ----- //
 
-Flickity.prototype.onresize = function() {
+proto.onresize = function() {
   this.watchCSS();
   this.resize();
 };
 
 utils.debounceMethod( Flickity, 'onresize', 150 );
 
-Flickity.prototype.resize = function() {
+proto.resize = function() {
   if ( !this.isActive ) {
     return;
   }
@@ -689,12 +690,12 @@ Flickity.prototype.resize = function() {
   this.emitEvent('resize');
   // update selected index for group slides, instant
   // TODO: position can be lost between groups of various numbers
-  var selectedElement = this.selectedElements && this.selectedElements[0]
+  var selectedElement = this.selectedElements && this.selectedElements[0];
   this.selectCell( selectedElement, false, true );
 };
 
 // watches the :after property, activates/deactivates
-Flickity.prototype.watchCSS = function() {
+proto.watchCSS = function() {
   var watchOption = this.options.watchCSS;
   if ( !watchOption ) {
     return;
@@ -712,7 +713,7 @@ Flickity.prototype.watchCSS = function() {
 // ----- keydown ----- //
 
 // go previous/next if left/right keys pressed
-Flickity.prototype.onkeydown = function( event ) {
+proto.onkeydown = function( event ) {
   // only work if element is in focus
   if ( !this.options.accessibility ||
     ( document.activeElement && document.activeElement != this.element ) ) {
@@ -735,7 +736,7 @@ Flickity.prototype.onkeydown = function( event ) {
 // -------------------------- destroy -------------------------- //
 
 // deactivate all Flickity functionality, but keep stuff available
-Flickity.prototype.deactivate = function() {
+proto.deactivate = function() {
   if ( !this.isActive ) {
     return;
   }
@@ -758,7 +759,7 @@ Flickity.prototype.deactivate = function() {
   this.emitEvent('deactivate');
 };
 
-Flickity.prototype.destroy = function() {
+proto.destroy = function() {
   this.deactivate();
   window.removeEventListener( 'resize', this );
   this.emitEvent('destroy');
@@ -771,7 +772,7 @@ Flickity.prototype.destroy = function() {
 
 // -------------------------- prototype -------------------------- //
 
-utils.extend( Flickity.prototype, animatePrototype );
+utils.extend( proto, animatePrototype );
 
 // -------------------------- extras -------------------------- //
 

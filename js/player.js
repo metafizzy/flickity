@@ -130,8 +130,9 @@ utils.extend( Flickity.defaults, {
 });
 
 Flickity.createMethods.push('_createPlayer');
+var proto = Flickity.prototype;
 
-Flickity.prototype._createPlayer = function() {
+proto._createPlayer = function() {
   this.player = new Player( this );
 
   this.on( 'activate', this.activatePlayer );
@@ -140,7 +141,7 @@ Flickity.prototype._createPlayer = function() {
   this.on( 'deactivate', this.deactivatePlayer );
 };
 
-Flickity.prototype.activatePlayer = function() {
+proto.activatePlayer = function() {
   if ( !this.options.autoPlay ) {
     return;
   }
@@ -150,23 +151,23 @@ Flickity.prototype.activatePlayer = function() {
 
 // Player API, don't hate the ... thanks I know where the door is
 
-Flickity.prototype.playPlayer = function() {
+proto.playPlayer = function() {
   this.player.play();
 };
 
-Flickity.prototype.stopPlayer = function() {
+proto.stopPlayer = function() {
   this.player.stop();
 };
 
-Flickity.prototype.pausePlayer = function() {
+proto.pausePlayer = function() {
   this.player.pause();
 };
 
-Flickity.prototype.unpausePlayer = function() {
+proto.unpausePlayer = function() {
   this.player.unpause();
 };
 
-Flickity.prototype.deactivatePlayer = function() {
+proto.deactivatePlayer = function() {
   this.player.stop();
   this.element.removeEventListener( 'mouseenter', this );
 };
@@ -174,7 +175,7 @@ Flickity.prototype.deactivatePlayer = function() {
 // ----- mouseenter/leave ----- //
 
 // pause auto-play on hover
-Flickity.prototype.onmouseenter = function() {
+proto.onmouseenter = function() {
   if ( !this.options.pauseAutoPlayOnHover ) {
     return;
   }
@@ -183,7 +184,7 @@ Flickity.prototype.onmouseenter = function() {
 };
 
 // resume auto-play on hover off
-Flickity.prototype.onmouseleave = function() {
+proto.onmouseleave = function() {
   this.player.unpause();
   this.element.removeEventListener( 'mouseleave', this );
 };

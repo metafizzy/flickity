@@ -150,7 +150,9 @@ utils.extend( Flickity.defaults, {
 
 Flickity.createMethods.push('_createPageDots');
 
-Flickity.prototype._createPageDots = function() {
+var proto = Flickity.prototype;
+
+proto._createPageDots = function() {
   if ( !this.options.pageDots ) {
     return;
   }
@@ -160,15 +162,15 @@ Flickity.prototype._createPageDots = function() {
   this.on( 'deactivate', this.deactivatePageDots );
 };
 
-Flickity.prototype.activatePageDots = function() {
+proto.activatePageDots = function() {
   this.pageDots.activate();
 };
 
-Flickity.prototype.onCellAddedRemovedPageDots = function() {
+proto.onCellAddedRemovedPageDots = function() {
   this.pageDots.setDots();
 };
 
-Flickity.prototype.deactivatePageDots = function() {
+proto.deactivatePageDots = function() {
   this.pageDots.deactivate();
 };
 

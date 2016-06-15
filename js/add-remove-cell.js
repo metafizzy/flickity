@@ -41,12 +41,14 @@ function getCellsFragment( cells ) {
 
 // -------------------------- add/remove cell prototype -------------------------- //
 
+var proto = Flickity.prototype;
+
 /**
  * Insert, prepend, or append cells
  * @param {Element, Array, NodeList} elems
  * @param {Integer} index
  */
-Flickity.prototype.insert = function( elems, index ) {
+proto.insert = function( elems, index ) {
   var cells = this._makeCells( elems );
   if ( !cells || !cells.length ) {
     return;
@@ -83,11 +85,11 @@ Flickity.prototype.insert = function( elems, index ) {
   this._cellAddedRemoved( index, selectedIndexDelta );
 };
 
-Flickity.prototype.append = function( elems ) {
+proto.append = function( elems ) {
   this.insert( elems, this.cells.length );
 };
 
-Flickity.prototype.prepend = function( elems ) {
+proto.prepend = function( elems ) {
   this.insert( elems, 0 );
 };
 
@@ -95,7 +97,7 @@ Flickity.prototype.prepend = function( elems ) {
  * Remove cells
  * @param {Element, Array, NodeList} elems
  */
-Flickity.prototype.remove = function( elems ) {
+proto.remove = function( elems ) {
   var cells = this.getCells( elems );
   var selectedIndexDelta = 0;
   var len = cells.length;
@@ -121,7 +123,7 @@ Flickity.prototype.remove = function( elems ) {
 };
 
 // updates when cells are added or removed
-Flickity.prototype._cellAddedRemoved = function( changedCellIndex, selectedIndexDelta ) {
+proto._cellAddedRemoved = function( changedCellIndex, selectedIndexDelta ) {
   // TODO this math isn't perfect with grouped slides
   selectedIndexDelta = selectedIndexDelta || 0;
   this.selectedIndex += selectedIndexDelta;
@@ -135,7 +137,7 @@ Flickity.prototype._cellAddedRemoved = function( changedCellIndex, selectedIndex
  * logic to be run after a cell's size changes
  * @param {Element} elem - cell's element
  */
-Flickity.prototype.cellSizeChange = function( elem ) {
+proto.cellSizeChange = function( elem ) {
   var cell = this.getCell( elem );
   if ( !cell ) {
     return;
@@ -150,7 +152,7 @@ Flickity.prototype.cellSizeChange = function( elem ) {
  * logic any time a cell is changed: added, removed, or size changed
  * @param {Integer} changedCellIndex - index of the changed cell, optional
  */
-Flickity.prototype.cellChange = function( changedCellIndex, isPositioningSlider ) {
+proto.cellChange = function( changedCellIndex, isPositioningSlider ) {
   var prevSlideableWidth = this.slideableWidth;
   this._positionCells( changedCellIndex );
   this._getWrapShiftCells();

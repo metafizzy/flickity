@@ -225,8 +225,9 @@ utils.extend( Flickity.defaults, {
 });
 
 Flickity.createMethods.push('_createPrevNextButtons');
+var proto = Flickity.prototype;
 
-Flickity.prototype._createPrevNextButtons = function() {
+proto._createPrevNextButtons = function() {
   if ( !this.options.prevNextButtons ) {
     return;
   }
@@ -237,13 +238,13 @@ Flickity.prototype._createPrevNextButtons = function() {
   this.on( 'activate', this.activatePrevNextButtons );
 };
 
-Flickity.prototype.activatePrevNextButtons = function() {
+proto.activatePrevNextButtons = function() {
   this.prevButton.activate();
   this.nextButton.activate();
   this.on( 'deactivate', this.deactivatePrevNextButtons );
 };
 
-Flickity.prototype.deactivatePrevNextButtons = function() {
+proto.deactivatePrevNextButtons = function() {
   this.prevButton.deactivate();
   this.nextButton.deactivate();
   this.off( 'deactivate', this.deactivatePrevNextButtons );

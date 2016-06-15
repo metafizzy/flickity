@@ -25,7 +25,9 @@ function Slide( parent ) {
   this.height = 0;
 }
 
-Slide.prototype.addCell = function( cell ) {
+var proto = Slide.prototype;
+
+proto.addCell = function( cell ) {
   this.cells.push( cell );
   this.outerWidth += cell.size.outerWidth;
   this.height = Math.max( cell.size.outerHeight, this.height );
@@ -37,7 +39,7 @@ Slide.prototype.addCell = function( cell ) {
   }
 };
 
-Slide.prototype.updateTarget = function() {
+proto.updateTarget = function() {
   var endMargin = this.isOriginLeft ? 'marginRight' : 'marginLeft';
   var lastCell = this.getLastCell();
   var lastMargin = lastCell ? lastCell.size[ endMargin ] : 0;
@@ -45,25 +47,25 @@ Slide.prototype.updateTarget = function() {
   this.target = this.x + this.firstMargin + slideWidth * this.parent.cellAlign;
 };
 
-Slide.prototype.getLastCell = function() {
+proto.getLastCell = function() {
   return this.cells[ this.cells.length - 1 ];
 };
 
-Slide.prototype.select = function() {
+proto.select = function() {
   this.changeSelectedClass('add');
 };
 
-Slide.prototype.unselect = function() {
+proto.unselect = function() {
   this.changeSelectedClass('remove');
 };
 
-Slide.prototype.changeSelectedClass = function( method ) {
+proto.changeSelectedClass = function( method ) {
   this.cells.forEach( function( cell ) {
     cell.element.classList[ method ]('is-selected');
   });
 };
 
-Slide.prototype.getCellElements = function() {
+proto.getCellElements = function() {
   return this.cells.map( function( cell ) {
     return cell.element;
   });

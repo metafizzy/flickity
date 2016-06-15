@@ -30,12 +30,13 @@
 'use strict';
 
 Flickity.createMethods.push('_createLazyload');
+var proto = Flickity.prototype;
 
-Flickity.prototype._createLazyload = function() {
+proto._createLazyload = function() {
   this.on( 'cellSelect', this.lazyLoad );
 };
 
-Flickity.prototype.lazyLoad = function() {
+proto.lazyLoad = function() {
   var lazyLoad = this.options.lazyLoad;
   if ( !lazyLoad ) {
     return;

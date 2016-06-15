@@ -35,9 +35,11 @@ function Cell( elem, parent ) {
   this.create();
 }
 
+var proto = Cell.prototype;
+
 var isIE8 = 'attachEvent' in window;
 
-Cell.prototype.create = function() {
+proto.create = function() {
   this.element.style.position = 'absolute';
   // IE8 prevent child from changing focus http://stackoverflow.com/a/17525223/182183
   if ( isIE8 ) {
@@ -47,32 +49,31 @@ Cell.prototype.create = function() {
   this.shift = 0;
 };
 
-Cell.prototype.destroy = function() {
+proto.destroy = function() {
   // reset style
   this.element.style.position = '';
   var side = this.parent.originSide;
   this.element.style[ side ] = '';
 };
 
-Cell.prototype.getSize = function() {
+proto.getSize = function() {
   this.size = getSize( this.element );
 };
 
-Cell.prototype.setPosition = function( x ) {
+proto.setPosition = function( x ) {
   this.x = x;
   this.updateTarget();
   this.renderPosition( x );
 };
 
-Cell.prototype.updateTarget =
 // setDefaultTarget v1 method, backwards compatibility, remove in v3
-Cell.prototype.setDefaultTarget = function() {
+proto.updateTarget = proto.setDefaultTarget = function() {
   var marginProperty = this.parent.originSide == 'left' ? 'marginLeft' : 'marginRight';
   this.target = this.x + this.size[ marginProperty ] +
     this.size.width * this.parent.cellAlign;
 };
 
-Cell.prototype.renderPosition = function( x ) {
+proto.renderPosition = function( x ) {
   // render position of cell with in slider
   var side = this.parent.originSide;
   this.element.style[ side ] = this.parent.getPositionValue( x );
@@ -81,12 +82,12 @@ Cell.prototype.renderPosition = function( x ) {
 /**
  * @param {Integer} factor - 0, 1, or -1
 **/
-Cell.prototype.wrapShift = function( shift ) {
+proto.wrapShift = function( shift ) {
   this.shift = shift;
   this.renderPosition( this.x + this.parent.slideableWidth * shift );
 };
 
-Cell.prototype.remove = function() {
+proto.remove = function() {
   this.element.parentNode.removeChild( this.element );
 };
 
