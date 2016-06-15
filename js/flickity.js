@@ -559,6 +559,25 @@ Flickity.prototype.unselectSelectedSlide = function() {
   }
 };
 
+/**
+ * select slide from number or cell element
+ * @param {Element or Number} elem
+ */
+Flickity.prototype.selectCell = function( value ) {
+  // get cell
+  var cell = typeof value == 'number' ? this.cells[ value ] :
+    this.getCell( value );
+  // select slide that has cell
+  for ( var i=0; cell && i < this.slides.length; i++ ) {
+    var slide = this.slides[i];
+    var index = slide.cells.indexOf( cell );
+    if ( index != -1 ) {
+      this.select( i );
+      return;
+    }
+  }
+};
+
 // -------------------------- get cells -------------------------- //
 
 /**
