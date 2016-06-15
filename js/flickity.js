@@ -251,7 +251,6 @@ Flickity.prototype.positionCells = function() {
   this._sizeCells( this.cells );
   // position all cells
   this._positionCells( 0 );
-  this.updateSlides();
 };
 
 /**
@@ -278,8 +277,10 @@ Flickity.prototype._positionCells = function( index ) {
   }
   // keep track of cellX for wrap-around
   this.slideableWidth = cellX;
+  // slides
+  this.updateSlides();
   // contain cell target
-  this._containCells();
+  this._containSlides();
 };
 
 /**
@@ -297,6 +298,10 @@ Flickity.prototype._sizeCells = function( cells ) {
 
 Flickity.prototype.updateSlides = function() {
   this.slides = [];
+  if ( !this.cells.length ) {
+    return;
+  }
+
   var slide = new Slide( this );
   this.slides.push( slide );
   var isOriginLeft = this.originSide == 'left';
@@ -431,30 +436,29 @@ Flickity.prototype._getGapCells = function( gapX, cellIndex, increment ) {
 // ----- contain ----- //
 
 // contain cell targets so no excess sliding
-Flickity.prototype._containCells = function() {
+Flickity.prototype._containSlides = function() {
   if ( !this.options.contain || this.options.wrapAround || !this.cells.length ) {
     return;
   }
-  var startMargin = this.options.rightToLeft ? 'marginRight' : 'marginLeft';
-  var endMargin = this.options.rightToLeft ? 'marginLeft' : 'marginRight';
-  var firstCellStartMargin = this.cells[0].size[ startMargin ];
-  var lastCell = this.getLastCell();
-  var contentWidth = this.slideableWidth - lastCell.size[ endMargin ];
-  var endLimit = contentWidth - this.size.innerWidth * ( 1 - this.cellAlign );
+  var isRightToLeft = this.options.rightToLeft;
+  var beginMargin = isRightToLeft ? 'marginRight' : 'marginLeft';
+  var endMargin = isRightToLeft ? 'marginLeft' : 'marginRight';
+  var contentWidth = this.slideableWidth - this.getLastCell().size[ endMargin ];
   // content is less than gallery size
   var isContentSmaller = contentWidth < this.size.innerWidth;
+  // bounds
+  var beginBound = this.cursorPosition + this.cells[0].size[ beginMargin ];
+  var endBound = contentWidth - this.size.innerWidth * ( 1 - this.cellAlign );
   // contain each cell target
-  for ( var i=0, len = this.cells.length; i < len; i++ ) {
-    var cell = this.cells[i];
-    // update cell target
-    cell.updateTarget();
+  for ( var i=0; i < this.slides.length; i++ ) {
+    var slide = this.slides[i];
     if ( isContentSmaller ) {
       // all cells fit inside gallery
-      cell.target = contentWidth * this.cellAlign;
+      slide.target = contentWidth * this.cellAlign;
     } else {
       // contain to bounds
-      cell.target = Math.max( cell.target, this.cursorPosition + firstCellStartMargin );
-      cell.target = Math.min( cell.target, endLimit );
+      slide.target = Math.max( slide.target, beginBound );
+      slide.target = Math.min( slide.target, endBound );
     }
   }
 };

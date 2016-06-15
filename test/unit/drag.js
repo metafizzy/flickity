@@ -62,7 +62,7 @@ function getDoNextDragTest( done ) {
 function getFakeDragTest( args ) {
   var assert = args.assert;
   var flkty = args.flickity;
-  var msgCell = 'cell[' + args.index + ']';
+  var msgCell = 'slide[' + args.index + ']';
 
   return function fakeDragTest() {
     var selectMsg = ( args.message ? args.message + '. ' : '' ) + 'selected ' + msgCell;
@@ -71,10 +71,10 @@ function getFakeDragTest( args ) {
     });
 
     var settleMsg = ( args.message ? args.message + '. ' : '' ) + 'settled ' + msgCell;
-    var target = flkty.cells[ args.index ].target;
+    var target = flkty.slides[ args.index ].target;
     flkty.once( 'settle', function() {
       assert.equal( Math.round( -flkty.x ), Math.round( target ), settleMsg );
-      args.callback();
+      setTimeout( args.callback );
     });
 
     fakeDrag( args.flickity, args.dragPositions );
@@ -121,7 +121,7 @@ test( 'drag', function( assert ) {
       flkty.once( 'staticClick', function() {
         ok( true, 'staticClick fired on non-drag');
         equal( flkty.selectedIndex, 2, 'selected index still at 2 after click' );
-        doNextDragTest();
+        setTimeout( doNextDragTest );
       });
       fakeDrag( flkty, [ 0, 1, 0, -2, -1 ] );
     },
@@ -129,7 +129,7 @@ test( 'drag', function( assert ) {
     function() {
       flkty.once( 'settle', function() {
         equal( flkty.selectedIndex, 2, 'move out then back. same cell' );
-        doNextDragTest();
+        setTimeout( doNextDragTest );
       });
       fakeDrag( flkty, [ 0, 10, 20, 30, 20 ] );
     },

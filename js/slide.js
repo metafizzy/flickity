@@ -24,7 +24,8 @@ Slide.prototype.addCell = function( cell ) {
 
 Slide.prototype.updateTarget = function() {
   var endMargin = this.isOriginLeft ? 'marginRight' : 'marginLeft';
-  var lastMargin = this.getLastCell().size[ endMargin ];
+  var lastCell = this.getLastCell();
+  var lastMargin = lastCell ? lastCell.size[ endMargin ] : 0;
   var slideWidth = this.outerWidth - ( this.firstMargin + lastMargin );
   this.target = this.x + this.firstMargin + slideWidth * this.parent.cellAlign;
 };
