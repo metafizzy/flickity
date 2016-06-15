@@ -13,9 +13,10 @@
       'get-size/get-size',
       'fizzy-ui-utils/utils',
       './cell',
+      './slide',
       './animate'
-    ], function( EvEmitter, getSize, utils, Cell, animatePrototype ) {
-      return factory( window, EvEmitter, getSize, utils, Cell, animatePrototype );
+    ], function( EvEmitter, getSize, utils, Cell, Slide, animatePrototype ) {
+      return factory( window, EvEmitter, getSize, utils, Cell, Slide, animatePrototype );
     });
   } else if ( typeof exports == 'object' ) {
     // CommonJS
@@ -25,6 +26,7 @@
       require('get-size'),
       require('fizzy-ui-utils'),
       require('./cell'),
+      require('./slide'),
       require('./animate')
     );
   } else {
@@ -37,12 +39,13 @@
       window.getSize,
       window.fizzyUIUtils,
       _Flickity.Cell,
+      _Flickity.Slide,
       _Flickity.animatePrototype
     );
   }
 
 }( window, function factory( window, EvEmitter, getSize,
-  utils, Cell, animatePrototype ) {
+  utils, Cell, Slide, animatePrototype ) {
 
 'use strict';
 
