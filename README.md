@@ -71,6 +71,9 @@ var flky = new Flickity( '.gallery', {
   accessibility: true,
   // enable keyboard navigation, pressing left & right keys
 
+  adaptiveHeight: false,
+  // set carousel height to the selected slide
+
   autoPlay: false,
   // advances to the next cell
   // if true, default is 3 seconds

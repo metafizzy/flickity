@@ -87,6 +87,7 @@ function Flickity( element, options ) {
 
 Flickity.defaults = {
   accessibility: true,
+  // adaptiveHeight: false,
   cellAlign: 'center',
   // cellSelector: undefined,
   // contain: false,
@@ -387,7 +388,9 @@ proto.setCellAlign = function() {
 
 proto.setGallerySize = function() {
   if ( this.options.setGallerySize ) {
-    this.viewport.style.height = this.maxCellHeight + 'px';
+    var height = this.options.adaptiveHeight && this.selectedSlide ?
+      this.selectedSlide.height : this.maxCellHeight;
+    this.viewport.style.height = height + 'px';
   }
 };
 
@@ -508,6 +511,10 @@ proto.select = function( index, isWrap, isInstant ) {
   } else {
     this.startAnimation();
   }
+  if ( this.options.adaptiveHeight ) {
+    this.setGallerySize();
+  }
+
   this.dispatchEvent('cellSelect');
 };
 
