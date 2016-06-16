@@ -264,7 +264,7 @@ proto._positionCells = function( index ) {
     cellX = startCell.x + startCell.size.outerWidth;
   }
   var cell;
-  for ( var len = this.cells.length, i=index; i < len; i++ ) {
+  for ( var i=index; i < this.cells.length; i++ ) {
     cell = this.cells[i];
     cell.setPosition( cellX );
     cellX += cell.size.outerWidth;
@@ -658,28 +658,28 @@ proto.getParentCell = function( elem ) {
 };
 
 /**
- * get cells adjacent to a cell
- * @param {Integer} adjCount - number of adjacent cells
- * @param {Integer} index - index of cell to start
+ * get cells adjacent to a slide
+ * @param {Integer} adjCount - number of adjacent slides
+ * @param {Integer} index - index of slide to start
  * @returns {Array} cells - array of Flickity.Cells
  */
 proto.getAdjacentCellElements = function( adjCount, index ) {
   if ( !adjCount ) {
-    return [ this.selectedElement ];
+    return this.selectedSlide.getCellElements();
   }
   index = index === undefined ? this.selectedIndex : index;
 
-  var len = this.cells.length;
+  var len = this.slides.length;
   if ( 1 + ( adjCount * 2 ) >= len ) {
     return this.getCellElements();
   }
 
   var cellElems = [];
   for ( var i = index - adjCount; i <= index + adjCount ; i++ ) {
-    var cellIndex = this.options.wrapAround ? utils.modulo( i, len ) : i;
-    var cell = this.cells[ cellIndex ];
-    if ( cell ) {
-      cellElems.push( cell.element );
+    var slideIndex = this.options.wrapAround ? utils.modulo( i, len ) : i;
+    var slide = this.slides[ slideIndex ];
+    if ( slide ) {
+      cellElems = cellElems.concat( slide.getCellElements() );
     }
   }
   return cellElems;

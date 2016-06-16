@@ -130,6 +130,7 @@ proto._cellAddedRemoved = function( changedCellIndex, selectedIndexDelta ) {
   this.selectedIndex = Math.max( 0, Math.min( this.slides.length - 1, this.selectedIndex ) );
 
   this.cellChange( changedCellIndex, true );
+  // backwards compatibility
   this.emitEvent( 'cellAddedRemoved', [ changedCellIndex, selectedIndexDelta ] );
 };
 
@@ -157,6 +158,7 @@ proto.cellChange = function( changedCellIndex, isPositioningSlider ) {
   this._positionCells( changedCellIndex );
   this._getWrapShiftCells();
   this.setGallerySize();
+  this.emitEvent( 'cellChange', [ changedCellIndex ] );
   // position slider
   if ( this.options.freeScroll ) {
     // shift x by change in slideableWidth

@@ -48,20 +48,9 @@ PageDots.prototype._create = function() {
   this.holder.className = 'flickity-page-dots';
   // create dots, array of elements
   this.dots = [];
-  // update on select
-  this.parent.on( 'select', function() {
-    this.updateSelected();
-  }.bind( this ));
-  // set dots on resize
-  this.parent.on( 'resize', function() {
-    this.setDots();
-  }.bind( this ));
   // tap
   this.on( 'tap', this.onTap );
-  // pointerDown
-  this.on( 'pointerDown', function onPointerDown( button, event ) {
-    this.parent.childUIPointerDown( event );
-  }.bind( this ));
+
 };
 
 PageDots.prototype.activate = function() {
@@ -156,16 +145,27 @@ proto._createPageDots = function() {
     return;
   }
   this.pageDots = new PageDots( this );
+  // events
   this.on( 'activate', this.activatePageDots );
-  this.on( 'cellAddedRemoved', this.onCellAddedRemovedPageDots );
+  this.on( 'select', this.updateSelectedPageDots );
+  this.on( 'cellChange', this.updatePageDots );
+  this.on( 'resize', this.updatePageDots );
   this.on( 'deactivate', this.deactivatePageDots );
+
+  this.pageDots.on( 'pointerDown', function( button, event ) {
+    this.childUIPointerDown( event );
+  }.bind( this ));
 };
 
 proto.activatePageDots = function() {
   this.pageDots.activate();
 };
 
-proto.onCellAddedRemovedPageDots = function() {
+proto.updateSelectedPageDots = function() {
+  this.pageDots.updateSelected();
+};
+
+proto.updatePageDots = function() {
   this.pageDots.setDots();
 };
 
