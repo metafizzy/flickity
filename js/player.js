@@ -111,7 +111,7 @@ Player.prototype.pause = function() {
 };
 
 Player.prototype.unpause = function() {
-  // re-start play if in unpaused state
+  // re-start play if paused
   if ( this.state == 'paused' ) {
     this.play();
   }

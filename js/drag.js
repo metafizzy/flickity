@@ -221,7 +221,10 @@ proto.dragEnd = function( event, pointer ) {
   delete this.previousDragX;
   // apply selection
   // TODO refactor this, selecting here feels weird
+  // HACK, set flag so dragging stays in correct direction
+  this.isDragSelect = this.options.wrapAround;
   this.select( index );
+  delete this.isDragSelect;
   this.dispatchEvent( 'dragEnd', event, [ pointer ] );
 };
 

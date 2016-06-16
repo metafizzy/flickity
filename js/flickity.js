@@ -121,7 +121,6 @@ proto._create = function() {
   // initial physics properties
   this.x = 0;
   this.velocity = 0;
-  this.accel = 0;
   this.originSide = this.options.rightToLeft ? 'right' : 'left';
   // create viewport & slider
   this.viewport = document.createElement('div');
@@ -538,9 +537,9 @@ proto._wrapSelect = function( index ) {
   var delta = Math.abs( wrapIndex - this.selectedIndex );
   var backWrapDelta = Math.abs( ( wrapIndex + len ) - this.selectedIndex );
   var forewardWrapDelta = Math.abs( ( wrapIndex - len ) - this.selectedIndex );
-  if ( backWrapDelta < delta ) {
+  if ( !this.isDragSelect && backWrapDelta < delta ) {
     index += len;
-  } else if ( forewardWrapDelta < delta ) {
+  } else if ( !this.isDragSelect && forewardWrapDelta < delta ) {
     index -= len;
   }
   // wrap position so slider is within normal area
