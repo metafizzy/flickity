@@ -30,39 +30,19 @@
 
 // -------------------------- requestAnimationFrame -------------------------- //
 
-// https://gist.github.com/1866474
+// get rAF, prefixed, if present
+var requestAnimationFrame = window.requestAnimationFrame ||
+  window.webkitRequestAnimationFrame;
 
+// fallback to setTimeout
 var lastTime = 0;
-var prefixes = 'webkit moz ms o'.split(' ');
-// get unprefixed rAF and cAF, if present
-var requestAnimationFrame = window.requestAnimationFrame;
-var cancelAnimationFrame = window.cancelAnimationFrame;
-// loop through vendor prefixes and get prefixed rAF and cAF
-var prefix;
-for( var i = 0; i < prefixes.length; i++ ) {
-  if ( requestAnimationFrame && cancelAnimationFrame ) {
-    break;
-  }
-  prefix = prefixes[i];
-  requestAnimationFrame = requestAnimationFrame || window[ prefix + 'RequestAnimationFrame' ];
-  cancelAnimationFrame  = cancelAnimationFrame  || window[ prefix + 'CancelAnimationFrame' ] ||
-                            window[ prefix + 'CancelRequestAnimationFrame' ];
-}
-
-// fallback to setTimeout and clearTimeout if either request/cancel is not supported
-if ( !requestAnimationFrame || !cancelAnimationFrame )  {
+if ( !requestAnimationFrame )  {
   requestAnimationFrame = function( callback ) {
     var currTime = new Date().getTime();
     var timeToCall = Math.max( 0, 16 - ( currTime - lastTime ) );
-    var id = window.setTimeout( function() {
-      callback( currTime + timeToCall );
-    }, timeToCall );
+    var id = setTimeout( callback, timeToCall );
     lastTime = currTime + timeToCall;
     return id;
-  };
-
-  cancelAnimationFrame = function( id ) {
-    window.clearTimeout( id );
   };
 }
 
@@ -96,15 +76,6 @@ proto.animate = function() {
       _this.animate();
     });
   }
-
-  /** /
-  // log animation frame rate
-  var now = new Date();
-  if ( this.then ) {
-    console.log( ~~( 1000 / (now-this.then)) + 'fps' )
-  }
-  this.then = now;
-  /**/
 };
 
 
@@ -206,21 +177,17 @@ proto._unshiftCells = function( cells ) {
 // -------------------------- physics -------------------------- //
 
 proto.integratePhysics = function() {
-  this.velocity += this.accel;
   this.x += this.velocity;
   this.velocity *= this.getFrictionFactor();
-  // reset acceleration
-  this.accel = 0;
 };
 
 proto.applyForce = function( force ) {
-  this.accel += force;
+  this.velocity += force;
 };
 
 proto.getFrictionFactor = function() {
   return 1 - this.options[ this.isFreeScrolling ? 'freeScrollFriction' : 'friction' ];
 };
-
 
 proto.getRestingPosition = function() {
   // my thanks to Steven Wittens, who simplified this math greatly
