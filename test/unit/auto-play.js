@@ -32,23 +32,23 @@ QUnit.test( 'auto play', function( assert ) {
             'auto-played to ' + flkty.selectedIndex );
         } else if ( selectCount == 5 ) {
           // HACK do async, should be able to stop after a tick
-          flkty.off( 'cellSelect', onSelect );
+          flkty.off( 'select', onSelect );
           nextTest();
         }
       };
-      flkty.on( 'cellSelect', onSelect );
+      flkty.on( 'select', onSelect );
     },
     // pause & unpause
     function() {
       function onPauseSelect() {
         assert.ok( false, 'player ticked during pause' );
       }
-      flkty.on( 'cellSelect', onPauseSelect );
+      flkty.on( 'select', onPauseSelect );
       flkty.pausePlayer();
       setTimeout( function() {
         assert.ok( true, 'player did not tick during pause' );
-        flkty.off( 'cellSelect', onPauseSelect );
-        flkty.once( 'cellSelect', function() {
+        flkty.off( 'select', onPauseSelect );
+        flkty.once( 'select', function() {
           assert.ok( true, 'player resumed after unpausing' );
           nextTest();
         });
@@ -63,7 +63,7 @@ QUnit.test( 'auto play', function( assert ) {
       }
       flkty.stopPlayer();
       setTimeout( function() {
-        flkty.off( 'cellSelect', onSelect );
+        flkty.off( 'select', onSelect );
         assert.equal( ticks, 0, 'no ticks after stopped' );
         nextTest();
       }, testDelay * 2 );
@@ -75,11 +75,11 @@ QUnit.test( 'auto play', function( assert ) {
         ticks++;
       }
       flkty.stopPlayer();
-      flkty.on( 'cellSelect', onSelect );
+      flkty.on( 'select', onSelect );
       flkty.playPlayer();
       flkty.playPlayer();
       setTimeout( function() {
-        flkty.off( 'cellSelect', onSelect );
+        flkty.off( 'select', onSelect );
         assert.equal( ticks, 1, 'only one tick after double playPlayer' );
         nextTest();
       }, testDelay );

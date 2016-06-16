@@ -65,7 +65,7 @@ PrevNextButton.prototype._create = function() {
   var svg = this.createSVG();
   element.appendChild( svg );
   // update on select
-  this.parent.on( 'cellSelect', function() {
+  this.parent.on( 'select', function() {
     this.update();
   }.bind( this ));
   // tap

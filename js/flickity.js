@@ -471,15 +471,21 @@ proto.dispatchEvent = function( type, event, args ) {
   this.emitEvent( type, emitArgs );
 
   if ( jQuery && this.$element ) {
+    // default trigger with type if no event
+    var $event = type; // un-name-spaced, v1 compat; remove in v3
+    var $nsEvent = 'flickity.' + type; // name-spaced event
     if ( event ) {
       // create jQuery event
-      var $event = jQuery.Event( event );
+      $event = jQuery.Event( event );
       $event.type = type;
-      this.$element.trigger( $event, args );
-    } else {
-      // just trigger with type if no event available
-      this.$element.trigger( type, args );
+      $nsEvent = jQuery.Event( event );
+      $nsEvent.type = 'flickity.' + type;
     }
+    if ( type != 'select' ) {
+      // do not trigger native select event
+      this.$element.trigger( $event, args );
+    }
+    this.$element.trigger( $nsEvent, args );
   }
 };
 
@@ -515,6 +521,8 @@ proto.select = function( index, isWrap, isInstant ) {
     this.setGallerySize();
   }
 
+  this.dispatchEvent('select');
+  // old v1 event name, remove in v3
   this.dispatchEvent('cellSelect');
 };
 

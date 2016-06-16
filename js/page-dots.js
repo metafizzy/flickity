@@ -49,7 +49,7 @@ PageDots.prototype._create = function() {
   // create dots, array of elements
   this.dots = [];
   // update on select
-  this.parent.on( 'cellSelect', function() {
+  this.parent.on( 'select', function() {
     this.updateSelected();
   }.bind( this ));
   // set dots on resize
