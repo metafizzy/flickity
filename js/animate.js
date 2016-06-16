@@ -206,14 +206,10 @@ proto.applyDragForce = function() {
 
 proto.applySelectedAttraction = function() {
   // do not attract if pointer down or no cells
-  var len = this.cells.length;
-  if ( this.isPointerDown || this.isFreeScrolling || !len ) {
+  if ( this.isPointerDown || this.isFreeScrolling || !this.cells.length ) {
     return;
   }
-  var slide = this.slides[ this.selectedIndex ];
-  var wrap = this.options.wrapAround && len > 1 ?
-    this.slideableWidth * Math.floor( this.selectedIndex / len ) : 0;
-  var distance = ( slide.target + wrap ) * -1 - this.x;
+  var distance = this.selectedSlide.target * -1 - this.x;
   var force = distance * this.options.selectedAttraction;
   this.applyForce( force );
 };
