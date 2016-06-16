@@ -492,20 +492,11 @@ proto.select = function( index, isWrap, isInstant ) {
     return;
   }
   index = parseInt( index, 10 );
-  // wrap position so slider is within normal area
-  var len = this.slides.length;
-  if ( this.options.wrapAround && len > 1 ) {
-    if ( index < 0 ) {
-      this.x -= this.slideableWidth;
-    } else if ( index >= len ) {
-      this.x += this.slideableWidth;
-    }
-  }
+  this._wrapSelect( index );
 
   if ( this.options.wrapAround || isWrap ) {
-    index = utils.modulo( index, len );
+    index = utils.modulo( index, this.slides.length );
   }
-
   // bail if invalid index
   if ( !this.slides[ index ] ) {
     return;
@@ -518,6 +509,31 @@ proto.select = function( index, isWrap, isInstant ) {
     this.startAnimation();
   }
   this.dispatchEvent('cellSelect');
+};
+
+// wraps position for wrapAround, to move to closest slide. #113
+proto._wrapSelect = function( index ) {
+  var len = this.slides.length;
+  var isWrapping = this.options.wrapAround && len > 1;
+  if ( !isWrapping ) {
+    return index;
+  }
+  var wrapIndex = utils.modulo( index, len );
+  // go to shortest
+  var delta = Math.abs( wrapIndex - this.selectedIndex );
+  var backWrapDelta = Math.abs( ( wrapIndex + len ) - this.selectedIndex );
+  var forewardWrapDelta = Math.abs( ( wrapIndex - len ) - this.selectedIndex );
+  if ( backWrapDelta < delta ) {
+    index += len;
+  } else if ( forewardWrapDelta < delta ) {
+    index -= len;
+  }
+  // wrap position so slider is within normal area
+  if ( index < 0 ) {
+    this.x -= this.slideableWidth;
+  } else if ( index >= len ) {
+    this.x += this.slideableWidth;
+  }
 };
 
 proto.previous = function( isWrap ) {
