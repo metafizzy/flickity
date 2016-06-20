@@ -274,8 +274,10 @@ proto._positionCells = function( index ) {
   this.slideableWidth = cellX;
   // slides
   this.updateSlides();
-  // contain cell target
+  // contain slides target
   this._containSlides();
+  // update slidesWidth
+  this.slidesWidth = this.getLastSlide().target - this.slides[0].target;
 };
 
 /**

@@ -97,7 +97,6 @@ proto.positionSlider = function() {
   }
 
   x = x + this.cursorPosition;
-
   // reverse if right-to-left and using transform
   x = this.options.rightToLeft && transformProperty ? -x : x;
 
@@ -110,6 +109,13 @@ proto.positionSlider = function() {
       'translate3d(' + value + ',0,0)' : 'translateX(' + value + ')';
   } else {
     this.slider.style[ this.originSide ] = value;
+  }
+  // scroll event
+  var firstSlide = this.slides[0];
+  if ( firstSlide ) {
+    var positionX = -this.x - firstSlide.target;
+    var progress = positionX / this.slidesWidth;
+    this.emitEvent( 'scroll', [ progress, positionX ] );
   }
 };
 
