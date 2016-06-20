@@ -93,6 +93,7 @@ Flickity.defaults = {
   // contain: false,
   freeScrollFriction: 0.075, // friction when free-scrolling
   friction: 0.28, // friction when selecting
+  namespaceJQueryEvents: true,
   // initialIndex: 0,
   percentPosition: true,
   resize: true,
@@ -473,20 +474,15 @@ proto.dispatchEvent = function( type, event, args ) {
 
   if ( jQuery && this.$element ) {
     // default trigger with type if no event
-    var $event = type; // un-name-spaced, v1 compat; remove in v3
-    var $nsEvent = 'flickity.' + type; // name-spaced event
+    type += this.options.namespaceJQueryEvents ? '.flickity' : '';
+    var $event = type;
     if ( event ) {
       // create jQuery event
-      $event = jQuery.Event( event );
-      $event.type = type;
-      $nsEvent = jQuery.Event( event );
-      $nsEvent.type = 'flickity.' + type;
+      var jQEvent = jQuery.Event( event );
+      jQEvent.type = type;
+      $event = jQEvent;
     }
-    if ( type != 'select' ) {
-      // do not trigger native select event
-      this.$element.trigger( $event, args );
-    }
-    this.$element.trigger( $nsEvent, args );
+    this.$element.trigger( $event, args );
   }
 };
 
