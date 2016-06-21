@@ -264,9 +264,9 @@ proto._positionCells = function( index ) {
     var startCell = this.cells[ index - 1 ];
     cellX = startCell.x + startCell.size.outerWidth;
   }
-  var cell;
-  for ( var i=index; i < this.cells.length; i++ ) {
-    cell = this.cells[i];
+  var len = this.cells.length;
+  for ( var i=index; i < len; i++ ) {
+    var cell = this.cells[i];
     cell.setPosition( cellX );
     cellX += cell.size.outerWidth;
     this.maxCellHeight = Math.max( cell.size.outerHeight, this.maxCellHeight );
@@ -278,7 +278,7 @@ proto._positionCells = function( index ) {
   // contain slides target
   this._containSlides();
   // update slidesWidth
-  this.slidesWidth = this.getLastSlide().target - this.slides[0].target;
+  this.slidesWidth = len ? this.getLastSlide().target - this.slides[0].target : 0;
 };
 
 /**
