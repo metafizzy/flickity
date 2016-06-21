@@ -14,10 +14,10 @@
     "unidragger": "^2.1.0"
   },
   "devDependencies": {
-    "flickity-imagesloaded": "~1.0.0",
-    "flickity-as-nav-for": "~1.0.0",
+    "flickity-imagesloaded": "v2",
+    "flickity-as-nav-for": "v2",
     "jquery-bridget": "^2.0.0",
-    "qunit": "~1.16.0"
+    "qunit": "^2.0.0"
   },
   "moduleType": [
     "amd",
