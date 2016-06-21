@@ -109,6 +109,18 @@ html { overflow-y: scroll; }
   background: hsla(60, 100%, 50%, 0.4);
 }
 
+
+/* ----  ---- */
+
+.image-carousel__cell {
+  margin-right: 20px;
+  overflow: hidden;
+}
+
+.image-carousel__cell img {
+  display: block;
+  height: 400px;
+}
 </style>
 
 </head>
@@ -158,8 +170,19 @@ html { overflow-y: scroll; }
     <div class="parallax__layer__cell parallax__layer__cell--fg"></div>
   </div>
 
-
 </div>
+
+<div class="image-carousel">
+   <div class="image-carousel__cell"><img src="http://i.imgur.com/r8p3Xgq.jpg" /></div>
+   <div class="image-carousel__cell"><img src="http://i.imgur.com/q9zO6tw.jpg" /></div>
+   <div class="image-carousel__cell"><img src="http://i.imgur.com/bwy74ok.jpg" /></div>
+   <div class="image-carousel__cell"><img src="http://i.imgur.com/hODreXI.jpg" /></div>
+   <div class="image-carousel__cell"><img src="http://i.imgur.com/UORFJ3w.jpg" /></div>
+   <div class="image-carousel__cell"><img src="http://i.imgur.com/bAZWoqx.jpg" /></div>
+   <div class="image-carousel__cell"><img src="http://i.imgur.com/PgmEBSB.jpg" /></div>
+   <div class="image-carousel__cell"><img src="http://i.imgur.com/aboaFoB.jpg" /></div>
+   <div class="image-carousel__cell"><img src="http://i.imgur.com/LkmcILl.jpg" /></div>
+ </div>
 
 <script src="../bower_components/get-size/get-size.js"></script>
 <script src="../bower_components/desandro-matches-selector/matches-selector.js"></script>
@@ -218,6 +241,27 @@ paraFlkty.on( 'scroll', function( progress ) {
 });
 
 paraFlkty.reposition();
+
+// -----  ----- //
+
+
+var imgFlkty = new Flickity( '.image-carousel', {
+});
+
+window.onload = function() {
+  imgFlkty.reposition();
+}
+
+var imgs = document.querySelectorAll('.image-carousel img');
+
+imgFlkty.on( 'scroll', function( progress ) {
+  imgFlkty.slides.forEach( function( slide, i ) {
+    var img = imgs[i];
+    var x = ( slide.target + imgFlkty.x ) * -0.333;
+    img.style.transform = 'translateX( ' + x  + 'px)';
+  });
+});
+
 </script>
 
 </body>

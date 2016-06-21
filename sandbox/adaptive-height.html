@@ -40,6 +40,13 @@ html { overflow-y: scroll; }
 .carousel__cell--height3 { height: 300px; }
 .carousel__cell--height4 { height: 400px; }
 
+/* ----  ---- */
+
+.image-carousel img {
+  display: block;
+  width: 50%;
+}
+
 </style>
 
 </head>
@@ -59,6 +66,18 @@ html { overflow-y: scroll; }
   <div class="carousel__cell carousel__cell--height3">8</div>
   <div class="carousel__cell">9</div>
   <div class="carousel__cell">10</div>
+</div>
+
+<div class="carousel image-carousel">
+  <img src="http://i.imgur.com/r8p3Xgq.jpg" />
+  <img src="http://i.imgur.com/q9zO6tw.jpg" />
+  <img src="http://i.imgur.com/bwy74ok.jpg" />
+  <img src="http://i.imgur.com/bAZWoqx.jpg" />
+  <img src="http://i.imgur.com/PgmEBSB.jpg" />
+  <img src="http://i.imgur.com/aboaFoB.jpg" />
+  <img src="http://i.imgur.com/LkmcILl.jpg" />
+  <img src="http://i.imgur.com/hODreXI.jpg" />
+  <img src="http://i.imgur.com/UORFJ3w.jpg" />
 </div>
 
 <script src="../bower_components/get-size/get-size.js"></script>
@@ -86,6 +105,14 @@ var flkty = new Flickity( '.carousel1', {
   // groupCells: true,
   // wrapAround: true,
 });
+
+var imgFlkty = new Flickity( '.image-carousel', {
+  adaptiveHeight: true
+});
+
+window.onload = function() {
+  imgFlkty.reposition();
+}
 </script>
 
 </body>
