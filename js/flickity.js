@@ -582,8 +582,17 @@ proto.unselectSelectedSlide = function() {
  */
 proto.selectCell = function( value, isWrap, isInstant ) {
   // get cell
-  var cell = typeof value == 'number' ? this.cells[ value ] :
-    this.getCell( value );
+  var cell;
+  if ( typeof value == 'number' ) {
+    cell = this.cells[ value ];
+  } else {
+    // use string as selector
+    if ( typeof value == 'string' ) {
+      value = this.element.querySelector( value );
+    }
+    // get cell from element
+    cell = this.getCell( value );
+  }
   // select slide that has cell
   for ( var i=0; cell && i < this.slides.length; i++ ) {
     var slide = this.slides[i];

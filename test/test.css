@@ -64,3 +64,7 @@ body {
 #adaptive-height .cell--height4 { height: 400px; }
 
 #adaptive-height .cell:nth-child(2n) { background: #09F; }
+
+/* ---- select-cell ---- */
+
+#select-cell .cell { width: 33.33%; }
