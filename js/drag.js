@@ -88,9 +88,27 @@ proto._childUIPointerDownDrag = function( event ) {
 
 // -------------------------- pointer events -------------------------- //
 
+// nodes that have text fields
+var cursorNodes = {
+  TEXTAREA: true,
+  INPUT: true,
+};
+
+// input types that do not have text fields
+var clickTypes = {
+  radio: true,
+  checkbox: true,
+  button: true,
+  submit: true,
+  image: true,
+  file: true,
+};
+
 proto.pointerDown = function( event, pointer ) {
-  // dismiss range sliders
-  if ( event.target.nodeName == 'INPUT' && event.target.type == 'range' ) {
+  // dismiss inputs with text fields. #404
+  var isCursorInput = cursorNodes[ event.target.nodeName ] &&
+    !clickTypes[ event.target.type ];
+  if ( isCursorInput ) {
     // reset pointerDown logic
     this.isPointerDown = false;
     delete this.pointerIdentifier;
