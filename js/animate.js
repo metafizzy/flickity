@@ -123,8 +123,7 @@ proto.positionSliderAtSelected = function() {
   if ( !this.cells.length ) {
     return;
   }
-  var selectedCell = this.slides[ this.selectedIndex ];
-  this.x = -selectedCell.target;
+  this.x = -this.selectedSlide.target;
   this.positionSlider();
 };
 

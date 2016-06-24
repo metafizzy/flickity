@@ -329,6 +329,8 @@ proto.updateSlides = function() {
   }, this );
   // last slide
   slide.updateTarget();
+  // update .selectedSlide
+  this.updateSelectedSlide();
 };
 
 proto._getCanCellFit = function() {
@@ -557,10 +559,15 @@ proto.next = function( isWrap ) {
 };
 
 proto.updateSelectedSlide = function() {
+  var slide = this.slides[ this.selectedIndex ];
+  // selectedIndex could be outside of slides, if triggered before resize()
+  if ( !slide ) {
+    return;
+  }
   // unselect previous selected slide
   this.unselectSelectedSlide();
   // update new selected slide
-  var slide = this.selectedSlide = this.slides[ this.selectedIndex ];
+  this.selectedSlide = slide;
   slide.select();
   this.selectedCells = slide.cells;
   this.selectedElements = slide.getCellElements();
