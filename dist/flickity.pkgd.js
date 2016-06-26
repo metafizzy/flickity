@@ -2344,7 +2344,7 @@ Flickity.prototype.dispatchEvent = function( type, event, args ) {
  * @param {Boolean} isWrap - will wrap-around to last/first if at the end
  * @param {Boolean} isInstant - will immediately set position at selected cell
  */
-Flickity.prototype.select = function( index, isWrap, isInstant ) {
+Flickity.prototype.select = function( index, isWrap, isInstant, args ) {
   if ( !this.isActive ) {
     return;
   }
@@ -2373,15 +2373,15 @@ Flickity.prototype.select = function( index, isWrap, isInstant ) {
   } else {
     this.startAnimation();
   }
-  this.dispatchEvent('cellSelect');
+  this.dispatchEvent('cellSelect', undefined, args);
 };
 
-Flickity.prototype.previous = function( isWrap ) {
-  this.select( this.selectedIndex - 1, isWrap );
+Flickity.prototype.previous = function( isWrap, args ) {
+  this.select( this.selectedIndex - 1, isWrap, false, args );
 };
 
-Flickity.prototype.next = function( isWrap ) {
-  this.select( this.selectedIndex + 1, isWrap );
+Flickity.prototype.next = function( isWrap, args ) {
+  this.select( this.selectedIndex + 1, isWrap, false, args );
 };
 
 Flickity.prototype.setSelectedCell = function() {
