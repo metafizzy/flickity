@@ -53,6 +53,9 @@ function Player( parent ) {
     this.onVisibilityChange = function() {
       this.visibilityChange();
     }.bind( this );
+    this.onVisibilityPlay = function() {
+      this.visibilityPlay();
+    }.bind( this );
   }
 }
 
@@ -63,6 +66,13 @@ Player.prototype.play = function() {
   if ( this.state == 'playing' ) {
     return;
   }
+  // do not play if page is hidden, start playing when page is visible
+  var isPageHidden = document[ hiddenProperty ];
+  if ( visibilityEvent && isPageHidden ) {
+    document.addEventListener( visibilityEvent, this.onVisibilityPlay );
+    return;
+  }
+
   this.state = 'playing';
   // listen to visibility change
   if ( visibilityEvent ) {
@@ -119,8 +129,13 @@ Player.prototype.unpause = function() {
 
 // pause if page visibility is hidden, unpause if visible
 Player.prototype.visibilityChange = function() {
-  var isHidden = document[ hiddenProperty ];
-  this[ isHidden ? 'pause' : 'unpause' ]();
+  var isPageHidden = document[ hiddenProperty ];
+  this[ isPageHidden ? 'pause' : 'unpause' ]();
+};
+
+Player.prototype.visibilityPlay = function() {
+  this.play();
+  document.removeEventListener( visibilityEvent, this.onVisibilityPlay );
 };
 
 // -------------------------- Flickity -------------------------- //
