@@ -196,6 +196,12 @@ proto.dragStart = function( event, pointer ) {
   this.dispatchEvent( 'dragStart', event, [ pointer ] );
 };
 
+proto.pointerMove = function( event, pointer ) {
+  var moveVector = this._dragPointerMove( event, pointer );
+  this.dispatchEvent( 'pointerMove', event, [ pointer, moveVector ] );
+  this._dragMove( event, pointer, moveVector );
+};
+
 proto.dragMove = function( event, pointer, moveVector ) {
   event.preventDefault();
 
