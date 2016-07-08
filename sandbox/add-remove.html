@@ -115,19 +115,32 @@
   </div>
 
 
-<script src="../bower_components/get-style-property/get-style-property.js"></script>
+  <h2>reposition</h2>
+
+  <div id="reposition">
+    <div class="container variable-width">
+      <div class="cell w2"><b>1</b></div>
+      <div class="cell"><b>2</b></div>
+      <div class="cell w3"><b>3</b></div>
+      <div class="cell"><b>4</b></div>
+      <div class="cell"><b>5</b></div>
+      <div class="cell w2"><b>6</b></div>
+      <div class="cell"><b>7</b></div>
+      <div class="cell w2"><b>8</b></div>
+      <div class="cell"><b>9</b></div>
+    </div>
+  </div>
+
 <script src="../bower_components/get-size/get-size.js"></script>
-<script src="../bower_components/matches-selector/matches-selector.js"></script>
-<script src="../bower_components/eventEmitter/EventEmitter.js"></script>
-<script src="../bower_components/eventie/eventie.js"></script>
-<script src="../bower_components/doc-ready/doc-ready.js"></script>
-<script src="../bower_components/classie/classie.js"></script>
+<script src="../bower_components/desandro-matches-selector/matches-selector.js"></script>
+<script src="../bower_components/ev-emitter/ev-emitter.js"></script>
 <script src="../bower_components/unipointer/unipointer.js"></script>
 <script src="../bower_components/unidragger/unidragger.js"></script>
 <script src="../bower_components/tap-listener/tap-listener.js"></script>
 <script src="../bower_components/fizzy-ui-utils/utils.js"></script>
 
 <script src="../js/cell.js"></script>
+<script src="../js/slide.js"></script>
 <script src="../js/animate.js"></script>
 <script src="../js/flickity.js"></script>
 <script src="../js/drag.js"></script>
@@ -138,7 +151,6 @@
 
 <script>
 
-var utils = fizzyUIUtils;
 var cellCount = 6;
 
 function randInt( num ) {
@@ -157,11 +169,11 @@ function makeCell() {
   var cell = document.createElement('div');
   cell.className = 'cell ' + getRandom( widthClasses ) + ' ' + getRandom( nClasses );
   var b = document.createElement('b');
-  utils.setText( b, ++cellCount );
+  b.textContent = ++cellCount;
   cell.appendChild( b );
   var removeButton = document.createElement('button');
   removeButton.className = 'remove-button';
-  utils.setText( removeButton, '×' );
+  removeButton.textContent = '×';
   cell.appendChild( removeButton );
   return cell;
 }
@@ -207,18 +219,31 @@ function onAppendClick( event ) {
   flkty.append([ makeCell(), makeCell(), makeCell() ]);
 }
 
-window.onload = function() {
+// init
+var demos = document.querySelectorAll('.demo');
+for ( var i=0; i < demos.length; i++ ) {
+  var demo = demos[i];
+  demo.querySelector('.container').addEventListener( 'click', onContainerClick );
+  demo.querySelector('.prepend-button').addEventListener( 'click', onPrependClick );
+  demo.querySelector('.insert-button').addEventListener( 'click', onInsertClick );
+  demo.querySelector('.append-button').addEventListener( 'click', onAppendClick );
+}
 
-  var demos = document.querySelectorAll('.demo');
-  for ( var i=0, len = demos.length; i < len; i++ ) {
-    var demo = demos[i];
-    eventie.bind( demo.querySelector('.container'), 'click', onContainerClick );
-    eventie.bind( demo.querySelector('.prepend-button'), 'click', onPrependClick );
-    eventie.bind( demo.querySelector('.insert-button'), 'click', onInsertClick );
-    eventie.bind( demo.querySelector('.append-button'), 'click', onAppendClick );
+// ----- reposition ----- //
+
+(function() {
+  var flkty = new Flickity('#reposition .container');
+  flkty.on( 'staticClick', function( event, pointer, cellElem ) {
+    cellElem.classList.toggle('w3');
+    flkty.reposition();
+  });
+
+  window.mapTargets = function() {
+    return flkty.slides.map( function( slide ) {
+      return ~~slide.target;
+    });
   }
-
-};
+})();
 
 
 </script>

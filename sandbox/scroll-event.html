@@ -1,0 +1,268 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width" />
+
+  <title>scroll event</title>
+
+  <link rel="stylesheet" href="../css/flickity.css" />
+
+<style>
+* { box-sizing: border-box; }
+
+html { overflow-y: scroll; }
+
+.carousel {
+  border: 1px solid;
+  margin-bottom: 40px;
+/*  width: 1000px;*/
+}
+
+.carousel__cell {
+/*  width: 25%;*/
+  width: 32%;
+  height: 200px;
+  background: #BDF;
+  margin-left: 1%;
+  margin-right: 1%;
+  font-size: 40px;
+}
+
+/*.carousel__cell--width2 { width: 40%; }
+.carousel__cell--width3 { width: 80%; }*/
+
+.carousel__cell--width2 { width: 66%; }
+.carousel__cell--width3 { width: 100%; }
+
+.carousel__cell.is-selected {
+  background: #68F;
+}
+
+.progress-bar {
+  height: 10px;
+  width: 0;
+  background: #333;
+}
+
+@media (min-width: 1000px) {
+  /* fit four */
+  .carousel__cell { width: 23.5%; }
+  .carousel__cell--width2 { width: 49%; }
+  .carousel__cell--width3 { width: 74.5%; }
+}
+
+
+
+/* ---- parallax ---- */
+
+.parallax {
+  margin-top: 100px;
+  position: relative;
+  overflow-x: hidden;
+  padding-bottom: 40px;
+}
+
+.parallax__carousel__cell {
+  background: hsla(0, 100%, 50%, 0.4);
+  height: 220px;
+  width: 50%;
+  margin: 40px 5%;
+}
+
+.parallax__layer {
+  position: absolute;
+  left: 0;
+  top: 0;
+}
+
+.parallax__layer--bg {
+  top: 70px;
+  width: 80%;
+  height: 160px;
+}
+
+.parallax__layer--fg {
+  pointer-events: none;
+  width: 125%;
+  height: 300px;
+}
+
+.parallax__layer__cell {
+  position: absolute;
+  width: 50%;
+  margin: 0 5%;
+  height: 100%;
+}
+
+.parallax__layer__cell:nth-child(1) { left: 0%; }
+.parallax__layer__cell:nth-child(2) { left: 60%; }
+.parallax__layer__cell:nth-child(3) { left: 120%; }
+.parallax__layer__cell:nth-child(4) { left: 180%; }
+.parallax__layer__cell:nth-child(5) { left: 240%; }
+
+.parallax__layer__cell--bg {
+  background: hsla(210, 100%, 50%, 0.4);
+}
+
+.parallax__layer__cell--fg {
+  background: hsla(60, 100%, 50%, 0.4);
+}
+
+
+/* ----  ---- */
+
+.image-carousel__cell {
+  margin-right: 20px;
+  overflow: hidden;
+}
+
+.image-carousel__cell img {
+  display: block;
+  height: 400px;
+}
+</style>
+
+</head>
+<body>
+
+  <h1>scroll event</h1>
+
+<div class="carousel carousel1">
+  <div class="carousel__cell carousel__cell--width2">0</div>
+  <div class="carousel__cell">1</div>
+  <div class="carousel__cell">2</div>
+  <div class="carousel__cell carousel__cell--width2">3</div>
+  <div class="carousel__cell carousel__cell--width2">4</div>
+  <div class="carousel__cell">5</div>
+  <div class="carousel__cell">6</div>
+  <div class="carousel__cell">7</div>
+  <div class="carousel__cell carousel__cell--width3">8</div>
+  <div class="carousel__cell">9</div>
+  <div class="carousel__cell">10</div>
+</div>
+
+<div class="progress-bar"></div>
+
+<div class="parallax">
+
+  <div class="parallax__layer parallax__layer--bg">
+    <div class="parallax__layer__cell parallax__layer__cell--bg"></div>
+    <div class="parallax__layer__cell parallax__layer__cell--bg"></div>
+    <div class="parallax__layer__cell parallax__layer__cell--bg"></div>
+    <div class="parallax__layer__cell parallax__layer__cell--bg"></div>
+    <div class="parallax__layer__cell parallax__layer__cell--bg"></div>
+  </div>
+
+  <div class="parallax__carousel">
+    <div class="parallax__carousel__cell"></div>
+    <div class="parallax__carousel__cell"></div>
+    <div class="parallax__carousel__cell"></div>
+    <div class="parallax__carousel__cell"></div>
+    <div class="parallax__carousel__cell"></div>
+  </div>
+
+  <div class="parallax__layer parallax__layer--fg">
+    <div class="parallax__layer__cell parallax__layer__cell--fg"></div>
+    <div class="parallax__layer__cell parallax__layer__cell--fg"></div>
+    <div class="parallax__layer__cell parallax__layer__cell--fg"></div>
+    <div class="parallax__layer__cell parallax__layer__cell--fg"></div>
+    <div class="parallax__layer__cell parallax__layer__cell--fg"></div>
+  </div>
+
+</div>
+
+<div class="image-carousel">
+   <div class="image-carousel__cell"><img src="http://i.imgur.com/r8p3Xgq.jpg" /></div>
+   <div class="image-carousel__cell"><img src="http://i.imgur.com/q9zO6tw.jpg" /></div>
+   <div class="image-carousel__cell"><img src="http://i.imgur.com/bwy74ok.jpg" /></div>
+   <div class="image-carousel__cell"><img src="http://i.imgur.com/hODreXI.jpg" /></div>
+   <div class="image-carousel__cell"><img src="http://i.imgur.com/UORFJ3w.jpg" /></div>
+   <div class="image-carousel__cell"><img src="http://i.imgur.com/bAZWoqx.jpg" /></div>
+   <div class="image-carousel__cell"><img src="http://i.imgur.com/PgmEBSB.jpg" /></div>
+   <div class="image-carousel__cell"><img src="http://i.imgur.com/aboaFoB.jpg" /></div>
+   <div class="image-carousel__cell"><img src="http://i.imgur.com/LkmcILl.jpg" /></div>
+ </div>
+
+<script src="../bower_components/get-size/get-size.js"></script>
+<script src="../bower_components/desandro-matches-selector/matches-selector.js"></script>
+<script src="../bower_components/ev-emitter/ev-emitter.js"></script>
+<script src="../bower_components/unipointer/unipointer.js"></script>
+<script src="../bower_components/unidragger/unidragger.js"></script>
+<script src="../bower_components/tap-listener/tap-listener.js"></script>
+<script src="../bower_components/fizzy-ui-utils/utils.js"></script>
+
+<script src="../js/cell.js"></script>
+<script src="../js/slide.js"></script>
+<script src="../js/animate.js"></script>
+<script src="../js/flickity.js"></script>
+<script src="../js/drag.js"></script>
+<script src="../js/prev-next-button.js"></script>
+<script src="../js/page-dots.js"></script>
+<script src="../js/player.js"></script>
+<script src="../js/add-remove-cell.js"></script>
+<script src="../js/lazyload.js"></script>
+
+<script>
+var flkty = new Flickity( '.carousel1', {
+  initialIndex: 2,
+  // groupCells: true,
+  // wrapAround: true,
+  // cellAlign: 'right'
+});
+
+var progressBar = document.querySelector('.progress-bar');
+
+flkty.on( 'scroll', function( progress ) {
+  console.log( progress );
+  var width = Math.max( 0, Math.min( 1, progress ) );
+  progressBar.style.width = width * 100 + '%';
+});
+
+flkty.reposition();
+
+// -----  ----- //
+
+var paraBG = document.querySelector('.parallax__layer--bg');
+var paraFG = document.querySelector('.parallax__layer--fg');
+
+var paraFlkty = new Flickity( '.parallax__carousel', {
+
+});
+
+var cellRatio = 0.6;
+var bgRatio = 0.8;
+var fgRatio = 1.25;
+
+paraFlkty.on( 'scroll', function( progress ) {
+  // console.log( progress );
+  paraBG.style.left = ( 0.5 - ( 0.5 + progress * 4 ) * cellRatio * bgRatio ) * 100 + '%';
+  paraFG.style.left = ( 0.5 - ( 0.5 + progress * 4 ) * cellRatio * fgRatio ) * 100 + '%';
+});
+
+paraFlkty.reposition();
+
+// -----  ----- //
+
+
+var imgFlkty = new Flickity( '.image-carousel', {
+});
+
+window.onload = function() {
+  imgFlkty.reposition();
+}
+
+var imgs = document.querySelectorAll('.image-carousel img');
+
+imgFlkty.on( 'scroll', function( progress ) {
+  imgFlkty.slides.forEach( function( slide, i ) {
+    var img = imgs[i];
+    var x = ( slide.target + imgFlkty.x ) * -0.333;
+    img.style.transform = 'translateX( ' + x  + 'px)';
+  });
+});
+
+</script>
+
+</body>
+</html>

@@ -1,4 +1,4 @@
-test( 'cellSelector', function() {
+QUnit.test( 'cellSelector', function( assert ) {
   'use strict';
 
   var elem = document.querySelector('#cell-selector');
@@ -19,14 +19,14 @@ test( 'cellSelector', function() {
   // getCellElements()
   var cellElems = flkty.getCellElements();
   var queriedCellElems = elem.querySelectorAll( flkty.options.cellSelector );
-  equal( cellElems.length, flkty.cells.length, 'getCellElements returns corrent number of elements' );
+  assert.equal( cellElems.length, flkty.cells.length, 'getCellElements returns corrent number of elements' );
   for( i=0, len = cellElems.length; i < len; i++ ) {
-    equal( cellElems[i], queriedCellElems[i], 'cell element same as queried cell element' );
+    assert.equal( cellElems[i], queriedCellElems[i], 'cell element same as queried cell element' );
   }
 
-  ok( cellsMatchSelector, 'all cell elements match cellSelector' );
+  assert.ok( cellsMatchSelector, 'all cell elements match cellSelector' );
 
-  equal( notCell1.parentNode, elem, 'notCell1 parent node is still gallery' );
-  equal( notCell2.parentNode, elem, 'notCell2 parent node is still gallery' );
+  assert.equal( notCell1.parentNode, elem, 'notCell1 parent node is still gallery' );
+  assert.equal( notCell2.parentNode, elem, 'notCell2 parent node is still gallery' );
 
 });

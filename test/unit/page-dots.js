@@ -1,5 +1,4 @@
-test( 'pageDots', function() {
-
+QUnit.test( 'pageDots', function( assert ) {
   'use strict';
 
   var elem = document.querySelector('#page-dots');
@@ -8,9 +7,9 @@ test( 'pageDots', function() {
   var dotsHolder = elem.querySelector('.flickity-page-dots');
   var dotsElems = dotsHolder.querySelectorAll('.dot');
 
-  ok( dotsHolder, 'dots holder in DOM' );
-  equal( flkty.pageDots.holder, dotsHolder, 'dots holder element matches flkty.pageDots.holder' );
-  equal( dotsElems.length, flkty.cells.length, 'number of dots matches number of cells' );
+  assert.ok( dotsHolder, 'dots holder in DOM' );
+  assert.equal( flkty.pageDots.holder, dotsHolder, 'dots holder element matches flkty.pageDots.holder' );
+  assert.equal( dotsElems.length, flkty.cells.length, 'number of dots matches number of cells' );
 
   function getSelectedDotIndex() {
     var selectedDot = dotsHolder.querySelector('.is-selected');
@@ -23,12 +22,12 @@ test( 'pageDots', function() {
     return -1;
   }
 
-  equal( getSelectedDotIndex(), 0, 'first dot is selected' );
+  assert.equal( getSelectedDotIndex(), 0, 'first dot is selected' );
   flkty.select( 2 );
-  equal( getSelectedDotIndex(), 2, '3rd dot is selected' );
+  assert.equal( getSelectedDotIndex(), 2, '3rd dot is selected' );
 
   // fake tap
   flkty.pageDots.onTap( { target: dotsElems[4] } );
-  equal( flkty.selectedIndex, 4, 'tap dot selects cell' );
+  assert.equal( flkty.selectedIndex, 4, 'tap dot selects cell' );
 
 });

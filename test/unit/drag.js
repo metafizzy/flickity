@@ -62,19 +62,19 @@ function getDoNextDragTest( done ) {
 function getFakeDragTest( args ) {
   var assert = args.assert;
   var flkty = args.flickity;
-  var msgCell = 'cell[' + args.index + ']';
+  var msgCell = 'slide[' + args.index + ']';
 
   return function fakeDragTest() {
     var selectMsg = ( args.message ? args.message + '. ' : '' ) + 'selected ' + msgCell;
-    flkty.once( 'cellSelect', function() {
+    flkty.once( 'select', function() {
       assert.equal( flkty.selectedIndex, args.index, selectMsg );
     });
 
     var settleMsg = ( args.message ? args.message + '. ' : '' ) + 'settled ' + msgCell;
-    var target = flkty.cells[ args.index ].target;
+    var target = flkty.slides[ args.index ].target;
     flkty.once( 'settle', function() {
       assert.equal( Math.round( -flkty.x ), Math.round( target ), settleMsg );
-      args.callback();
+      setTimeout( args.callback );
     });
 
     fakeDrag( args.flickity, args.dragPositions );
@@ -83,7 +83,7 @@ function getFakeDragTest( args ) {
 
 
 
-test( 'drag', function( assert ) {
+QUnit.test( 'drag', function( assert ) {
   // async test
   var done = assert.async();
 
@@ -119,17 +119,17 @@ test( 'drag', function( assert ) {
     // minimal movement to trigger static click
     function() {
       flkty.once( 'staticClick', function() {
-        ok( true, 'staticClick fired on non-drag');
-        equal( flkty.selectedIndex, 2, 'selected index still at 2 after click' );
-        doNextDragTest();
+        assert.ok( true, 'staticClick fired on non-drag');
+        assert.equal( flkty.selectedIndex, 2, 'selected index still at 2 after click' );
+        setTimeout( doNextDragTest );
       });
       fakeDrag( flkty, [ 0, 1, 0, -2, -1 ] );
     },
     // move out then back to where it started
     function() {
       flkty.once( 'settle', function() {
-        equal( flkty.selectedIndex, 2, 'move out then back. same cell' );
-        doNextDragTest();
+        assert.equal( flkty.selectedIndex, 2, 'move out then back. same cell' );
+        setTimeout( doNextDragTest );
       });
       fakeDrag( flkty, [ 0, 10, 20, 30, 20 ] );
     },
@@ -144,7 +144,7 @@ test( 'drag', function( assert ) {
 
 });
 
-test( 'drag with wrapAround', function( assert ) {
+QUnit.test( 'drag with wrapAround', function( assert ) {
   // async test
   var done = assert.async();
 

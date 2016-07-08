@@ -1,4 +1,4 @@
-test( 'prev-next-buttons', function() {
+QUnit.test( 'prev-next-buttons', function( assert ) {
   'use strict';
 
   var elem = document.querySelector('#prev-next-buttons');
@@ -6,27 +6,22 @@ test( 'prev-next-buttons', function() {
 
   var prevElem = elem.querySelector('.flickity-prev-next-button.previous');
   var nextElem = elem.querySelector('.flickity-prev-next-button.next');
-  ok( prevElem, 'previous button in DOM' );
-  ok( nextElem, 'next button in DOM' );
-  equal( flkty.prevButton.element, prevElem, 'previous button element matches prevButton.element' );
-  equal( flkty.nextButton.element, nextElem, 'next button element matches nextButton.element' );
-  ok( prevElem.disabled, 'previous button is disabled at first index' );
+  assert.ok( prevElem, 'previous button in DOM' );
+  assert.ok( nextElem, 'next button in DOM' );
+  assert.equal( flkty.prevButton.element, prevElem, 'previous button element matches prevButton.element' );
+  assert.equal( flkty.nextButton.element, nextElem, 'next button element matches nextButton.element' );
+  assert.ok( prevElem.disabled, 'previous button is disabled at first index' );
 
-  var isIE8 = 'attachEvent' in window;
-  // cannot focus disabled button in IE8
-  if ( isIE8 ) {
-    prevElem.disabled = false;
-  }
   prevElem.focus();
   prevElem.click();
-  equal( flkty.selectedIndex, 0, 'selectedIndex still at 0' );
+  assert.equal( flkty.selectedIndex, 0, 'selectedIndex still at 0' );
   nextElem.focus();
   nextElem.click();
-  equal( flkty.selectedIndex, 1, 'next button clicked, selectedIndex at 1' );
+  assert.equal( flkty.selectedIndex, 1, 'next button clicked, selectedIndex at 1' );
   prevElem.focus();
   prevElem.click();
-  equal( flkty.selectedIndex, 0, 'previous button clicked, selectedIndex back at 0' );
+  assert.equal( flkty.selectedIndex, 0, 'previous button clicked, selectedIndex back at 0' );
   flkty.select( 5 );
-  ok( nextElem.disabled, 'next button disabled when at last cell' );
+  assert.ok( nextElem.disabled, 'next button disabled when at last cell' );
 
 });

@@ -1,0 +1,218 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width" />
+
+  <title>v2 sizzle</title>
+
+  <link rel="stylesheet" href="../css/flickity.css" media="screen" />
+
+  <style>
+
+  /* Texta Regular */
+  @font-face {
+    font-family: 'Texta';
+    src: url('2D333F_2_0.woff2') format('woff2');
+  }
+
+  body { font-family: Texta; }
+
+  * { box-sizing: border-box; }
+
+  .parallax-container {
+    position: relative;
+    width: 360px;
+    height: 400px;
+    overflow: hidden;
+    margin: 40px auto;
+  }
+
+  .carousel {
+    width: 100%;
+  }
+
+  .flickity-viewport {
+    transition: height 0.2s;
+  }
+
+  .cell {
+    width: 360px;
+    height: 200px;
+    margin-right: 10px;
+    background: #8C8;
+    border-radius: 8px;
+  }
+
+  .cell--half-width {
+    width: 175px;
+  }
+
+  .cell--third-width {
+    width: calc((360px - 20px) / 3);
+  }
+
+  .cell--height1 {
+    height: 300px;
+  }
+
+  .cell--height2 {
+    height: 250px;
+  }
+
+  .cell__word {
+    color: white;
+    font-size: 54px;
+    line-height: 1.0;
+    display: block;
+    padding: 20px;
+    width: 100%;
+    position: absolute;
+    top: 50%;
+    left: 0;
+    transform: translateY(-50%);
+    text-align: center;
+  }
+
+
+  .cell--half-width .cell__word {
+    font-size: 40px;
+  }
+
+  .cell__word--group { text-align: right;  }
+  .cell__word--cells { text-align: left;  }
+
+  .cell--parallax { opacity: 0.6; }
+
+  .flickity-prev-next-button {
+    width: 36px;
+    height: 36px;
+  }
+
+  .parallax-layer {
+    position: absolute;
+    left: 0;
+    top: 0;
+    pointer-events: none;
+  }
+  
+  .parallax-layer--bg {
+    width: calc((100% + 10px)* 0.7);
+  }
+  
+  .parallax-bg-cell {
+    width: 252px;
+    height: 140px;
+    background: #19F;
+    position: absolute;
+    top: 30px;
+    border-radius: 6px;
+    opacity: 0.6;
+  }
+  
+/*  .parallax-bg-cell:nth-child(1) { left: 0px; }
+  .parallax-bg-cell:nth-child(2) { left: 296px; }
+  .parallax-bg-cell:nth-child(3) { left: 592px; }
+  .parallax-bg-cell:nth-child(4) { left: 888px; }*/
+  .parallax-bg-cell:nth-child(1) { left: 1036px; }
+  .parallax-bg-cell:nth-child(2) { left: 1295px; }
+
+  .parallax-layer--fg {
+    width: calc((100% + 10px)* 1.5);
+  }
+
+  .parallax-fg-cell {
+    width: 100%;
+    position: absolute;
+    top: 0;
+    font-size: 54px;
+    line-height: 200px;
+    text-align: center;
+    color: white;
+  }
+
+  .parallax-fg-cell:nth-child(1) { left: 400%; }
+  .parallax-fg-cell:nth-child(2) { left: 500%; }
+  .parallax-fg-cell:nth-child(3) { left: 600%; }
+
+  </style>
+
+</head>
+<body>
+
+<div class="parallax-container">
+  <div class="parallax-layer parallax-layer--bg">
+    <!-- <div class="parallax-bg-cell"></div>
+    <div class="parallax-bg-cell"></div>
+    <div class="parallax-bg-cell"></div>
+    <div class="parallax-bg-cell"></div> -->
+    <div class="parallax-bg-cell"></div>
+    <div class="parallax-bg-cell"></div>
+  </div>
+
+  <div class="carousel">
+    <div class="cell cell--half-width">
+      <span class="cell__word cell__word--group">Group</span>
+    </div>
+    <div class="cell cell--half-width">
+      <span class="cell__word cell__word--cells">cells</span>
+    </div>
+    <div class="cell cell--third-width"></div>
+    <div class="cell cell--third-width"></div>
+    <div class="cell cell--third-width"></div>
+    <div class="cell cell--height1">
+      <span class="cell__word">Adaptive height</span>
+    </div>
+    <div class="cell">
+    </div>
+    <div class="cell cell--parallax"></div>
+    <div class="cell cell--parallax"></div>
+    <div class="cell"></div>
+  </div>
+
+  <div class="parallax-layer parallax-layer--fg">
+    <div class="parallax-fg-cell">Parallax</div>
+    <div class="parallax-fg-cell">whoa</div>
+    <div class="parallax-fg-cell">Flickity v2</div>
+  </div>
+</div>
+
+<script src="../bower_components/get-size/get-size.js"></script>
+<script src="../bower_components/desandro-matches-selector/matches-selector.js"></script>
+<script src="../bower_components/ev-emitter/ev-emitter.js"></script>
+<script src="../bower_components/unipointer/unipointer.js"></script>
+<script src="../bower_components/unidragger/unidragger.js"></script>
+<script src="../bower_components/tap-listener/tap-listener.js"></script>
+<script src="../bower_components/fizzy-ui-utils/utils.js"></script>
+
+<script src="../js/cell.js"></script>
+<script src="../js/slide.js"></script>
+<script src="../js/animate.js"></script>
+<script src="../js/flickity.js"></script>
+<script src="../js/drag.js"></script>
+<script src="../js/prev-next-button.js"></script>
+<script src="../js/page-dots.js"></script>
+<script src="../js/player.js"></script>
+<script src="../js/add-remove-cell.js"></script>
+
+<script>
+var flkty = new Flickity( '.carousel', {
+  groupCells: true,
+  adaptiveHeight: true,
+  wrapAround: true,
+});
+
+var paraBg = document.querySelector('.parallax-layer--bg');
+var paraFg = document.querySelector('.parallax-layer--fg');
+var count = flkty.slides.length - 1;
+
+flkty.on( 'scroll', function( progress ) {
+  paraBg.style.left = ( 0.5 - ( 0.5 + progress * count ) * 0.7 ) * (37/36) * 100 + '%';
+  paraFg.style.left = ( 0.5 - ( 0.5 + progress * count ) *1.5 ) * (37/36) * 100 + '%';
+});
+
+flkty.reposition();
+</script>
+
+</body>
+</html>
