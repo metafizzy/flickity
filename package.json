@@ -1,7 +1,7 @@
 {
   "name": "flickity",
-  "version": "1.2.1",
-  "description": "Touch, responsive, flickable galleries",
+  "version": "2.0.0",
+  "description": "Touch, responsive, flickable carousels",
   "main": "js/index.js",
   "style": "css/flickity.css",
   "dependencies": {
@@ -13,8 +13,8 @@
     "unidragger": "^2.1.0"
   },
   "devDependencies": {
-    "flickity-imagesloaded": "~1.0.0",
-    "flickity-as-nav-for": "~1.0.0",
+    "flickity-imagesloaded": "^2.0.0",
+    "flickity-as-nav-for": "^2.0.0",
     "jquery-bridget": "^2.0.0",
     "gulp": "^3.8.10",
     "gulp-jshint": "^1.9.0",
@@ -50,5 +50,8 @@
   "bugs": {
     "url": "https://github.com/metafizzy/flickity/issues"
   },
-  "homepage": "http://flickity.metafizzy.co"
+  "homepage": "http://flickity.metafizzy.co",
+  "directories": {
+    "test": "test"
+  }
 }

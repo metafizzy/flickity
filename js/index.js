@@ -1,6 +1,6 @@
 /*!
  * Flickity v2.0.0
- * Touch, responsive, flickable galleries
+ * Touch, responsive, flickable carousels
  *
  * Licensed GPLv3 for open source use
  * or Flickity Commercial License for commercial use
