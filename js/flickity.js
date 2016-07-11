@@ -471,7 +471,7 @@ proto._containSlides = function() {
  * @param {Array} args - extra arguments
  */
 proto.dispatchEvent = function( type, event, args ) {
-  var emitArgs = [ event ].concat( args );
+  var emitArgs = event ? [ event ].concat( args ) : args;
   this.emitEvent( type, emitArgs );
 
   if ( jQuery && this.$element ) {

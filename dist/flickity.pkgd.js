@@ -1,5 +1,5 @@
 /*!
- * Flickity PACKAGED v2.0.1
+ * Flickity PACKAGED v2.0.2
  * Touch, responsive, flickable carousels
  *
  * Licensed GPLv3 for open source use
@@ -1626,7 +1626,7 @@ proto._containSlides = function() {
  * @param {Array} args - extra arguments
  */
 proto.dispatchEvent = function( type, event, args ) {
-  var emitArgs = [ event ].concat( args );
+  var emitArgs = event ? [ event ].concat( args ) : args;
   this.emitEvent( type, emitArgs );
 
   if ( jQuery && this.$element ) {
@@ -4002,7 +4002,7 @@ return Flickity;
 }));
 
 /*!
- * Flickity v2.0.1
+ * Flickity v2.0.2
  * Touch, responsive, flickable carousels
  *
  * Licensed GPLv3 for open source use
