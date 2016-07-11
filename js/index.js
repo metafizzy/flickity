@@ -1,5 +1,5 @@
 /*!
- * Flickity v2.0.0
+ * Flickity v2.0.1
  * Touch, responsive, flickable carousels
  *
  * Licensed GPLv3 for open source use
