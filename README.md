@@ -9,8 +9,8 @@ See [flickity.metafizzy.co](http://flickity.metafizzy.co) for complete docs and 
 ### Download
 
 + CSS:
-  - [flickity.min.css](https://npmcdn.com/flickity@2.0/dist/flickity.pkgd.min.css) minified, or
-  - [flickity.css](https://npmcdn.com/flickity@2.0/dist/flickity.pkgd.css) un-minified
+  - [flickity.min.css](https://npmcdn.com/flickity@2.0.2/dist/flickity.min.css) minified, or
+  - [flickity.css](https://npmcdn.com/flickity@2.0.2/dist/flickity.css) un-minified
 + JavaScript:
   - [flickity.pkgd.min.js](https://npmcdn.com/flickity@2.0/dist/flickity.pkgd.min.js) minified, or
   - [flickity.pkgd.js](https://npmcdn.com/flickity@2.0/dist/flickity.pkgd.js) un-minified
@@ -20,9 +20,9 @@ See [flickity.metafizzy.co](http://flickity.metafizzy.co) for complete docs and 
 Link directly to Flickity files on [npmcdn](https://npmcdn.com).
 
 ``` html
-<link rel="stylesheet" href="https://npmcdn.com/flickity@2.0/dist/flickity.pkgd.min.css">
+<link rel="stylesheet" href="https://npmcdn.com/flickity@2.0.2/dist/flickity.min.css">
 <!-- or -->
-<link rel="stylesheet" href="https://npmcdn.com/flickity@2.0/dist/flickity.pkgd.css">
+<link rel="stylesheet" href="https://npmcdn.com/flickity@2.0.2/dist/flickity.css">
 ```
 
 ``` html
