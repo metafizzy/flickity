@@ -73,6 +73,13 @@ function Flickity( element, options ) {
     return;
   }
   this.element = queryElement;
+  // do not initialize twice on same element
+  if ( this.element.flickityGUID ) {
+    var instance = instances[ this.element.flickityGUID ];
+    instance.option( options );
+    return instance;
+  }
+
   // add jQuery
   if ( jQuery ) {
     this.$element = jQuery( this.element );
