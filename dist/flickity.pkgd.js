@@ -1705,12 +1705,12 @@ proto._wrapSelect = function( index ) {
   }
 };
 
-proto.previous = function( isWrap ) {
-  this.select( this.selectedIndex - 1, isWrap );
+proto.previous = function( isWrap, isInstant ) {
+  this.select( this.selectedIndex - 1, isWrap, isInstant );
 };
 
-proto.next = function( isWrap ) {
-  this.select( this.selectedIndex + 1, isWrap );
+proto.next = function( isWrap, isInstant ) {
+  this.select( this.selectedIndex + 1, isWrap, isInstant );
 };
 
 proto.updateSelectedSlide = function() {
