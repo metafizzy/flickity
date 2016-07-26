@@ -152,7 +152,7 @@ proto._createPageDots = function() {
   this.on( 'resize', this.updatePageDots );
   this.on( 'deactivate', this.deactivatePageDots );
 
-  this.pageDots.on( 'pointerDown', function( button, event ) {
+  this.pageDots.on( 'pointerDown', function( event ) {
     this.childUIPointerDown( event );
   }.bind( this ));
 };
