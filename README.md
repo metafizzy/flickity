@@ -1,6 +1,6 @@
 # Flickity
 
-_Touch, responsive, flickable galleries_
+_Touch, responsive, flickable carousels_
 
 See [flickity.metafizzy.co](http://flickity.metafizzy.co) for complete docs and demos.
 
@@ -9,26 +9,26 @@ See [flickity.metafizzy.co](http://flickity.metafizzy.co) for complete docs and 
 ### Download
 
 + CSS:
-  - [flickity.css](https://github.com/metafizzy/flickity/raw/master/dist/flickity.css) un-minified, or
-  - [flickity.css](https://github.com/metafizzy/flickity/raw/master/dist/flickity.min.css) minified
+  - [flickity.min.css](https://npmcdn.com/flickity@2.0/dist/flickity.pkgd.min.css) minified, or
+  - [flickity.css](https://npmcdn.com/flickity@2.0/dist/flickity.pkgd.css) un-minified
 + JavaScript:
-  - [flickity.pkgd.js](https://github.com/metafizzy/flickity/raw/master/dist/flickity.pkgd.js) un-minified, or
-  - [flickity.pkgd.min.js](https://github.com/metafizzy/flickity/raw/master/dist/flickity.pkgd.min.js) minified
+  - [flickity.pkgd.min.js](https://npmcdn.com/flickity@2.0/dist/flickity.pkgd.min.js) minified, or
+  - [flickity.pkgd.js](https://npmcdn.com/flickity@2.0/dist/flickity.pkgd.js) un-minified
 
 ### CDN
 
-Link directly to [Flickity files on cdnjs](https://cdnjs.com/libraries/flickity).
+Link directly to Flickity files on [npmcdn](https://npmcdn.com).
 
 ``` html
-<link rel="stylesheet" href="https://npmcdn.com/flickity@1.2/dist/flickity.pkgd.css">
+<link rel="stylesheet" href="https://npmcdn.com/flickity@2.0/dist/flickity.pkgd.min.css">
 <!-- or -->
-<link rel="stylesheet" href="https://npmcdn.com/flickity@1.2/dist/flickity.pkgd.min.css">
+<link rel="stylesheet" href="https://npmcdn.com/flickity@2.0/dist/flickity.pkgd.css">
 ```
 
 ``` html
-<script src="https://npmcdn.com/flickity@1.2/dist/flickity.pkgd.js"></script>
+<script src="https://npmcdn.com/flickity@2.0/dist/flickity.pkgd.min.js"></script>
 <!-- or -->
-<script src="https://npmcdn.com/flickity@1.2/dist/flickity.pkgd.min.js"></script>
+<script src="https://npmcdn.com/flickity@2.0/dist/flickity.pkgd.js"></script>
 ```
 
 ### Package managers
@@ -54,10 +54,10 @@ If you are creating an open source application under a license compatible with t
 Flickity works with a container element and a set of child cell elements
 
 ``` html
-<div class="gallery">
-  <div class="cell">...</div>
-  <div class="cell">...</div>
-  <div class="cell">...</div>
+<div class="carousel">
+  <div class="carousel-cell">...</div>
+  <div class="carousel-cell">...</div>
+  <div class="carousel-cell">...</div>
   ...
 </div>
 ```
@@ -70,6 +70,9 @@ var flky = new Flickity( '.gallery', {
 
   accessibility: true,
   // enable keyboard navigation, pressing left & right keys
+
+  adaptiveHeight: false,
+  // set carousel height to the selected slide
 
   autoPlay: false,
   // advances to the next cell
@@ -92,12 +95,19 @@ var flky = new Flickity( '.gallery', {
   draggable: true,
   // enables dragging & flicking
 
+  dragThreshold: 3,
+  // number of pixels a user must scroll horizontally to start dragging
+  // increase to allow more room for vertical scroll for touch devices
+
   freeScroll: false,
   // enables content to be freely scrolled and flicked
   // without aligning cells
 
   friction: 0.2,
   // smaller number = easier to flick farther
+
+  groupCells: false,
+  // group cells together in slides
 
   initialIndex: 0,
   // zero-based index of the initial selected cell
@@ -131,8 +141,6 @@ var flky = new Flickity( '.gallery', {
   watchCSS: false,
   // watches the content of :after of the element
   // activates if #element:after { content: 'flickity' }
-  // IE8 and Android 2.3 do not support watching :after
-  // set watch: 'fallbackOn' to enable for these browsers
 
   wrapAround: false
   // at end of cells, wraps-around to first for infinite scrolling

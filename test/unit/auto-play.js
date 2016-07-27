@@ -1,5 +1,4 @@
-test( 'auto play', function( assert ) {
-
+QUnit.test( 'auto play', function( assert ) {
   'use strict';
 
   var done = assert.async();
@@ -9,9 +8,10 @@ test( 'auto play', function( assert ) {
   });
 
   var selectCount = 0;
+  var testDelay = flkty.options.autoPlay + 100;
 
   var tests;
-  
+
   function nextTest() {
     if ( tests.length ) {
       var next = tests.shift();
@@ -21,39 +21,52 @@ test( 'auto play', function( assert ) {
       done();
     }
   }
-  
+
   tests = [
     // check that player runs
     function() {
       var onSelect = function() {
         selectCount++;
         if ( selectCount < 5 ) {
-          equal( flkty.selectedIndex, selectCount % flkty.cells.length,
+          assert.equal( flkty.selectedIndex, selectCount % flkty.cells.length,
             'auto-played to ' + flkty.selectedIndex );
         } else if ( selectCount == 5 ) {
           // HACK do async, should be able to stop after a tick
-          flkty.off( 'cellSelect', onSelect );
+          flkty.off( 'select', onSelect );
           nextTest();
         }
       };
-      flkty.on( 'cellSelect', onSelect );
+      flkty.on( 'select', onSelect );
     },
     // pause & unpause
     function() {
       function onPauseSelect() {
-        ok( false, 'player ticked during pause' );
+        assert.ok( false, 'player ticked during pause' );
       }
-      flkty.on( 'cellSelect', onPauseSelect );
+      flkty.on( 'select', onPauseSelect );
       flkty.pausePlayer();
       setTimeout( function() {
-        ok( true, 'player did not tick during pause' );
-        flkty.off( 'cellSelect', onPauseSelect );
-        flkty.once( 'cellSelect', function() {
-          ok( true, 'player resumed after unpausing' );
+        assert.ok( true, 'player did not tick during pause' );
+        flkty.off( 'select', onPauseSelect );
+        flkty.once( 'select', function() {
+          assert.ok( true, 'player resumed after unpausing' );
           nextTest();
         });
         flkty.unpausePlayer();
-      }, flkty.options.autoPlay + 100 );
+      }, testDelay );
+    },
+    // stopPlayer
+    function() {
+      var ticks = 0;
+      function onSelect() {
+        ticks++;
+      }
+      flkty.stopPlayer();
+      setTimeout( function() {
+        flkty.off( 'select', onSelect );
+        assert.equal( ticks, 0, 'no ticks after stopped' );
+        nextTest();
+      }, testDelay * 2 );
     },
     // double playPlayer()
     function() {
@@ -62,15 +75,15 @@ test( 'auto play', function( assert ) {
         ticks++;
       }
       flkty.stopPlayer();
-      flkty.on( 'cellSelect', onSelect );
+      flkty.on( 'select', onSelect );
       flkty.playPlayer();
       flkty.playPlayer();
       setTimeout( function() {
-        flkty.off( 'cellSelect', onSelect );
-        equal( ticks, 1, 'only one tick after double playPlayer' );
+        flkty.off( 'select', onSelect );
+        assert.equal( ticks, 1, 'only one tick after double playPlayer' );
         nextTest();
-      }, flkty.options.autoPlay + 100 );
-    }
+      }, testDelay );
+    },
   ];
 
   nextTest();

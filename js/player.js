@@ -1,36 +1,33 @@
+// player & autoPlay
 ( function( window, factory ) {
-  'use strict';
   // universal module definition
-
+  /* jshint strict: false */
   if ( typeof define == 'function' && define.amd ) {
     // AMD
     define( [
-      'eventEmitter/EventEmitter',
-      'eventie/eventie',
+      'ev-emitter/ev-emitter',
       'fizzy-ui-utils/utils',
       './flickity'
-    ], function( EventEmitter, eventie, utils, Flickity ) {
-      return factory( EventEmitter, eventie, utils, Flickity );
+    ], function( EvEmitter, utils, Flickity ) {
+      return factory( EvEmitter, utils, Flickity );
     });
-  } else if ( typeof exports == 'object' ) {
+  } else if ( typeof module == 'object' && module.exports ) {
     // CommonJS
     module.exports = factory(
-      require('wolfy87-eventemitter'),
-      require('eventie'),
+      require('ev-emitter'),
       require('fizzy-ui-utils'),
       require('./flickity')
     );
   } else {
     // browser global
     factory(
-      window.EventEmitter,
-      window.eventie,
+      window.EvEmitter,
       window.fizzyUIUtils,
       window.Flickity
     );
   }
 
-}( window, function factory( EventEmitter, eventie, utils, Flickity ) {
+}( window, function factory( EvEmitter, utils, Flickity ) {
 
 'use strict';
 
@@ -53,24 +50,33 @@ function Player( parent ) {
   this.state = 'stopped';
   // visibility change event handler
   if ( visibilityEvent ) {
-    var _this = this;
     this.onVisibilityChange = function() {
-      _this.visibilityChange();
-    };
+      this.visibilityChange();
+    }.bind( this );
+    this.onVisibilityPlay = function() {
+      this.visibilityPlay();
+    }.bind( this );
   }
 }
 
-Player.prototype = new EventEmitter();
+Player.prototype = Object.create( EvEmitter.prototype );
 
 // start play
 Player.prototype.play = function() {
   if ( this.state == 'playing' ) {
     return;
   }
+  // do not play if page is hidden, start playing when page is visible
+  var isPageHidden = document[ hiddenProperty ];
+  if ( visibilityEvent && isPageHidden ) {
+    document.addEventListener( visibilityEvent, this.onVisibilityPlay );
+    return;
+  }
+
   this.state = 'playing';
   // listen to visibility change
   if ( visibilityEvent ) {
-    document.addEventListener( visibilityEvent, this.onVisibilityChange, false );
+    document.addEventListener( visibilityEvent, this.onVisibilityChange );
   }
   // start ticking
   this.tick();
@@ -99,7 +105,7 @@ Player.prototype.stop = function() {
   this.clear();
   // remove visibility change event
   if ( visibilityEvent ) {
-    document.removeEventListener( visibilityEvent, this.onVisibilityChange, false );
+    document.removeEventListener( visibilityEvent, this.onVisibilityChange );
   }
 };
 
@@ -115,7 +121,7 @@ Player.prototype.pause = function() {
 };
 
 Player.prototype.unpause = function() {
-  // re-start play if in unpaused state
+  // re-start play if paused
   if ( this.state == 'paused' ) {
     this.play();
   }
@@ -123,8 +129,13 @@ Player.prototype.unpause = function() {
 
 // pause if page visibility is hidden, unpause if visible
 Player.prototype.visibilityChange = function() {
-  var isHidden = document[ hiddenProperty ];
-  this[ isHidden ? 'pause' : 'unpause' ]();
+  var isPageHidden = document[ hiddenProperty ];
+  this[ isPageHidden ? 'pause' : 'unpause' ]();
+};
+
+Player.prototype.visibilityPlay = function() {
+  this.play();
+  document.removeEventListener( visibilityEvent, this.onVisibilityPlay );
 };
 
 // -------------------------- Flickity -------------------------- //
@@ -134,8 +145,9 @@ utils.extend( Flickity.defaults, {
 });
 
 Flickity.createMethods.push('_createPlayer');
+var proto = Flickity.prototype;
 
-Flickity.prototype._createPlayer = function() {
+proto._createPlayer = function() {
   this.player = new Player( this );
 
   this.on( 'activate', this.activatePlayer );
@@ -144,56 +156,52 @@ Flickity.prototype._createPlayer = function() {
   this.on( 'deactivate', this.deactivatePlayer );
 };
 
-Flickity.prototype.activatePlayer = function() {
+proto.activatePlayer = function() {
   if ( !this.options.autoPlay ) {
     return;
   }
   this.player.play();
-  eventie.bind( this.element, 'mouseenter', this );
-  this.isMouseenterBound = true;
+  this.element.addEventListener( 'mouseenter', this );
 };
 
 // Player API, don't hate the ... thanks I know where the door is
 
-Flickity.prototype.playPlayer = function() {
+proto.playPlayer = function() {
   this.player.play();
 };
 
-Flickity.prototype.stopPlayer = function() {
+proto.stopPlayer = function() {
   this.player.stop();
 };
 
-Flickity.prototype.pausePlayer = function() {
+proto.pausePlayer = function() {
   this.player.pause();
 };
 
-Flickity.prototype.unpausePlayer = function() {
+proto.unpausePlayer = function() {
   this.player.unpause();
 };
 
-Flickity.prototype.deactivatePlayer = function() {
+proto.deactivatePlayer = function() {
   this.player.stop();
-  if ( this.isMouseenterBound ) {
-    eventie.unbind( this.element, 'mouseenter', this );
-    delete this.isMouseenterBound;
-  }
+  this.element.removeEventListener( 'mouseenter', this );
 };
 
 // ----- mouseenter/leave ----- //
 
 // pause auto-play on hover
-Flickity.prototype.onmouseenter = function() {
+proto.onmouseenter = function() {
   if ( !this.options.pauseAutoPlayOnHover ) {
     return;
   }
   this.player.pause();
-  eventie.bind( this.element, 'mouseleave', this );
+  this.element.addEventListener( 'mouseleave', this );
 };
 
 // resume auto-play on hover off
-Flickity.prototype.onmouseleave = function() {
+proto.onmouseleave = function() {
   this.player.unpause();
-  eventie.unbind( this.element, 'mouseleave', this );
+  this.element.removeEventListener( 'mouseleave', this );
 };
 
 // -----  ----- //

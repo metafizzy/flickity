@@ -1,4 +1,4 @@
-/*! Flickity v1.2.1
+/*! Flickity v2.0.2
 http://flickity.metafizzy.co
 ---------------------------------------------- */
 
@@ -56,7 +56,6 @@ http://flickity.metafizzy.co
   cursor: pointer;
   /* vertically center */
   -webkit-transform: translateY(-50%);
-      -ms-transform: translateY(-50%);
           transform: translateY(-50%);
 }
 
@@ -68,7 +67,6 @@ http://flickity.metafizzy.co
 }
 
 .flickity-prev-next-button:active {
-  filter: alpha(opacity=60); /* IE8 */
   opacity: 0.6;
 }
 
@@ -85,7 +83,6 @@ http://flickity.metafizzy.co
 }
 
 .flickity-prev-next-button:disabled {
-  filter: alpha(opacity=30); /* IE8 */
   opacity: 0.3;
   cursor: auto;
 }
@@ -100,12 +97,6 @@ http://flickity.metafizzy.co
 
 .flickity-prev-next-button .arrow {
   fill: #333;
-}
-
-/* color & size if no SVG - IE8 and Android 2.3 */
-.flickity-prev-next-button.no-svg {
-  color: #333;
-  font-size: 26px;
 }
 
 /* ---- page dots ---- */
@@ -130,12 +121,10 @@ http://flickity.metafizzy.co
   margin: 0 8px;
   background: #333;
   border-radius: 50%;
-  filter: alpha(opacity=25); /* IE8 */
   opacity: 0.25;
   cursor: pointer;
 }
 
 .flickity-page-dots .dot.is-selected {
-  filter: alpha(opacity=100); /* IE8 */
   opacity: 1;
 }

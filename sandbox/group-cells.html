@@ -1,0 +1,103 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width" />
+
+  <title>group cells</title>
+
+  <link rel="stylesheet" href="../css/flickity.css" />
+
+<style>
+* { box-sizing: border-box; }
+
+html { overflow-y: scroll; }
+
+.carousel {
+  border: 1px solid;
+  margin-bottom: 40px;
+/*  width: 1000px;*/
+}
+
+.carousel__cell {
+/*  width: 25%;*/
+  width: 32%;
+  height: 200px;
+  background: #BDF;
+  margin-left: 1%;
+  margin-right: 1%;
+  font-size: 40px;
+}
+
+/*.carousel__cell--width2 { width: 40%; }
+.carousel__cell--width3 { width: 80%; }*/
+
+.carousel__cell--width2 { width: 66%; }
+.carousel__cell--width3 { width: 100%; }
+
+.carousel__cell.is-selected {
+  background: #68F;
+}
+
+@media (min-width: 1000px) {
+  /* fit four */
+  .carousel__cell { width: 23.5%; }
+  .carousel__cell--width2 { width: 49%; }
+  .carousel__cell--width3 { width: 74.5%; }
+}
+
+
+</style>
+
+</head>
+<body>
+
+  <h1>group cells</h1>
+
+<div class="carousel carousel1">
+  <div class="carousel__cell carousel__cell--width2">0</div>
+  <div class="carousel__cell">1</div>
+  <div class="carousel__cell">2</div>
+  <div class="carousel__cell carousel__cell--width2">3</div>
+  <div class="carousel__cell carousel__cell--width2">4</div>
+  <div class="carousel__cell">5</div>
+  <div class="carousel__cell">6</div>
+  <div class="carousel__cell">7</div>
+  <div class="carousel__cell carousel__cell--width3">8</div>
+  <div class="carousel__cell">9</div>
+  <div class="carousel__cell">10</div>
+</div>
+
+
+
+<script src="../bower_components/get-size/get-size.js"></script>
+<script src="../bower_components/desandro-matches-selector/matches-selector.js"></script>
+<script src="../bower_components/ev-emitter/ev-emitter.js"></script>
+<script src="../bower_components/unipointer/unipointer.js"></script>
+<script src="../bower_components/unidragger/unidragger.js"></script>
+<script src="../bower_components/tap-listener/tap-listener.js"></script>
+<script src="../bower_components/fizzy-ui-utils/utils.js"></script>
+
+<script src="../js/cell.js"></script>
+<script src="../js/slide.js"></script>
+<script src="../js/animate.js"></script>
+<script src="../js/flickity.js"></script>
+<script src="../js/drag.js"></script>
+<script src="../js/prev-next-button.js"></script>
+<script src="../js/page-dots.js"></script>
+<script src="../js/player.js"></script>
+<script src="../js/add-remove-cell.js"></script>
+<script src="../js/lazyload.js"></script>
+
+<script>
+var flkty = new Flickity( '.carousel1', {
+  groupCells: true,
+  wrapAround: true,
+  // cellAlign: 'right'
+});
+
+
+</script>
+
+</body>
+</html>

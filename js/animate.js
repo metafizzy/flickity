@@ -1,20 +1,18 @@
+// animate
 ( function( window, factory ) {
-  'use strict';
   // universal module definition
-
+  /* jshint strict: false */
   if ( typeof define == 'function' && define.amd ) {
     // AMD
     define( [
-      'get-style-property/get-style-property',
       'fizzy-ui-utils/utils'
-    ], function( getStyleProperty, utils ) {
-      return factory( window, getStyleProperty, utils );
+    ], function( utils ) {
+      return factory( window, utils );
     });
-  } else if ( typeof exports == 'object' ) {
+  } else if ( typeof module == 'object' && module.exports ) {
     // CommonJS
     module.exports = factory(
       window,
-      require('desandro-get-style-property'),
       require('fizzy-ui-utils')
     );
   } else {
@@ -22,50 +20,29 @@
     window.Flickity = window.Flickity || {};
     window.Flickity.animatePrototype = factory(
       window,
-      window.getStyleProperty,
       window.fizzyUIUtils
     );
   }
 
-}( window, function factory( window, getStyleProperty, utils ) {
+}( window, function factory( window, utils ) {
 
 'use strict';
 
 // -------------------------- requestAnimationFrame -------------------------- //
 
-// https://gist.github.com/1866474
+// get rAF, prefixed, if present
+var requestAnimationFrame = window.requestAnimationFrame ||
+  window.webkitRequestAnimationFrame;
 
+// fallback to setTimeout
 var lastTime = 0;
-var prefixes = 'webkit moz ms o'.split(' ');
-// get unprefixed rAF and cAF, if present
-var requestAnimationFrame = window.requestAnimationFrame;
-var cancelAnimationFrame = window.cancelAnimationFrame;
-// loop through vendor prefixes and get prefixed rAF and cAF
-var prefix;
-for( var i = 0; i < prefixes.length; i++ ) {
-  if ( requestAnimationFrame && cancelAnimationFrame ) {
-    break;
-  }
-  prefix = prefixes[i];
-  requestAnimationFrame = requestAnimationFrame || window[ prefix + 'RequestAnimationFrame' ];
-  cancelAnimationFrame  = cancelAnimationFrame  || window[ prefix + 'CancelAnimationFrame' ] ||
-                            window[ prefix + 'CancelRequestAnimationFrame' ];
-}
-
-// fallback to setTimeout and clearTimeout if either request/cancel is not supported
-if ( !requestAnimationFrame || !cancelAnimationFrame )  {
+if ( !requestAnimationFrame )  {
   requestAnimationFrame = function( callback ) {
     var currTime = new Date().getTime();
     var timeToCall = Math.max( 0, 16 - ( currTime - lastTime ) );
-    var id = window.setTimeout( function() {
-      callback( currTime + timeToCall );
-    }, timeToCall );
+    var id = setTimeout( callback, timeToCall );
     lastTime = currTime + timeToCall;
     return id;
-  };
-
-  cancelAnimationFrame = function( id ) {
-    window.clearTimeout( id );
   };
 }
 
@@ -99,20 +76,16 @@ proto.animate = function() {
       _this.animate();
     });
   }
-
-  /** /
-  // log animation frame rate
-  var now = new Date();
-  if ( this.then ) {
-    console.log( ~~( 1000 / (now-this.then)) + 'fps' )
-  }
-  this.then = now;
-  /**/
 };
 
 
-var transformProperty = getStyleProperty('transform');
-var is3d = !!getStyleProperty('perspective');
+var transformProperty = ( function () {
+  var style = document.documentElement.style;
+  if ( typeof style.transform == 'string' ) {
+    return 'transform';
+  }
+  return 'WebkitTransform';
+})();
 
 proto.positionSlider = function() {
   var x = this.x;
@@ -124,19 +97,20 @@ proto.positionSlider = function() {
   }
 
   x = x + this.cursorPosition;
-
   // reverse if right-to-left and using transform
   x = this.options.rightToLeft && transformProperty ? -x : x;
-
   var value = this.getPositionValue( x );
+  // use 3D tranforms for hardware acceleration on iOS
+  // but use 2D when settled, for better font-rendering
+  this.slider.style[ transformProperty ] = this.isAnimating ?
+    'translate3d(' + value + ',0,0)' : 'translateX(' + value + ')';
 
-  if ( transformProperty ) {
-    // use 3D tranforms for hardware acceleration on iOS
-    // but use 2D when settled, for better font-rendering
-    this.slider.style[ transformProperty ] = is3d && this.isAnimating ?
-      'translate3d(' + value + ',0,0)' : 'translateX(' + value + ')';
-  } else {
-    this.slider.style[ this.originSide ] = value;
+  // scroll event
+  var firstSlide = this.slides[0];
+  if ( firstSlide ) {
+    var positionX = -this.x - firstSlide.target;
+    var progress = positionX / this.slidesWidth;
+    this.dispatchEvent( 'scroll', null, [ progress, positionX ] );
   }
 };
 
@@ -144,8 +118,7 @@ proto.positionSliderAtSelected = function() {
   if ( !this.cells.length ) {
     return;
   }
-  var selectedCell = this.cells[ this.selectedIndex ];
-  this.x = -selectedCell.target;
+  this.x = -this.selectedSlide.target;
   this.positionSlider();
 };
 
@@ -169,9 +142,7 @@ proto.settle = function( previousX ) {
     this.isAnimating = false;
     delete this.isFreeScrolling;
     // render position with translateX when settled
-    if ( is3d ) {
-      this.positionSlider();
-    }
+    this.positionSlider();
     this.dispatchEvent('settle');
   }
 };
@@ -186,7 +157,7 @@ proto.shiftWrapCells = function( x ) {
 };
 
 proto._shiftCells = function( cells, gap, shift ) {
-  for ( var i=0, len = cells.length; i < len; i++ ) {
+  for ( var i=0; i < cells.length; i++ ) {
     var cell = cells[i];
     var cellShift = gap > 0 ? shift : 0;
     cell.wrapShift( cellShift );
@@ -198,7 +169,7 @@ proto._unshiftCells = function( cells ) {
   if ( !cells || !cells.length ) {
     return;
   }
-  for ( var i=0, len = cells.length; i < len; i++ ) {
+  for ( var i=0; i < cells.length; i++ ) {
     cells[i].wrapShift( 0 );
   }
 };
@@ -206,21 +177,17 @@ proto._unshiftCells = function( cells ) {
 // -------------------------- physics -------------------------- //
 
 proto.integratePhysics = function() {
-  this.velocity += this.accel;
   this.x += this.velocity;
   this.velocity *= this.getFrictionFactor();
-  // reset acceleration
-  this.accel = 0;
 };
 
 proto.applyForce = function( force ) {
-  this.accel += force;
+  this.velocity += force;
 };
 
 proto.getFrictionFactor = function() {
   return 1 - this.options[ this.isFreeScrolling ? 'freeScrollFriction' : 'friction' ];
 };
-
 
 proto.getRestingPosition = function() {
   // my thanks to Steven Wittens, who simplified this math greatly
@@ -239,14 +206,10 @@ proto.applyDragForce = function() {
 
 proto.applySelectedAttraction = function() {
   // do not attract if pointer down or no cells
-  var len = this.cells.length;
-  if ( this.isPointerDown || this.isFreeScrolling || !len ) {
+  if ( this.isPointerDown || this.isFreeScrolling || !this.cells.length ) {
     return;
   }
-  var cell = this.cells[ this.selectedIndex ];
-  var wrap = this.options.wrapAround && len > 1 ?
-    this.slideableWidth * Math.floor( this.selectedIndex / len ) : 0;
-  var distance = ( cell.target + wrap ) * -1 - this.x;
+  var distance = this.selectedSlide.target * -1 - this.x;
   var force = distance * this.options.selectedAttraction;
   this.applyForce( force );
 };

@@ -13,20 +13,17 @@
   <script src="../bower_components/qunit/qunit/qunit.js"></script>
 
   <!-- dependencies -->
-  <script src="../bower_components/get-style-property/get-style-property.js"></script>
   <script src="../bower_components/get-size/get-size.js"></script>
-  <script src="../bower_components/matches-selector/matches-selector.js"></script>
-  <script src="../bower_components/eventEmitter/EventEmitter.js"></script>
-  <script src="../bower_components/eventie/eventie.js"></script>
-  <script src="../bower_components/doc-ready/doc-ready.js"></script>
-  <script src="../bower_components/classie/classie.js"></script>
-  <script src="../bower_components/imagesloaded/imagesloaded.js"></script>
+<!-- <script src="../bower_components/imagesloaded/imagesloaded.js"></script> -->
+  <script src="../bower_components/desandro-matches-selector/matches-selector.js"></script>
+  <script src="../bower_components/ev-emitter/ev-emitter.js"></script>
   <script src="../bower_components/fizzy-ui-utils/utils.js"></script>
   <script src="../bower_components/unipointer/unipointer.js"></script>
   <script src="../bower_components/unidragger/unidragger.js"></script>
   <script src="../bower_components/tap-listener/tap-listener.js"></script>
   <!-- Flickity source -->
   <script src="../js/cell.js"></script>
+  <script src="../js/slide.js"></script>
   <script src="../js/animate.js"></script>
   <script src="../js/flickity.js"></script>
   <script src="../js/drag.js"></script>
@@ -58,6 +55,9 @@
   <script src="unit/add-remove-cells.js"></script>
   <script src="unit/destroy.js"></script>
   <script src="unit/lazyload.js"></script>
+  <script src="unit/group-cells.js"></script>
+  <script src="unit/adaptive-height.js"></script>
+  <script src="unit/select-cell.js"></script>
 
 </head>
 <body>
@@ -214,6 +214,55 @@
     <div class="cell"><img data-flickity-lazyload="http://i.imgur.com/PgmEBSB.jpg" /></div>
     <img class="img-cell" data-flickity-lazyload="http://i.imgur.com/aboaFoB.jpg" />
     <div class="cell"><img data-flickity-lazyload="http://i.imgur.com/LkmcILl.jpg" /></div>
+  </div>
+
+  <h2>groupCells</h2>
+  <div id="group-cells" class="gallery">
+    <div class="cell"></div>
+    <div class="cell cell--width2"></div>
+    <div class="cell"></div>
+
+    <div class="cell cell--width3"></div>
+    <div class="cell"></div>
+
+    <div class="cell cell--width2"></div>
+    <div class="cell cell--width2"></div>
+
+    <div class="cell cell--width2"></div>
+
+    <div class="cell cell--width4"></div>
+
+    <div class="cell"></div>
+    <div class="cell"></div>
+    <div class="cell cell--width2"></div>
+
+    <div class="cell"></div>
+    <div class="cell"></div>
+  </div>
+
+  <h2>adaptiveHeight</h2>
+  <div id="adaptive-height" class="gallery">
+    <div class="cell cell--height2"></div>
+    <div class="cell"></div>
+    <div class="cell cell--height3"></div>
+
+    <div class="cell"></div>
+    <div class="cell cell--height4"></div>
+    <div class="cell cell--height2"></div>
+
+    <div class="cell"></div>
+    <div class="cell cell--height2"></div>
+  </div>
+
+  <div id="select-cell" class="gallery">
+    <div class="cell select-cell__0">0</div>
+    <div class="cell select-cell__1">1</div>
+    <div class="cell select-cell__2">2</div>
+    <div class="cell select-cell__3">3</div>
+    <div class="cell select-cell__4">4</div>
+    <div class="cell select-cell__5">5</div>
+    <div class="cell select-cell__6">6</div>
+    <div class="cell select-cell__7">7</div>
   </div>
 
 </body>
