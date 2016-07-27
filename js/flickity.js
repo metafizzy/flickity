@@ -816,7 +816,7 @@ proto.deactivate = function() {
   // destroy cells
   this.cells.forEach( function( cell ) {
     cell.destroy();
-  })
+  });
   this.unselectSelectedSlide();
   this.options.noDomMod || this.element.removeChild( this.viewport );
   // move child elements back into element
