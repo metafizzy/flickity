@@ -696,7 +696,9 @@ proto.getAdjacentCellElements = function( adjCount, index ) {
   }
 
   var cellElems = [];
-  for ( var i = index - adjCount; i <= index + adjCount ; i++ ) {
+  var min = this.options.cellAlign === 'left' ? index : index - adjCount;
+  var max = this.options.cellAlign === 'right' ? index : index + adjCount;
+  for ( var i = min; i <= max ; i++ ) {
     var slideIndex = this.options.wrapAround ? utils.modulo( i, len ) : i;
     var slide = this.slides[ slideIndex ];
     if ( slide ) {
