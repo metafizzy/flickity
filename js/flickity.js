@@ -142,7 +142,6 @@ proto._create = function() {
     this.viewport = document.createElement('div');
     this.viewport.className = 'flickity-viewport';
   }
-  Flickity.setUnselectable( this.viewport );
   this._createSlider();
 
   if ( this.options.resize || this.options.watchCSS ) {
