@@ -237,6 +237,8 @@ proto._filterFindCellElements = function( elems ) {
 // goes through all children
 proto.reloadCells = function() {
   // collection of item elements
+  this.afterShiftCells=[];
+  this.beforeShiftCells=[];
   this.cells = this._makeCells( this.slider.children );
   this.positionCells();
   this._getWrapShiftCells();
