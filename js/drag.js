@@ -92,6 +92,7 @@ proto._childUIPointerDownDrag = function( event ) {
 var cursorNodes = {
   TEXTAREA: true,
   INPUT: true,
+  OPTION: true,
 };
 
 // input types that do not have text fields
@@ -105,7 +106,7 @@ var clickTypes = {
 };
 
 proto.pointerDown = function( event, pointer ) {
-  // dismiss inputs with text fields. #404
+  // dismiss inputs with text fields. #403, #404
   var isCursorInput = cursorNodes[ event.target.nodeName ] &&
     !clickTypes[ event.target.type ];
   if ( isCursorInput ) {
