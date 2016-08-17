@@ -48,9 +48,9 @@ PageDots.prototype._create = function() {
   this.holder.className = 'flickity-page-dots';
   // create dots, array of elements
   this.dots = [];
-  // tap
+  // events
   this.on( 'tap', this.onTap );
-
+  this.on( 'pointerDown', this.parent.childUIPointerDown.bind( this.parent ) );
 };
 
 PageDots.prototype.activate = function() {
@@ -151,10 +151,6 @@ proto._createPageDots = function() {
   this.on( 'cellChange', this.updatePageDots );
   this.on( 'resize', this.updatePageDots );
   this.on( 'deactivate', this.deactivatePageDots );
-
-  this.pageDots.on( 'pointerDown', function( event ) {
-    this.childUIPointerDown( event );
-  }.bind( this ));
 };
 
 proto.activatePageDots = function() {
