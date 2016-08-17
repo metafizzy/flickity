@@ -71,7 +71,7 @@ PrevNextButton.prototype._create = function() {
   // tap
   this.on( 'tap', this.onTap );
   // pointerDown
-  this.on( 'pointerDown', function onPointerDown( button, event ) {
+  this.on( 'pointerDown', function onPointerDown( event ) {
     this.parent.childUIPointerDown( event );
   }.bind( this ));
 };
