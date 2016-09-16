@@ -1,5 +1,5 @@
 /*!
- * Flickity PACKAGED v2.0.3
+ * Flickity PACKAGED v2.0.4
  * Touch, responsive, flickable carousels
  *
  * Licensed GPLv3 for open source use
@@ -528,7 +528,7 @@ return getSize;
 }));
 
 /**
- * Fizzy UI utils v2.0.2
+ * Fizzy UI utils v2.0.3
  * MIT license
  */
 
@@ -701,7 +701,8 @@ utils.debounceMethod = function( _class, methodName, threshold ) {
 utils.docReady = function( callback ) {
   var readyState = document.readyState;
   if ( readyState == 'complete' || readyState == 'interactive' ) {
-    callback();
+    // do async to allow for other scripts to run. metafizzy/flickity#441
+    setTimeout( callback );
   } else {
     document.addEventListener( 'DOMContentLoaded', callback );
   }
@@ -749,7 +750,7 @@ utils.htmlInit = function( WidgetClass, namespace ) {
       }
       // initialize
       var instance = new WidgetClass( elem, options );
-      // make available via $().data('layoutname')
+      // make available via $().data('namespace')
       if ( jQuery ) {
         jQuery.data( elem, namespace, instance );
       }
@@ -3147,16 +3148,10 @@ PrevNextButton.prototype._create = function() {
   // create arrow
   var svg = this.createSVG();
   element.appendChild( svg );
-  // update on select
-  this.parent.on( 'select', function() {
-    this.update();
-  }.bind( this ));
-  // tap
+  // events
   this.on( 'tap', this.onTap );
-  // pointerDown
-  this.on( 'pointerDown', function onPointerDown( button, event ) {
-    this.parent.childUIPointerDown( event );
-  }.bind( this ));
+  this.parent.on( 'select', this.update.bind( this ) );
+  this.on( 'pointerDown', this.parent.childUIPointerDown.bind( this.parent ) );
 };
 
 PrevNextButton.prototype.activate = function() {
@@ -3358,9 +3353,9 @@ PageDots.prototype._create = function() {
   this.holder.className = 'flickity-page-dots';
   // create dots, array of elements
   this.dots = [];
-  // tap
+  // events
   this.on( 'tap', this.onTap );
-
+  this.on( 'pointerDown', this.parent.childUIPointerDown.bind( this.parent ) );
 };
 
 PageDots.prototype.activate = function() {
@@ -3461,10 +3456,6 @@ proto._createPageDots = function() {
   this.on( 'cellChange', this.updatePageDots );
   this.on( 'resize', this.updatePageDots );
   this.on( 'deactivate', this.deactivatePageDots );
-
-  this.pageDots.on( 'pointerDown', function( event ) {
-    this.childUIPointerDown( event );
-  }.bind( this ));
 };
 
 proto.activatePageDots = function() {
@@ -4009,7 +4000,7 @@ return Flickity;
 }));
 
 /*!
- * Flickity v2.0.3
+ * Flickity v2.0.4
  * Touch, responsive, flickable carousels
  *
  * Licensed GPLv3 for open source use
@@ -4203,7 +4194,7 @@ return Flickity;
 }));
 
 /*!
- * imagesLoaded v4.1.0
+ * imagesLoaded v4.1.1
  * JavaScript is all like "You images are done yet or what?"
  * MIT License
  */
