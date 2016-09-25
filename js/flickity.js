@@ -73,6 +73,12 @@ function Flickity( element, options ) {
     return;
   }
   this.element = queryElement;
+
+  // Remove existing “role” attribute if set to “list”; will apply role to inner wrapper instead
+  if ( this.element.getAttribute('role') === 'list' ) {
+    this.element.removeAttribute('role');
+  }
+
   // do not initialize twice on same element
   if ( this.element.flickityGUID ) {
     var instance = instances[ this.element.flickityGUID ];
@@ -208,6 +214,8 @@ proto._createSlider = function() {
   var slider = document.createElement('div');
   slider.className = 'flickity-slider';
   slider.style[ this.originSide ] = 0;
+  // Add role="list" to improve accessibility
+  slider.setAttribute('role', 'list');
   this.slider = slider;
 };
 
@@ -231,6 +239,11 @@ proto.reloadCells = function() {
  */
 proto._makeCells = function( elems ) {
   var cellElems = this._filterFindCellElements( elems );
+
+  // Add role="listitem" to cells for improved accessibility
+  for ( var i=0; i < cellElems.length; i++ ) {
+    cellElems[i].setAttribute('role', 'listitem');
+  }
 
   // create new Flickity for collection
   var cells = cellElems.map( function( cellElem ) {
