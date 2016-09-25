@@ -46,6 +46,8 @@ PageDots.prototype._create = function() {
   // create holder element
   this.holder = document.createElement('ol');
   this.holder.className = 'flickity-page-dots';
+  // hide from screen readers
+  this.holder.setAttribute('aria-hidden', 'true');
   // create dots, array of elements
   this.dots = [];
   // events
