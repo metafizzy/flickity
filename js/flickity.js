@@ -776,7 +776,7 @@ proto.watchCSS = function() {
 // go previous/next if left/right keys pressed
 proto.onkeydown = function( event ) {
   // only work if child of carousel is focused
-  if ( this.options.accessibility && this.element.contains(document.activeElement) )) {
+  if ( this.options.accessibility && this.element.contains(document.activeElement) ) {
     if ( event.keyCode == 37 ) {
       // go left
       var leftMethod = this.options.rightToLeft ? 'next' : 'previous';
