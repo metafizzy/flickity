@@ -185,8 +185,6 @@ proto.activate = function() {
   this.reloadCells();
 
   if ( this.options.accessibility ) {
-    // allow element to focusable
-    this.element.tabIndex = 0;
     // listen for key presses
     this.element.addEventListener( 'keydown', this );
   }
@@ -777,22 +775,25 @@ proto.watchCSS = function() {
 
 // go previous/next if left/right keys pressed
 proto.onkeydown = function( event ) {
-  // only work if element is in focus
-  if ( !this.options.accessibility ||
-    ( document.activeElement && document.activeElement != this.element ) ) {
-    return;
-  }
-
-  if ( event.keyCode == 37 ) {
-    // go left
-    var leftMethod = this.options.rightToLeft ? 'next' : 'previous';
-    this.uiChange();
-    this[ leftMethod ]();
-  } else if ( event.keyCode == 39 ) {
-    // go right
-    var rightMethod = this.options.rightToLeft ? 'previous' : 'next';
-    this.uiChange();
-    this[ rightMethod ]();
+  // only work if child of carousel is focused
+  if ( this.options.accessibility && this.element.contains(document.activeElement) )) {
+    if ( event.keyCode == 37 ) {
+      // go left
+      var leftMethod = this.options.rightToLeft ? 'next' : 'previous';
+      this.uiChange();
+      this[ leftMethod ]();
+      // Focus selected element
+      this.selectedElement.tabIndex = -1;
+      this.selectedElement.focus();
+    } else if ( event.keyCode == 39 ) {
+      // go right
+      var rightMethod = this.options.rightToLeft ? 'previous' : 'next';
+      this.uiChange();
+      this[ rightMethod ]();
+      // Focus selected element
+      this.selectedElement.tabIndex = -1;
+      this.selectedElement.focus();
+    }
   }
 };
 
