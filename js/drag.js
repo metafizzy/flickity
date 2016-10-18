@@ -194,6 +194,7 @@ proto.pointerDone = function() {
 proto.dragStart = function( event, pointer ) {
   this.dragStartPosition = this.x;
   this.startAnimation();
+  window.removeEventListener( 'scroll', this );
   this.dispatchEvent( 'dragStart', event, [ pointer ] );
 };
 
