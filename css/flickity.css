@@ -54,6 +54,7 @@ http://flickity.metafizzy.co
   background: white;
   background: hsla(0, 0%, 100%, 0.75);
   cursor: pointer;
+  outline: 0;
   /* vertically center */
   -webkit-transform: translateY(-50%);
           transform: translateY(-50%);
