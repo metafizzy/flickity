@@ -1,0 +1,129 @@
+@import 'flickity-theme';
+
+.flickity {
+	&-enabled {
+		position: relative;
+		&:focus { outline: none; }
+		/* draggable */
+		&.is-draggable {
+			-webkit-tap-highlight-color: transparent;
+			        tap-highlight-color: transparent;
+			-webkit-user-select: none;
+			   -moz-user-select: none;
+			    -ms-user-select: none;
+			        user-select: none;
+			& .flickity-viewport {
+				cursor: move;
+				cursor: -webkit-grab;
+				cursor: grab;
+				&.is-pointer-down {
+					cursor: -webkit-grabbing;
+					cursor: grabbing;
+				}
+			}
+		}
+	}
+
+	&-viewport {
+		overflow: hidden;
+		position: relative;
+		height: 100%;
+	}
+
+	&-slider {
+		position: absolute;
+		width: 100%;
+		height: 100%;
+	}
+
+	&-prev-next-button {
+		position: absolute;
+		top: 50%;
+		width: $button-size;
+		height: $button-size;
+		border: none;
+		border-radius: 50%;
+		background: $button-background;
+		background: rgba($button-background, 0.75);
+		cursor: pointer;
+		/* vertically center */
+		-webkit-transform: translateY(-50%);
+		      transform: translateY(-50%);
+
+		&:hover { 
+			background: $button-background; 
+		}
+
+		&:focus {
+			outline: none;
+			box-shadow: 0 0 0 5px $button-shadow-color;
+		}
+
+		&:active {
+			opacity: $button-opacity;
+		}
+
+		&:disabled {
+			opacity: $button-opacity / 2;
+			cursor: auto;
+		}
+
+		&.previous { 
+			left: 10px; 
+		}
+
+		&.next { 
+			right: 10px; 
+		}
+
+		& svg {
+			position: absolute;
+			left: 20%;
+			top: 20%;
+			width: 60%;
+			height: 60%;
+		}
+
+		& .arrow {
+			fill: $button-arrow-fill;
+		}
+
+		/* right to left */
+		.flickity-rtl &.previous {
+			left: auto;
+			right: 10px;
+		}
+		.flickity-rtl &.next {
+			right: auto;
+			left: 10px;
+		}
+	}
+	/* ---- page dots ---- */
+
+	&-page-dots {
+		position: absolute;
+		width: 100%;
+		bottom: -25px;
+		padding: 0;
+		margin: 0;
+		list-style: none;
+		text-align: center;
+		line-height: 1;
+		.flickity-rtl & { 
+			direction: rtl; 
+		}
+		& .dot {
+			display: inline-block;
+			width: 10px;
+			height: 10px;
+			margin: 0 8px;
+			background: $page-dots-color;
+			border-radius: 50%;
+			opacity: 0.25;
+			cursor: pointer;
+			&.is-selected {
+				opacity: 1;
+			}
+		}
+	}
+}
