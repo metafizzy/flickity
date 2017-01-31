@@ -1998,6 +1998,11 @@ if ( jQuery && jQuery.bridget ) {
   jQuery.bridget( 'flickity', Flickity );
 }
 
+// set internal jQuery, for Webpack + jQuery v3, #478
+Flickity.setJQuery = function( jq ) {
+  jQuery = jq;
+};
+
 Flickity.Cell = Cell;
 
 return Flickity;
@@ -2776,7 +2781,7 @@ proto.canPreventDefaultOnPointerDown = function( event ) {
 // ----- move ----- //
 
 proto.hasDragStarted = function( moveVector ) {
-  return Math.abs( moveVector.x ) > this.options.dragThreshold;
+  return Math.abs( moveVector.x ) > this.options.dragThreshold && Math.abs( moveVector.y ) < 3;
 };
 
 // ----- up ----- //

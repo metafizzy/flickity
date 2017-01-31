@@ -181,7 +181,7 @@ proto.canPreventDefaultOnPointerDown = function( event ) {
 // ----- move ----- //
 
 proto.hasDragStarted = function( moveVector ) {
-  return Math.abs( moveVector.x ) > this.options.dragThreshold;
+  return Math.abs( moveVector.x ) > this.options.dragThreshold && Math.abs( moveVector.y ) < 3;
 };
 
 // ----- up ----- //
