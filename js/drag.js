@@ -37,7 +37,10 @@
 
 utils.extend( Flickity.defaults, {
   draggable: true,
-  dragThreshold: 3,
+  dragThreshold: {
+    x: 3,
+    y: 3
+  }
 });
 
 // ----- create ----- //
@@ -181,7 +184,7 @@ proto.canPreventDefaultOnPointerDown = function( event ) {
 // ----- move ----- //
 
 proto.hasDragStarted = function( moveVector ) {
-  return Math.abs( moveVector.x ) > this.options.dragThreshold;
+  return Math.abs( moveVector.x ) > this.options.dragThreshold.x && Math.abs( moveVector.y ) < this.options.dragThreshold.y;
 };
 
 // ----- up ----- //
@@ -214,7 +217,6 @@ proto.pointerMove = function( event, pointer ) {
 };
 
 proto.dragMove = function( event, pointer, moveVector ) {
-  event.preventDefault();
 
   this.previousDragX = this.dragX;
   // reverse if right-to-left
