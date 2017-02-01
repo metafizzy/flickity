@@ -2817,7 +2817,6 @@ proto.pointerMove = function( event, pointer ) {
 };
 
 proto.dragMove = function( event, pointer, moveVector ) {
-  event.preventDefault();
 
   this.previousDragX = this.dragX;
   // reverse if right-to-left
