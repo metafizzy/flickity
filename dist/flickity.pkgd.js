@@ -1,5 +1,5 @@
 /*!
- * Flickity PACKAGED v2.0.4
+ * Flickity PACKAGED v2.0.5
  * Touch, responsive, flickable carousels
  *
  * Licensed GPLv3 for open source use
@@ -2646,11 +2646,20 @@ utils.extend( proto, Unidragger.prototype );
 
 // --------------------------  -------------------------- //
 
+var isTouch = 'createTouch' in document;
+var isTouchmoveScrollCanceled = false;
+
 proto._createDrag = function() {
   this.on( 'activate', this.bindDrag );
   this.on( 'uiChange', this._uiChangeDrag );
   this.on( 'childUIPointerDown', this._childUIPointerDownDrag );
   this.on( 'deactivate', this.unbindDrag );
+  // HACK - add seemingly innocuous handler to fix iOS 10 scroll behavior
+  // #457, RubaXa/Sortable#973
+  if ( isTouch && !isTouchmoveScrollCanceled ) {
+    window.addEventListener( 'touchmove', function() {});
+    isTouchmoveScrollCanceled = true;
+  }
 };
 
 proto.bindDrag = function() {
@@ -2789,6 +2798,7 @@ proto.pointerDone = function() {
 proto.dragStart = function( event, pointer ) {
   this.dragStartPosition = this.x;
   this.startAnimation();
+  window.removeEventListener( 'scroll', this );
   this.dispatchEvent( 'dragStart', event, [ pointer ] );
 };
 
@@ -4000,7 +4010,7 @@ return Flickity;
 }));
 
 /*!
- * Flickity v2.0.4
+ * Flickity v2.0.5
  * Touch, responsive, flickable carousels
  *
  * Licensed GPLv3 for open source use
