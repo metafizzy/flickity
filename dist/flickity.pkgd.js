@@ -1,5 +1,5 @@
 /*!
- * Flickity PACKAGED v2.0.6
+ * Flickity PACKAGED v2.0.7
  * Touch, responsive, flickable carousels
  *
  * Licensed GPLv3 for open source use
@@ -2307,7 +2307,7 @@ return Unipointer;
 }));
 
 /*!
- * Unidragger v2.2.0
+ * Unidragger v2.2.1
  * Draggable base class
  * MIT license
  */
@@ -2343,10 +2343,6 @@ return Unipointer;
 
 
 
-// -----  ----- //
-
-function noop() {}
-
 // -------------------------- Unidragger -------------------------- //
 
 function Unidragger() {}
@@ -2364,7 +2360,6 @@ proto.unbindHandles = function() {
   this._bindHandles( false );
 };
 
-var navigator = window.navigator;
 /**
  * works as unbinder, as you can .bindHandles( false ) to unbind
  * @param {Boolean} isBind - will unbind if falsey
@@ -2372,14 +2367,11 @@ var navigator = window.navigator;
 proto._bindHandles = function( isBind ) {
   // munge isBind, default to true
   isBind = isBind === undefined ? true : !!isBind;
-  // disable scrolling via touch
-  var touchActionValue = isBind ? 'none' : '';
   // bind each handle
   var bindMethod = isBind ? 'addEventListener' : 'removeEventListener';
   for ( var i=0; i < this.handles.length; i++ ) {
     var handle = this.handles[i];
     this._bindStartEvent( handle, isBind );
-    handle.style.touchAction = touchActionValue;
     handle[ bindMethod ]( 'click', this );
   }
 };
@@ -3995,7 +3987,7 @@ return Flickity;
 }));
 
 /*!
- * Flickity v2.0.6
+ * Flickity v2.0.7
  * Touch, responsive, flickable carousels
  *
  * Licensed GPLv3 for open source use
