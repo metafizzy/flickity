@@ -2,8 +2,8 @@
   "name": "flickity",
   "description": "Touch, responsive, flickable carousels",
   "main": [
-    "js/index.js",
-    "css/flickity.css"
+    "dist/flickity.pkgd.js",
+    "dist/flickity.css"
   ],
   "dependencies": {
     "desandro-matches-selector": "^2.0.0",
