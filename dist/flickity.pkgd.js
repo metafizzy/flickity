@@ -1,5 +1,5 @@
 /*!
- * Flickity PACKAGED v2.0.7
+ * Flickity PACKAGED v2.0.8
  * Touch, responsive, flickable carousels
  *
  * Licensed GPLv3 for open source use
@@ -2316,7 +2316,7 @@ return Unipointer;
 }));
 
 /*!
- * Unidragger v2.2.1
+ * Unidragger v2.2.2
  * Draggable base class
  * MIT license
  */
@@ -2382,6 +2382,11 @@ proto._bindHandles = function( isBind ) {
     var handle = this.handles[i];
     this._bindStartEvent( handle, isBind );
     handle[ bindMethod ]( 'click', this );
+    // touch-action: none to override browser touch gestures
+    // metafizzy/flickity#540
+    if ( window.PointerEvent ) {
+      handle.style.touchAction = isBind ? 'none' : '';
+    }
   }
 };
 
@@ -2728,20 +2733,10 @@ proto.pointerDown = function( event, pointer ) {
   this.dispatchEvent( 'pointerDown', event, [ pointer ] );
 };
 
-var touchStartEvents = {
-  touchstart: true,
-  MSPointerDown: true
-};
-
-var focusNodes = {
-  INPUT: true,
-  SELECT: true
-};
-
 proto.pointerDownFocus = function( event ) {
   // focus element, if not touch, and its not an input or select
-  if ( !this.options.accessibility || touchStartEvents[ event.type ] ||
-      focusNodes[ event.target.nodeName ] ) {
+  var canPointerDown = getCanPointerDown( event );
+  if ( !this.options.accessibility || canPointerDown ) {
     return;
   }
   var prevScrollY = window.pageYOffset;
@@ -2752,11 +2747,26 @@ proto.pointerDownFocus = function( event ) {
   }
 };
 
+var touchStartEvents = {
+  touchstart: true,
+  pointerdown: true,
+};
+
+var focusNodes = {
+  INPUT: true,
+  SELECT: true,
+};
+
+function getCanPointerDown( event ) {
+  var isTouchStart = touchStartEvents[ event.type ];
+  var isFocusNode = focusNodes[ event.target.nodeName ];
+  return isTouchStart || isFocusNode;
+}
+
 proto.canPreventDefaultOnPointerDown = function( event ) {
-  // prevent default, unless touchstart or <select>
-  var isTouchstart = event.type == 'touchstart';
-  var targetNodeName = event.target.nodeName;
-  return !isTouchstart && targetNodeName != 'SELECT';
+  // prevent default, unless touchstart or input
+  var canPointerDown = getCanPointerDown( event );
+  return !canPointerDown;
 };
 
 // ----- move ----- //
@@ -3996,7 +4006,7 @@ return Flickity;
 }));
 
 /*!
- * Flickity v2.0.7
+ * Flickity v2.0.8
  * Touch, responsive, flickable carousels
  *
  * Licensed GPLv3 for open source use
