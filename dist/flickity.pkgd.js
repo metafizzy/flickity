@@ -1286,9 +1286,9 @@ proto._create = function() {
   this.x = 0;
   this.velocity = 0;
   this.originSide = this.options.rightToLeft ? 'right' : 'left';
+
   // create viewport & slider
-  this.viewport = document.createElement('div');
-  this.viewport.className = 'flickity-viewport';
+  this._createViewport();
   this._createSlider();
 
   if ( this.options.resize || this.options.watchCSS ) {
@@ -1326,11 +1326,14 @@ proto.activate = function() {
   }
 
   this.getSize();
-  // move initial cell elements so they can be loaded as cells
-  var cellElems = this._filterFindCellElements( this.element.children );
-  moveElements( cellElems, this.slider );
-  this.viewport.appendChild( this.slider );
-  this.element.appendChild( this.viewport );
+  // only move elements if we haven't defined our own viewport
+  if (!this.options.viewport && !this.options.slider) {
+    // move initial cell elements so they can be loaded as cells
+    var cellElems = this._filterFindCellElements( this.element.children );
+    moveElements( cellElems, this.slider );
+    this.viewport.appendChild( this.slider );
+    this.element.appendChild( this.viewport );
+  }
   // get cells from children
   this.reloadCells();
 
@@ -1358,11 +1361,15 @@ proto.activate = function() {
   this.isInitActivated = true;
 };
 
+Flickity.prototype._createViewport = function() {
+  this.viewport = this.options.viewport || document.createElement('div');
+  this.viewport.classList.add('flickity-viewport');
+};
+
 // slider positions the cells
-proto._createSlider = function() {
-  // slider element does all the positioning
-  var slider = document.createElement('div');
-  slider.className = 'flickity-slider';
+Flickity.prototype._createSlider = function() {
+  var slider = this.options.slider || document.createElement('div');
+  slider.classList.add('flickity-slider');
   slider.style[ this.originSide ] = 0;
   this.slider = slider;
 };
@@ -1953,9 +1960,11 @@ proto.deactivate = function() {
     cell.destroy();
   });
   this.unselectSelectedSlide();
-  this.element.removeChild( this.viewport );
-  // move child elements back into element
-  moveElements( this.slider.children, this.element );
+  if (!this.options.viewport && !this.options.slider) {
+    this.element.removeChild( this.viewport );
+    // move child elements back into element
+    moveElements( this.slider.children, this.element );
+  }
   if ( this.options.accessibility ) {
     this.element.removeAttribute('tabIndex');
     this.element.removeEventListener( 'keydown', this );
