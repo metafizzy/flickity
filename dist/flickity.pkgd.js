@@ -1363,13 +1363,13 @@ proto.activate = function() {
 
 Flickity.prototype._createViewport = function() {
   this.viewport = this.options.viewport || document.createElement('div');
-  this.viewport.className = 'flickity-viewport';
+  this.viewport.classList.add('flickity-viewport');
 };
 
 // slider positions the cells
 Flickity.prototype._createSlider = function() {
   var slider = this.options.slider || document.createElement('div');
-  slider.className = 'flickity-slider';
+  slider.classList.add('flickity-slider');
   slider.style[ this.originSide ] = 0;
   this.slider = slider;
 };
