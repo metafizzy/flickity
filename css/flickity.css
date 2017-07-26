@@ -20,6 +20,10 @@ http://flickity.metafizzy.co
   height: 100%;
 }
 
+.flickity-slider img {
+  max-width: initial; /* reset normalized RWD's default of 100% */
+}
+
 /* draggable */
 
 .flickity-enabled.is-draggable {
