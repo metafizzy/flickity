@@ -162,20 +162,16 @@ proto.pointerDownFocus = function( event ) {
   }
 };
 
-var touchStartEvents = {
-  touchstart: true,
-  pointerdown: true,
-};
-
 var focusNodes = {
   INPUT: true,
   SELECT: true,
 };
 
 function getCanPointerDown( event ) {
-  var isTouchStart = touchStartEvents[ event.type ];
+  var isTouchStart = event.type == 'touchstart';
+  var isTouchPointer = event.pointerType == 'touch';
   var isFocusNode = focusNodes[ event.target.nodeName ];
-  return isTouchStart || isFocusNode;
+  return isTouchStart || isTouchPointer || isFocusNode;
 }
 
 proto.canPreventDefaultOnPointerDown = function( event ) {
