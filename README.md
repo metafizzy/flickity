@@ -138,6 +138,9 @@ var flky = new Flickity( '.gallery', {
   // sets the height of gallery
   // disable if gallery already has height set with CSS
 
+  sliderTagName: 'div',
+  // sets the HTML element tagname of the slider wrapper
+
   watchCSS: false,
   // watches the content of :after of the element
   // activates if #element:after { content: 'flickity' }
