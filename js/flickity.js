@@ -65,6 +65,7 @@ var GUID = 0;
 var instances = {};
 
 function Flickity( element, options ) {
+
   var queryElement = utils.getQueryElement( element );
   if ( !queryElement ) {
     if ( console ) {
@@ -98,6 +99,7 @@ Flickity.defaults = {
   cellAlign: 'center',
   // cellSelector: undefined,
   // contain: false,
+  sliderTagName: 'div',
   freeScrollFriction: 0.075, // friction when free-scrolling
   friction: 0.28, // friction when selecting
   namespaceJQueryEvents: true,
@@ -205,7 +207,7 @@ proto.activate = function() {
 // slider positions the cells
 proto._createSlider = function() {
   // slider element does all the positioning
-  var slider = document.createElement('div');
+  var slider = document.createElement(this.options.sliderTagName);
   slider.className = 'flickity-slider';
   slider.style[ this.originSide ] = 0;
   this.slider = slider;
