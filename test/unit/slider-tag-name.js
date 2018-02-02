@@ -6,7 +6,7 @@ QUnit.test( 'sliderTagName', function( assert ) {
       flkty,
       flktySlider;
 
-  tagNames = ['ul','section','figure'];
+  tagNames = ['ul','section','figure', 'random-custom-js-framework-tagname-or-wutever'];
 
   for(var i = 0; i < tagNames.length; i++) {
 
