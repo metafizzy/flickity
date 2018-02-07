@@ -9,26 +9,26 @@ See [flickity.metafizzy.co](http://flickity.metafizzy.co) for complete docs and 
 ### Download
 
 + CSS:
-  - [flickity.min.css](https://npmcdn.com/flickity@2.0/dist/flickity.pkgd.min.css) minified, or
-  - [flickity.css](https://npmcdn.com/flickity@2.0/dist/flickity.pkgd.css) un-minified
+  - [flickity.min.css](https://unpkg.com/flickity@2.0/dist/flickity.min.css) minified, or
+  - [flickity.css](https://unpkg.com/flickity@2.0/dist/flickity.css) un-minified
 + JavaScript:
-  - [flickity.pkgd.min.js](https://npmcdn.com/flickity@2.0/dist/flickity.pkgd.min.js) minified, or
-  - [flickity.pkgd.js](https://npmcdn.com/flickity@2.0/dist/flickity.pkgd.js) un-minified
+  - [flickity.pkgd.min.js](https://unpkg.com/flickity@2.0/dist/flickity.pkgd.min.js) minified, or
+  - [flickity.pkgd.js](https://unpkg.com/flickity@2.0/dist/flickity.pkgd.js) un-minified
 
 ### CDN
 
-Link directly to Flickity files on [npmcdn](https://npmcdn.com).
+Link directly to Flickity files on [unpkg](https://unpkg.com).
 
 ``` html
-<link rel="stylesheet" href="https://npmcdn.com/flickity@2.0/dist/flickity.pkgd.min.css">
+<link rel="stylesheet" href="https://unpkg.com/flickity@2.0/dist/flickity.min.css">
 <!-- or -->
-<link rel="stylesheet" href="https://npmcdn.com/flickity@2.0/dist/flickity.pkgd.css">
+<link rel="stylesheet" href="https://unpkg.com/flickity@2.0/dist/flickity.css">
 ```
 
 ``` html
-<script src="https://npmcdn.com/flickity@2.0/dist/flickity.pkgd.min.js"></script>
+<script src="https://unpkg.com/flickity@2.0/dist/flickity.pkgd.min.js"></script>
 <!-- or -->
-<script src="https://npmcdn.com/flickity@2.0/dist/flickity.pkgd.js"></script>
+<script src="https://unpkg.com/flickity@2.0/dist/flickity.pkgd.js"></script>
 ```
 
 ### Package managers

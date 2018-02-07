@@ -1,6 +1,6 @@
 {
   "name": "flickity",
-  "version": "2.0.2",
+  "version": "2.0.10",
   "description": "Touch, responsive, flickable carousels",
   "main": "js/index.js",
   "style": "css/flickity.css",
@@ -10,7 +10,7 @@
     "fizzy-ui-utils": "^2.0.0",
     "get-size": "^2.0.0",
     "tap-listener": "^2.0.0",
-    "unidragger": "^2.1.0"
+    "unidragger": "^2.2.3"
   },
   "devDependencies": {
     "flickity-imagesloaded": "^2.0.0",

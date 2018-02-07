@@ -48,14 +48,24 @@ Flickity.createMethods.push('_createDrag');
 
 var proto = Flickity.prototype;
 utils.extend( proto, Unidragger.prototype );
+proto._touchActionValue = 'pan-y';
 
 // --------------------------  -------------------------- //
+
+var isTouch = 'createTouch' in document;
+var isTouchmoveScrollCanceled = false;
 
 proto._createDrag = function() {
   this.on( 'activate', this.bindDrag );
   this.on( 'uiChange', this._uiChangeDrag );
   this.on( 'childUIPointerDown', this._childUIPointerDownDrag );
   this.on( 'deactivate', this.unbindDrag );
+  // HACK - add seemingly innocuous handler to fix iOS 10 scroll behavior
+  // #457, RubaXa/Sortable#973
+  if ( isTouch && !isTouchmoveScrollCanceled ) {
+    window.addEventListener( 'touchmove', function() {});
+    isTouchmoveScrollCanceled = true;
+  }
 };
 
 proto.bindDrag = function() {
@@ -92,6 +102,7 @@ proto._childUIPointerDownDrag = function( event ) {
 var cursorNodes = {
   TEXTAREA: true,
   INPUT: true,
+  OPTION: true,
 };
 
 // input types that do not have text fields
@@ -105,7 +116,7 @@ var clickTypes = {
 };
 
 proto.pointerDown = function( event, pointer ) {
-  // dismiss inputs with text fields. #404
+  // dismiss inputs with text fields. #403, #404
   var isCursorInput = cursorNodes[ event.target.nodeName ] &&
     !clickTypes[ event.target.type ];
   if ( isCursorInput ) {
@@ -137,20 +148,10 @@ proto.pointerDown = function( event, pointer ) {
   this.dispatchEvent( 'pointerDown', event, [ pointer ] );
 };
 
-var touchStartEvents = {
-  touchstart: true,
-  MSPointerDown: true
-};
-
-var focusNodes = {
-  INPUT: true,
-  SELECT: true
-};
-
 proto.pointerDownFocus = function( event ) {
   // focus element, if not touch, and its not an input or select
-  if ( !this.options.accessibility || touchStartEvents[ event.type ] ||
-      focusNodes[ event.target.nodeName ] ) {
+  var canPointerDown = getCanPointerDown( event );
+  if ( !this.options.accessibility || canPointerDown ) {
     return;
   }
   var prevScrollY = window.pageYOffset;
@@ -161,11 +162,22 @@ proto.pointerDownFocus = function( event ) {
   }
 };
 
+var focusNodes = {
+  INPUT: true,
+  SELECT: true,
+};
+
+function getCanPointerDown( event ) {
+  var isTouchStart = event.type == 'touchstart';
+  var isTouchPointer = event.pointerType == 'touch';
+  var isFocusNode = focusNodes[ event.target.nodeName ];
+  return isTouchStart || isTouchPointer || isFocusNode;
+}
+
 proto.canPreventDefaultOnPointerDown = function( event ) {
-  // prevent default, unless touchstart or <select>
-  var isTouchstart = event.type == 'touchstart';
-  var targetNodeName = event.target.nodeName;
-  return !isTouchstart && targetNodeName != 'SELECT';
+  // prevent default, unless touchstart or input
+  var canPointerDown = getCanPointerDown( event );
+  return !canPointerDown;
 };
 
 // ----- move ----- //
@@ -193,6 +205,7 @@ proto.pointerDone = function() {
 proto.dragStart = function( event, pointer ) {
   this.dragStartPosition = this.x;
   this.startAnimation();
+  window.removeEventListener( 'scroll', this );
   this.dispatchEvent( 'dragStart', event, [ pointer ] );
 };
 

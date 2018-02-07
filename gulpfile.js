@@ -156,7 +156,6 @@ gulp.task( 'version', function() {
 
 gulp.task( 'default', [
   'hint',
-  'jsonlint',
   'uglify',
-  'css'
+  'css',
 ]);

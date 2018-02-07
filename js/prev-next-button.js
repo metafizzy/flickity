@@ -64,16 +64,10 @@ PrevNextButton.prototype._create = function() {
   // create arrow
   var svg = this.createSVG();
   element.appendChild( svg );
-  // update on select
-  this.parent.on( 'select', function() {
-    this.update();
-  }.bind( this ));
-  // tap
+  // events
   this.on( 'tap', this.onTap );
-  // pointerDown
-  this.on( 'pointerDown', function onPointerDown( button, event ) {
-    this.parent.childUIPointerDown( event );
-  }.bind( this ));
+  this.parent.on( 'select', this.update.bind( this ) );
+  this.on( 'pointerDown', this.parent.childUIPointerDown.bind( this.parent ) );
 };
 
 PrevNextButton.prototype.activate = function() {

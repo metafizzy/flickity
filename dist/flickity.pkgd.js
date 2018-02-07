@@ -1,30 +1,29 @@
 /*!
- * Flickity PACKAGED v2.0.2
+ * Flickity PACKAGED v2.0.10
  * Touch, responsive, flickable carousels
  *
  * Licensed GPLv3 for open source use
  * or Flickity Commercial License for commercial use
  *
  * http://flickity.metafizzy.co
- * Copyright 2016 Metafizzy
+ * Copyright 2017 Metafizzy
  */
 
 /**
  * Bridget makes jQuery widgets
- * v2.0.0
+ * v2.0.1
  * MIT license
  */
 
 /* jshint browser: true, strict: true, undef: true, unused: true */
 
 ( function( window, factory ) {
-  'use strict';
-  /* globals define: false, module: false, require: false */
-
+  // universal module definition
+  /*jshint strict: false */ /* globals define, module, require */
   if ( typeof define == 'function' && define.amd ) {
     // AMD
     define( 'jquery-bridget/jquery-bridget',[ 'jquery' ], function( jQuery ) {
-      factory( window, jQuery );
+      return factory( window, jQuery );
     });
   } else if ( typeof module == 'object' && module.exports ) {
     // CommonJS
@@ -155,7 +154,7 @@ return jQueryBridget;
 }));
 
 /**
- * EvEmitter v1.0.3
+ * EvEmitter v1.1.0
  * Lil' event emitter
  * MIT License
  */
@@ -235,13 +234,14 @@ proto.emitEvent = function( eventName, args ) {
   if ( !listeners || !listeners.length ) {
     return;
   }
-  var i = 0;
-  var listener = listeners[i];
+  // copy over to avoid interference if .off() in listener
+  listeners = listeners.slice(0);
   args = args || [];
   // once stuff
   var onceListeners = this._onceEvents && this._onceEvents[ eventName ];
 
-  while ( listener ) {
+  for ( var i=0; i < listeners.length; i++ ) {
+    var listener = listeners[i]
     var isOnce = onceListeners && onceListeners[ listener ];
     if ( isOnce ) {
       // remove listener
@@ -252,12 +252,14 @@ proto.emitEvent = function( eventName, args ) {
     }
     // trigger listener
     listener.apply( this, args );
-    // get next listener
-    i += isOnce ? 0 : 1;
-    listener = listeners[i];
   }
 
   return this;
+};
+
+proto.allOff = function() {
+  delete this._events;
+  delete this._onceEvents;
 };
 
 return EvEmitter;
@@ -475,7 +477,7 @@ return getSize;
 });
 
 /**
- * matchesSelector v2.0.1
+ * matchesSelector v2.0.2
  * matchesSelector( element, '.selector' )
  * MIT license
  */
@@ -501,7 +503,7 @@ return getSize;
   'use strict';
 
   var matchesMethod = ( function() {
-    var ElemProto = Element.prototype;
+    var ElemProto = window.Element.prototype;
     // check for the standard method name first
     if ( ElemProto.matches ) {
       return 'matches';
@@ -529,7 +531,7 @@ return getSize;
 }));
 
 /**
- * Fizzy UI utils v2.0.2
+ * Fizzy UI utils v2.0.5
  * MIT license
  */
 
@@ -590,7 +592,8 @@ utils.makeArray = function( obj ) {
   if ( Array.isArray( obj ) ) {
     // use object if already an array
     ary = obj;
-  } else if ( obj && typeof obj.length == 'number' ) {
+  } else if ( obj && typeof obj == 'object' &&
+    typeof obj.length == 'number' ) {
     // convert nodeList to array
     for ( var i=0; i < obj.length; i++ ) {
       ary.push( obj[i] );
@@ -614,7 +617,7 @@ utils.removeFrom = function( ary, obj ) {
 // ----- getParent ----- //
 
 utils.getParent = function( elem, selector ) {
-  while ( elem != document.body ) {
+  while ( elem.parentNode && elem != document.body ) {
     elem = elem.parentNode;
     if ( matchesSelector( elem, selector ) ) {
       return elem;
@@ -702,7 +705,8 @@ utils.debounceMethod = function( _class, methodName, threshold ) {
 utils.docReady = function( callback ) {
   var readyState = document.readyState;
   if ( readyState == 'complete' || readyState == 'interactive' ) {
-    callback();
+    // do async to allow for other scripts to run. metafizzy/flickity#441
+    setTimeout( callback );
   } else {
     document.addEventListener( 'DOMContentLoaded', callback );
   }
@@ -750,7 +754,7 @@ utils.htmlInit = function( WidgetClass, namespace ) {
       }
       // initialize
       var instance = new WidgetClass( elem, options );
-      // make available via $().data('layoutname')
+      // make available via $().data('namespace')
       if ( jQuery ) {
         jQuery.data( elem, namespace, instance );
       }
@@ -1228,6 +1232,13 @@ function Flickity( element, options ) {
     return;
   }
   this.element = queryElement;
+  // do not initialize twice on same element
+  if ( this.element.flickityGUID ) {
+    var instance = instances[ this.element.flickityGUID ];
+    instance.option( options );
+    return instance;
+  }
+
   // add jQuery
   if ( jQuery ) {
     this.$element = jQuery( this.element );
@@ -1991,6 +2002,11 @@ if ( jQuery && jQuery.bridget ) {
   jQuery.bridget( 'flickity', Flickity );
 }
 
+// set internal jQuery, for Webpack + jQuery v3, #478
+Flickity.setJQuery = function( jq ) {
+  jQuery = jq;
+};
+
 Flickity.Cell = Cell;
 
 return Flickity;
@@ -1998,7 +2014,7 @@ return Flickity;
 }));
 
 /*!
- * Unipointer v2.1.0
+ * Unipointer v2.2.0
  * base class for doing one thing with pointer event
  * MIT license
  */
@@ -2057,12 +2073,9 @@ proto._bindStartEvent = function( elem, isBind ) {
   isBind = isBind === undefined ? true : !!isBind;
   var bindMethod = isBind ? 'addEventListener' : 'removeEventListener';
 
-  if ( window.navigator.pointerEnabled ) {
-    // W3C Pointer Events, IE11. See https://coderwall.com/p/mfreca
+  if ( window.PointerEvent ) {
+    // Pointer Events. Chrome 55, IE11, Edge 14
     elem[ bindMethod ]( 'pointerdown', this );
-  } else if ( window.navigator.msPointerEnabled ) {
-    // IE10 Pointer Events
-    elem[ bindMethod ]( 'MSPointerDown', this );
   } else {
     // listen for both, for devices like Chrome Pixel
     elem[ bindMethod ]( 'mousedown', this );
@@ -2103,7 +2116,6 @@ proto.ontouchstart = function( event ) {
   this._pointerDown( event, event.changedTouches[0] );
 };
 
-proto.onMSPointerDown =
 proto.onpointerdown = function( event ) {
   this._pointerDown( event, event );
 };
@@ -2138,7 +2150,6 @@ var postStartEvents = {
   mousedown: [ 'mousemove', 'mouseup' ],
   touchstart: [ 'touchmove', 'touchend', 'touchcancel' ],
   pointerdown: [ 'pointermove', 'pointerup', 'pointercancel' ],
-  MSPointerDown: [ 'MSPointerMove', 'MSPointerUp', 'MSPointerCancel' ]
 };
 
 proto._bindPostStartEvents = function( event ) {
@@ -2173,7 +2184,6 @@ proto.onmousemove = function( event ) {
   this._pointerMove( event, event );
 };
 
-proto.onMSPointerMove =
 proto.onpointermove = function( event ) {
   if ( event.pointerId == this.pointerIdentifier ) {
     this._pointerMove( event, event );
@@ -2209,7 +2219,6 @@ proto.onmouseup = function( event ) {
   this._pointerUp( event, event );
 };
 
-proto.onMSPointerUp =
 proto.onpointerup = function( event ) {
   if ( event.pointerId == this.pointerIdentifier ) {
     this._pointerUp( event, event );
@@ -2255,7 +2264,6 @@ proto.pointerDone = noop;
 
 // ----- pointer cancel ----- //
 
-proto.onMSPointerCancel =
 proto.onpointercancel = function( event ) {
   if ( event.pointerId == this.pointerIdentifier ) {
     this._pointerCancel( event, event );
@@ -2302,7 +2310,7 @@ return Unipointer;
 }));
 
 /*!
- * Unidragger v2.1.0
+ * Unidragger v2.2.3
  * Draggable base class
  * MIT license
  */
@@ -2338,10 +2346,6 @@ return Unipointer;
 
 
 
-// -----  ----- //
-
-function noop() {}
-
 // -------------------------- Unidragger -------------------------- //
 
 function Unidragger() {}
@@ -2359,7 +2363,6 @@ proto.unbindHandles = function() {
   this._bindHandles( false );
 };
 
-var navigator = window.navigator;
 /**
  * works as unbinder, as you can .bindHandles( false ) to unbind
  * @param {Boolean} isBind - will unbind if falsey
@@ -2367,30 +2370,22 @@ var navigator = window.navigator;
 proto._bindHandles = function( isBind ) {
   // munge isBind, default to true
   isBind = isBind === undefined ? true : !!isBind;
-  // extra bind logic
-  var binderExtra;
-  if ( navigator.pointerEnabled ) {
-    binderExtra = function( handle ) {
-      // disable scrolling on the element
-      handle.style.touchAction = isBind ? 'none' : '';
-    };
-  } else if ( navigator.msPointerEnabled ) {
-    binderExtra = function( handle ) {
-      // disable scrolling on the element
-      handle.style.msTouchAction = isBind ? 'none' : '';
-    };
-  } else {
-    binderExtra = noop;
-  }
   // bind each handle
   var bindMethod = isBind ? 'addEventListener' : 'removeEventListener';
   for ( var i=0; i < this.handles.length; i++ ) {
     var handle = this.handles[i];
     this._bindStartEvent( handle, isBind );
-    binderExtra( handle );
     handle[ bindMethod ]( 'click', this );
+    // touch-action: none to override browser touch gestures
+    // metafizzy/flickity#540
+    if ( window.PointerEvent ) {
+      handle.style.touchAction = isBind ? this._touchActionValue : '';
+    }
   }
 };
+
+// prototype so it can be overwriteable by Flickity
+proto._touchActionValue = 'none';
 
 // ----- start event ----- //
 
@@ -2636,14 +2631,24 @@ Flickity.createMethods.push('_createDrag');
 
 var proto = Flickity.prototype;
 utils.extend( proto, Unidragger.prototype );
+proto._touchActionValue = 'pan-y';
 
 // --------------------------  -------------------------- //
+
+var isTouch = 'createTouch' in document;
+var isTouchmoveScrollCanceled = false;
 
 proto._createDrag = function() {
   this.on( 'activate', this.bindDrag );
   this.on( 'uiChange', this._uiChangeDrag );
   this.on( 'childUIPointerDown', this._childUIPointerDownDrag );
   this.on( 'deactivate', this.unbindDrag );
+  // HACK - add seemingly innocuous handler to fix iOS 10 scroll behavior
+  // #457, RubaXa/Sortable#973
+  if ( isTouch && !isTouchmoveScrollCanceled ) {
+    window.addEventListener( 'touchmove', function() {});
+    isTouchmoveScrollCanceled = true;
+  }
 };
 
 proto.bindDrag = function() {
@@ -2680,6 +2685,7 @@ proto._childUIPointerDownDrag = function( event ) {
 var cursorNodes = {
   TEXTAREA: true,
   INPUT: true,
+  OPTION: true,
 };
 
 // input types that do not have text fields
@@ -2693,7 +2699,7 @@ var clickTypes = {
 };
 
 proto.pointerDown = function( event, pointer ) {
-  // dismiss inputs with text fields. #404
+  // dismiss inputs with text fields. #403, #404
   var isCursorInput = cursorNodes[ event.target.nodeName ] &&
     !clickTypes[ event.target.type ];
   if ( isCursorInput ) {
@@ -2725,20 +2731,10 @@ proto.pointerDown = function( event, pointer ) {
   this.dispatchEvent( 'pointerDown', event, [ pointer ] );
 };
 
-var touchStartEvents = {
-  touchstart: true,
-  MSPointerDown: true
-};
-
-var focusNodes = {
-  INPUT: true,
-  SELECT: true
-};
-
 proto.pointerDownFocus = function( event ) {
   // focus element, if not touch, and its not an input or select
-  if ( !this.options.accessibility || touchStartEvents[ event.type ] ||
-      focusNodes[ event.target.nodeName ] ) {
+  var canPointerDown = getCanPointerDown( event );
+  if ( !this.options.accessibility || canPointerDown ) {
     return;
   }
   var prevScrollY = window.pageYOffset;
@@ -2749,11 +2745,22 @@ proto.pointerDownFocus = function( event ) {
   }
 };
 
+var focusNodes = {
+  INPUT: true,
+  SELECT: true,
+};
+
+function getCanPointerDown( event ) {
+  var isTouchStart = event.type == 'touchstart';
+  var isTouchPointer = event.pointerType == 'touch';
+  var isFocusNode = focusNodes[ event.target.nodeName ];
+  return isTouchStart || isTouchPointer || isFocusNode;
+}
+
 proto.canPreventDefaultOnPointerDown = function( event ) {
-  // prevent default, unless touchstart or <select>
-  var isTouchstart = event.type == 'touchstart';
-  var targetNodeName = event.target.nodeName;
-  return !isTouchstart && targetNodeName != 'SELECT';
+  // prevent default, unless touchstart or input
+  var canPointerDown = getCanPointerDown( event );
+  return !canPointerDown;
 };
 
 // ----- move ----- //
@@ -2781,6 +2788,7 @@ proto.pointerDone = function() {
 proto.dragStart = function( event, pointer ) {
   this.dragStartPosition = this.x;
   this.startAnimation();
+  window.removeEventListener( 'scroll', this );
   this.dispatchEvent( 'dragStart', event, [ pointer ] );
 };
 
@@ -3140,16 +3148,10 @@ PrevNextButton.prototype._create = function() {
   // create arrow
   var svg = this.createSVG();
   element.appendChild( svg );
-  // update on select
-  this.parent.on( 'select', function() {
-    this.update();
-  }.bind( this ));
-  // tap
+  // events
   this.on( 'tap', this.onTap );
-  // pointerDown
-  this.on( 'pointerDown', function onPointerDown( button, event ) {
-    this.parent.childUIPointerDown( event );
-  }.bind( this ));
+  this.parent.on( 'select', this.update.bind( this ) );
+  this.on( 'pointerDown', this.parent.childUIPointerDown.bind( this.parent ) );
 };
 
 PrevNextButton.prototype.activate = function() {
@@ -3351,9 +3353,9 @@ PageDots.prototype._create = function() {
   this.holder.className = 'flickity-page-dots';
   // create dots, array of elements
   this.dots = [];
-  // tap
+  // events
   this.on( 'tap', this.onTap );
-
+  this.on( 'pointerDown', this.parent.childUIPointerDown.bind( this.parent ) );
 };
 
 PageDots.prototype.activate = function() {
@@ -3454,10 +3456,6 @@ proto._createPageDots = function() {
   this.on( 'cellChange', this.updatePageDots );
   this.on( 'resize', this.updatePageDots );
   this.on( 'deactivate', this.deactivatePageDots );
-
-  this.pageDots.on( 'pointerDown', function( button, event ) {
-    this.childUIPointerDown( event );
-  }.bind( this ));
 };
 
 proto.activatePageDots = function() {
@@ -4002,14 +4000,14 @@ return Flickity;
 }));
 
 /*!
- * Flickity v2.0.2
+ * Flickity v2.0.10
  * Touch, responsive, flickable carousels
  *
  * Licensed GPLv3 for open source use
  * or Flickity Commercial License for commercial use
  *
  * http://flickity.metafizzy.co
- * Copyright 2016 Metafizzy
+ * Copyright 2017 Metafizzy
  */
 
 ( function( window, factory ) {
@@ -4045,7 +4043,7 @@ return Flickity;
 });
 
 /*!
- * Flickity asNavFor v2.0.0
+ * Flickity asNavFor v2.0.1
  * enable asNavFor for Flickity
  */
 
@@ -4059,26 +4057,22 @@ return Flickity;
     define( 'flickity-as-nav-for/as-nav-for',[
       'flickity/js/index',
       'fizzy-ui-utils/utils'
-    ], function( classie, Flickity, utils ) {
-      return factory( window, classie, Flickity, utils );
-    });
+    ], factory );
   } else if ( typeof module == 'object' && module.exports ) {
     // CommonJS
     module.exports = factory(
-      window,
       require('flickity'),
       require('fizzy-ui-utils')
     );
   } else {
     // browser global
     window.Flickity = factory(
-      window,
       window.Flickity,
       window.fizzyUIUtils
     );
   }
 
-}( window, function factory( window, Flickity, utils ) {
+}( window, function factory( Flickity, utils ) {
 
 
 
@@ -4124,26 +4118,37 @@ proto.setNavCompanion = function( elem ) {
   // click
   this.on( 'staticClick', this.onNavStaticClick );
 
-  this.navCompanionSelect();
+  this.navCompanionSelect( true );
 };
 
-proto.navCompanionSelect = function() {
+proto.navCompanionSelect = function( isInstant ) {
   if ( !this.navCompanion ) {
     return;
   }
   // select slide that matches first cell of slide
   var selectedCell = this.navCompanion.selectedCells[0];
-  var cellIndex = this.navCompanion.cells.indexOf( selectedCell );
-  this.selectCell( cellIndex );
+  var firstIndex = this.navCompanion.cells.indexOf( selectedCell );
+  var lastIndex = firstIndex + this.navCompanion.selectedCells.length - 1;
+  var selectIndex = Math.floor( lerp( firstIndex, lastIndex,
+    this.navCompanion.cellAlign ) );
+  this.selectCell( selectIndex, false, isInstant );
   // set nav selected class
   this.removeNavSelectedElements();
   // stop if companion has more cells than this one
-  if ( cellIndex >= this.cells.length ) {
+  if ( selectIndex >= this.cells.length ) {
     return;
   }
-  this.navSelectedElements = this.slides[ this.selectedIndex ].getCellElements();
+
+  var selectedCells = this.cells.slice( firstIndex, lastIndex + 1 );
+  this.navSelectedElements = selectedCells.map( function( cell ) {
+    return cell.element;
+  });
   this.changeNavSelectedClass('add');
 };
+
+function lerp( a, b, t ) {
+  return ( b - a ) * t + a;
+}
 
 proto.changeNavSelectedClass = function( method ) {
   this.navSelectedElements.forEach( function( navElem ) {
@@ -4152,7 +4157,7 @@ proto.changeNavSelectedClass = function( method ) {
 };
 
 proto.activateAsNavFor = function() {
-  this.navCompanionSelect();
+  this.navCompanionSelect( true );
 };
 
 proto.removeNavSelectedElements = function() {
@@ -4189,7 +4194,7 @@ return Flickity;
 }));
 
 /*!
- * imagesLoaded v4.1.0
+ * imagesLoaded v4.1.3
  * JavaScript is all like "You images are done yet or what?"
  * MIT License
  */
@@ -4220,7 +4225,7 @@ return Flickity;
     );
   }
 
-})( window,
+})( typeof window !== 'undefined' ? window : this,
 
 // --------------------------  factory -------------------------- //
 
