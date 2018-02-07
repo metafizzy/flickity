@@ -136,7 +136,7 @@ proto._create = function() {
     this.viewport = this.element.querySelector('.flickity-viewport');
     if ( !this.viewport && console ) {
       console.error( 'Could not find ".flickity-viewport"' );
-      return
+      return;
     }
   } else {
     this.viewport = document.createElement('div');
@@ -220,7 +220,7 @@ proto._createSlider = function() {
     this.slider = this.element.querySelector('.flickity-slider');
     if ( !this.slider && console ) {
       console.error( 'Could not find ".flickity-slider"' );
-      return
+      return;
     }
   } else {
     this.slider = document.createElement('div');
@@ -817,9 +817,9 @@ proto.deactivate = function() {
     cell.destroy();
   });
   this.unselectSelectedSlide();
-  this.options.noDomMod || this.element.removeChild( this.viewport );
+  if (! this.options.noDomMod ) this.element.removeChild( this.viewport );
   // move child elements back into element
-  this.options.noDomMod || moveElements( this.slider.children, this.element );
+  if (! this.options.noDomMod ) moveElements( this.slider.children, this.element );
   if ( this.options.accessibility ) {
     this.element.removeAttribute('tabIndex');
     this.element.removeEventListener( 'keydown', this );
