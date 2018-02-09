@@ -125,6 +125,11 @@ http://flickity.metafizzy.co
   cursor: pointer;
 }
 
+.flickity-page-dots .dot span{
+    font-size: 0;
+    overflow: hidden;
+}
+
 .flickity-page-dots .dot.is-selected {
   opacity: 1;
 }
