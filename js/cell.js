@@ -39,6 +39,7 @@ var proto = Cell.prototype;
 
 proto.create = function() {
   this.element.style.position = 'absolute';
+  this.element.setAttribute( 'aria-selected', 'false' );
   this.x = 0;
   this.shift = 0;
 };
@@ -47,6 +48,7 @@ proto.destroy = function() {
   // reset style
   this.element.style.position = '';
   var side = this.parent.originSide;
+  this.element.removeAttribute('aria-selected');
   this.element.style[ side ] = '';
 };
 
