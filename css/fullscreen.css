@@ -29,16 +29,26 @@ html.is-flickity-fullscreen {
   overflow: hidden;
 }
 
-/* fullscreen buttons */
+/* ---- flickity-fullscreen-button ---- */
 
 .flickity-fullscreen-button {
   display: block;
-  position: absolute;
   right: 10px;
   top: 10px;
+  width: 24px;
+  height: 24px;
+  border-radius: 4px;
 }
 
-.flickity-fullscreen-button.collapse { display: none; }
+.flickity-fullscreen-button-exit { display: none; }
 
-.flickity-enabled.is-fullscreen .flickity-fullscreen-button.collapse { display: block; }
-.flickity-enabled.is-fullscreen .flickity-fullscreen-button.expand { display: none; }
+.flickity-enabled.is-fullscreen .flickity-fullscreen-button-exit { display: block; }
+.flickity-enabled.is-fullscreen .flickity-fullscreen-button-view { display: none; }
+
+.flickity-fullscreen-button .flickity-button-icon {
+  position: absolute;
+  width: 16px;
+  height: 16px;
+  left: 4px;
+  top: 4px;
+}

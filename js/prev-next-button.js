@@ -52,14 +52,14 @@ PrevNextButton.prototype._create = function() {
   this.isLeft = this.direction == leftDirection;
 
   var element = this.element = document.createElement('button');
-  element.className = 'flickity-prev-next-button';
+  element.className = 'flickity-button flickity-prev-next-button';
   element.className += this.isPrevious ? ' previous' : ' next';
   // prevent button from submitting form http://stackoverflow.com/a/10836076/182183
   element.setAttribute( 'type', 'button' );
   // init as disabled
   this.disable();
 
-  element.setAttribute( 'aria-label', this.isPrevious ? 'previous' : 'next' );
+  element.setAttribute( 'aria-label', this.isPrevious ? 'Previous' : 'Next' );
 
   // create arrow
   var svg = this.createSVG();
@@ -89,6 +89,7 @@ PrevNextButton.prototype.deactivate = function() {
 
 PrevNextButton.prototype.createSVG = function() {
   var svg = document.createElementNS( svgURI, 'svg');
+  svg.setAttribute( 'class', 'flickity-button-icon' );
   svg.setAttribute( 'viewBox', '0 0 100 100' );
   var path = document.createElementNS( svgURI, 'path');
   var pathMovements = getArrowMovements( this.parent.options.arrowShape );

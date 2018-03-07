@@ -32,7 +32,6 @@
 
     .carousel {
       margin: 80px 0;
-/*      height: 240px;*/
     }
 
     .carousel-cell {
@@ -49,7 +48,7 @@
     }
 
     .carousel.is-fullscreen .carousel-cell {
-      height: 100%;
+/*      width: 100%;*/
     }
 
     .carousel.is-fullscreen .carousel-cell img {
@@ -132,6 +131,15 @@
     <p>Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
   </div>
 
+  <svg viewBox="0 0 32 32" width="32" height="32">
+    <path d="M0 32 V 20 H 4 v 8 h 8 v 4 Z m 32 0 V 20H28v8H20v4ZM0 0V12H4V4h8V0ZM20 0V4h8v8h4V0Z" />
+  </svg>
+
+  <svg viewBox="0 0 32 32" style="width: 32px; height: 32px">
+    <path d="M 0 0 h12 v4 h-8 v8 h-4 Z M 32 0 v12 h-4 v-8 h-8 v-4 Z
+      M 0 32 v-12 h4 v8 h8 v4 Z M 32 32 h-12 v-4 h8 v-8 h4 Z" />
+  </svg>
+
 </div>
 
 <script src="../bower_components/get-size/get-size.js"></script>
@@ -164,7 +172,7 @@ var flkty = new Flickity( carousel, {
 });
 
 document.querySelector('.expand-button').onclick = function() {
-  flkty.expandFullscreen();
+  flkty.viewFullscreen();
 }
 
 </script>

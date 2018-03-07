@@ -38,8 +38,8 @@ proto._createFullscreen = function() {
   // property
   this.isFullscreen = false;
   // buttons
-  this.expandFullscreenButton = new FullscreenButton( 'expand', this );
-  this.collapseFullscreenButton = new FullscreenButton( 'collapse', this );
+  this.viewFullscreenButton = new FullscreenButton( 'view', this );
+  this.exitFullscreenButton = new FullscreenButton( 'exit', this );
 
   this.on( 'activate', this._changeFullscreenActive );
   this.on( 'deactivate', this._changeFullscreenActive );
@@ -49,27 +49,27 @@ proto._createFullscreen = function() {
 
 proto._changeFullscreenActive = function() {
   var childMethod = this.isActive ? 'appendChild' : 'removeChild';
-  this.element[ childMethod ]( this.expandFullscreenButton.element );
-  this.element[ childMethod ]( this.collapseFullscreenButton.element );
+  this.element[ childMethod ]( this.viewFullscreenButton.element );
+  this.element[ childMethod ]( this.exitFullscreenButton.element );
 };
 
-// ----- expand, collapse, toggle ----- //
+// ----- view, exit, toggle ----- //
 
-proto.expandFullscreen = function() {
+proto.viewFullscreen = function() {
   this._changeFullscreen( true );
   this.focus();
 };
 
-proto.collapseFullscreen = function() {
+proto.exitFullscreen = function() {
   this._changeFullscreen( false );
 };
 
-proto._changeFullscreen = function( isExpand ) {
-  if ( this.isFullscreen == isExpand ) {
+proto._changeFullscreen = function( isView ) {
+  if ( this.isFullscreen == isView ) {
     return;
   }
-  this.isFullscreen = isExpand;
-  var classMethod = isExpand ? 'add' : 'remove';
+  this.isFullscreen = isView;
+  var classMethod = isView ? 'add' : 'remove';
   document.documentElement.classList[ classMethod ]('is-flickity-fullscreen');
   this.element.classList[ classMethod ]('is-fullscreen');
   this.resize();
@@ -104,26 +104,67 @@ proto.setGallerySize = function() {
 
 // ESC key closes full screen
 Flickity.keyboardHandlers[27] = function() {
-  this.collapseFullscreen();
+  this.exitFullscreen();
 };
 
 // ----- FullscreenButton ----- //
 
 function FullscreenButton( name, flickity ) {
-  var element = this.element = document.createElement('button');
-  element.textContent = name;
-  element.className = 'flickity-fullscreen-button ' + name;
-  element.setAttribute( 'aria-label', name + ' full-screen' );
-
-  // trigger expandFullscreen or collapseFullscreen on button tap
-  function onTap() {
+  this.name = name;
+  this.createButton();
+  this.createIcon();
+  // events
+  // trigger viewFullscreen or exitFullscreen on button tap
+  this.onTap = function() {
     flickity[ name + 'Fullscreen' ]();
-  }
-  this.on( 'tap', onTap );
+  };
+  this.on( 'tap', this.onTap );
   this.bindTap( this.element );
+  this.element.addEventListener( 'click', this.onClick.bind( this ) );
 }
 
 FullscreenButton.prototype = Object.create( TapListener.prototype );
+
+FullscreenButton.prototype.createButton = function() {
+  var element = this.element = document.createElement('button');
+  element.className = 'flickity-button flickity-fullscreen-button ' +
+    'flickity-fullscreen-button-' + this.name;
+  // set label
+  var label = capitalize( this.name + ' full-screen' );
+  element.setAttribute( 'aria-label', label );
+  element.title = label;
+};
+
+function capitalize( text ) {
+  return text[0].toUpperCase() + text.slice(1);
+}
+
+var svgURI = 'http://www.w3.org/2000/svg';
+
+var pathDirections = {
+  view: 'M0,32V20H4v8h8v4Zm32,0V20H28v8H20v4ZM0,0V12H4V4h8V0ZM20,0V4h8v8h4V0Z',
+  exit: 'M20,12V0h4V8h8v4Zm-8,0V0H8V8H0v4Zm8,8V32h4V24h8V20ZM0,20v4H8v8h4V20Z',
+};
+
+FullscreenButton.prototype.createIcon = function() {
+  var svg = document.createElementNS( svgURI, 'svg');
+  svg.setAttribute( 'class', 'flickity-button-icon' );
+  svg.setAttribute( 'viewBox', '0 0 32 32' );
+  // path & direction
+  var path = document.createElementNS( svgURI, 'path');
+  var direction = pathDirections[ this.name ];
+  path.setAttribute( 'd', direction );
+  // put it together
+  svg.appendChild( path );
+  this.element.appendChild( svg );
+};
+
+FullscreenButton.prototype.onClick = function() {
+  var focused = document.activeElement;
+  if ( focused && focused == this.element ) {
+    this.onTap();
+  }
+};
 
 // ----- fin ----- //
 
