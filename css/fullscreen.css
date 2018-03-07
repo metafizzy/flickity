@@ -1,0 +1,44 @@
+/* Flickity fullscreen
+------------------------- */
+
+.flickity-enabled.is-fullscreen {
+  position: fixed;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  background: hsla(0, 0%, 0%, 0.9);
+  padding-bottom: 30px;
+}
+
+.flickity-enabled.is-fullscreen .carousel-cell {
+  height: 100%;
+}
+
+.flickity-enabled.is-fullscreen .flickity-page-dots {
+  bottom: 10px;
+}
+
+.flickity-enabled.is-fullscreen .flickity-page-dots .dot {
+  background: white;
+}
+
+/* prevent page scrolling when flickity is fullscreen */
+html.is-flickity-fullscreen {
+  overflow: hidden;
+}
+
+/* fullscreen buttons */
+
+.flickity-fullscreen-button {
+  display: block;
+  position: absolute;
+  right: 10px;
+  top: 10px;
+}
+
+.flickity-fullscreen-button.collapse { display: none; }
+
+.flickity-enabled.is-fullscreen .flickity-fullscreen-button.collapse { display: block; }
+.flickity-enabled.is-fullscreen .flickity-fullscreen-button.expand { display: none; }

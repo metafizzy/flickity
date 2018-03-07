@@ -765,21 +765,40 @@ proto.watchCSS = function() {
 // go previous/next if left/right keys pressed
 proto.onkeydown = function( event ) {
   // only work if element is in focus
-  if ( !this.options.accessibility ||
-    ( document.activeElement && document.activeElement != this.element ) ) {
+  var isNotFocused = document.activeElement && document.activeElement != this.element;
+  if ( !this.options.accessibility ||isNotFocused ) {
     return;
   }
 
-  if ( event.keyCode == 37 ) {
-    // go left
+  var handler = Flickity.keyboardHandlers[ event.keyCode ];
+  if ( handler ) {
+    handler.call( this );
+  }
+};
+
+Flickity.keyboardHandlers = {
+  // left arrow
+  37: function() {
     var leftMethod = this.options.rightToLeft ? 'next' : 'previous';
     this.uiChange();
     this[ leftMethod ]();
-  } else if ( event.keyCode == 39 ) {
-    // go right
+  },
+  // right arrow
+  39: function() {
     var rightMethod = this.options.rightToLeft ? 'previous' : 'next';
     this.uiChange();
     this[ rightMethod ]();
+  },
+};
+
+// ----- focus ----- //
+
+proto.focus = function() {
+  var prevScrollY = window.pageYOffset;
+  this.element.focus();
+  // hack to fix scroll jump after focus, #76
+  if ( window.pageYOffset != prevScrollY ) {
+    window.scrollTo( window.pageXOffset, prevScrollY );
   }
 };
 

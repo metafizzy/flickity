@@ -42,7 +42,7 @@ function PrevNextButton( direction, parent ) {
   this._create();
 }
 
-PrevNextButton.prototype = new TapListener();
+PrevNextButton.prototype = Object.create( TapListener.prototype );
 
 PrevNextButton.prototype._create = function() {
   // properties

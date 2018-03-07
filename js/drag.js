@@ -151,14 +151,8 @@ proto.pointerDown = function( event, pointer ) {
 proto.pointerDownFocus = function( event ) {
   // focus element, if not touch, and its not an input or select
   var canPointerDown = getCanPointerDown( event );
-  if ( !this.options.accessibility || canPointerDown ) {
-    return;
-  }
-  var prevScrollY = window.pageYOffset;
-  this.element.focus();
-  // hack to fix scroll jump after focus, #76
-  if ( window.pageYOffset != prevScrollY ) {
-    window.scrollTo( window.pageXOffset, prevScrollY );
+  if ( !canPointerDown ) {
+    this.focus();
   }
 };
 
