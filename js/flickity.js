@@ -130,9 +130,13 @@ proto._create = function() {
   this.x = 0;
   this.velocity = 0;
   this.originSide = this.options.rightToLeft ? 'right' : 'left';
-  // create viewport & slider
-  this.viewport = document.createElement('div');
-  this.viewport.className = 'flickity-viewport';
+  
+  this.viewport = this.element.querySelector('.flickity-viewport');
+  if (!this.viewport) {
+    // create viewport & slider
+    this.viewport = document.createElement('div');
+    this.viewport.className = 'flickity-viewport';
+  }
   this._createSlider();
 
   if ( this.options.resize || this.options.watchCSS ) {
@@ -170,11 +174,13 @@ proto.activate = function() {
   }
 
   this.getSize();
-  // move initial cell elements so they can be loaded as cells
-  var cellElems = this._filterFindCellElements( this.element.children );
-  moveElements( cellElems, this.slider );
-  this.viewport.appendChild( this.slider );
-  this.element.appendChild( this.viewport );
+  if (!this.slider.childElementCount) {
+    // move initial cell elements so they can be loaded as cells
+    var cellElems = this._filterFindCellElements( this.element.children );
+    moveElements( cellElems, this.slider );
+    this.viewport.appendChild( this.slider );
+    this.element.appendChild( this.viewport );
+  }
   // get cells from children
   this.reloadCells();
 
@@ -205,8 +211,11 @@ proto.activate = function() {
 // slider positions the cells
 proto._createSlider = function() {
   // slider element does all the positioning
-  var slider = document.createElement('div');
-  slider.className = 'flickity-slider';
+  var slider = this.viewport.querySelector('.flickity-slider');
+  if (!slider) {
+    slider = document.createElement('div');
+    slider.className = 'flickity-slider';
+  }
   slider.style[ this.originSide ] = 0;
   this.slider = slider;
 };
