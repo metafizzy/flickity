@@ -792,11 +792,11 @@ proto.deactivate = function() {
   }
   this.element.classList.remove('flickity-enabled');
   this.element.classList.remove('flickity-rtl');
+  this.unselectSelectedSlide();
   // destroy cells
   this.cells.forEach( function( cell ) {
     cell.destroy();
   });
-  this.unselectSelectedSlide();
   this.element.removeChild( this.viewport );
   // move child elements back into element
   moveElements( this.slider.children, this.element );
