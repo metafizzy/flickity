@@ -51,6 +51,10 @@ proto._changeFullscreenActive = function() {
   var childMethod = this.isActive ? 'appendChild' : 'removeChild';
   this.element[ childMethod ]( this.viewFullscreenButton.element );
   this.element[ childMethod ]( this.exitFullscreenButton.element );
+  // activate or deactivate buttons
+  var activeMethod = this.isActive ? 'activate' : 'deactivate';
+  this.viewFullscreenButton[ activeMethod ]();
+  this.exitFullscreenButton[ activeMethod ]();
 };
 
 // ----- view, exit, toggle ----- //
@@ -118,9 +122,8 @@ function FullscreenButton( name, flickity ) {
   this.onTap = function() {
     flickity[ name + 'Fullscreen' ]();
   };
-  this.on( 'tap', this.onTap );
   this.bindTap( this.element );
-  this.element.addEventListener( 'click', this.onClick.bind( this ) );
+  this.clickHandler = this.onClick.bind( this );
 }
 
 FullscreenButton.prototype = Object.create( TapListener.prototype );
@@ -157,6 +160,16 @@ FullscreenButton.prototype.createIcon = function() {
   // put it together
   svg.appendChild( path );
   this.element.appendChild( svg );
+};
+
+FullscreenButton.prototype.activate = function() {
+  this.on( 'tap', this.onTap );
+  this.element.addEventListener( 'click', this.clickHandler );
+};
+
+FullscreenButton.prototype.deactivate = function() {
+  this.off( 'tap', this.onTap );
+  this.element.removeEventListener( 'click', this.clickHandler );
 };
 
 FullscreenButton.prototype.onClick = function() {

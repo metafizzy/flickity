@@ -34,26 +34,47 @@
       margin: 80px 0;
     }
 
-    .carousel-cell {
+    .carousel-image-cell {
       min-width: 100px;
       padding: 5px;
       display: flex;
       align-items: center;
       justify-content: center;
+      height: 240px;
     }
 
-    .carousel-cell img {
+    .carousel-image-cell img {
       display: block;
-      height: 240px;
+      max-height: 100%;
     }
 
     .carousel.is-fullscreen .carousel-cell {
 /*      width: 100%;*/
     }
 
-    .carousel.is-fullscreen .carousel-cell img {
-      height: auto;
-      max-height: 100%;
+    .carousel.is-fullscreen .carousel-image-cell {
+      height: 100%;
+    }
+
+    .carousel-number-cell {
+      width: 80%;
+      background: #6C6;
+      border-radius: 4px;
+      height: 200px;
+      margin: 0 5px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    
+    .carousel-number-cell b {
+      font-size: 80px;
+      color: white;
+      display: block;
+    }
+
+    .carousel.is-fullscreen .carousel-number-cell {
+      height: 100%;
     }
   </style>
 
@@ -86,27 +107,27 @@
 
   <h2>Cells fit to image</h2>
 
-<div class="carousel">
-  <div class="carousel-cell"><img data-flickity-lazyload="https://picsum.photos/720/540/?image=517" /></div>
-  <div class="carousel-cell"><img data-flickity-lazyload="https://picsum.photos/540/720/?image=696" /></div>
-  <div class="carousel-cell"><img data-flickity-lazyload="https://picsum.photos/720/540/?image=56" /></div>
-  <div class="carousel-cell"><img data-flickity-lazyload="https://picsum.photos/800/500/?image=1084" /></div>
-  <div class="carousel-cell"><img data-flickity-lazyload="https://picsum.photos/720/540/?image=1080" /></div>
-  <div class="carousel-cell"><img data-flickity-lazyload="https://picsum.photos/640/640/?image=1074" /></div>
-  <div class="carousel-cell"><img data-flickity-lazyload="https://picsum.photos/720/540/?image=1069" /></div>
-  <div class="carousel-cell"><img data-flickity-lazyload="https://picsum.photos/800/500/?image=1062" /></div>
-  <div class="carousel-cell"><img data-flickity-lazyload="https://picsum.photos/720/540/?image=1002" /></div>
-  <div class="carousel-cell"><img data-flickity-lazyload="https://picsum.photos/640/640/?image=935" /></div>
-  <div class="carousel-cell"><img data-flickity-lazyload="https://picsum.photos/720/540/?image=855" /></div>
-  <div class="carousel-cell"><img data-flickity-lazyload="https://picsum.photos/640/640/?image=824" /></div>
-  <div class="carousel-cell"><img data-flickity-lazyload="https://picsum.photos/540/720/?image=797" /></div>
-  <div class="carousel-cell"><img data-flickity-lazyload="https://picsum.photos/720/540/?image=718" /></div>
-  <div class="carousel-cell"><img data-flickity-lazyload="https://picsum.photos/720/540/?image=652" /></div>
-  <div class="carousel-cell"><img data-flickity-lazyload="https://picsum.photos/720/540/?image=627" /></div>
-  <div class="carousel-cell"><img data-flickity-lazyload="https://picsum.photos/720/540/?image=429" /></div>
-  <div class="carousel-cell"><img data-flickity-lazyload="https://picsum.photos/720/540/?image=433" /></div>
-  <div class="carousel-cell"><img data-flickity-lazyload="https://picsum.photos/720/540/?image=189" /></div>
-  <div class="carousel-cell"><img data-flickity-lazyload="https://picsum.photos/720/540/?image=40" /></div>
+<div class="carousel carousel--gallery">
+  <div class="carousel-image-cell"><img data-flickity-lazyload="https://picsum.photos/720/540/?image=517" /></div>
+  <div class="carousel-image-cell"><img data-flickity-lazyload="https://picsum.photos/540/720/?image=696" /></div>
+  <div class="carousel-image-cell"><img data-flickity-lazyload="https://picsum.photos/720/540/?image=56" /></div>
+  <div class="carousel-image-cell"><img data-flickity-lazyload="https://picsum.photos/800/500/?image=1084" /></div>
+  <div class="carousel-image-cell"><img data-flickity-lazyload="https://picsum.photos/720/540/?image=1080" /></div>
+  <div class="carousel-image-cell"><img data-flickity-lazyload="https://picsum.photos/640/640/?image=1074" /></div>
+  <div class="carousel-image-cell"><img data-flickity-lazyload="https://picsum.photos/720/540/?image=1069" /></div>
+  <div class="carousel-image-cell"><img data-flickity-lazyload="https://picsum.photos/800/500/?image=1062" /></div>
+  <div class="carousel-image-cell"><img data-flickity-lazyload="https://picsum.photos/720/540/?image=1002" /></div>
+  <div class="carousel-image-cell"><img data-flickity-lazyload="https://picsum.photos/640/640/?image=935" /></div>
+  <div class="carousel-image-cell"><img data-flickity-lazyload="https://picsum.photos/720/540/?image=855" /></div>
+  <div class="carousel-image-cell"><img data-flickity-lazyload="https://picsum.photos/640/640/?image=824" /></div>
+  <div class="carousel-image-cell"><img data-flickity-lazyload="https://picsum.photos/540/720/?image=797" /></div>
+  <div class="carousel-image-cell"><img data-flickity-lazyload="https://picsum.photos/720/540/?image=718" /></div>
+  <div class="carousel-image-cell"><img data-flickity-lazyload="https://picsum.photos/720/540/?image=652" /></div>
+  <div class="carousel-image-cell"><img data-flickity-lazyload="https://picsum.photos/720/540/?image=627" /></div>
+  <div class="carousel-image-cell"><img data-flickity-lazyload="https://picsum.photos/720/540/?image=429" /></div>
+  <div class="carousel-image-cell"><img data-flickity-lazyload="https://picsum.photos/720/540/?image=433" /></div>
+  <div class="carousel-image-cell"><img data-flickity-lazyload="https://picsum.photos/720/540/?image=189" /></div>
+  <div class="carousel-image-cell"><img data-flickity-lazyload="https://picsum.photos/720/540/?image=40" /></div>
 </div>
 
   <p>
@@ -125,6 +146,21 @@
     </ul>
     <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
     <p>Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+  </div>
+
+  <div class="carousel carousel--numbers" data-flickity='{ "fullscreen": true }'>
+    <div class="carousel-number-cell"><b>1</b></div>
+    <div class="carousel-number-cell"><b>2</b></div>
+    <div class="carousel-number-cell"><b>3</b></div>
+    <div class="carousel-number-cell"><b>4</b></div>
+    <div class="carousel-number-cell"><b>5</b></div>
+    <div class="carousel-number-cell"><b>6</b></div>
+    <div class="carousel-number-cell"><b>7</b></div>
+    <div class="carousel-number-cell"><b>8</b></div>
+  </div>
+
+
+  <div class="copy">
     <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
     <p>Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
     <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>
@@ -164,16 +200,16 @@
 
 <script>
 
-var carousel = document.querySelector('.carousel');
+var galleryCarousel = document.querySelector('.carousel--gallery');
 
-var flkty = new Flickity( carousel, {
+var galleryFlkty = new Flickity( galleryCarousel, {
   fullscreen: true,
   lazyLoad: 2,
 });
 
 document.querySelector('.expand-button').onclick = function() {
-  flkty.viewFullscreen();
-}
+  galleryFlkty.viewFullscreen();
+};
 
 </script>
 
