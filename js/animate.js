@@ -195,7 +195,7 @@ proto.getRestingPosition = function() {
 };
 
 proto.applyDragForce = function() {
-  if ( !this.isPointerDown ) {
+  if ( !this.isDraggable || !this.isPointerDown ) {
     return;
   }
   // change the position to drag position by applying force
@@ -205,8 +205,9 @@ proto.applyDragForce = function() {
 };
 
 proto.applySelectedAttraction = function() {
-  // do not attract if pointer down or no cells
-  if ( this.isPointerDown || this.isFreeScrolling || !this.cells.length ) {
+  // do not attract if pointer down or no slides
+  var dragDown = this.isDraggable && this.isPointerDown;
+  if ( dragDown || this.isFreeScrolling || !this.slides.length ) {
     return;
   }
   var distance = this.selectedSlide.target * -1 - this.x;

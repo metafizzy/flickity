@@ -1,0 +1,121 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width" />
+
+  <title>tricky drag</title>
+
+  <link rel="stylesheet" href="../css/flickity.css" />
+
+  <style>
+    .carousel {
+      background: #EEE;
+      margin-bottom: 40px;
+    }
+
+    .carousel-cell {
+      height: 200px;
+      width: 25%;
+      margin: 0 10px;
+      background: #6C6;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 8px;
+    }
+
+    .carousel-cell b {
+      display: block;
+      font-size: 80px;
+      color: white;
+    }
+  </style>
+
+</head>
+<body>
+
+<h1>tricky drag</h1>
+
+<div class="carousel carousel--non-drag">
+  <div class="carousel-cell"><b>1</b></div>
+  <div class="carousel-cell"><b>2</b></div>
+  <div class="carousel-cell"><b>3</b></div>
+  <div class="carousel-cell"><b>4</b></div>
+  <div class="carousel-cell"><b>5</b></div>
+  <div class="carousel-cell"><b>6</b></div>
+  <div class="carousel-cell"><b>7</b></div>
+</div>
+
+<div class="carousel carousel--single-cell">
+  <div class="carousel-cell"><b>1</b></div>
+</div>
+
+<div class="carousel carousel--group">
+  <div class="carousel-cell"><b>1</b></div>
+  <div class="carousel-cell"><b>2</b></div>
+</div>
+
+<p><button class="add-group-cell-button">Add cell</button></p>
+
+<script src="../bower_components/get-size/get-size.js"></script>
+<script src="../bower_components/desandro-matches-selector/matches-selector.js"></script>
+<script src="../bower_components/ev-emitter/ev-emitter.js"></script>
+<script src="../bower_components/unipointer/unipointer.js"></script>
+<script src="../bower_components/unidragger/unidragger.js"></script>
+<script src="../bower_components/tap-listener/tap-listener.js"></script>
+<script src="../bower_components/fizzy-ui-utils/utils.js"></script>
+
+<script src="../js/cell.js"></script>
+<script src="../js/slide.js"></script>
+<script src="../js/animate.js"></script>
+<script src="../js/flickity.js"></script>
+<script src="../js/drag.js"></script>
+<script src="../js/prev-next-button.js"></script>
+<script src="../js/page-dots.js"></script>
+<script src="../js/player.js"></script>
+<script src="../js/add-remove-cell.js"></script>
+
+<script>
+var nonDragFlkty = new Flickity( '.carousel--non-drag', {
+  draggable: false,
+});
+
+function onStaticClick( event, pointer, cellElem, cellIndex ) {
+  console.log('staticClick', this.element.className, cellIndex );
+}
+
+nonDragFlkty.on( 'staticClick', onStaticClick );
+
+var singleCellFlkty = new Flickity('.carousel--single-cell');
+singleCellFlkty.on( 'staticClick', onStaticClick );
+
+var groupCarousel = document.querySelector('.carousel--group');
+
+var groupFlkty = new Flickity( groupCarousel, {
+  groupCells: true,
+});
+
+groupFlkty.on( 'staticClick', function( event, pointer, cellElem, cellIndex ) {
+  if ( cellElem ) {
+    groupFlkty.remove( cellElem );
+  }
+});
+
+function makeGroupCell() {
+  var cell = document.createElement('div');
+  cell.className = 'carousel-cell';
+  var b = document.createElement('b');
+  b.textContent = groupFlkty.cells.length + 1;
+  cell.appendChild( b );
+  return cell;
+}
+
+document.querySelector('.add-group-cell-button').onclick = function() {
+  groupFlkty.append( makeGroupCell() );
+};
+
+</script>
+
+</body>
+</html>

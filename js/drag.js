@@ -36,7 +36,7 @@
 // ----- defaults ----- //
 
 utils.extend( Flickity.defaults, {
-  draggable: true,
+  draggable: '>1',
   dragThreshold: 3,
 });
 
@@ -56,10 +56,12 @@ var isTouch = 'createTouch' in document;
 var isTouchmoveScrollCanceled = false;
 
 proto._createDrag = function() {
-  this.on( 'activate', this.bindDrag );
+  this.on( 'activate', this.onActivateDrag );
   this.on( 'uiChange', this._uiChangeDrag );
   this.on( 'childUIPointerDown', this._childUIPointerDownDrag );
   this.on( 'deactivate', this.unbindDrag );
+  this.on( 'cellChange', this.updateDraggable );
+  // TODO updateDraggable on resize? if groupCells & slides change
   // HACK - add seemingly innocuous handler to fix iOS 10 scroll behavior
   // #457, RubaXa/Sortable#973
   if ( isTouch && !isTouchmoveScrollCanceled ) {
@@ -68,23 +70,40 @@ proto._createDrag = function() {
   }
 };
 
-proto.bindDrag = function() {
-  if ( !this.options.draggable || this.isDragBound ) {
-    return;
-  }
-  this.element.classList.add('is-draggable');
+proto.onActivateDrag = function() {
   this.handles = [ this.viewport ];
   this.bindHandles();
-  this.isDragBound = true;
+  this.updateDraggable();
+};
+
+proto.onDeactivateDrag = function() {
+  this.unbindHandles();
+  this.element.classList.remove('is-draggable');
+};
+
+proto.updateDraggable = function() {
+  // disable dragging if less than 2 slides. #278
+  if ( this.options.draggable == '>1' ) {
+    this.isDraggable = this.slides.length > 1;
+  } else {
+    this.isDraggable = this.options.draggable;
+  }
+  if ( this.isDraggable ) {
+    this.element.classList.add('is-draggable');
+  } else {
+    this.element.classList.remove('is-draggable');
+  }
+};
+
+// backwards compatibility
+proto.bindDrag = function() {
+  this.options.draggable = true;
+  this.updateDraggable();
 };
 
 proto.unbindDrag = function() {
-  if ( !this.isDragBound ) {
-    return;
-  }
-  this.element.classList.remove('is-draggable');
-  this.unbindHandles();
-  delete this.isDragBound;
+  this.options.draggable = false;
+  this.updateDraggable();
 };
 
 proto._uiChangeDrag = function() {
@@ -92,6 +111,9 @@ proto._uiChangeDrag = function() {
 };
 
 proto._childUIPointerDownDrag = function( event ) {
+  if ( !this.isDraggable ) {
+    return;
+  }
   event.preventDefault();
   this.pointerDownFocus( event );
 };
@@ -116,6 +138,10 @@ var clickTypes = {
 };
 
 proto.pointerDown = function( event, pointer ) {
+  if ( !this.isDraggable ) {
+    this._pointerDownDefault( event, pointer );
+    return;
+  }
   // dismiss inputs with text fields. #403, #404
   var isCursorInput = cursorNodes[ event.target.nodeName ] &&
     !clickTypes[ event.target.type ];
@@ -126,25 +152,29 @@ proto.pointerDown = function( event, pointer ) {
     return;
   }
 
-  this._dragPointerDown( event, pointer );
-
   // kludge to blur focused inputs in dragger
   var focused = document.activeElement;
-  if ( focused && focused.blur && focused != this.element &&
+  var canBlur = focused && focused.blur && focused != this.element &&
     // do not blur body for IE9 & 10, #117
-    focused != document.body ) {
+    focused != document.body;
+  if ( canBlur ) {
     focused.blur();
   }
   this.pointerDownFocus( event );
   // stop if it was moving
   this.dragX = this.x;
   this.viewport.classList.add('is-pointer-down');
-  // bind move and end events
-  this._bindPostStartEvents( event );
   // track scrolling
   this.pointerDownScroll = getScrollPosition();
   window.addEventListener( 'scroll', this );
 
+  this._pointerDownDefault( event, pointer );
+};
+
+proto._pointerDownDefault = function( event, pointer ) {
+  this._dragPointerDown( event, pointer );
+  // bind move and end events
+  this._bindPostStartEvents( event );
   this.dispatchEvent( 'pointerDown', event, [ pointer ] );
 };
 
@@ -177,7 +207,7 @@ function getCanPointerDown( event ) {
 proto.canPreventDefaultOnPointerDown = function( event ) {
   // prevent default, unless touchstart or input
   var canPointerDown = getCanPointerDown( event );
-  return !canPointerDown;
+  return this.isDraggable && !canPointerDown;
 };
 
 // ----- move ----- //
@@ -203,6 +233,9 @@ proto.pointerDone = function() {
 // -------------------------- dragging -------------------------- //
 
 proto.dragStart = function( event, pointer ) {
+  if ( !this.isDraggable ) {
+    return;
+  }
   this.dragStartPosition = this.x;
   this.startAnimation();
   window.removeEventListener( 'scroll', this );
@@ -216,6 +249,9 @@ proto.pointerMove = function( event, pointer ) {
 };
 
 proto.dragMove = function( event, pointer, moveVector ) {
+  if ( !this.isDraggable ) {
+    return;
+  }
   event.preventDefault();
 
   this.previousDragX = this.dragX;
@@ -238,6 +274,9 @@ proto.dragMove = function( event, pointer, moveVector ) {
 };
 
 proto.dragEnd = function( event, pointer ) {
+  if ( !this.isDraggable ) {
+    return;
+  }
   if ( this.options.freeScroll ) {
     this.isFreeScrolling = true;
   }
