@@ -119,6 +119,7 @@ proto.positionSliderAtSelected = function() {
     return;
   }
   this.x = -this.selectedSlide.target;
+  this.velocity = 0; // stop wobble
   this.positionSlider();
 };
 

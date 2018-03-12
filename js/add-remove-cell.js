@@ -80,9 +80,7 @@ proto.insert = function( elems, index ) {
   }
 
   this._sizeCells( cells );
-
-  var selectedIndexDelta = index > this.selectedIndex ? 0 : cells.length;
-  this._cellAddedRemoved( index, selectedIndexDelta );
+  this.cellChange( index, true );
 };
 
 proto.append = function( elems ) {
@@ -99,39 +97,20 @@ proto.prepend = function( elems ) {
  */
 proto.remove = function( elems ) {
   var cells = this.getCells( elems );
-  var selectedIndexDelta = 0;
-  var len = cells.length;
-  var i, cell;
-  // calculate selectedIndexDelta, easier if done in seperate loop
-  for ( i=0; i < len; i++ ) {
-    cell = cells[i];
-    var wasBefore = this.cells.indexOf( cell ) < this.selectedIndex;
-    selectedIndexDelta -= wasBefore ? 1 : 0;
+  if ( !cells || !cells.length ) {
+    return;
   }
 
-  for ( i=0; i < len; i++ ) {
-    cell = cells[i];
+  var minCellIndex = this.cells.length - 1;
+  // remove cells from collection & DOM
+  cells.forEach( function( cell ) {
     cell.remove();
-    // remove item from collection
+    var index = this.cells.indexOf( cell );
+    minCellIndex = Math.min( index, minCellIndex );
     utils.removeFrom( this.cells, cell );
-  }
+  }, this );
 
-  if ( cells.length ) {
-    // update stuff
-    this._cellAddedRemoved( 0, selectedIndexDelta );
-  }
-};
-
-// updates when cells are added or removed
-proto._cellAddedRemoved = function( changedCellIndex, selectedIndexDelta ) {
-  // TODO this math isn't perfect with grouped slides
-  selectedIndexDelta = selectedIndexDelta || 0;
-  this.selectedIndex += selectedIndexDelta;
-  this.selectedIndex = Math.max( 0, Math.min( this.slides.length - 1, this.selectedIndex ) );
-
-  this.cellChange( changedCellIndex, true );
-  // backwards compatibility
-  this.emitEvent( 'cellAddedRemoved', [ changedCellIndex, selectedIndexDelta ] );
+  this.cellChange( minCellIndex, true );
 };
 
 /**
@@ -154,24 +133,24 @@ proto.cellSizeChange = function( elem ) {
  * @param {Integer} changedCellIndex - index of the changed cell, optional
  */
 proto.cellChange = function( changedCellIndex, isPositioningSlider ) {
-  var prevSlideableWidth = this.slideableWidth;
+  var prevSelectedElem = this.selectedElement;
   this._positionCells( changedCellIndex );
   this._getWrapShiftCells();
   this.setGallerySize();
+  // update selectedIndex
+  // try to maintain position & select previous selected element
+  var cell = this.getCell( prevSelectedElem );
+  if ( cell ) {
+    this.selectedIndex = this.getCellSlideIndex( cell );
+  }
+  this.selectedIndex = Math.min( this.slides.length - 1, this.selectedIndex );
+
   this.emitEvent( 'cellChange', [ changedCellIndex ] );
   // position slider
-  if ( this.options.freeScroll ) {
-    // shift x by change in slideableWidth
-    // TODO fix position shifts when prepending w/ freeScroll
-    var deltaX = prevSlideableWidth - this.slideableWidth;
-    this.x += deltaX * this.cellAlign;
-    this.positionSlider();
-  } else {
-    // do not position slider after lazy load
-    if ( isPositioningSlider ) {
-      this.positionSliderAtSelected();
-    }
-    this.select( this.selectedIndex );
+  this.select( this.selectedIndex );
+  // do not position slider after lazy load
+  if ( isPositioningSlider ) {
+    this.positionSliderAtSelected();
   }
 };
 

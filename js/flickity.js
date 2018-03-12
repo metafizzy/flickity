@@ -609,24 +609,22 @@ proto.unselectSelectedSlide = function() {
  */
 proto.selectCell = function( value, isWrap, isInstant ) {
   // get cell
-  var cell;
-  if ( typeof value == 'number' ) {
-    cell = this.cells[ value ];
-  } else {
-    // use string as selector
-    if ( typeof value == 'string' ) {
-      value = this.element.querySelector( value );
-    }
-    // get cell from element
-    cell = this.getCell( value );
+  var cell = this.queryCell( value );
+  if ( !cell ) {
+    return;
   }
-  // select slide that has cell
-  for ( var i=0; cell && i < this.slides.length; i++ ) {
+
+  var index = this.getCellSlideIndex( cell );
+  this.select( index, isWrap, isInstant );
+};
+
+proto.getCellSlideIndex = function( cell ) {
+  // get index of slides that has cell
+  for ( var i=0; i < this.slides.length; i++ ) {
     var slide = this.slides[i];
     var index = slide.cells.indexOf( cell );
     if ( index != -1 ) {
-      this.select( i, isWrap, isInstant );
-      return;
+      return i;
     }
   }
 };
@@ -717,6 +715,23 @@ proto.getAdjacentCellElements = function( adjCount, index ) {
     }
   }
   return cellElems;
+};
+
+/**
+ * select slide from number or cell element
+ * @param {Element, Selector String, or Number} selector
+ */
+proto.queryCell = function( selector ) {
+  if ( typeof selector == 'number' ) {
+    // use number as index
+    return this.cells[ selector ];
+  }
+  if ( typeof selector == 'string' ) {
+    // use string as selector, get element
+    selector = this.element.querySelector( selector );
+  }
+  // get cell from element
+  return this.getCell( selector );
 };
 
 // -------------------------- events -------------------------- //
