@@ -139,6 +139,12 @@ proto._create = function() {
     window.addEventListener( 'resize', this );
   }
 
+  // add listeners from on option
+  for ( var eventName in this.options.on ) {
+    var listener = this.options.on[ eventName ];
+    this.on( eventName, listener );
+  }
+
   Flickity.createMethods.forEach( function( method ) {
     this[ method ]();
   }, this );
@@ -200,6 +206,8 @@ proto.activate = function() {
   this.select( index, false, true );
   // flag for initial activation, for using initialIndex
   this.isInitActivated = true;
+  // ready event. #493
+  this.dispatchEvent('ready');
 };
 
 // slider positions the cells
@@ -516,6 +524,7 @@ proto.select = function( index, isWrap, isInstant ) {
   if ( !this.slides[ index ] ) {
     return;
   }
+  var prevIndex = this.selectedIndex;
   this.selectedIndex = index;
   this.updateSelectedSlide();
   if ( isInstant ) {
@@ -526,8 +535,12 @@ proto.select = function( index, isWrap, isInstant ) {
   if ( this.options.adaptiveHeight ) {
     this.setGallerySize();
   }
-
-  this.dispatchEvent('select');
+  // events
+  this.dispatchEvent( 'select', null, [ index ] );
+  // change event if new index
+  if ( index != prevIndex ) {
+    this.dispatchEvent( 'change', null, [ index ] );
+  }
   // old v1 event name, remove in v3
   this.dispatchEvent('cellSelect');
 };
