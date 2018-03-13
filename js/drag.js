@@ -257,6 +257,10 @@ proto.dragMove = function( event, pointer, moveVector ) {
   this.previousDragX = this.dragX;
   // reverse if right-to-left
   var direction = this.options.rightToLeft ? -1 : 1;
+  if ( this.options.wrapAround ) {
+    // wrap around move. #589
+    moveVector.x = moveVector.x % this.slideableWidth;
+  }
   var dragX = this.dragStartPosition + moveVector.x * direction;
 
   if ( !this.options.wrapAround && this.slides.length ) {
