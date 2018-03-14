@@ -144,7 +144,7 @@ proto.settle = function( previousX ) {
     delete this.isFreeScrolling;
     // render position with translateX when settled
     this.positionSlider();
-    this.dispatchEvent('settle');
+    this.dispatchEvent( 'settle', null, [ this.selectedIndex ] );
   }
 };
 
