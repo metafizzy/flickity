@@ -50,7 +50,7 @@
   "bugs": {
     "url": "https://github.com/metafizzy/flickity/issues"
   },
-  "homepage": "http://flickity.metafizzy.co",
+  "homepage": "https://flickity.metafizzy.co",
   "directories": {
     "test": "test"
   }

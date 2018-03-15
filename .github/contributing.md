@@ -2,14 +2,14 @@
 
 ### Reduced test case required
 
-All bug reports and problem issues require a [**reduced test case**](http://css-tricks.com/reduced-test-cases/). Create one by forking any one of the [CodePen demos](http://codepen.io/desandro/tag/flickity-docs) from [the docs](http://flickity.metafizzy.co).
+All bug reports and problem issues require a [**reduced test case**](https://css-tricks.com/reduced-test-cases/). Create one by forking any one of the [CodePen demos](https://codepen.io/desandro/pens/tags/?grid_type=list&selected_tag=flickity-docs&sort_order=asc) from [the docs](https://flickity.metafizzy.co).
 
 **CodePens**
 
-+ [Basic](http://codepen.io/desandro/pen/azqbop)
-+ [imagesLoaded](http://flickity.metafizzy.co/options.html#imagesloaded)
-+ [lazyLoad](http://codepen.io/desandro/pen/vOeGzL)
-+ [autoPlay](http://codepen.io/desandro/pen/RNQwaB)
++ [Basic](https://codepen.io/desandro/pen/azqbop)
++ [imagesLoaded](https://codepen.io/desandro/pen/MYQWEe)
++ [lazyLoad](https://codepen.io/desandro/pen/vOeGzL)
++ [autoPlay](https://codepen.io/desandro/pen/RNQwaB)
 
 **Test cases**
 
@@ -21,4 +21,9 @@ Providing a reduced test case is the best way to get your issue addressed. They 
 
 ## Pull requests
 
-Contributions are welcome! Please note: your code may be used as part of a commercial product if merged. Be clear about what license applies to your patch. [The MIT license](http://choosealicense.com/licenses/mit/) or [public domain unlicense](http://choosealicense.com/licenses/unlicense/) are permissive, and allow integration of your patch into Flickity as part of a commercial product.
+Contributions are welcome! 
+
++ **Follow the code style.** Spaces in brackets, semicolons, trailing commas.
++ **Do not run `gulp` and update `dist/` files.** I'll take care of this after merging.
+
+Your code will be used as part of a commercial product if merged. By submitting a Pull Request, you are giving your consent for your code to be integrated into Flickity as part of a commercial product. 
