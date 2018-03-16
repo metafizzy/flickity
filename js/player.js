@@ -31,32 +31,14 @@
 
 'use strict';
 
-// -------------------------- Page Visibility -------------------------- //
-// https://developer.mozilla.org/en-US/docs/Web/Guide/User_experience/Using_the_Page_Visibility_API
-
-var hiddenProperty, visibilityEvent;
-if ( 'hidden' in document ) {
-  hiddenProperty = 'hidden';
-  visibilityEvent = 'visibilitychange';
-} else if ( 'webkitHidden' in document ) {
-  hiddenProperty = 'webkitHidden';
-  visibilityEvent = 'webkitvisibilitychange';
-}
-
 // -------------------------- Player -------------------------- //
 
 function Player( parent ) {
   this.parent = parent;
   this.state = 'stopped';
   // visibility change event handler
-  if ( visibilityEvent ) {
-    this.onVisibilityChange = function() {
-      this.visibilityChange();
-    }.bind( this );
-    this.onVisibilityPlay = function() {
-      this.visibilityPlay();
-    }.bind( this );
-  }
+  this.onVisibilityChange = this.visibilityChange.bind( this );
+  this.onVisibilityPlay = this.visibilityPlay.bind( this );
 }
 
 Player.prototype = Object.create( EvEmitter.prototype );
@@ -67,17 +49,15 @@ Player.prototype.play = function() {
     return;
   }
   // do not play if page is hidden, start playing when page is visible
-  var isPageHidden = document[ hiddenProperty ];
-  if ( visibilityEvent && isPageHidden ) {
-    document.addEventListener( visibilityEvent, this.onVisibilityPlay );
+  var isPageHidden = document.hidden;
+  if ( isPageHidden ) {
+    document.addEventListener( 'visibilitychange', this.onVisibilityPlay );
     return;
   }
 
   this.state = 'playing';
   // listen to visibility change
-  if ( visibilityEvent ) {
-    document.addEventListener( visibilityEvent, this.onVisibilityChange );
-  }
+  document.addEventListener( 'visibilitychange', this.onVisibilityChange );
   // start ticking
   this.tick();
 };
@@ -104,9 +84,7 @@ Player.prototype.stop = function() {
   this.state = 'stopped';
   this.clear();
   // remove visibility change event
-  if ( visibilityEvent ) {
-    document.removeEventListener( visibilityEvent, this.onVisibilityChange );
-  }
+  document.removeEventListener( 'visibilitychange', this.onVisibilityChange );
 };
 
 Player.prototype.clear = function() {
@@ -129,13 +107,13 @@ Player.prototype.unpause = function() {
 
 // pause if page visibility is hidden, unpause if visible
 Player.prototype.visibilityChange = function() {
-  var isPageHidden = document[ hiddenProperty ];
+  var isPageHidden = document.hidden;
   this[ isPageHidden ? 'pause' : 'unpause' ]();
 };
 
 Player.prototype.visibilityPlay = function() {
   this.play();
-  document.removeEventListener( visibilityEvent, this.onVisibilityPlay );
+  document.removeEventListener( 'visibilitychange', this.onVisibilityPlay );
 };
 
 // -------------------------- Flickity -------------------------- //

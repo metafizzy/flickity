@@ -46,7 +46,6 @@ https://flickity.metafizzy.co
 
 .flickity-button {
   position: absolute;
-  background: white;
   background: hsla(0, 0%, 100%, 0.75);
   border: none;
   color: #333;
@@ -85,8 +84,7 @@ https://flickity.metafizzy.co
   height: 44px;
   border-radius: 50%;
   /* vertically center */
-  -webkit-transform: translateY(-50%);
-          transform: translateY(-50%);
+  transform: translateY(-50%);
 }
 
 .flickity-prev-next-button.previous { left: 10px; }

@@ -28,24 +28,6 @@
 
 'use strict';
 
-// -------------------------- requestAnimationFrame -------------------------- //
-
-// get rAF, prefixed, if present
-var requestAnimationFrame = window.requestAnimationFrame ||
-  window.webkitRequestAnimationFrame;
-
-// fallback to setTimeout
-var lastTime = 0;
-if ( !requestAnimationFrame )  {
-  requestAnimationFrame = function( callback ) {
-    var currTime = new Date().getTime();
-    var timeToCall = Math.max( 0, 16 - ( currTime - lastTime ) );
-    var id = setTimeout( callback, timeToCall );
-    lastTime = currTime + timeToCall;
-    return id;
-  };
-}
-
 // -------------------------- animate -------------------------- //
 
 var proto = {};
@@ -78,15 +60,6 @@ proto.animate = function() {
   }
 };
 
-
-var transformProperty = ( function () {
-  var style = document.documentElement.style;
-  if ( typeof style.transform == 'string' ) {
-    return 'transform';
-  }
-  return 'WebkitTransform';
-})();
-
 proto.positionSlider = function() {
   var x = this.x;
   // wrap position around
@@ -98,11 +71,11 @@ proto.positionSlider = function() {
 
   x = x + this.cursorPosition;
   // reverse if right-to-left and using transform
-  x = this.options.rightToLeft && transformProperty ? -x : x;
+  x = this.options.rightToLeft ? -x : x;
   var value = this.getPositionValue( x );
   // use 3D tranforms for hardware acceleration on iOS
   // but use 2D when settled, for better font-rendering
-  this.slider.style[ transformProperty ] = this.isAnimating ?
+  this.slider.style.transform = this.isAnimating ?
     'translate3d(' + value + ',0,0)' : 'translateX(' + value + ')';
 
   // scroll event
