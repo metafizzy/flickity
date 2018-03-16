@@ -147,4 +147,4 @@ var flky = new Flickity( '.gallery', {
 
 ---
 
-By [Metafizzy](https://metafizzy.co)
+By [Metafizzy 🌈🐻](https://metafizzy.co)

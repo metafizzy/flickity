@@ -1,6 +1,6 @@
 {
   "name": "flickity",
-  "version": "2.0.11",
+  "version": "2.1.0",
   "description": "Touch, responsive, flickable carousels",
   "main": "js/index.js",
   "style": "css/flickity.css",
@@ -29,7 +29,7 @@
     "minimist": "^1.1.0"
   },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"View test/ in browser\" && exit 1"
   },
   "repository": {
     "type": "git",
