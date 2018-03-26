@@ -120,47 +120,24 @@ proto._childUIPointerDownDrag = function( event ) {
 
 // -------------------------- pointer events -------------------------- //
 
-// nodes that have text fields
-var cursorNodes = {
-  TEXTAREA: true,
-  INPUT: true,
-  OPTION: true,
-};
-
-// input types that do not have text fields
-var clickTypes = {
-  radio: true,
-  checkbox: true,
-  button: true,
-  submit: true,
-  image: true,
-  file: true,
-};
-
 proto.pointerDown = function( event, pointer ) {
   if ( !this.isDraggable ) {
     this._pointerDownDefault( event, pointer );
     return;
   }
-  // dismiss inputs with text fields. #403, #404
-  var isCursorInput = cursorNodes[ event.target.nodeName ] &&
-    !clickTypes[ event.target.type ];
-  if ( isCursorInput ) {
-    // reset pointerDown logic
-    this.isPointerDown = false;
-    delete this.pointerIdentifier;
+  var isOkay = this.okayPointerDown( event );
+  if ( !isOkay ) {
     return;
   }
 
-  // kludge to blur focused inputs in dragger
-  var focused = document.activeElement;
-  var canBlur = focused && focused.blur && focused != this.element &&
-    // do not blur body for IE9 & 10, #117
-    focused != document.body;
-  if ( canBlur ) {
-    focused.blur();
-  }
+  this._pointerDownPreventDefault( event );
   this.pointerDownFocus( event );
+  // blur
+  if ( document.activeElement != this.element ) {
+    // do not blur if already focused
+    this.pointerDownBlur();
+  }
+
   // stop if it was moving
   this.dragX = this.x;
   this.viewport.classList.add('is-pointer-down');
@@ -171,37 +148,35 @@ proto.pointerDown = function( event, pointer ) {
   this._pointerDownDefault( event, pointer );
 };
 
+// default pointerDown logic, used for staticClick
 proto._pointerDownDefault = function( event, pointer ) {
-  this._dragPointerDown( event, pointer );
+  // track start event position
+  this.pointerDownPointer = pointer;
   // bind move and end events
   this._bindPostStartEvents( event );
   this.dispatchEvent( 'pointerDown', event, [ pointer ] );
 };
 
+var focusNodes = {
+  INPUT: true,
+  TEXTAREA: true,
+  SELECT: true,
+};
+
 proto.pointerDownFocus = function( event ) {
-  // focus element, if not touch, and its not an input or select
-  var canPointerDown = getCanPointerDown( event );
-  if ( !canPointerDown ) {
+  var isFocusNode = focusNodes[ event.target.nodeName ];
+  if ( !isFocusNode ) {
     this.focus();
   }
 };
 
-var focusNodes = {
-  INPUT: true,
-  SELECT: true,
-};
-
-function getCanPointerDown( event ) {
+proto._pointerDownPreventDefault = function( event ) {
   var isTouchStart = event.type == 'touchstart';
   var isTouchPointer = event.pointerType == 'touch';
   var isFocusNode = focusNodes[ event.target.nodeName ];
-  return isTouchStart || isTouchPointer || isFocusNode;
-}
-
-proto.canPreventDefaultOnPointerDown = function( event ) {
-  // prevent default, unless touchstart or input
-  var canPointerDown = getCanPointerDown( event );
-  return this.isDraggable && !canPointerDown;
+  if ( !isTouchStart && !isTouchPointer && !isFocusNode ) {
+    event.preventDefault();
+  }
 };
 
 // ----- move ----- //

@@ -10,7 +10,7 @@
     "fizzy-ui-utils": "^2.0.0",
     "get-size": "^2.0.0",
     "tap-listener": "^2.0.0",
-    "unidragger": "^2.2.3"
+    "unidragger": "^2.3.0"
   },
   "devDependencies": {
     "flickity-imagesloaded": "^2.0.0",
