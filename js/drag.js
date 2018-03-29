@@ -111,9 +111,8 @@ proto._uiChangeDrag = function() {
 };
 
 proto._childUIPointerDownDrag = function( event ) {
-  if ( !this.isDraggable ) {
-    return;
-  }
+  // allow focus & preventDefault even when not draggable
+  // so child UI elements keep focus on carousel. #721
   event.preventDefault();
   this.pointerDownFocus( event );
 };

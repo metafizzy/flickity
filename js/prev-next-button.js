@@ -130,11 +130,11 @@ PrevNextButton.prototype.onTap = function() {
 
 PrevNextButton.prototype.handleEvent = utils.handleEvent;
 
-PrevNextButton.prototype.onclick = function() {
+PrevNextButton.prototype.onclick = function( event ) {
   // only allow clicks from keyboard
   var focused = document.activeElement;
   if ( focused && focused == this.element ) {
-    this.onTap();
+    this.onTap( event, event );
   }
 };
 
