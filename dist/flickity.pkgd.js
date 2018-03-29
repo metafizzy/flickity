@@ -1,5 +1,5 @@
 /*!
- * Flickity PACKAGED v2.1.0
+ * Flickity PACKAGED v2.1.1
  * Touch, responsive, flickable carousels
  *
  * Licensed GPLv3 for open source use
@@ -974,24 +974,6 @@ return Slide;
 
 
 
-// -------------------------- requestAnimationFrame -------------------------- //
-
-// get rAF, prefixed, if present
-var requestAnimationFrame = window.requestAnimationFrame ||
-  window.webkitRequestAnimationFrame;
-
-// fallback to setTimeout
-var lastTime = 0;
-if ( !requestAnimationFrame )  {
-  requestAnimationFrame = function( callback ) {
-    var currTime = new Date().getTime();
-    var timeToCall = Math.max( 0, 16 - ( currTime - lastTime ) );
-    var id = setTimeout( callback, timeToCall );
-    lastTime = currTime + timeToCall;
-    return id;
-  };
-}
-
 // -------------------------- animate -------------------------- //
 
 var proto = {};
@@ -1024,15 +1006,6 @@ proto.animate = function() {
   }
 };
 
-
-var transformProperty = ( function () {
-  var style = document.documentElement.style;
-  if ( typeof style.transform == 'string' ) {
-    return 'transform';
-  }
-  return 'WebkitTransform';
-})();
-
 proto.positionSlider = function() {
   var x = this.x;
   // wrap position around
@@ -1044,11 +1017,11 @@ proto.positionSlider = function() {
 
   x = x + this.cursorPosition;
   // reverse if right-to-left and using transform
-  x = this.options.rightToLeft && transformProperty ? -x : x;
+  x = this.options.rightToLeft ? -x : x;
   var value = this.getPositionValue( x );
   // use 3D tranforms for hardware acceleration on iOS
   // but use 2D when settled, for better font-rendering
-  this.slider.style[ transformProperty ] = this.isAnimating ?
+  this.slider.style.transform = this.isAnimating ?
     'translate3d(' + value + ',0,0)' : 'translateX(' + value + ')';
 
   // scroll event
@@ -2070,7 +2043,7 @@ return Flickity;
 }));
 
 /*!
- * Unipointer v2.2.1
+ * Unipointer v2.3.0
  * base class for doing one thing with pointer event
  * MIT license
  */
@@ -2121,22 +2094,24 @@ proto.unbindStartEvent = function( elem ) {
 };
 
 /**
- * works as unbinder, as you can ._bindStart( false ) to unbind
- * @param {Boolean} isBind - will unbind if falsey
+ * Add or remove start event
+ * @param {Boolean} isAdd - remove if falsey
  */
-proto._bindStartEvent = function( elem, isBind ) {
-  // munge isBind, default to true
-  isBind = isBind === undefined ? true : !!isBind;
-  var bindMethod = isBind ? 'addEventListener' : 'removeEventListener';
+proto._bindStartEvent = function( elem, isAdd ) {
+  // munge isAdd, default to true
+  isAdd = isAdd === undefined ? true : isAdd;
+  var bindMethod = isAdd ? 'addEventListener' : 'removeEventListener';
 
+  // default to mouse events
+  var startEvent = 'mousedown';
   if ( window.PointerEvent ) {
-    // Pointer Events. Chrome 55, IE11, Edge 14
-    elem[ bindMethod ]( 'pointerdown', this );
-  } else {
-    // listen for both, for devices like Chrome Pixel
-    elem[ bindMethod ]( 'mousedown', this );
-    elem[ bindMethod ]( 'touchstart', this );
+    // Pointer Events
+    startEvent = 'pointerdown';
+  } else if ( 'ontouchstart' in window ) {
+    // Touch Events. iOS Safari
+    startEvent = 'touchstart';
   }
+  elem[ bindMethod ]( startEvent, this );
 };
 
 // trigger handler methods for events
@@ -2309,12 +2284,15 @@ proto.pointerUp = function( event, pointer ) {
 
 // triggered on pointer up & pointer cancel
 proto._pointerDone = function() {
+  this._pointerReset();
+  this._unbindPostStartEvents();
+  this.pointerDone();
+};
+
+proto._pointerReset = function() {
   // reset properties
   this.isPointerDown = false;
   delete this.pointerIdentifier;
-  // remove events
-  this._unbindPostStartEvents();
-  this.pointerDone();
 };
 
 proto.pointerDone = noop;
@@ -2367,7 +2345,7 @@ return Unipointer;
 }));
 
 /*!
- * Unidragger v2.2.3
+ * Unidragger v2.3.0
  * Draggable base class
  * MIT license
  */
@@ -2421,22 +2399,22 @@ proto.unbindHandles = function() {
 };
 
 /**
- * works as unbinder, as you can .bindHandles( false ) to unbind
- * @param {Boolean} isBind - will unbind if falsey
+ * Add or remove start event
+ * @param {Boolean} isAdd
  */
-proto._bindHandles = function( isBind ) {
-  // munge isBind, default to true
-  isBind = isBind === undefined ? true : !!isBind;
+proto._bindHandles = function( isAdd ) {
+  // munge isAdd, default to true
+  isAdd = isAdd === undefined ? true : isAdd;
   // bind each handle
-  var bindMethod = isBind ? 'addEventListener' : 'removeEventListener';
+  var bindMethod = isAdd ? 'addEventListener' : 'removeEventListener';
+  var touchAction = isAdd ? this._touchActionValue : '';
   for ( var i=0; i < this.handles.length; i++ ) {
     var handle = this.handles[i];
-    this._bindStartEvent( handle, isBind );
+    this._bindStartEvent( handle, isAdd );
     handle[ bindMethod ]( 'click', this );
-    // touch-action: none to override browser touch gestures
-    // metafizzy/flickity#540
+    // touch-action: none to override browser touch gestures. metafizzy/flickity#540
     if ( window.PointerEvent ) {
-      handle.style.touchAction = isBind ? this._touchActionValue : '';
+      handle.style.touchAction = touchAction;
     }
   }
 };
@@ -2452,40 +2430,57 @@ proto._touchActionValue = 'none';
  * @param {Event or Touch} pointer
  */
 proto.pointerDown = function( event, pointer ) {
-  // dismiss range sliders
-  if ( event.target.nodeName == 'INPUT' && event.target.type == 'range' ) {
-    // reset pointerDown logic
-    this.isPointerDown = false;
-    delete this.pointerIdentifier;
+  var isOkay = this.okayPointerDown( event );
+  if ( !isOkay ) {
     return;
   }
+  // track start event position
+  this.pointerDownPointer = pointer;
 
-  this._dragPointerDown( event, pointer );
-  // kludge to blur focused inputs in dragger
-  var focused = document.activeElement;
-  if ( focused && focused.blur ) {
-    focused.blur();
-  }
+  event.preventDefault();
+  this.pointerDownBlur();
   // bind move and end events
   this._bindPostStartEvents( event );
   this.emitEvent( 'pointerDown', [ event, pointer ] );
 };
 
-// base pointer down logic
-proto._dragPointerDown = function( event, pointer ) {
-  // track to see when dragging starts
-  this.pointerDownPoint = Unipointer.getPointerPoint( pointer );
-
-  var canPreventDefault = this.canPreventDefaultOnPointerDown( event, pointer );
-  if ( canPreventDefault ) {
-    event.preventDefault();
-  }
+// nodes that have text fields
+var cursorNodes = {
+  TEXTAREA: true,
+  INPUT: true,
+  SELECT: true,
+  OPTION: true,
 };
 
-// overwriteable method so Flickity can prevent for scrolling
-proto.canPreventDefaultOnPointerDown = function( event ) {
-  // prevent default, unless touchstart or <select>
-  return event.target.nodeName != 'SELECT';
+// input types that do not have text fields
+var clickTypes = {
+  radio: true,
+  checkbox: true,
+  button: true,
+  submit: true,
+  image: true,
+  file: true,
+};
+
+// dismiss inputs with text fields. flickity#403, flickity#404
+proto.okayPointerDown = function( event ) {
+  var isCursorNode = cursorNodes[ event.target.nodeName ];
+  var isClickType = clickTypes[ event.target.type ];
+  var isOkay = !isCursorNode || isClickType;
+  if ( !isOkay ) {
+    this._pointerReset();
+  }
+  return isOkay;
+};
+
+// kludge to blur previously focused input
+proto.pointerDownBlur = function() {
+  var focused = document.activeElement;
+  // do not blur body for IE10, metafizzy/flickity#117
+  var canBlur = focused && focused.blur && focused != document.body;
+  if ( canBlur ) {
+    focused.blur();
+  }
 };
 
 // ----- move event ----- //
@@ -2503,10 +2498,9 @@ proto.pointerMove = function( event, pointer ) {
 
 // base pointer move logic
 proto._dragPointerMove = function( event, pointer ) {
-  var movePoint = Unipointer.getPointerPoint( pointer );
   var moveVector = {
-    x: movePoint.x - this.pointerDownPoint.x,
-    y: movePoint.y - this.pointerDownPoint.y
+    x: pointer.pageX - this.pointerDownPointer.pageX,
+    y: pointer.pageY - this.pointerDownPointer.pageY
   };
   // start drag if pointer has moved far enough to start drag
   if ( !this.isDragging && this.hasDragStarted( moveVector ) ) {
@@ -2519,7 +2513,6 @@ proto._dragPointerMove = function( event, pointer ) {
 proto.hasDragStarted = function( moveVector ) {
   return Math.abs( moveVector.x ) > 3 || Math.abs( moveVector.y ) > 3;
 };
-
 
 // ----- end event ----- //
 
@@ -2547,10 +2540,8 @@ proto._dragPointerUp = function( event, pointer ) {
 // dragStart
 proto._dragStart = function( event, pointer ) {
   this.isDragging = true;
-  this.dragStartPoint = Unipointer.getPointerPoint( pointer );
   // prevent clicks
   this.isPreventingClicks = true;
-
   this.dragStart( event, pointer );
 };
 
@@ -2607,11 +2598,6 @@ proto._staticClick = function( event, pointer ) {
     return;
   }
 
-  // allow click in <input>s and <textarea>s
-  var nodeName = event.target.nodeName;
-  if ( nodeName == 'INPUT' || nodeName == 'TEXTAREA' ) {
-    event.target.focus();
-  }
   this.staticClick( event, pointer );
 
   // set flag for emulated clicks 300ms after touchend
@@ -2751,56 +2737,32 @@ proto._uiChangeDrag = function() {
 };
 
 proto._childUIPointerDownDrag = function( event ) {
-  if ( !this.isDraggable ) {
-    return;
-  }
+  // allow focus & preventDefault even when not draggable
+  // so child UI elements keep focus on carousel. #721
   event.preventDefault();
   this.pointerDownFocus( event );
 };
 
 // -------------------------- pointer events -------------------------- //
 
-// nodes that have text fields
-var cursorNodes = {
-  TEXTAREA: true,
-  INPUT: true,
-  OPTION: true,
-};
-
-// input types that do not have text fields
-var clickTypes = {
-  radio: true,
-  checkbox: true,
-  button: true,
-  submit: true,
-  image: true,
-  file: true,
-};
-
 proto.pointerDown = function( event, pointer ) {
   if ( !this.isDraggable ) {
     this._pointerDownDefault( event, pointer );
     return;
   }
-  // dismiss inputs with text fields. #403, #404
-  var isCursorInput = cursorNodes[ event.target.nodeName ] &&
-    !clickTypes[ event.target.type ];
-  if ( isCursorInput ) {
-    // reset pointerDown logic
-    this.isPointerDown = false;
-    delete this.pointerIdentifier;
+  var isOkay = this.okayPointerDown( event );
+  if ( !isOkay ) {
     return;
   }
 
-  // kludge to blur focused inputs in dragger
-  var focused = document.activeElement;
-  var canBlur = focused && focused.blur && focused != this.element &&
-    // do not blur body for IE9 & 10, #117
-    focused != document.body;
-  if ( canBlur ) {
-    focused.blur();
-  }
+  this._pointerDownPreventDefault( event );
   this.pointerDownFocus( event );
+  // blur
+  if ( document.activeElement != this.element ) {
+    // do not blur if already focused
+    this.pointerDownBlur();
+  }
+
   // stop if it was moving
   this.dragX = this.x;
   this.viewport.classList.add('is-pointer-down');
@@ -2811,37 +2773,35 @@ proto.pointerDown = function( event, pointer ) {
   this._pointerDownDefault( event, pointer );
 };
 
+// default pointerDown logic, used for staticClick
 proto._pointerDownDefault = function( event, pointer ) {
-  this._dragPointerDown( event, pointer );
+  // track start event position
+  this.pointerDownPointer = pointer;
   // bind move and end events
   this._bindPostStartEvents( event );
   this.dispatchEvent( 'pointerDown', event, [ pointer ] );
 };
 
+var focusNodes = {
+  INPUT: true,
+  TEXTAREA: true,
+  SELECT: true,
+};
+
 proto.pointerDownFocus = function( event ) {
-  // focus element, if not touch, and its not an input or select
-  var canPointerDown = getCanPointerDown( event );
-  if ( !canPointerDown ) {
+  var isFocusNode = focusNodes[ event.target.nodeName ];
+  if ( !isFocusNode ) {
     this.focus();
   }
 };
 
-var focusNodes = {
-  INPUT: true,
-  SELECT: true,
-};
-
-function getCanPointerDown( event ) {
+proto._pointerDownPreventDefault = function( event ) {
   var isTouchStart = event.type == 'touchstart';
   var isTouchPointer = event.pointerType == 'touch';
   var isFocusNode = focusNodes[ event.target.nodeName ];
-  return isTouchStart || isTouchPointer || isFocusNode;
-}
-
-proto.canPreventDefaultOnPointerDown = function( event ) {
-  // prevent default, unless touchstart or input
-  var canPointerDown = getCanPointerDown( event );
-  return this.isDraggable && !canPointerDown;
+  if ( !isTouchStart && !isTouchPointer && !isFocusNode ) {
+    event.preventDefault();
+  }
 };
 
 // ----- move ----- //
@@ -3308,11 +3268,11 @@ PrevNextButton.prototype.onTap = function() {
 
 PrevNextButton.prototype.handleEvent = utils.handleEvent;
 
-PrevNextButton.prototype.onclick = function() {
+PrevNextButton.prototype.onclick = function( event ) {
   // only allow clicks from keyboard
   var focused = document.activeElement;
   if ( focused && focused == this.element ) {
-    this.onTap();
+    this.onTap( event, event );
   }
 };
 
@@ -3616,32 +3576,14 @@ return Flickity;
 
 
 
-// -------------------------- Page Visibility -------------------------- //
-// https://developer.mozilla.org/en-US/docs/Web/Guide/User_experience/Using_the_Page_Visibility_API
-
-var hiddenProperty, visibilityEvent;
-if ( 'hidden' in document ) {
-  hiddenProperty = 'hidden';
-  visibilityEvent = 'visibilitychange';
-} else if ( 'webkitHidden' in document ) {
-  hiddenProperty = 'webkitHidden';
-  visibilityEvent = 'webkitvisibilitychange';
-}
-
 // -------------------------- Player -------------------------- //
 
 function Player( parent ) {
   this.parent = parent;
   this.state = 'stopped';
   // visibility change event handler
-  if ( visibilityEvent ) {
-    this.onVisibilityChange = function() {
-      this.visibilityChange();
-    }.bind( this );
-    this.onVisibilityPlay = function() {
-      this.visibilityPlay();
-    }.bind( this );
-  }
+  this.onVisibilityChange = this.visibilityChange.bind( this );
+  this.onVisibilityPlay = this.visibilityPlay.bind( this );
 }
 
 Player.prototype = Object.create( EvEmitter.prototype );
@@ -3652,17 +3594,15 @@ Player.prototype.play = function() {
     return;
   }
   // do not play if page is hidden, start playing when page is visible
-  var isPageHidden = document[ hiddenProperty ];
-  if ( visibilityEvent && isPageHidden ) {
-    document.addEventListener( visibilityEvent, this.onVisibilityPlay );
+  var isPageHidden = document.hidden;
+  if ( isPageHidden ) {
+    document.addEventListener( 'visibilitychange', this.onVisibilityPlay );
     return;
   }
 
   this.state = 'playing';
   // listen to visibility change
-  if ( visibilityEvent ) {
-    document.addEventListener( visibilityEvent, this.onVisibilityChange );
-  }
+  document.addEventListener( 'visibilitychange', this.onVisibilityChange );
   // start ticking
   this.tick();
 };
@@ -3689,9 +3629,7 @@ Player.prototype.stop = function() {
   this.state = 'stopped';
   this.clear();
   // remove visibility change event
-  if ( visibilityEvent ) {
-    document.removeEventListener( visibilityEvent, this.onVisibilityChange );
-  }
+  document.removeEventListener( 'visibilitychange', this.onVisibilityChange );
 };
 
 Player.prototype.clear = function() {
@@ -3714,13 +3652,13 @@ Player.prototype.unpause = function() {
 
 // pause if page visibility is hidden, unpause if visible
 Player.prototype.visibilityChange = function() {
-  var isPageHidden = document[ hiddenProperty ];
+  var isPageHidden = document.hidden;
   this[ isPageHidden ? 'pause' : 'unpause' ]();
 };
 
 Player.prototype.visibilityPlay = function() {
   this.play();
-  document.removeEventListener( visibilityEvent, this.onVisibilityPlay );
+  document.removeEventListener( 'visibilitychange', this.onVisibilityPlay );
 };
 
 // -------------------------- Flickity -------------------------- //
@@ -4095,7 +4033,7 @@ return Flickity;
 }));
 
 /*!
- * Flickity v2.1.0
+ * Flickity v2.1.1
  * Touch, responsive, flickable carousels
  *
  * Licensed GPLv3 for open source use
