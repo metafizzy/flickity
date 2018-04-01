@@ -59,7 +59,7 @@ proto._createDrag = function() {
   this.on( 'activate', this.onActivateDrag );
   this.on( 'uiChange', this._uiChangeDrag );
   this.on( 'childUIPointerDown', this._childUIPointerDownDrag );
-  this.on( 'deactivate', this.unbindDrag );
+  this.on( 'deactivate', this.onDeactivateDrag );
   this.on( 'cellChange', this.updateDraggable );
   // TODO updateDraggable on resize? if groupCells & slides change
   // HACK - add seemingly innocuous handler to fix iOS 10 scroll behavior
