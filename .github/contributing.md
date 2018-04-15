@@ -23,7 +23,10 @@ Providing a reduced test case is the best way to get your issue addressed. They 
 
 Contributions are welcome! 
 
++ **For typos and one-line fixes,** send those right in.
++ **For larger features,** open an issue before starting any significant work. Let's discuss to see how your feature fits within Flickity's vision.
 + **Follow the code style.** Spaces in brackets, semicolons, trailing commas.
-+ **Do not run `gulp` and update `dist/` files.** I'll take care of this after merging.
++ **Do not edit `dist/` files.** Make your edits to source files in `js/` and `css/`.
++ **Do not run `gulp` to update `dist/` files.** I'll take care of this when I create a new release.
 
 Your code will be used as part of a commercial product if merged. By submitting a Pull Request, you are giving your consent for your code to be integrated into Flickity as part of a commercial product. 
