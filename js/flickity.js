@@ -822,8 +822,10 @@ Flickity.keyboardHandlers = {
 // ----- focus ----- //
 
 proto.focus = function() {
+  // TODO remove scrollTo once focus options gets more support
+  // https://developer.mozilla.org/en-US/docs/Web/API/HTMLElement/focus#Browser_compatibility
   var prevScrollY = window.pageYOffset;
-  this.element.focus();
+  this.element.focus({ preventScroll: true });
   // hack to fix scroll jump after focus, #76
   if ( window.pageYOffset != prevScrollY ) {
     window.scrollTo( window.pageXOffset, prevScrollY );
