@@ -823,10 +823,15 @@ Flickity.keyboardHandlers = {
 
 proto.focus = function() {
   var prevScrollY = window.pageYOffset;
-  this.element.focus();
-  // hack to fix scroll jump after focus, #76
-  if ( window.pageYOffset != prevScrollY ) {
-    window.scrollTo( window.pageXOffset, prevScrollY );
+  // Workaround for IE11
+  if (this.element.setActive) {
+      this.element.setActive();
+  } else {
+      this.element.focus();
+      // hack to fix scroll jump after focus, #76
+      if ( window.pageYOffset != prevScrollY ) {
+          window.scrollTo( window.pageXOffset, prevScrollY );
+      }
   }
 };
 
