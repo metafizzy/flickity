@@ -10,6 +10,10 @@
   <link rel="stylesheet" href="sandbox.css" />
 
   <style>
+    .cell {
+      position: relative;
+    }
+
     .remove-button {
       font-size: 20px;
       position: absolute;
@@ -131,6 +135,16 @@
     </div>
   </div>
 
+  <h2>prepend with single #492</h2>
+  <div id="prepend-single">
+    <div class="container variable-width">
+      <div class="cell n1"><b>1</b><button class="remove-button">&times;</button></div>
+    </div>
+    <p>
+      <button class="prepend-button">Prepend</button>
+    </p>
+  </div>
+
 <script src="../bower_components/get-size/get-size.js"></script>
 <script src="../bower_components/desandro-matches-selector/matches-selector.js"></script>
 <script src="../bower_components/ev-emitter/ev-emitter.js"></script>
@@ -245,6 +259,15 @@ for ( var i=0; i < demos.length; i++ ) {
   }
 })();
 
+// ----- prepend single, #492 ----- //
+
+( function() {
+  var demo = document.querySelector('#prepend-single');
+  var flkty = new Flickity( demo.querySelector('.container') );
+  demo.querySelector('.prepend-button').onclick = function() {
+    flkty.prepend( makeCell() );
+  };
+})();
 
 </script>
 
