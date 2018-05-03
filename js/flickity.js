@@ -148,6 +148,12 @@ proto._create = function() {
     window.addEventListener( 'resize', this );
   }
 
+  // add listeners from on option
+  for ( var eventName in this.options.on ) {
+    var listener = this.options.on[ eventName ];
+    this.on( eventName, listener );
+  }
+
   Flickity.createMethods.forEach( function( method ) {
     this[ method ]();
   }, this );
@@ -211,6 +217,8 @@ proto.activate = function() {
   this.select( index, false, true );
   // flag for initial activation, for using initialIndex
   this.isInitActivated = true;
+  // ready event. #493
+  this.dispatchEvent('ready');
 };
 
 // slider positions the cells
@@ -536,6 +544,7 @@ proto.select = function( index, isWrap, isInstant ) {
   if ( !this.slides[ index ] ) {
     return;
   }
+  var prevIndex = this.selectedIndex;
   this.selectedIndex = index;
   this.updateSelectedSlide();
   if ( isInstant ) {
@@ -546,8 +555,12 @@ proto.select = function( index, isWrap, isInstant ) {
   if ( this.options.adaptiveHeight ) {
     this.setGallerySize();
   }
-
-  this.dispatchEvent('select');
+  // events
+  this.dispatchEvent( 'select', null, [ index ] );
+  // change event if new index
+  if ( index != prevIndex ) {
+    this.dispatchEvent( 'change', null, [ index ] );
+  }
   // old v1 event name, remove in v3
   this.dispatchEvent('cellSelect');
 };
@@ -616,24 +629,22 @@ proto.unselectSelectedSlide = function() {
  */
 proto.selectCell = function( value, isWrap, isInstant ) {
   // get cell
-  var cell;
-  if ( typeof value == 'number' ) {
-    cell = this.cells[ value ];
-  } else {
-    // use string as selector
-    if ( typeof value == 'string' ) {
-      value = this.element.querySelector( value );
-    }
-    // get cell from element
-    cell = this.getCell( value );
+  var cell = this.queryCell( value );
+  if ( !cell ) {
+    return;
   }
-  // select slide that has cell
-  for ( var i=0; cell && i < this.slides.length; i++ ) {
+
+  var index = this.getCellSlideIndex( cell );
+  this.select( index, isWrap, isInstant );
+};
+
+proto.getCellSlideIndex = function( cell ) {
+  // get index of slides that has cell
+  for ( var i=0; i < this.slides.length; i++ ) {
     var slide = this.slides[i];
     var index = slide.cells.indexOf( cell );
     if ( index != -1 ) {
-      this.select( i, isWrap, isInstant );
-      return;
+      return i;
     }
   }
 };
@@ -726,6 +737,23 @@ proto.getAdjacentCellElements = function( adjCount, index ) {
   return cellElems;
 };
 
+/**
+ * select slide from number or cell element
+ * @param {Element, Selector String, or Number} selector
+ */
+proto.queryCell = function( selector ) {
+  if ( typeof selector == 'number' ) {
+    // use number as index
+    return this.cells[ selector ];
+  }
+  if ( typeof selector == 'string' ) {
+    // use string as selector, get element
+    selector = this.element.querySelector( selector );
+  }
+  // get cell from element
+  return this.getCell( selector );
+};
+
 // -------------------------- events -------------------------- //
 
 proto.uiChange = function() {
@@ -785,21 +813,42 @@ proto.watchCSS = function() {
 // go previous/next if left/right keys pressed
 proto.onkeydown = function( event ) {
   // only work if element is in focus
-  if ( !this.options.accessibility ||
-    ( document.activeElement && document.activeElement != this.element ) ) {
+  var isNotFocused = document.activeElement && document.activeElement != this.element;
+  if ( !this.options.accessibility ||isNotFocused ) {
     return;
   }
 
-  if ( event.keyCode == 37 ) {
-    // go left
+  var handler = Flickity.keyboardHandlers[ event.keyCode ];
+  if ( handler ) {
+    handler.call( this );
+  }
+};
+
+Flickity.keyboardHandlers = {
+  // left arrow
+  37: function() {
     var leftMethod = this.options.rightToLeft ? 'next' : 'previous';
     this.uiChange();
     this[ leftMethod ]();
-  } else if ( event.keyCode == 39 ) {
-    // go right
+  },
+  // right arrow
+  39: function() {
     var rightMethod = this.options.rightToLeft ? 'previous' : 'next';
     this.uiChange();
     this[ rightMethod ]();
+  },
+};
+
+// ----- focus ----- //
+
+proto.focus = function() {
+  // TODO remove scrollTo once focus options gets more support
+  // https://developer.mozilla.org/en-US/docs/Web/API/HTMLElement/focus#Browser_compatibility
+  var prevScrollY = window.pageYOffset;
+  this.element.focus({ preventScroll: true });
+  // hack to fix scroll jump after focus, #76
+  if ( window.pageYOffset != prevScrollY ) {
+    window.scrollTo( window.pageXOffset, prevScrollY );
   }
 };
 
@@ -812,6 +861,7 @@ proto.deactivate = function() {
   }
   this.element.classList.remove('flickity-enabled');
   this.element.classList.remove('flickity-rtl');
+  this.unselectSelectedSlide();
   // destroy cells
   this.cells.forEach( function( cell ) {
     cell.destroy();

@@ -77,7 +77,6 @@ QUnit.test( 'add/remove cells', function( assert ) {
   flkty.remove([ cellElems[2], cellElems[0], cellElems[1] ]);
   assert.equal( len - sliderElem.children.length, 3, 'elements removed from DOM' );
   assert.equal( len - flkty.cells.length, 3, 'cells removed' );
-  assert.equal( flkty.selectedIndex, 2, 'selectedIndex -2 after 2 removed before' );
   checkCellPositions();
 
   // remove all cells

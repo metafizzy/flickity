@@ -1,6 +1,6 @@
 {
   "name": "flickity",
-  "version": "2.0.10",
+  "version": "2.1.1",
   "description": "Touch, responsive, flickable carousels",
   "main": "js/index.js",
   "style": "css/flickity.css",
@@ -10,7 +10,7 @@
     "fizzy-ui-utils": "^2.0.0",
     "get-size": "^2.0.0",
     "tap-listener": "^2.0.0",
-    "unidragger": "^2.2.3"
+    "unidragger": "^2.3.0"
   },
   "devDependencies": {
     "flickity-imagesloaded": "^2.0.0",
@@ -29,7 +29,7 @@
     "minimist": "^1.1.0"
   },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"View test/ in browser\" && exit 1"
   },
   "repository": {
     "type": "git",
@@ -50,7 +50,7 @@
   "bugs": {
     "url": "https://github.com/metafizzy/flickity/issues"
   },
-  "homepage": "http://flickity.metafizzy.co",
+  "homepage": "https://flickity.metafizzy.co",
   "directories": {
     "test": "test"
   }

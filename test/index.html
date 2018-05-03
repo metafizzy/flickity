@@ -55,9 +55,11 @@
   <script src="unit/add-remove-cells.js"></script>
   <script src="unit/destroy.js"></script>
   <script src="unit/lazyload.js"></script>
+  <script src="unit/lazyload-srcset.js"></script>
   <script src="unit/group-cells.js"></script>
   <script src="unit/adaptive-height.js"></script>
   <script src="unit/select-cell.js"></script>
+  <script src="unit/change.js"></script>
 
 </head>
 <body>
@@ -216,6 +218,27 @@
     <div class="cell"><img data-flickity-lazyload="http://i.imgur.com/LkmcILl.jpg" /></div>
   </div>
 
+  <h2>lazyload srcset</h2>
+  <div id="lazyload-srcset" class="gallery">
+    <div class="cell">
+      <img data-flickity-lazyload-src="https://picsum.photos/360/270/?image=718"
+        data-flickity-lazyload-srcset="
+          https://picsum.photos/720/540/?image=718 720w,
+          https://picsum.photos/360/270/?image=718 360w"
+        sizes="(min-width: 1024px) 720px, 360px" />
+    </div>
+    <img class="img-cell"
+      data-flickity-lazyload-srcset="
+        https://picsum.photos/720/540/?image=517 720w,
+        https://picsum.photos/360/270/?image=517 360w"
+      sizes="(min-width: 1024px) 720px, 360px"
+      />
+    <div class="cell"></div>
+    <div class="cell"></div>
+    <div class="cell"></div>
+    <div class="cell"></div>
+  </div>
+
   <h2>groupCells</h2>
   <div id="group-cells" class="gallery">
     <div class="cell"></div>
@@ -254,6 +277,7 @@
     <div class="cell cell--height2"></div>
   </div>
 
+  <h2>selectCell</h2>
   <div id="select-cell" class="gallery">
     <div class="cell select-cell__0">0</div>
     <div class="cell select-cell__1">1</div>
@@ -263,6 +287,15 @@
     <div class="cell select-cell__5">5</div>
     <div class="cell select-cell__6">6</div>
     <div class="cell select-cell__7">7</div>
+  </div>
+
+  <h2>change</h2>
+  <div id="change" class="gallery">
+    <div class="cell">0</div>
+    <div class="cell">1</div>
+    <div class="cell">2</div>
+    <div class="cell">3</div>
+    <div class="cell">4</div>
   </div>
 
 </body>
