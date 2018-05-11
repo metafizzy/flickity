@@ -4,6 +4,13 @@ https://flickity.metafizzy.co
 
 .flickity-enabled {
   position: relative;
+  box-sizing: border-box;
+}
+
+.flickity-enabled *,
+.flickity-enabled *:before,
+.flickity-enabled *:after {
+  box-sizing: inherit;
 }
 
 .flickity-enabled:focus { outline: none; }
