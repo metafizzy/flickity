@@ -63,7 +63,7 @@ proto.changeSelected = function( isSelected ) {
   var classMethod = isSelected ? 'add' : 'remove';
   this.cells.forEach( function( cell ) {
     cell.element.classList[ classMethod ]('is-selected');
-    if ( isSelected) {
+    if ( isSelected ) {
       cell.element.removeAttribute( 'aria-hidden' );
     } else {
       cell.element.setAttribute( 'aria-hidden', 'true' );
