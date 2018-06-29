@@ -727,6 +727,8 @@ proto.queryCell = function( selector ) {
     return this.cells[ selector ];
   }
   if ( typeof selector == 'string' ) {
+    // prevent querySelector error
+    if(!selector.charAt(0).match(/[a-z]/i)) return this.cells[0];
     // use string as selector, get element
     selector = this.element.querySelector( selector );
   }
