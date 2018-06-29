@@ -727,6 +727,10 @@ proto.queryCell = function( selector ) {
     return this.cells[ selector ];
   }
   if ( typeof selector == 'string' ) {
+    // do not select invalid selectors from hash: #123, #/. #791
+    if ( selector.match(/^[#\.]?[\d\/]/) ) {
+      return;
+    }
     // use string as selector, get element
     selector = this.element.querySelector( selector );
   }
