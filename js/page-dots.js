@@ -35,6 +35,8 @@
 
 'use strict';
 
+var instanceCounter = 0;
+
 function PageDots( parent ) {
   this.parent = parent;
   this._create();
@@ -43,6 +45,8 @@ function PageDots( parent ) {
 PageDots.prototype = new TapListener();
 
 PageDots.prototype._create = function() {
+  this.id = instanceCounter++;
+
   // create holder element
   this.holder = document.createElement('ol');
   this.holder.className = 'flickity-page-dots';
@@ -62,6 +66,7 @@ PageDots.prototype.activate = function() {
 
 PageDots.prototype.deactivate = function() {
   // remove from DOM
+  this.removeDots(this.dots.count);
   this.parent.element.removeChild( this.holder );
   TapListener.prototype.destroy.call( this );
 };
@@ -85,7 +90,16 @@ PageDots.prototype.addDots = function( count ) {
   for ( var i = length; i < max; i++ ) {
     var dot = document.createElement('li');
     dot.className = 'dot';
-    dot.setAttribute( 'aria-label', 'Page dot ' + ( i + 1 ) );
+
+    var radioButton = document.createElement('input');
+    radioButton.setAttribute( 'type', 'radio' );
+    radioButton.setAttribute( 'name', 'dots-' + this.id );
+    radioButton.setAttribute( 'aria-label', 'Page dot ' + ( i + 1 ) );
+    radioButton.addEventListener( 'change', this.onPageDotChange.bind(this) );
+
+    dot.control = radioButton;
+
+    dot.appendChild(radioButton);
     fragment.appendChild( dot );
     newDots.push( dot );
   }
@@ -100,6 +114,7 @@ PageDots.prototype.removeDots = function( count ) {
   // remove from DOM
   removeDots.forEach( function( dot ) {
     this.holder.removeChild( dot );
+    dot.control.removeEventListener( 'change', this.onPageDotChange.bind(this) );
   }, this );
 };
 
@@ -107,7 +122,6 @@ PageDots.prototype.updateSelected = function() {
   // remove selected class on previous
   if ( this.selectedDot ) {
     this.selectedDot.className = 'dot';
-    this.selectedDot.removeAttribute('aria-current');
   }
   // don't proceed if no dots
   if ( !this.dots.length ) {
@@ -115,7 +129,15 @@ PageDots.prototype.updateSelected = function() {
   }
   this.selectedDot = this.dots[ this.parent.selectedIndex ];
   this.selectedDot.className = 'dot is-selected';
-  this.selectedDot.setAttribute( 'aria-current', 'step' );
+
+  this.selectedDot.control.checked = true;
+};
+
+PageDots.prototype.onPageDotChange = function( event ) {
+  var target = event.target;
+  this.parent.uiChange();
+  var index = this.dots.indexOf( target.parentNode );
+  this.parent.select( index );
 };
 
 PageDots.prototype.onTap = function( event ) {
@@ -125,9 +147,7 @@ PageDots.prototype.onTap = function( event ) {
     return;
   }
 
-  this.parent.uiChange();
-  var index = this.dots.indexOf( target );
-  this.parent.select( index );
+  event.target.control.dispatchEvent(new Event('change'));
 };
 
 PageDots.prototype.destroy = function() {
