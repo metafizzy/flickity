@@ -33,6 +33,8 @@ Bower: `bower install flickity --save`
 
 npm: `npm install flickity --save`
 
+yarn: `yarn add flickity`
+
 ## License
 
 ### Commercial license
