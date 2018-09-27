@@ -150,17 +150,11 @@ proto.pointerDown = function( event, pointer ) {
 // default pointerDown logic, used for staticClick
 proto._pointerDownDefault = function( event, pointer ) {
   // track start event position
-  // Fix dragging on iOS 9.3 / Safari. metafizzy/flickity#/779
-  // Safari overrides pageX and pageY therefore these values needs to be copied
-  if (this.pointerDownPointer) {
-    this.pointerDownPointer.pageX = pointer.pageX;
-    this.pointerDownPointer.pageY = pointer.pageY;
-  } else {
-    this.pointerDownPointer = {
-      pageX: pointer.pageX,
-      pageY: pointer.pageY,
-    };
-  }
+  // Safari 9 overrides pageX and pageY. These values needs to be copied. #779
+  this.pointerDownPointer = {
+    pageX: pointer.pageX,
+    pageY: pointer.pageY,
+  };
   // bind move and end events
   this._bindPostStartEvents( event );
   this.dispatchEvent( 'pointerDown', event, [ pointer ] );
