@@ -1866,6 +1866,10 @@ proto.queryCell = function( selector ) {
     return this.cells[ selector ];
   }
   if ( typeof selector == 'string' ) {
+    // do not select invalid selectors from hash: #123, #/. #791
+    if ( selector.match(/^[#\.]?[\d\/]/) ) {
+      return;
+    }
     // use string as selector, get element
     selector = this.element.querySelector( selector );
   }
@@ -2776,7 +2780,17 @@ proto.pointerDown = function( event, pointer ) {
 // default pointerDown logic, used for staticClick
 proto._pointerDownDefault = function( event, pointer ) {
   // track start event position
-  this.pointerDownPointer = pointer;
+  // Fix dragging on iOS 9.3 / Safari. metafizzy/flickity#/779
+  // Safari overrides pageX and pageY therefore these values needs to be copied
+  if (this.pointerDownPointer) {
+    this.pointerDownPointer.pageX = pointer.pageX;
+    this.pointerDownPointer.pageY = pointer.pageY;
+  } else {
+    this.pointerDownPointer = {
+      pageX: pointer.pageX,
+      pageY: pointer.pageY,
+    };
+  }
   // bind move and end events
   this._bindPostStartEvents( event );
   this.dispatchEvent( 'pointerDown', event, [ pointer ] );
@@ -3232,6 +3246,7 @@ PrevNextButton.prototype.createSVG = function() {
   var path = document.createElementNS( svgURI, 'path');
   var pathMovements = getArrowMovements( this.parent.options.arrowShape );
   path.setAttribute( 'd', pathMovements );
+  path.setAttribute( 'fill', 'currentColor' );
   path.setAttribute( 'class', 'arrow' );
   // rotate arrow
   if ( !this.isLeft ) {

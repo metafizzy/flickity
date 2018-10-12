@@ -94,6 +94,7 @@ PrevNextButton.prototype.createSVG = function() {
   var path = document.createElementNS( svgURI, 'path');
   var pathMovements = getArrowMovements( this.parent.options.arrowShape );
   path.setAttribute( 'd', pathMovements );
+  path.setAttribute( 'fill', 'currentColor' );
   path.setAttribute( 'class', 'arrow' );
   // rotate arrow
   if ( !this.isLeft ) {

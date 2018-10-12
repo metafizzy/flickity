@@ -72,10 +72,6 @@ https://flickity.metafizzy.co
   pointer-events: none;
 }
 
-.flickity-button-icon {
-  fill: #333;
-}
-
 /* ---- previous/next buttons ---- */
 
 .flickity-prev-next-button {
