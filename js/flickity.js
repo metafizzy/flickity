@@ -195,6 +195,7 @@ proto.activate = function() {
 
   var index;
   var initialIndex = this.options.initialIndex;
+  var groupCells = this.options.groupCells;
   if ( this.isInitActivated ) {
     index = this.selectedIndex;
   } else if ( initialIndex !== undefined ) {
@@ -202,8 +203,13 @@ proto.activate = function() {
   } else {
     index = 0;
   }
-  // select instantly
-  this.select( index, false, true );
+  if (groupCells && typeof groupCells != 'number') {
+    // select by cellIndex instantly
+    this.selectCell( index, false, true );
+  } else {
+    // select by slideIndex instantly
+    this.select( index, false, true );
+  }
   // flag for initial activation, for using initialIndex
   this.isInitActivated = true;
   // ready event. #493
