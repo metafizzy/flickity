@@ -10,8 +10,8 @@
     "ev-emitter": "^1.0.2",
     "fizzy-ui-utils": "^2.0.0",
     "get-size": "^2.0.0",
-    "tap-listener": "^2.0.0",
-    "unidragger": "^2.3.0"
+    "unidragger": "^2.3.0",
+    "unipointer": "^2.3.0"
   },
   "devDependencies": {
     "flickity-imagesloaded": "^2.0.0",
