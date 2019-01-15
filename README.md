@@ -139,8 +139,17 @@ var flky = new Flickity( '.gallery', {
   // watches the content of :after of the element
   // activates if #element:after { content: 'flickity' }
 
-  wrapAround: false
+  wrapAround: false,
   // at end of cells, wraps-around to first for infinite scrolling
+
+  l18nPageDot: 'Page dot %'
+  // Aria label for the page dots. `%` gets replaced with the slide number
+
+  l18nPrevious: 'Previous',
+  // Aria label for the previous button
+
+  l18nNext: 'Next'
+   // Aria label for the next button
 
 });
 ```
