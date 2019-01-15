@@ -908,6 +908,7 @@ Flickity.setJQuery = function( jq ) {
 };
 
 Flickity.Cell = Cell;
+Flickity.Slide = Slide;
 
 return Flickity;
 
