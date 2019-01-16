@@ -988,7 +988,12 @@ proto.startAnimation = function() {
 
 proto.animate = function() {
   this.applyDragForce();
-  this.applySelectedAttraction();
+
+  if ( this.options.freeScrollSlowDown ) {
+    this.applyBrakes(this.options.freeScrollSlowDown);
+  } else {
+    this.applySelectedAttraction();
+  }
 
   var previousX = this.x;
 
@@ -1133,6 +1138,18 @@ proto.applySelectedAttraction = function() {
   this.applyForce( force );
 };
 
+proto.applyBrakes = function() {
+  // do not apply brakes if pointer down or no slides
+  var dragDown = this.isDraggable && this.isPointerDown;
+  if ( dragDown || !this.slides.length ) {
+    return;
+  }
+  var distance = this.selectedSlide.target * -1 - this.x;
+  var deceleration = ( typeof this.options.freeScrollSlowDown == 'number' && this.options.freeScrollSlowDown > 0 ) ? this.options.freeScrollSlowDown : 20;
+  this.velocity = ( distance * (1-this.getFrictionFactor()) ) * deceleration;
+};
+
+
 return proto;
 
 }));
@@ -1238,6 +1255,7 @@ Flickity.defaults = {
   // cellSelector: undefined,
   // contain: false,
   freeScrollFriction: 0.075, // friction when free-scrolling
+  // freeScrollSlowDown: true, // decelerates the slider to align slides in freeScroll mode. Boolean or positive number. Higher number makes the slider come to a stop faster. Default freeScrollSlowDown: 20
   friction: 0.28, // friction when selecting
   namespaceJQueryEvents: true,
   // initialIndex: 0,
