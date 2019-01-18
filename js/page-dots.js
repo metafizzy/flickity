@@ -85,7 +85,7 @@ PageDots.prototype.addDots = function( count ) {
   for ( var i = length; i < max; i++ ) {
     var dot = document.createElement('li');
     dot.className = 'dot';
-    dot.setAttribute( 'aria-label', this.parent.options.l18nPageDot.replace('', i + 1) );
+    dot.setAttribute( 'aria-label', this.parent.options.l18nPageDot.replace('%', i + 1) );
     fragment.appendChild( dot );
     newDots.push( dot );
   }
