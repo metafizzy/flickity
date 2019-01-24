@@ -63,7 +63,11 @@ proto.changeSelected = function( isSelected ) {
   var classMethod = isSelected ? 'add' : 'remove';
   this.cells.forEach( function( cell ) {
     cell.element.classList[ classMethod ]('is-selected');
-    cell.element.setAttribute( 'aria-selected', isSelected.toString() );
+    if ( isSelected ) {
+      cell.element.removeAttribute( 'aria-hidden' );
+    } else {
+      cell.element.setAttribute( 'aria-hidden', 'true' );
+    }
   });
 };
 
