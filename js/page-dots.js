@@ -142,7 +142,7 @@ Flickity.PageDots = PageDots;
 
 utils.extend( Flickity.defaults, {
   pageDots: true,
-  pageDotAriaLabel: 'Page dot %'
+  pageDotAriaLabel: 'Page dot %n'
 });
 
 Flickity.createMethods.push('_createPageDots');
