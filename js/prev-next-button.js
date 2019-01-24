@@ -59,7 +59,9 @@ PrevNextButton.prototype._create = function() {
   // init as disabled
   this.disable();
 
-  element.setAttribute('aria-label', this.parent.options[this.isPrevious ? 'l18nPrevious' : 'l18nNext']);
+  var optionName = this.isPrevious ? 'previous' : 'next';
+  var label = this.parent.options[ optionName + 'AriaLabel' ];
+  element.setAttribute('aria-label', label);
 
   // create arrow
   var svg = this.createSVG();
@@ -178,8 +180,8 @@ PrevNextButton.prototype.destroy = function() {
 
 utils.extend( Flickity.defaults, {
   prevNextButtons: true,
-  l18nPrevious: 'Previous',
-  l18nNext: 'Next',
+  previousAriaLabel: 'Previous',
+  nextAriaLabel: 'Next',
   arrowShape: {
     x0: 10,
     x1: 60, y1: 50,

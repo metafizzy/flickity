@@ -142,13 +142,13 @@ var flky = new Flickity( '.gallery', {
   wrapAround: false,
   // at end of cells, wraps-around to first for infinite scrolling
 
-  l18nPageDot: 'Page dot %'
-  // Aria label for the page dots. `%` gets replaced with the slide number
+  pageDotAriaLabel: 'Page dot %n'
+  // Aria label for the page dots. `%n` gets replaced with the slide number
 
-  l18nPrevious: 'Previous',
+  previousAriaLabel: 'Previous',
   // Aria label for the previous button
 
-  l18nNext: 'Next'
+  nextAriaLabel: 'Next'
    // Aria label for the next button
 
 });
