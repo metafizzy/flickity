@@ -46,9 +46,9 @@ proto.create = function() {
 
 proto.destroy = function() {
   // reset style
+  this.unselect();
   this.element.style.position = '';
   var side = this.parent.originSide;
-  this.element.removeAttribute( 'aria-hidden' );
   this.element.style[ side ] = '';
 };
 
@@ -73,6 +73,16 @@ proto.renderPosition = function( x ) {
   // render position of cell with in slider
   var side = this.parent.originSide;
   this.element.style[ side ] = this.parent.getPositionValue( x );
+};
+
+proto.select = function() {
+  this.element.classList.add('is-selected');
+  this.element.removeAttribute('aria-hidden');
+};
+
+proto.unselect = function() {
+  this.element.classList.remove('is-selected');
+  this.element.setAttribute( 'aria-hidden', 'true' );
 };
 
 /**
