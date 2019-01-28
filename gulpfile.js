@@ -35,7 +35,8 @@ gulp.task( 'jsonlint', function() {
     .pipe( jsonlint.report('verbose') );
 });
 
-gulp.task( 'hint', [ 'hint-js', 'hint-test', 'hint-task', 'jsonlint' ]);
+gulp.task( 'hint',
+  gulp.parallel('hint-js', 'hint-test', 'hint-task', 'jsonlint' ) );
 
 // -------------------------- RequireJS makes pkgd -------------------------- //
 
@@ -89,9 +90,9 @@ gulp.task( 'requirejs', function() {
 
 var uglify = require('gulp-uglify');
 
-gulp.task( 'uglify', [ 'requirejs' ], function() {
+gulp.task( 'uglify', function() {
   var banner = getBanner();
-  gulp.src('dist/flickity.pkgd.js')
+  return gulp.src('dist/flickity.pkgd.js')
     .pipe( uglify() )
     // add banner
     .pipe( addBanner( banner ) )
@@ -104,7 +105,7 @@ gulp.task( 'uglify', [ 'requirejs' ], function() {
 var cleanCSS = require('gulp-clean-css');
 
 gulp.task( 'css', function() {
-  gulp.src('css/flickity.css')
+  return gulp.src('css/flickity.css')
     // copy to dist
     .pipe( gulp.dest('dist') )
     // minify
@@ -119,6 +120,7 @@ gulp.task( 'css', function() {
 // set version in source files
 
 var minimist = require('minimist');
+var merge2 = require('merge2');
 
 // use gulp version -t 1.2.3
 gulp.task( 'version', function() {
@@ -134,28 +136,26 @@ gulp.task( 'version', function() {
     return replace( /Flickity v\d\.\d+\.\d+/, 'Flickity v' + version );
   }
 
-  gulp.src('js/index.js')
+  var indexJs = gulp.src('js/index.js')
     .pipe( sourceReplace() )
     .pipe( gulp.dest('js') );
 
-  gulp.src('css/flickity.css')
+  var css = gulp.src('css/flickity.css')
     .pipe( sourceReplace() )
     .pipe( gulp.dest('css') );
 
-  gulp.src( [ 'bower.json', 'package.json' ] )
+  var json = gulp.src('package.json')
     .pipe( replace( /"version": "\d\.\d+\.\d+"/, '"version": "' + version + '"' ) )
     .pipe( gulp.dest('.') );
-  // replace CDN links in README
-  var minorVersion = version.match( /^\d\.\d+/ )[0];
-  gulp.src('README.md')
-    .pipe( replace( /flickity@\d\.\d+/g, 'flickity@' + minorVersion ))
-    .pipe( gulp.dest('.') );
+
+  // create a merged stream for array of streams
+  return merge2([ indexJs, css, json ]);
 });
 
 // ----- default ----- //
 
-gulp.task( 'default', [
+gulp.task( 'default', gulp.parallel(
   'hint',
-  'uglify',
   'css',
-]);
+  gulp.series( 'requirejs', 'uglify' )
+));

@@ -13,20 +13,22 @@
     "unipointer": "^2.3.0"
   },
   "devDependencies": {
-    "flickity-imagesloaded": "^2.0.0",
+    "chalk": "^2.4.2",
     "flickity-as-nav-for": "^2.0.0",
-    "jquery-bridget": "^2.0.0",
-    "gulp": "^3.8.10",
-    "gulp-jshint": "^1.9.0",
-    "gulp-rename": "^1.2.0",
-    "gulp-util": "^3.0.2",
-    "chalk": "^0.5.1",
-    "gulp-replace": "^0.5.1",
+    "flickity-imagesloaded": "^2.0.0",
+    "gulp": "^4.0.0",
+    "gulp-clean-css": "^2.3.2",
+    "gulp-jshint": "^2.1.0",
+    "gulp-json-lint": "^0.1.0",
+    "gulp-rename": "^1.4.0",
+    "gulp-replace": "^1.0.0",
     "gulp-requirejs-optimize": "github:metafizzy/gulp-requirejs-optimize",
-    "gulp-uglify": "^1.0.2",
-    "gulp-json-lint": "0.0.1",
-    "gulp-clean-css": "^2.0.4",
-    "minimist": "^1.1.0"
+    "gulp-uglify": "^3.0.1",
+    "gulp-util": "^3.0.8",
+    "jquery-bridget": "^2.0.0",
+    "jshint": "^2.9.7",
+    "merge2": "^1.2.3",
+    "minimist": "^1.2.0"
   },
   "scripts": {
     "test": "echo \"View test/ in browser\" && exit 1"
