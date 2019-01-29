@@ -1,4 +1,4 @@
-/*! Flickity v2.1.2
+/*! Flickity v2.2.0
 https://flickity.metafizzy.co
 ---------------------------------------------- */
 
@@ -73,7 +73,7 @@ https://flickity.metafizzy.co
 }
 
 .flickity-button-icon {
-  fill: #333;
+  fill: currentColor;
 }
 
 /* ---- previous/next buttons ---- */

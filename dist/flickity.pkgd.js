@@ -1,5 +1,5 @@
 /*!
- * Flickity PACKAGED v2.1.2
+ * Flickity PACKAGED v2.2.0
  * Touch, responsive, flickable carousels
  *
  * Licensed GPLv3 for open source use
@@ -811,16 +811,16 @@ var proto = Cell.prototype;
 
 proto.create = function() {
   this.element.style.position = 'absolute';
-  this.element.setAttribute( 'aria-selected', 'false' );
+  this.element.setAttribute( 'aria-hidden', 'true' );
   this.x = 0;
   this.shift = 0;
 };
 
 proto.destroy = function() {
   // reset style
+  this.unselect();
   this.element.style.position = '';
   var side = this.parent.originSide;
-  this.element.removeAttribute('aria-selected');
   this.element.style[ side ] = '';
 };
 
@@ -845,6 +845,16 @@ proto.renderPosition = function( x ) {
   // render position of cell with in slider
   var side = this.parent.originSide;
   this.element.style[ side ] = this.parent.getPositionValue( x );
+};
+
+proto.select = function() {
+  this.element.classList.add('is-selected');
+  this.element.removeAttribute('aria-hidden');
+};
+
+proto.unselect = function() {
+  this.element.classList.remove('is-selected');
+  this.element.setAttribute( 'aria-hidden', 'true' );
 };
 
 /**
@@ -917,18 +927,14 @@ proto.getLastCell = function() {
 };
 
 proto.select = function() {
-  this.changeSelected( true );
+  this.cells.forEach( function( cell ) {
+    cell.select();
+  });
 };
 
 proto.unselect = function() {
-  this.changeSelected( false );
-};
-
-proto.changeSelected = function( isSelected ) {
-  var classMethod = isSelected ? 'add' : 'remove';
   this.cells.forEach( function( cell ) {
-    cell.element.classList[ classMethod ]('is-selected');
-    cell.element.setAttribute( 'aria-selected', isSelected.toString() );
+    cell.unselect();
   });
 };
 
@@ -1013,22 +1019,29 @@ proto.positionSlider = function() {
     this.shiftWrapCells( x );
   }
 
-  x = x + this.cursorPosition;
+  this.setTranslateX( x, this.isAnimating );
+  this.dispatchScrollEvent();
+};
+
+proto.setTranslateX = function( x, is3d ) {
+  x += this.cursorPosition;
   // reverse if right-to-left and using transform
   x = this.options.rightToLeft ? -x : x;
-  var value = this.getPositionValue( x );
+  var translateX = this.getPositionValue( x );
   // use 3D tranforms for hardware acceleration on iOS
   // but use 2D when settled, for better font-rendering
-  this.slider.style.transform = this.isAnimating ?
-    'translate3d(' + value + ',0,0)' : 'translateX(' + value + ')';
+  this.slider.style.transform = is3d ?
+    'translate3d(' + translateX + ',0,0)' : 'translateX(' + translateX + ')';
+};
 
-  // scroll event
+proto.dispatchScrollEvent = function() {
   var firstSlide = this.slides[0];
-  if ( firstSlide ) {
-    var positionX = -this.x - firstSlide.target;
-    var progress = positionX / this.slidesWidth;
-    this.dispatchEvent( 'scroll', null, [ progress, positionX ] );
+  if ( !firstSlide ) {
+    return;
   }
+  var positionX = -this.x - firstSlide.target;
+  var progress = positionX / this.slidesWidth;
+  this.dispatchEvent( 'scroll', null, [ progress, positionX ] );
 };
 
 proto.positionSliderAtSelected = function() {
@@ -1331,18 +1344,7 @@ proto.activate = function() {
   }
 
   this.emitEvent('activate');
-
-  var index;
-  var initialIndex = this.options.initialIndex;
-  if ( this.isInitActivated ) {
-    index = this.selectedIndex;
-  } else if ( initialIndex !== undefined ) {
-    index = this.cells[ initialIndex ] ? initialIndex : 0;
-  } else {
-    index = 0;
-  }
-  // select instantly
-  this.select( index, false, true );
+  this.selectInitialIndex();
   // flag for initial activation, for using initialIndex
   this.isInitActivated = true;
   // ready event. #493
@@ -1742,6 +1744,31 @@ proto.unselectSelectedSlide = function() {
   }
 };
 
+proto.selectInitialIndex = function() {
+  var initialIndex = this.options.initialIndex;
+  // already activated, select previous selectedIndex
+  if ( this.isInitActivated ) {
+    this.select( this.selectedIndex, false, true );
+    return;
+  }
+  // select with selector string
+  if ( initialIndex && typeof initialIndex == 'string' ) {
+    var cell = this.queryCell( initialIndex );
+    if ( cell ) {
+      this.selectCell( initialIndex, false, true );
+      return;
+    }
+  }
+
+  var index = 0;
+  // select with number
+  if ( initialIndex && this.slides[ initialIndex ] ) {
+    index = initialIndex;
+  }
+  // select instantly
+  this.select( index, false, true );
+};
+
 /**
  * select slide from number or cell element
  * @param {Element or Number} elem
@@ -1866,6 +1893,10 @@ proto.queryCell = function( selector ) {
     return this.cells[ selector ];
   }
   if ( typeof selector == 'string' ) {
+    // do not select invalid selectors from hash: #123, #/. #791
+    if ( selector.match(/^[#\.]?[\d\/]/) ) {
+      return;
+    }
     // use string as selector, get element
     selector = this.element.querySelector( selector );
   }
@@ -1879,8 +1910,13 @@ proto.uiChange = function() {
   this.emitEvent('uiChange');
 };
 
+// keep focus on element when child UI elements are clicked
 proto.childUIPointerDown = function( event ) {
-  this.emitEvent( 'childUIPointerDown', [ event ] );
+  // HACK iOS does not allow touch events to bubble up?!
+  if ( event.type != 'touchstart' ) {
+    event.preventDefault();
+  }
+  this.focus();
 };
 
 // ----- resize ----- //
@@ -2000,6 +2036,7 @@ proto.deactivate = function() {
 proto.destroy = function() {
   this.deactivate();
   window.removeEventListener( 'resize', this );
+  this.allOff();
   this.emitEvent('destroy');
   if ( jQuery && this.$element ) {
     jQuery.removeData( this.element, 'flickity' );
@@ -2037,6 +2074,7 @@ Flickity.setJQuery = function( jq ) {
 };
 
 Flickity.Cell = Cell;
+Flickity.Slide = Slide;
 
 return Flickity;
 
@@ -2684,7 +2722,6 @@ var isTouchmoveScrollCanceled = false;
 proto._createDrag = function() {
   this.on( 'activate', this.onActivateDrag );
   this.on( 'uiChange', this._uiChangeDrag );
-  this.on( 'childUIPointerDown', this._childUIPointerDownDrag );
   this.on( 'deactivate', this.onDeactivateDrag );
   this.on( 'cellChange', this.updateDraggable );
   // TODO updateDraggable on resize? if groupCells & slides change
@@ -2736,13 +2773,6 @@ proto._uiChangeDrag = function() {
   delete this.isFreeScrolling;
 };
 
-proto._childUIPointerDownDrag = function( event ) {
-  // allow focus & preventDefault even when not draggable
-  // so child UI elements keep focus on carousel. #721
-  event.preventDefault();
-  this.pointerDownFocus( event );
-};
-
 // -------------------------- pointer events -------------------------- //
 
 proto.pointerDown = function( event, pointer ) {
@@ -2776,7 +2806,11 @@ proto.pointerDown = function( event, pointer ) {
 // default pointerDown logic, used for staticClick
 proto._pointerDownDefault = function( event, pointer ) {
   // track start event position
-  this.pointerDownPointer = pointer;
+  // Safari 9 overrides pageX and pageY. These values needs to be copied. #779
+  this.pointerDownPointer = {
+    pageX: pointer.pageX,
+    pageY: pointer.pageY,
+  };
   // bind move and end events
   this._bindPostStartEvents( event );
   this.dispatchEvent( 'pointerDown', event, [ pointer ] );
@@ -3022,120 +3056,6 @@ return Flickity;
 
 }));
 
-/*!
- * Tap listener v2.0.0
- * listens to taps
- * MIT license
- */
-
-/*jshint browser: true, unused: true, undef: true, strict: true */
-
-( function( window, factory ) {
-  // universal module definition
-  /*jshint strict: false*/ /*globals define, module, require */
-
-  if ( typeof define == 'function' && define.amd ) {
-    // AMD
-    define( 'tap-listener/tap-listener',[
-      'unipointer/unipointer'
-    ], function( Unipointer ) {
-      return factory( window, Unipointer );
-    });
-  } else if ( typeof module == 'object' && module.exports ) {
-    // CommonJS
-    module.exports = factory(
-      window,
-      require('unipointer')
-    );
-  } else {
-    // browser global
-    window.TapListener = factory(
-      window,
-      window.Unipointer
-    );
-  }
-
-}( window, function factory( window, Unipointer ) {
-
-
-
-// --------------------------  TapListener -------------------------- //
-
-function TapListener( elem ) {
-  this.bindTap( elem );
-}
-
-// inherit Unipointer & EventEmitter
-var proto = TapListener.prototype = Object.create( Unipointer.prototype );
-
-/**
- * bind tap event to element
- * @param {Element} elem
- */
-proto.bindTap = function( elem ) {
-  if ( !elem ) {
-    return;
-  }
-  this.unbindTap();
-  this.tapElement = elem;
-  this._bindStartEvent( elem, true );
-};
-
-proto.unbindTap = function() {
-  if ( !this.tapElement ) {
-    return;
-  }
-  this._bindStartEvent( this.tapElement, true );
-  delete this.tapElement;
-};
-
-/**
- * pointer up
- * @param {Event} event
- * @param {Event or Touch} pointer
- */
-proto.pointerUp = function( event, pointer ) {
-  // ignore emulated mouse up clicks
-  if ( this.isIgnoringMouseUp && event.type == 'mouseup' ) {
-    return;
-  }
-
-  var pointerPoint = Unipointer.getPointerPoint( pointer );
-  var boundingRect = this.tapElement.getBoundingClientRect();
-  var scrollX = window.pageXOffset;
-  var scrollY = window.pageYOffset;
-  // calculate if pointer is inside tapElement
-  var isInside = pointerPoint.x >= boundingRect.left + scrollX &&
-    pointerPoint.x <= boundingRect.right + scrollX &&
-    pointerPoint.y >= boundingRect.top + scrollY &&
-    pointerPoint.y <= boundingRect.bottom + scrollY;
-  // trigger callback if pointer is inside element
-  if ( isInside ) {
-    this.emitEvent( 'tap', [ event, pointer ] );
-  }
-
-  // set flag for emulated clicks 300ms after touchend
-  if ( event.type != 'mouseup' ) {
-    this.isIgnoringMouseUp = true;
-    // reset flag after 300ms
-    var _this = this;
-    setTimeout( function() {
-      delete _this.isIgnoringMouseUp;
-    }, 400 );
-  }
-};
-
-proto.destroy = function() {
-  this.pointerDone();
-  this.unbindTap();
-};
-
-// -----  ----- //
-
-return TapListener;
-
-}));
-
 // prev/next buttons
 ( function( window, factory ) {
   // universal module definition
@@ -3144,17 +3064,17 @@ return TapListener;
     // AMD
     define( 'flickity/js/prev-next-button',[
       './flickity',
-      'tap-listener/tap-listener',
+      'unipointer/unipointer',
       'fizzy-ui-utils/utils'
-    ], function( Flickity, TapListener, utils ) {
-      return factory( window, Flickity, TapListener, utils );
+    ], function( Flickity, Unipointer, utils ) {
+      return factory( window, Flickity, Unipointer, utils );
     });
   } else if ( typeof module == 'object' && module.exports ) {
     // CommonJS
     module.exports = factory(
       window,
       require('./flickity'),
-      require('tap-listener'),
+      require('unipointer'),
       require('fizzy-ui-utils')
     );
   } else {
@@ -3162,12 +3082,12 @@ return TapListener;
     factory(
       window,
       window.Flickity,
-      window.TapListener,
+      window.Unipointer,
       window.fizzyUIUtils
     );
   }
 
-}( window, function factory( window, Flickity, TapListener, utils ) {
+}( window, function factory( window, Flickity, Unipointer, utils ) {
 'use strict';
 
 var svgURI = 'http://www.w3.org/2000/svg';
@@ -3180,7 +3100,7 @@ function PrevNextButton( direction, parent ) {
   this._create();
 }
 
-PrevNextButton.prototype = Object.create( TapListener.prototype );
+PrevNextButton.prototype = Object.create( Unipointer.prototype );
 
 PrevNextButton.prototype._create = function() {
   // properties
@@ -3203,14 +3123,12 @@ PrevNextButton.prototype._create = function() {
   var svg = this.createSVG();
   element.appendChild( svg );
   // events
-  this.on( 'tap', this.onTap );
   this.parent.on( 'select', this.update.bind( this ) );
   this.on( 'pointerDown', this.parent.childUIPointerDown.bind( this.parent ) );
 };
 
 PrevNextButton.prototype.activate = function() {
-  this.bindTap( this.element );
-  // click events from keyboard
+  this.bindStartEvent( this.element );
   this.element.addEventListener( 'click', this );
   // add to DOM
   this.parent.element.appendChild( this.element );
@@ -3219,9 +3137,8 @@ PrevNextButton.prototype.activate = function() {
 PrevNextButton.prototype.deactivate = function() {
   // remove from DOM
   this.parent.element.removeChild( this.element );
-  // do regular TapListener destroy
-  TapListener.prototype.destroy.call( this );
-  // click events from keyboard
+  // click events
+  this.unbindStartEvent( this.element );
   this.element.removeEventListener( 'click', this );
 };
 
@@ -3257,23 +3174,15 @@ function getArrowMovements( shape ) {
     ' Z';
 }
 
-PrevNextButton.prototype.onTap = function() {
+PrevNextButton.prototype.handleEvent = utils.handleEvent;
+
+PrevNextButton.prototype.onclick = function() {
   if ( !this.isEnabled ) {
     return;
   }
   this.parent.uiChange();
   var method = this.isPrevious ? 'previous' : 'next';
   this.parent[ method ]();
-};
-
-PrevNextButton.prototype.handleEvent = utils.handleEvent;
-
-PrevNextButton.prototype.onclick = function( event ) {
-  // only allow clicks from keyboard
-  var focused = document.activeElement;
-  if ( focused && focused == this.element ) {
-    this.onTap( event, event );
-  }
 };
 
 // -----  ----- //
@@ -3310,6 +3219,7 @@ PrevNextButton.prototype.update = function() {
 
 PrevNextButton.prototype.destroy = function() {
   this.deactivate();
+  this.allOff();
 };
 
 // -------------------------- Flickity prototype -------------------------- //
@@ -3366,17 +3276,17 @@ return Flickity;
     // AMD
     define( 'flickity/js/page-dots',[
       './flickity',
-      'tap-listener/tap-listener',
+      'unipointer/unipointer',
       'fizzy-ui-utils/utils'
-    ], function( Flickity, TapListener, utils ) {
-      return factory( window, Flickity, TapListener, utils );
+    ], function( Flickity, Unipointer, utils ) {
+      return factory( window, Flickity, Unipointer, utils );
     });
   } else if ( typeof module == 'object' && module.exports ) {
     // CommonJS
     module.exports = factory(
       window,
       require('./flickity'),
-      require('tap-listener'),
+      require('unipointer'),
       require('fizzy-ui-utils')
     );
   } else {
@@ -3384,12 +3294,12 @@ return Flickity;
     factory(
       window,
       window.Flickity,
-      window.TapListener,
+      window.Unipointer,
       window.fizzyUIUtils
     );
   }
 
-}( window, function factory( window, Flickity, TapListener, utils ) {
+}( window, function factory( window, Flickity, Unipointer, utils ) {
 
 // -------------------------- PageDots -------------------------- //
 
@@ -3400,7 +3310,7 @@ function PageDots( parent ) {
   this._create();
 }
 
-PageDots.prototype = new TapListener();
+PageDots.prototype = Object.create( Unipointer.prototype );
 
 PageDots.prototype._create = function() {
   // create holder element
@@ -3409,21 +3319,23 @@ PageDots.prototype._create = function() {
   // create dots, array of elements
   this.dots = [];
   // events
-  this.on( 'tap', this.onTap );
+  this.handleClick = this.onClick.bind( this );
   this.on( 'pointerDown', this.parent.childUIPointerDown.bind( this.parent ) );
 };
 
 PageDots.prototype.activate = function() {
   this.setDots();
-  this.bindTap( this.holder );
+  this.holder.addEventListener( 'click', this.handleClick );
+  this.bindStartEvent( this.holder );
   // add to DOM
   this.parent.element.appendChild( this.holder );
 };
 
 PageDots.prototype.deactivate = function() {
+  this.holder.removeEventListener( 'click', this.handleClick );
+  this.unbindStartEvent( this.holder );
   // remove from DOM
   this.parent.element.removeChild( this.holder );
-  TapListener.prototype.destroy.call( this );
 };
 
 PageDots.prototype.setDots = function() {
@@ -3478,7 +3390,8 @@ PageDots.prototype.updateSelected = function() {
   this.selectedDot.setAttribute( 'aria-current', 'step' );
 };
 
-PageDots.prototype.onTap = function( event ) {
+PageDots.prototype.onTap = // old method name, backwards-compatible
+PageDots.prototype.onClick = function( event ) {
   var target = event.target;
   // only care about dot clicks
   if ( target.nodeName != 'LI' ) {
@@ -3492,6 +3405,7 @@ PageDots.prototype.onTap = function( event ) {
 
 PageDots.prototype.destroy = function() {
   this.deactivate();
+  this.allOff();
 };
 
 Flickity.PageDots = PageDots;
@@ -4033,7 +3947,7 @@ return Flickity;
 }));
 
 /*!
- * Flickity v2.1.2
+ * Flickity v2.2.0
  * Touch, responsive, flickable carousels
  *
  * Licensed GPLv3 for open source use
