@@ -6,7 +6,7 @@
  * or Flickity Commercial License for commercial use
  *
  * https://flickity.metafizzy.co
- * Copyright 2015-2018 Metafizzy
+ * Copyright 2015-2019 Metafizzy
  */
 
 ( function( window, factory ) {
