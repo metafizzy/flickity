@@ -1,12 +1,12 @@
 /*!
- * Flickity PACKAGED v2.2.0
+ * Flickity PACKAGED v2.2.1
  * Touch, responsive, flickable carousels
  *
  * Licensed GPLv3 for open source use
  * or Flickity Commercial License for commercial use
  *
  * https://flickity.metafizzy.co
- * Copyright 2015-2018 Metafizzy
+ * Copyright 2015-2019 Metafizzy
  */
 
 /**
@@ -3947,14 +3947,14 @@ return Flickity;
 }));
 
 /*!
- * Flickity v2.2.0
+ * Flickity v2.2.1
  * Touch, responsive, flickable carousels
  *
  * Licensed GPLv3 for open source use
  * or Flickity Commercial License for commercial use
  *
  * https://flickity.metafizzy.co
- * Copyright 2015-2018 Metafizzy
+ * Copyright 2015-2019 Metafizzy
  */
 
 ( function( window, factory ) {
@@ -3990,7 +3990,7 @@ return Flickity;
 });
 
 /*!
- * Flickity asNavFor v2.0.1
+ * Flickity asNavFor v2.0.2
  * enable asNavFor for Flickity
  */
 
@@ -4069,13 +4069,15 @@ proto.setNavCompanion = function( elem ) {
 };
 
 proto.navCompanionSelect = function( isInstant ) {
-  if ( !this.navCompanion ) {
+  // wait for companion & selectedCells first. #8
+  var companionCells = this.navCompanion && this.navCompanion.selectedCells;
+  if ( !companionCells ) {
     return;
   }
   // select slide that matches first cell of slide
-  var selectedCell = this.navCompanion.selectedCells[0];
+  var selectedCell = companionCells[0];
   var firstIndex = this.navCompanion.cells.indexOf( selectedCell );
-  var lastIndex = firstIndex + this.navCompanion.selectedCells.length - 1;
+  var lastIndex = firstIndex + companionCells.length - 1;
   var selectIndex = Math.floor( lerp( firstIndex, lastIndex,
     this.navCompanion.cellAlign ) );
   this.selectCell( selectIndex, false, isInstant );

@@ -1,4 +1,4 @@
-/*! Flickity v2.2.0
+/*! Flickity v2.2.1
 https://flickity.metafizzy.co
 ---------------------------------------------- */
 
@@ -24,7 +24,6 @@ https://flickity.metafizzy.co
 
 .flickity-enabled.is-draggable {
   -webkit-tap-highlight-color: transparent;
-          tap-highlight-color: transparent;
   -webkit-user-select: none;
      -moz-user-select: none;
       -ms-user-select: none;
