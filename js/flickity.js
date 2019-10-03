@@ -109,7 +109,7 @@ Flickity.defaults = {
   // watchCSS: false,
   // wrapAround: false
   prevButtonAriaLabel: 'Previous',
-  nextButtonAriaLabel: 'Next',
+  nextButtonAriaLabel: 'Next'
 };
 
 // hash of methods triggered on _create()
