@@ -105,9 +105,11 @@ Flickity.defaults = {
   percentPosition: true,
   resize: true,
   selectedAttraction: 0.025,
-  setGallerySize: true
+  setGallerySize: true,
   // watchCSS: false,
   // wrapAround: false
+  prevButtonAriaLabel: 'Previous',
+  nextButtonAriaLabel: 'Next',
 };
 
 // hash of methods triggered on _create()
