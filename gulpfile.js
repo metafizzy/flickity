@@ -96,7 +96,7 @@ gulp.task( 'uglify', function() {
     .pipe( uglify() )
     // add banner
     .pipe( addBanner( banner ) )
-    .pipe( rename('flickity.pkgd.min.js') )
+    .pipe( rename({ suffix: '.min' }) )
     .pipe( gulp.dest('dist') );
 });
 
@@ -110,7 +110,7 @@ gulp.task( 'css', function() {
     .pipe( gulp.dest('dist') )
     // minify
     .pipe( cleanCSS({ advanced: false }) )
-    .pipe( rename('flickity.min.css') )
+    .pipe( rename({ suffix: '.min' }) )
     .pipe( replace( '*/', '*/\n' ) )
     .pipe( gulp.dest('dist') );
 });
