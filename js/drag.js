@@ -85,8 +85,7 @@ proto.updateDraggable = function() {
   if ( this.options.draggable == '>1' ) {
     this.isDraggable = this.slides.length > 1;
   } else if (this.options.draggable === 'onOverflow') {
-    var viewport = this.element.querySelector('.flickity-viewport');
-    this.isDraggable = viewport.scrollWidth > viewport.offsetWidth;
+    this.isDraggable = this.viewport.scrollWidth > this.viewport.offsetWidth;
   } else {
     this.isDraggable = this.options.draggable;
   }
