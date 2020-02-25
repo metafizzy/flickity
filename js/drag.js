@@ -241,6 +241,8 @@ proto.dragMove = function( event, pointer, moveVector ) {
 
   this.dragMoveTime = new Date();
   this.dispatchEvent( 'dragMove', event, [ pointer, moveVector ] );
+
+  this.checkVisibility();
 };
 
 proto.dragEnd = function( event, pointer ) {
