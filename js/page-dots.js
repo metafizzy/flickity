@@ -44,8 +44,16 @@ PageDots.prototype = Object.create( Unipointer.prototype );
 
 PageDots.prototype._create = function() {
   // create holder element
-  this.holder = document.createElement('ol');
-  this.holder.className = 'flickity-page-dots';
+  if (this.parent.options.noDomMod) {
+    this.holder = this.parent.element.querySelector('.flickity-page-dots');
+    if ( !this.holder && console ) {
+      console.error( 'Could not find ".flickity-page-dots"' );
+      return;
+    }
+  } else {
+    this.holder = document.createElement('ol');
+    this.holder.className = 'flickity-page-dots';
+  }
   // create dots, array of elements
   this.dots = [];
   // events

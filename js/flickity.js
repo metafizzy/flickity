@@ -107,7 +107,8 @@ Flickity.defaults = {
   selectedAttraction: 0.025,
   setGallerySize: true
   // watchCSS: false,
-  // wrapAround: false
+  // wrapAround: false,
+  // noDomMod: false
 };
 
 // hash of methods triggered on _create()
@@ -131,8 +132,16 @@ proto._create = function() {
   this.velocity = 0;
   this.originSide = this.options.rightToLeft ? 'right' : 'left';
   // create viewport & slider
-  this.viewport = document.createElement('div');
-  this.viewport.className = 'flickity-viewport';
+  if (this.options.noDomMod) {
+    this.viewport = this.element.querySelector('.flickity-viewport');
+    if ( !this.viewport && console ) {
+      console.error( 'Could not find ".flickity-viewport"' );
+      return;
+    }
+  } else {
+    this.viewport = document.createElement('div');
+    this.viewport.className = 'flickity-viewport';
+  }
   this._createSlider();
 
   if ( this.options.resize || this.options.watchCSS ) {
@@ -178,9 +187,11 @@ proto.activate = function() {
   this.getSize();
   // move initial cell elements so they can be loaded as cells
   var cellElems = this._filterFindCellElements( this.element.children );
-  moveElements( cellElems, this.slider );
-  this.viewport.appendChild( this.slider );
-  this.element.appendChild( this.viewport );
+  if (! this.options.noDomMod) {
+    moveElements( cellElems, this.slider );
+    this.viewport.appendChild( this.slider );
+    this.element.appendChild( this.viewport );
+  }
   // get cells from children
   this.reloadCells();
 
@@ -202,10 +213,17 @@ proto.activate = function() {
 // slider positions the cells
 proto._createSlider = function() {
   // slider element does all the positioning
-  var slider = document.createElement('div');
-  slider.className = 'flickity-slider';
-  slider.style[ this.originSide ] = 0;
-  this.slider = slider;
+  if (this.options.noDomMod) {
+    this.slider = this.element.querySelector('.flickity-slider');
+    if ( !this.slider && console ) {
+      console.error( 'Could not find ".flickity-slider"' );
+      return;
+    }
+  } else {
+    this.slider = document.createElement('div');
+    this.slider.className = 'flickity-slider';
+  }
+  this.slider.style[ this.originSide ] = 0;
 };
 
 proto._filterFindCellElements = function( elems ) {
@@ -215,6 +233,8 @@ proto._filterFindCellElements = function( elems ) {
 // goes through all children
 proto.reloadCells = function() {
   // collection of item elements
+  this.afterShiftCells=[];
+  this.beforeShiftCells=[];
   this.cells = this._makeCells( this.slider.children );
   this.positionCells();
   this._getWrapShiftCells();
@@ -869,9 +889,10 @@ proto.deactivate = function() {
   this.cells.forEach( function( cell ) {
     cell.destroy();
   });
-  this.element.removeChild( this.viewport );
+  this.unselectSelectedSlide();
+  if (! this.options.noDomMod ) this.element.removeChild( this.viewport );
   // move child elements back into element
-  moveElements( this.slider.children, this.element );
+  if (! this.options.noDomMod ) moveElements( this.slider.children, this.element );
   if ( this.options.accessibility ) {
     this.element.removeAttribute('tabIndex');
     this.element.removeEventListener( 'keydown', this );
