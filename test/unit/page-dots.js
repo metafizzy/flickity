@@ -30,4 +30,8 @@ QUnit.test( 'pageDots', function( assert ) {
   flkty.pageDots.onTap( { target: dotsElems[4] } );
   assert.equal( flkty.selectedIndex, 4, 'tap dot selects cell' );
 
+  // fake change event
+  dotsElems[0].control.dispatchEvent(new Event('change'));
+  assert.equal( flkty.selectedIndex, 0, 'radio button change event selects cell');
+
 });

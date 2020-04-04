@@ -121,7 +121,7 @@ https://flickity.metafizzy.co
 
 .flickity-rtl .flickity-page-dots { direction: rtl; }
 
-.flickity-page-dots .dot {
+.flickity-page-dots .dot, .flickity-page-dots .dot input {
   display: inline-block;
   width: 10px;
   height: 10px;
@@ -134,4 +134,10 @@ https://flickity.metafizzy.co
 
 .flickity-page-dots .dot.is-selected {
   opacity: 1;
+}
+
+.flickity-page-dots .dot input {
+  float: left;
+  margin: 0;
+  opacity: 0;
 }
