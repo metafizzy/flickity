@@ -12,32 +12,53 @@
       './slide',
       './animate'
     ], function( EvEmitter, getSize, utils, Cell, Slide, animatePrototype ) {
-      return factory( window, EvEmitter, getSize, utils, Cell, Slide, animatePrototype );
+      function withWindow( window ) {
+        return factory(window, EvEmitter, getSize, utils, Cell, Slide, animatePrototype);
+      }
+      
+      var instance = withWindow(window);
+      instance.withWindow = withWindow;
+  
+      return instance;
     });
   } else if ( typeof module == 'object' && module.exports ) {
-    // CommonJS
-    module.exports = factory(
-      window,
-      require('ev-emitter'),
-      require('get-size'),
-      require('fizzy-ui-utils'),
-      require('./cell'),
-      require('./slide'),
-      require('./animate')
-    );
-  } else {
-    // browser global
-    var _Flickity = window.Flickity;
+    function withWindow( window ) {
+      return factory(
+        window,
+        require('ev-emitter'),
+        require('get-size'),
+        require('fizzy-ui-utils'),
+        require('./cell'),
+        require('./slide'),
+        require('./animate')
+      );
+    }
 
-    window.Flickity = factory(
-      window,
-      window.EvEmitter,
-      window.getSize,
-      window.fizzyUIUtils,
-      _Flickity.Cell,
-      _Flickity.Slide,
-      _Flickity.animatePrototype
-    );
+    var instance = withWindow(window);
+    instance.withWindow = withWindow;
+
+    // CommonJS
+    module.exports = instance;
+  } else {
+    function withWindow( window ) {
+      // browser global
+      var _Flickity = window.Flickity;
+  
+      return factory(
+        window,
+        window.EvEmitter,
+        window.getSize,
+        window.fizzyUIUtils,
+        _Flickity.Cell,
+        _Flickity.Slide,
+        _Flickity.animatePrototype
+      );
+    }
+
+    var instance = withWindow(window);
+    instance.withWindow = withWindow;
+
+    window.Flickity = instance;
   }
 
 }( window, function factory( window, EvEmitter, getSize,
