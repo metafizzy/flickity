@@ -67,6 +67,7 @@
 'use strict';
 
 // vars
+var document = window.document
 var jQuery = window.jQuery;
 var getComputedStyle = window.getComputedStyle;
 var console = window.console;
