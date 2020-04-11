@@ -12,32 +12,53 @@
       './slide',
       './animate'
     ], function( EvEmitter, getSize, utils, Cell, Slide, animatePrototype ) {
-      return factory( window, EvEmitter, getSize, utils, Cell, Slide, animatePrototype );
+      function withWindow( window ) {
+        return factory(window, EvEmitter, getSize, utils, Cell, Slide, animatePrototype);
+      }
+      
+      var constructor = withWindow(window);
+      constructor.withWindow = withWindow;
+  
+      return constructor;
     });
   } else if ( typeof module == 'object' && module.exports ) {
-    // CommonJS
-    module.exports = factory(
-      window,
-      require('ev-emitter'),
-      require('get-size'),
-      require('fizzy-ui-utils'),
-      require('./cell'),
-      require('./slide'),
-      require('./animate')
-    );
-  } else {
-    // browser global
-    var _Flickity = window.Flickity;
+    function withWindow( window ) {
+      return factory(
+        window,
+        require('ev-emitter'),
+        require('get-size'),
+        require('fizzy-ui-utils'),
+        require('./cell'),
+        require('./slide'),
+        require('./animate')
+      );
+    }
 
-    window.Flickity = factory(
-      window,
-      window.EvEmitter,
-      window.getSize,
-      window.fizzyUIUtils,
-      _Flickity.Cell,
-      _Flickity.Slide,
-      _Flickity.animatePrototype
-    );
+    var constructor = withWindow(window);
+    constructor.withWindow = withWindow;
+
+    // CommonJS
+    module.exports = constructor;
+  } else {
+    function withWindow( window ) {
+      // browser global
+      var _Flickity = window.Flickity;
+  
+      return factory(
+        window,
+        window.EvEmitter,
+        window.getSize,
+        window.fizzyUIUtils,
+        _Flickity.Cell,
+        _Flickity.Slide,
+        _Flickity.animatePrototype
+      );
+    }
+
+    var constructor = withWindow(window);
+    constructor.withWindow = withWindow;
+
+    window.Flickity = constructor;
   }
 
 }( window, function factory( window, EvEmitter, getSize,
@@ -46,6 +67,7 @@
 'use strict';
 
 // vars
+var document = window.document
 var jQuery = window.jQuery;
 var getComputedStyle = window.getComputedStyle;
 var console = window.console;
