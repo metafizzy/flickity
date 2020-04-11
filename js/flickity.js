@@ -16,10 +16,10 @@
         return factory(window, EvEmitter, getSize, utils, Cell, Slide, animatePrototype);
       }
       
-      var instance = withWindow(window);
-      instance.withWindow = withWindow;
+      var constructor = withWindow(window);
+      constructor.withWindow = withWindow;
   
-      return instance;
+      return constructor;
     });
   } else if ( typeof module == 'object' && module.exports ) {
     function withWindow( window ) {
@@ -34,11 +34,11 @@
       );
     }
 
-    var instance = withWindow(window);
-    instance.withWindow = withWindow;
+    var constructor = withWindow(window);
+    constructor.withWindow = withWindow;
 
     // CommonJS
-    module.exports = instance;
+    module.exports = constructor;
   } else {
     function withWindow( window ) {
       // browser global
@@ -55,10 +55,10 @@
       );
     }
 
-    var instance = withWindow(window);
-    instance.withWindow = withWindow;
+    var constructor = withWindow(window);
+    constructor.withWindow = withWindow;
 
-    window.Flickity = instance;
+    window.Flickity = constructor;
   }
 
 }( window, function factory( window, EvEmitter, getSize,
