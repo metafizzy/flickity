@@ -6,8 +6,13 @@
   "style": "css/flickity.css",
   "scripts": {
     "test": "npm run lint && echo \"View test/ in browser\" && exit 1",
-    "lint": "npx eslint .",
-    "lintFix": "npx eslint . --fix"
+    "lint": "node bin/lint-json.js && npx eslint .",
+    "lintFix": "npx eslint . --fix",
+    "dist": "npm run bundleCss && npm run bundleJs && npm run uglify",
+    "bundleCss": "cp css/flickity.css dist/flickity.css && node bin/bundle-css.js",
+    "bundleJs": "node bin/bundle-js.js",
+    "uglify": "npx uglifyjs dist/flickity.pkgd.js -o dist/flickity.pkgd.min.js --mangle --comments /^!/",
+    "version": "node bin/version.js && npm run dist && git add -A css js dist"
   },
   "dependencies": {
     "desandro-matches-selector": "^2.0.0",
@@ -18,24 +23,15 @@
     "unipointer": "^2.3.0"
   },
   "devDependencies": {
-    "chalk": "^2.4.2",
+    "clean-css": "^4.2.3",
     "eslint": "^6.8.0",
     "eslint-plugin-metafizzy": "^1.0.0",
     "flickity-as-nav-for": "^2.0.0",
     "flickity-imagesloaded": "^2.0.0",
-    "gulp": "^4.0.2",
-    "gulp-clean-css": "^4.2.0",
-    "gulp-jshint": "^2.1.0",
-    "gulp-json-lint": "^0.1.0",
-    "gulp-rename": "^1.4.0",
-    "gulp-replace": "^1.0.0",
-    "gulp-requirejs-optimize": "github:metafizzy/gulp-requirejs-optimize",
-    "gulp-uglify": "^3.0.2",
-    "gulp-util": "^3.0.8",
     "jquery-bridget": "^2.0.0",
     "jshint": "^2.10.2",
-    "merge2": "^1.2.3",
-    "minimist": "^1.2.5"
+    "requirejs": "^2.3.6",
+    "uglifyjs": "^2.4.11"
   },
   "repository": {
     "type": "git",
