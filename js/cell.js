@@ -5,22 +5,22 @@
   if ( typeof define == 'function' && define.amd ) {
     // AMD
     define( [
-      'get-size/get-size'
+      'get-size/get-size',
     ], function( getSize ) {
       return factory( window, getSize );
-    });
+    } );
   } else if ( typeof module == 'object' && module.exports ) {
     // CommonJS
     module.exports = factory(
-      window,
-      require('get-size')
+        window,
+        require('get-size')
     );
   } else {
     // browser global
     window.Flickity = window.Flickity || {};
     window.Flickity.Cell = factory(
-      window,
-      window.getSize
+        window,
+        window.getSize
     );
   }
 
@@ -86,8 +86,8 @@ proto.unselect = function() {
 };
 
 /**
- * @param {Integer} factor - 0, 1, or -1
-**/
+ * @param {Integer} shift - 0, 1, or -1
+ */
 proto.wrapShift = function( shift ) {
   this.shift = shift;
   this.renderPosition( this.x + this.parent.slideableWidth * shift );
@@ -99,4 +99,4 @@ proto.remove = function() {
 
 return Cell;
 
-}));
+} ) );

@@ -2,8 +2,8 @@ QUnit.test( 'adaptiveHeight', function( assert ) {
   'use strict';
 
   var flkty = new Flickity( '#adaptive-height', {
-    adaptiveHeight: true
-  });
+    adaptiveHeight: true,
+  } );
 
   // 2,1,3, 1,4,2, 1,2,1
 
@@ -26,4 +26,4 @@ QUnit.test( 'adaptiveHeight', function( assert ) {
   checkSelectHeight( 1, 400 );
   checkSelectHeight( 2, 200 );
 
-});
+} );

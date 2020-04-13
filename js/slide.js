@@ -54,21 +54,21 @@ proto.getLastCell = function() {
 proto.select = function() {
   this.cells.forEach( function( cell ) {
     cell.select();
-  });
+  } );
 };
 
 proto.unselect = function() {
   this.cells.forEach( function( cell ) {
     cell.unselect();
-  });
+  } );
 };
 
 proto.getCellElements = function() {
   return this.cells.map( function( cell ) {
     return cell.element;
-  });
+  } );
 };
 
 return Slide;
 
-}));
+} ) );

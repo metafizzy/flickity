@@ -1,4 +1,5 @@
-/*jshint node: true, strict: false */
+/* eslint-env node */
+/* jshint node: true, strict: false */
 
 var fs = require('fs');
 var gulp = require('gulp');
@@ -7,36 +8,15 @@ var replace = require('gulp-replace');
 
 // ----- hint ----- //
 
-var jshint = require('gulp-jshint');
-
-gulp.task( 'hint-js', function() {
-  return gulp.src('js/**/*.js')
-    .pipe( jshint() )
-    .pipe( jshint.reporter('default') );
-});
-
-gulp.task( 'hint-test', function() {
-  return gulp.src('test/unit/*.js')
-    .pipe( jshint() )
-    .pipe( jshint.reporter('default') );
-});
-
-gulp.task( 'hint-task', function() {
-  return gulp.src('gulpfile.js')
-    .pipe( jshint() )
-    .pipe( jshint.reporter('default') );
-});
-
 var jsonlint = require('gulp-json-lint');
 
 gulp.task( 'jsonlint', function() {
-  return gulp.src( '*.json' )
+  return gulp.src('*.json')
     .pipe( jsonlint() )
     .pipe( jsonlint.report('verbose') );
-});
+} );
 
-gulp.task( 'hint',
-  gulp.parallel('hint-js', 'hint-test', 'hint-task', 'jsonlint' ) );
+gulp.task( 'hint', gulp.parallel('jsonlint') );
 
 // -------------------------- RequireJS makes pkgd -------------------------- //
 
@@ -70,12 +50,12 @@ gulp.task( 'requirejs', function() {
         'jquery-bridget/jquery-bridget',
         'flickity/js/index',
         'flickity-as-nav-for/as-nav-for',
-        'flickity-imagesloaded/flickity-imagesloaded'
+        'flickity-imagesloaded/flickity-imagesloaded',
       ],
       paths: {
         flickity: '../',
-        jquery: 'empty:'
-      }
+        jquery: 'empty:',
+      },
     }) )
     // remove named module
     .pipe( replace( "'flickity-imagesloaded/flickity-imagesloaded',", '' ) )
@@ -83,8 +63,7 @@ gulp.task( 'requirejs', function() {
     .pipe( addBanner( banner ) )
     .pipe( rename('flickity.pkgd.js') )
     .pipe( gulp.dest('dist') );
-});
-
+} );
 
 // ----- uglify ----- //
 
@@ -98,7 +77,7 @@ gulp.task( 'uglify', function() {
     .pipe( addBanner( banner ) )
     .pipe( rename('flickity.pkgd.min.js') )
     .pipe( gulp.dest('dist') );
-});
+} );
 
 // ----- css ----- //
 
@@ -113,7 +92,7 @@ gulp.task( 'css', function() {
     .pipe( rename('flickity.min.css') )
     .pipe( replace( '*/', '*/\n' ) )
     .pipe( gulp.dest('dist') );
-});
+} );
 
 // ----- version ----- //
 
@@ -124,9 +103,9 @@ var merge2 = require('merge2');
 
 // use gulp version -t 1.2.3
 gulp.task( 'version', function() {
-  var args = minimist( process.argv.slice(3) );
+  var args = minimist( process.argv.slice( 3 ) );
   var version = args.t;
-  if ( !version || !/\d\.\d\.\d/.test( version ) ) {
+  if ( !version || !( /\d\.\d\.\d/ ).test( version ) ) {
     gutil.log( 'invalid version: ' + chalk.red( version ) );
     return;
   }
@@ -150,12 +129,12 @@ gulp.task( 'version', function() {
 
   // create a merged stream for array of streams
   return merge2([ indexJs, css, json ]);
-});
+} );
 
 // ----- default ----- //
 
 gulp.task( 'default', gulp.parallel(
-  'hint',
-  'css',
-  gulp.series( 'requirejs', 'uglify' )
-));
+    'hint',
+    'css',
+    gulp.series( 'requirejs', 'uglify' )
+) );

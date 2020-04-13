@@ -6,23 +6,23 @@
     // AMD
     define( [
       './flickity',
-      'fizzy-ui-utils/utils'
+      'fizzy-ui-utils/utils',
     ], function( Flickity, utils ) {
       return factory( window, Flickity, utils );
-    });
+    } );
   } else if ( typeof module == 'object' && module.exports ) {
     // CommonJS
     module.exports = factory(
-      window,
-      require('./flickity'),
-      require('fizzy-ui-utils')
+        window,
+        require('./flickity'),
+        require('fizzy-ui-utils')
     );
   } else {
     // browser global
     factory(
-      window,
-      window.Flickity,
-      window.fizzyUIUtils
+        window,
+        window.Flickity,
+        window.fizzyUIUtils
     );
   }
 
@@ -35,7 +35,7 @@ function getCellsFragment( cells ) {
   var fragment = document.createDocumentFragment();
   cells.forEach( function( cell ) {
     fragment.appendChild( cell.element );
-  });
+  } );
   return fragment;
 }
 
@@ -45,8 +45,8 @@ var proto = Flickity.prototype;
 
 /**
  * Insert, prepend, or append cells
- * @param {Element, Array, NodeList} elems
- * @param {Integer} index
+ * @param {[Element, Array, NodeList]} elems - Elements to insert
+ * @param {Integer} index - Zero-based number to insert
  */
 proto.insert = function( elems, index ) {
   var cells = this._makeCells( elems );
@@ -93,7 +93,7 @@ proto.prepend = function( elems ) {
 
 /**
  * Remove cells
- * @param {Element, Array, NodeList} elems
+ * @param {[Element, Array, NodeList]} elems - ELements to remove
  */
 proto.remove = function( elems ) {
   var cells = this.getCells( elems );
@@ -131,6 +131,7 @@ proto.cellSizeChange = function( elem ) {
 /**
  * logic any time a cell is changed: added, removed, or size changed
  * @param {Integer} changedCellIndex - index of the changed cell, optional
+ * @param {Boolean} isPositioningSlider - Positions slider after selection
  */
 proto.cellChange = function( changedCellIndex, isPositioningSlider ) {
   var prevSelectedElem = this.selectedElement;
@@ -158,4 +159,4 @@ proto.cellChange = function( changedCellIndex, isPositioningSlider ) {
 
 return Flickity;
 
-}));
+} ) );

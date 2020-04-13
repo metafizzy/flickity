@@ -1,5 +1,5 @@
-/*jshint strict: false */
-/*global requirejs: false*/
+/* jshint strict: false */
+/* global requirejs: false*/
 
 /*
 // bower components
@@ -15,8 +15,8 @@ requirejs( [ '../js/index' ], function( Flickity ) {
 // /*
 // pkgd
 requirejs( [
-  '../../dist/flickity.pkgd.js'
+  '../../dist/flickity.pkgd.js',
 ], function( Flickity ) {
   new Flickity('#gallery');
-});
+} );
 // */

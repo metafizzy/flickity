@@ -7,25 +7,25 @@
     define( [
       './flickity',
       'unipointer/unipointer',
-      'fizzy-ui-utils/utils'
+      'fizzy-ui-utils/utils',
     ], function( Flickity, Unipointer, utils ) {
       return factory( window, Flickity, Unipointer, utils );
-    });
+    } );
   } else if ( typeof module == 'object' && module.exports ) {
     // CommonJS
     module.exports = factory(
-      window,
-      require('./flickity'),
-      require('unipointer'),
-      require('fizzy-ui-utils')
+        window,
+        require('./flickity'),
+        require('unipointer'),
+        require('fizzy-ui-utils')
     );
   } else {
     // browser global
     factory(
-      window,
-      window.Flickity,
-      window.Unipointer,
-      window.fizzyUIUtils
+        window,
+        window.Flickity,
+        window.Unipointer,
+        window.fizzyUIUtils
     );
   }
 
@@ -85,10 +85,10 @@ PrevNextButton.prototype.deactivate = function() {
 };
 
 PrevNextButton.prototype.createSVG = function() {
-  var svg = document.createElementNS( svgURI, 'svg');
+  var svg = document.createElementNS( svgURI, 'svg' );
   svg.setAttribute( 'class', 'flickity-button-icon' );
   svg.setAttribute( 'viewBox', '0 0 100 100' );
-  var path = document.createElementNS( svgURI, 'path');
+  var path = document.createElementNS( svgURI, 'path' );
   var pathMovements = getArrowMovements( this.parent.options.arrowShape );
   path.setAttribute( 'd', pathMovements );
   path.setAttribute( 'class', 'arrow' );
@@ -172,9 +172,9 @@ utils.extend( Flickity.defaults, {
     x0: 10,
     x1: 60, y1: 50,
     x2: 70, y2: 40,
-    x3: 30
-  }
-});
+    x3: 30,
+  },
+} );
 
 Flickity.createMethods.push('_createPrevNextButtons');
 var proto = Flickity.prototype;
@@ -208,4 +208,4 @@ Flickity.PrevNextButton = PrevNextButton;
 
 return Flickity;
 
-}));
+} ) );

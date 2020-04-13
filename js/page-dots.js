@@ -7,25 +7,25 @@
     define( [
       './flickity',
       'unipointer/unipointer',
-      'fizzy-ui-utils/utils'
+      'fizzy-ui-utils/utils',
     ], function( Flickity, Unipointer, utils ) {
       return factory( window, Flickity, Unipointer, utils );
-    });
+    } );
   } else if ( typeof module == 'object' && module.exports ) {
     // CommonJS
     module.exports = factory(
-      window,
-      require('./flickity'),
-      require('unipointer'),
-      require('fizzy-ui-utils')
+        window,
+        require('./flickity'),
+        require('unipointer'),
+        require('fizzy-ui-utils')
     );
   } else {
     // browser global
     factory(
-      window,
-      window.Flickity,
-      window.Unipointer,
-      window.fizzyUIUtils
+        window,
+        window.Flickity,
+        window.Unipointer,
+        window.fizzyUIUtils
     );
   }
 
@@ -143,8 +143,8 @@ Flickity.PageDots = PageDots;
 // -------------------------- Flickity -------------------------- //
 
 utils.extend( Flickity.defaults, {
-  pageDots: true
-});
+  pageDots: true,
+} );
 
 Flickity.createMethods.push('_createPageDots');
 
@@ -185,4 +185,4 @@ Flickity.PageDots = PageDots;
 
 return Flickity;
 
-}));
+} ) );

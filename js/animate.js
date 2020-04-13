@@ -5,22 +5,22 @@
   if ( typeof define == 'function' && define.amd ) {
     // AMD
     define( [
-      'fizzy-ui-utils/utils'
+      'fizzy-ui-utils/utils',
     ], function( utils ) {
       return factory( window, utils );
-    });
+    } );
   } else if ( typeof module == 'object' && module.exports ) {
     // CommonJS
     module.exports = factory(
-      window,
-      require('fizzy-ui-utils')
+        window,
+        require('fizzy-ui-utils')
     );
   } else {
     // browser global
     window.Flickity = window.Flickity || {};
     window.Flickity.animatePrototype = factory(
-      window,
-      window.fizzyUIUtils
+        window,
+        window.fizzyUIUtils
     );
   }
 
@@ -56,7 +56,7 @@ proto.animate = function() {
     var _this = this;
     requestAnimationFrame( function animateFrame() {
       _this.animate();
-    });
+    } );
   }
 };
 
@@ -65,7 +65,7 @@ proto.positionSlider = function() {
   // wrap position around
   if ( this.options.wrapAround && this.cells.length > 1 ) {
     x = utils.modulo( x, this.slideableWidth );
-    x = x - this.slideableWidth;
+    x -= this.slideableWidth;
     this.shiftWrapCells( x );
   }
 
@@ -106,7 +106,7 @@ proto.positionSliderAtSelected = function() {
 proto.getPositionValue = function( position ) {
   if ( this.options.percentPosition ) {
     // percent position, round to 2 digits, like 12.34%
-    return ( Math.round( ( position / this.size.innerWidth ) * 10000 ) * 0.01 )+ '%';
+    return ( Math.round( ( position / this.size.innerWidth ) * 10000 ) * 0.01 ) + '%';
   } else {
     // pixel positioning
     return Math.round( position ) + 'px';
@@ -115,7 +115,9 @@ proto.getPositionValue = function( position ) {
 
 proto.settle = function( previousX ) {
   // keep track of frames where x hasn't moved
-  if ( !this.isPointerDown && Math.round( this.x * 100 ) == Math.round( previousX * 100 ) ) {
+  var isResting = !this.isPointerDown &&
+      Math.round( this.x * 100 ) == Math.round( previousX * 100 );
+  if ( isResting ) {
     this.restingFrames++;
   }
   // stop animating if resting for 3 or more frames
@@ -138,7 +140,7 @@ proto.shiftWrapCells = function( x ) {
 };
 
 proto._shiftCells = function( cells, gap, shift ) {
-  for ( var i=0; i < cells.length; i++ ) {
+  for ( var i = 0; i < cells.length; i++ ) {
     var cell = cells[i];
     var cellShift = gap > 0 ? shift : 0;
     cell.wrapShift( cellShift );
@@ -150,7 +152,7 @@ proto._unshiftCells = function( cells ) {
   if ( !cells || !cells.length ) {
     return;
   }
-  for ( var i=0; i < cells.length; i++ ) {
+  for ( var i = 0; i < cells.length; i++ ) {
     cells[i].wrapShift( 0 );
   }
 };
@@ -198,4 +200,4 @@ proto.applySelectedAttraction = function() {
 
 return proto;
 
-}));
+} ) );

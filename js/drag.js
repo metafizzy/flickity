@@ -7,25 +7,25 @@
     define( [
       './flickity',
       'unidragger/unidragger',
-      'fizzy-ui-utils/utils'
+      'fizzy-ui-utils/utils',
     ], function( Flickity, Unidragger, utils ) {
       return factory( window, Flickity, Unidragger, utils );
-    });
+    } );
   } else if ( typeof module == 'object' && module.exports ) {
     // CommonJS
     module.exports = factory(
-      window,
-      require('./flickity'),
-      require('unidragger'),
-      require('fizzy-ui-utils')
+        window,
+        require('./flickity'),
+        require('unidragger'),
+        require('fizzy-ui-utils')
     );
   } else {
     // browser global
     window.Flickity = factory(
-      window,
-      window.Flickity,
-      window.Unidragger,
-      window.fizzyUIUtils
+        window,
+        window.Flickity,
+        window.Unidragger,
+        window.fizzyUIUtils
     );
   }
 
@@ -38,7 +38,7 @@
 utils.extend( Flickity.defaults, {
   draggable: '>1',
   dragThreshold: 3,
-});
+} );
 
 // ----- create ----- //
 
@@ -64,7 +64,7 @@ proto._createDrag = function() {
   // HACK - add seemingly innocuous handler to fix iOS 10 scroll behavior
   // #457, RubaXa/Sortable#973
   if ( isTouch && !isTouchmoveScrollCanceled ) {
-    window.addEventListener( 'touchmove', function() {});
+    window.addEventListener( 'touchmove', function() {} );
     isTouchmoveScrollCanceled = true;
   }
 };
@@ -223,7 +223,7 @@ proto.dragMove = function( event, pointer, moveVector ) {
   var direction = this.options.rightToLeft ? -1 : 1;
   if ( this.options.wrapAround ) {
     // wrap around move. #589
-    moveVector.x = moveVector.x % this.slideableWidth;
+    moveVector.x %= this.slideableWidth;
   }
   var dragX = this.dragStartPosition + moveVector.x * direction;
 
@@ -298,7 +298,11 @@ proto._getClosestResting = function( restingX, distance, increment ) {
   var minDistance = Infinity;
   var condition = this.options.contain && !this.options.wrapAround ?
     // if contain, keep going if distance is equal to minDistance
-    function( d, md ) { return d <= md; } : function( d, md ) { return d < md; };
+    function( dist, minDist ) {
+      return dist <= minDist;
+    } : function( dist, minDist ) {
+      return dist < minDist;
+    };
   while ( condition( distance, minDistance ) ) {
     // measure distance to next cell
     index += increment;
@@ -312,14 +316,15 @@ proto._getClosestResting = function( restingX, distance, increment ) {
   return {
     distance: minDistance,
     // selected was previous index
-    index: index - increment
+    index: index - increment,
   };
 };
 
 /**
  * measure distance between x and a slide target
- * @param {Number} x
+ * @param {Number} x - horizontal position
  * @param {Integer} index - slide index
+ * @returns {Number} - slide distance
  */
 proto.getSlideDistance = function( x, index ) {
   var len = this.slides.length;
@@ -331,7 +336,7 @@ proto.getSlideDistance = function( x, index ) {
     return null;
   }
   // add distance for wrap-around slides
-  var wrap = isWrapAround ? this.slideableWidth * Math.floor( index / len ) : 0;
+  var wrap = isWrapAround ? this.slideableWidth * Math.floor( index/len ) : 0;
   return x - ( slide.target + wrap );
 };
 
@@ -382,7 +387,7 @@ proto.onscroll = function() {
 function getScrollPosition() {
   return {
     x: window.pageXOffset,
-    y: window.pageYOffset
+    y: window.pageYOffset,
   };
 }
 
@@ -390,4 +395,4 @@ function getScrollPosition() {
 
 return Flickity;
 
-}));
+} ) );

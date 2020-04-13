@@ -21,22 +21,22 @@
       './page-dots',
       './player',
       './add-remove-cell',
-      './lazyload'
+      './lazyload',
     ], factory );
   } else if ( typeof module == 'object' && module.exports ) {
     // CommonJS
     module.exports = factory(
-      require('./flickity'),
-      require('./drag'),
-      require('./prev-next-button'),
-      require('./page-dots'),
-      require('./player'),
-      require('./add-remove-cell'),
-      require('./lazyload')
+        require('./flickity'),
+        require('./drag'),
+        require('./prev-next-button'),
+        require('./page-dots'),
+        require('./player'),
+        require('./add-remove-cell'),
+        require('./lazyload')
     );
   }
 
-})( window, function factory( Flickity ) {
-  /*jshint strict: false*/
+} )( window, function factory( Flickity ) {
+  /* jshint strict: false*/
   return Flickity;
-});
+} );

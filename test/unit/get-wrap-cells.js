@@ -2,8 +2,8 @@ QUnit.test( 'getWrapCells', function( assert ) {
   'use strict';
 
   var flkty = new Flickity( '#get-wrap-cells', {
-    wrapAround: true
-  });
+    wrapAround: true,
+  } );
   // cells are 25% width
   // center align, 2 cells on each side
   assert.equal( flkty.beforeShiftCells.length, 2, 'center align, 2 before shift cells' );
@@ -21,4 +21,4 @@ QUnit.test( 'getWrapCells', function( assert ) {
   assert.equal( flkty.beforeShiftCells.length, 4, 'right align, 4 before shift cells' );
   assert.equal( flkty.afterShiftCells.length, 0, 'right align, 0 after shift cells' );
 
-});
+} );

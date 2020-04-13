@@ -5,8 +5,8 @@ QUnit.test( 'lazyload', function( assert ) {
 
   var gallery = document.querySelector('#lazyload');
   var flkty = new Flickity( gallery, {
-    lazyLoad: 1
-  });
+    lazyLoad: 1,
+  } );
 
   var loadCount = 0;
   flkty.on( 'lazyLoad', function( event, cellElem ) {
@@ -27,6 +27,6 @@ QUnit.test( 'lazyload', function( assert ) {
       assert.equal( loadedImgs.length, '5', 'only 5 images loaded' );
       done();
     }
-  });
+  } );
 
-});
+} );

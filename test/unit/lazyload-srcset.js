@@ -5,8 +5,8 @@ QUnit.test( 'lazyload srcset', function( assert ) {
 
   var gallery = document.querySelector('#lazyload-srcset');
   var flkty = new Flickity( gallery, {
-    lazyLoad: 1
-  });
+    lazyLoad: 1,
+  } );
 
   var loadCount = 0;
   flkty.on( 'lazyLoad', function( event, cellElem ) {
@@ -16,7 +16,7 @@ QUnit.test( 'lazyload srcset', function( assert ) {
     assert.ok( event.target.complete, 'img ' + loadCount + ' is complete' );
     assert.ok( cellElem, 'cellElement argument there' );
     var srcset = event.target.getAttribute('srcset');
-    assert.ok( srcset, 'srcset attribute set');
+    assert.ok( srcset, 'srcset attribute set' );
     var lazyAttr = event.target.getAttribute('data-flickity-lazyload-srcset');
     assert.ok( !lazyAttr, 'data-flickity-lazyload attribute removed' );
 
@@ -24,6 +24,6 @@ QUnit.test( 'lazyload srcset', function( assert ) {
     if ( loadCount == 2 ) {
       done();
     }
-  });
+  } );
 
-});
+} );

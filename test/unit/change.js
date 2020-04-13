@@ -1,3 +1,5 @@
+/* eslint-disable no-invalid-this */
+
 QUnit.test( 'change', function( assert ) {
   'use strict';
 
@@ -12,36 +14,36 @@ QUnit.test( 'change', function( assert ) {
       change: onInitChange,
       ready: function() {
         // define events last to first for strict
-        var onChangeC = function( index ) {
+        function onChangeC( index ) {
           assert.equal( index, 0, 'change triggered on select back to 0' );
           done();
-        };
+        }
 
-        var onChangeB = function() {
+        function onChangeB() {
           assert.ok( false, 'change should not trigger on same select' );
-        };
+        }
 
-        var onSelectB = function( index ) {
+        function onSelectB( index ) {
           assert.equal( index, 1, 'select triggered on same select 1' );
           this.off( 'change', onChangeB );
           this.once( 'change', onChangeC );
           this.select( 0, false, true );
-        };
+        }
 
-        var onChangeA = function( index ) {
-          assert.equal( index, 1, 'change triggered, selected 1');
+        function onChangeA( index ) {
+          assert.equal( index, 1, 'change triggered, selected 1' );
           this.once( 'change', onChangeB );
           this.once( 'select', onSelectB );
           // select 1 again
           this.select( 1, false, true );
-        };
+        }
 
         // kick off
         this.off( 'change', onInitChange );
         this.once( 'change', onChangeA );
         this.select( 1, false, true );
-      }
+      },
     },
-  });
+  } );
 
-});
+} );

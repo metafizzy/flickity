@@ -8,12 +8,14 @@ QUnit.test( 'pageDots', function( assert ) {
   var dotsElems = dotsHolder.querySelectorAll('.dot');
 
   assert.ok( dotsHolder, 'dots holder in DOM' );
-  assert.equal( flkty.pageDots.holder, dotsHolder, 'dots holder element matches flkty.pageDots.holder' );
-  assert.equal( dotsElems.length, flkty.cells.length, 'number of dots matches number of cells' );
+  assert.equal( flkty.pageDots.holder, dotsHolder,
+      'dots holder element matches flkty.pageDots.holder' );
+  assert.equal( dotsElems.length, flkty.cells.length,
+      'number of dots matches number of cells' );
 
   function getSelectedDotIndex() {
     var selectedDot = dotsHolder.querySelector('.is-selected');
-    for ( var i=0, len = dotsElems.length; i < len; i++ ) {
+    for ( var i = 0; i < dotsElems.length; i++ ) {
       var dotElem = dotsElems[i];
       if ( dotElem == selectedDot ) {
         return i;
@@ -27,7 +29,7 @@ QUnit.test( 'pageDots', function( assert ) {
   assert.equal( getSelectedDotIndex(), 2, '3rd dot is selected' );
 
   // fake tap
-  flkty.pageDots.onTap( { target: dotsElems[4] } );
+  flkty.pageDots.onTap({ target: dotsElems[4] });
   assert.equal( flkty.selectedIndex, 4, 'tap dot selects cell' );
 
-});
+} );
