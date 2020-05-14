@@ -50,6 +50,7 @@ proto.destroy = function() {
   this.element.style.position = '';
   var side = this.parent.originSide;
   this.element.style[ side ] = '';
+  this.element.removeAttribute('aria-hidden');
 };
 
 proto.getSize = function() {
