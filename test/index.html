@@ -55,6 +55,7 @@
   <script src="unit/destroy.js"></script>
   <script src="unit/lazyload.js"></script>
   <script src="unit/lazyload-srcset.js"></script>
+  <script src="unit/lazyload-picture-srcset.js"></script>
   <script src="unit/group-cells.js"></script>
   <script src="unit/adaptive-height.js"></script>
   <script src="unit/select-cell.js"></script>
@@ -233,6 +234,25 @@
         https://picsum.photos/360/270/?image=517 360w"
       sizes="(min-width: 1024px) 720px, 360px"
       />
+    <div class="cell"></div>
+    <div class="cell"></div>
+    <div class="cell"></div>
+    <div class="cell"></div>
+  </div>
+
+  <h2>lazyload picture source srcset</h2>
+  <div id="lazyload-picture-srcset" class="gallery">
+    <div class="cell">
+      <picture>
+        <source
+          data-flickity-lazyload-srcset="https://via.placeholder.com/800x600.png?text=Image+1+Large+1x 1x,
+          https://via.placeholder.com/1600x1200.png?text=Image+1+Large+2x 2x" media="(min-width: 800px)">
+        <source
+          data-flickity-lazyload-srcset="https://via.placeholder.com/320x200.png?text=Image+1+Small+1x 1x,
+            https://via.placeholder.com/640x400.png?text=LImage+1+arge+2x 2x" media="(max-width: 799px)">
+        <img data-flickity-lazyload-src="https://via.placeholder.com/800x600.png?text=Image+1+Fallback">
+      </picture>
+    </div>
     <div class="cell"></div>
     <div class="cell"></div>
     <div class="cell"></div>
