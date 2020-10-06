@@ -68,7 +68,8 @@ function getCellLazyImages( cellElem ) {
   }
   // select lazy images in cell
   var lazySelector = 'img[data-flickity-lazyload], ' +
-    'img[data-flickity-lazyload-src], img[data-flickity-lazyload-srcset]';
+    'img[data-flickity-lazyload-src], img[data-flickity-lazyload-srcset], ' +
+    'source[data-flickity-lazyload-srcset]';
   var imgs = cellElem.querySelectorAll( lazySelector );
   return utils.makeArray( imgs );
 }
