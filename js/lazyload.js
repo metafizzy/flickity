@@ -97,7 +97,7 @@ LazyLoader.prototype.load = function() {
     this.img.getAttribute('data-flickity-lazyload-src');
   var srcset = this.img.getAttribute('data-flickity-lazyload-srcset');
   // set src & serset
-  if ( src ) {
+  if ( this.img.tagName.toLowerCase() === 'img' && src ) {
     this.img.src = src;
   }
   if ( srcset ) {
