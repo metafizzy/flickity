@@ -765,8 +765,10 @@ proto.checkVisibility = function() {
 
     if (isVisible) {
       cell.element.classList.add('is-visible');
+      cell.element.removeAttribute('aria-hidden');
     } else {
       cell.element.classList.remove('is-visible');
+      cell.element.setAttribute('aria-hidden', true);
     }
   });
 };
