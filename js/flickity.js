@@ -78,7 +78,7 @@ function Flickity( element, options ) {
   // do not initialize twice on same element
   if ( this.element.flickityGUID ) {
     var instance = instances[ this.element.flickityGUID ];
-    instance.option( options );
+    instance && instance.option( options );
     return instance;
   }
 
