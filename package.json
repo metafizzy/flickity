@@ -24,12 +24,11 @@
   },
   "devDependencies": {
     "clean-css": "^4.2.3",
-    "eslint": "^6.8.0",
-    "eslint-plugin-metafizzy": "^1.0.0",
+    "eslint": "^7.17.0",
+    "eslint-plugin-metafizzy": "^1.2.1",
     "flickity-as-nav-for": "^2.0.0",
     "flickity-imagesloaded": "^2.0.0",
     "jquery-bridget": "^2.0.0",
-    "jshint": "^2.10.2",
     "requirejs": "^2.3.6",
     "uglify-js": "^3.9.3"
   },

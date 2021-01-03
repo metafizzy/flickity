@@ -1,4 +1,3 @@
-/* jshint strict: false */
 /* global requirejs: false*/
 
 /*

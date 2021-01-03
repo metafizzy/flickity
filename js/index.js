@@ -11,7 +11,6 @@
 
 ( function( window, factory ) {
   // universal module definition
-  /* jshint strict: false */
   if ( typeof define == 'function' && define.amd ) {
     // AMD
     define( [
@@ -37,6 +36,5 @@
   }
 
 } )( window, function factory( Flickity ) {
-  /* jshint strict: false*/
   return Flickity;
 } );
