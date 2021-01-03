@@ -1,12 +1,12 @@
 /*!
- * Flickity PACKAGED v2.2.1
+ * Flickity PACKAGED v2.2.2
  * Touch, responsive, flickable carousels
  *
  * Licensed GPLv3 for open source use
  * or Flickity Commercial License for commercial use
  *
  * https://flickity.metafizzy.co
- * Copyright 2015-2020 Metafizzy
+ * Copyright 2015-2021 Metafizzy
  */
 
 /**
@@ -773,7 +773,6 @@ return utils;
 // Flickity.Cell
 ( function( window, factory ) {
   // universal module definition
-  /* jshint strict: false */
   if ( typeof define == 'function' && define.amd ) {
     // AMD
     define( 'flickity/js/cell',[
@@ -822,6 +821,7 @@ proto.destroy = function() {
   this.element.style.position = '';
   var side = this.parent.originSide;
   this.element.style[ side ] = '';
+  this.element.removeAttribute('aria-hidden');
 };
 
 proto.getSize = function() {
@@ -876,7 +876,6 @@ return Cell;
 // slide
 ( function( window, factory ) {
   // universal module definition
-  /* jshint strict: false */
   if ( typeof define == 'function' && define.amd ) {
     // AMD
     define( 'flickity/js/slide',factory );
@@ -951,7 +950,6 @@ return Slide;
 // animate
 ( function( window, factory ) {
   // universal module definition
-  /* jshint strict: false */
   if ( typeof define == 'function' && define.amd ) {
     // AMD
     define( 'flickity/js/animate',[
@@ -1156,7 +1154,6 @@ return proto;
 /* eslint-disable max-params */
 ( function( window, factory ) {
   // universal module definition
-  /* jshint strict: false */
   if ( typeof define == 'function' && define.amd ) {
     // AMD
     define( 'flickity/js/flickity',[
@@ -1232,7 +1229,7 @@ function Flickity( element, options ) {
   // do not initialize twice on same element
   if ( this.element.flickityGUID ) {
     var instance = instances[ this.element.flickityGUID ];
-    instance.option( options );
+    if ( instance ) instance.option( options );
     return instance;
   }
 
@@ -2392,7 +2389,7 @@ return Unipointer;
 }));
 
 /*!
- * Unidragger v2.3.0
+ * Unidragger v2.3.1
  * Draggable base class
  * MIT license
  */
@@ -2482,7 +2479,11 @@ proto.pointerDown = function( event, pointer ) {
     return;
   }
   // track start event position
-  this.pointerDownPointer = pointer;
+  // Safari 9 overrides pageX and pageY. These values needs to be copied. flickity#842
+  this.pointerDownPointer = {
+    pageX: pointer.pageX,
+    pageY: pointer.pageY,
+  };
 
   event.preventDefault();
   this.pointerDownBlur();
@@ -2674,7 +2675,6 @@ return Unidragger;
 // drag
 ( function( window, factory ) {
   // universal module definition
-  /* jshint strict: false */
   if ( typeof define == 'function' && define.amd ) {
     // AMD
     define( 'flickity/js/drag',[
@@ -3073,7 +3073,6 @@ return Flickity;
 // prev/next buttons
 ( function( window, factory ) {
   // universal module definition
-  /* jshint strict: false */
   if ( typeof define == 'function' && define.amd ) {
     // AMD
     define( 'flickity/js/prev-next-button',[
@@ -3285,7 +3284,6 @@ return Flickity;
 // page dots
 ( function( window, factory ) {
   // universal module definition
-  /* jshint strict: false */
   if ( typeof define == 'function' && define.amd ) {
     // AMD
     define( 'flickity/js/page-dots',[
@@ -3474,7 +3472,6 @@ return Flickity;
 // player & autoPlay
 ( function( window, factory ) {
   // universal module definition
-  /* jshint strict: false */
   if ( typeof define == 'function' && define.amd ) {
     // AMD
     define( 'flickity/js/player',[
@@ -3666,7 +3663,6 @@ return Flickity;
 // add, remove cell
 ( function( window, factory ) {
   // universal module definition
-  /* jshint strict: false */
   if ( typeof define == 'function' && define.amd ) {
     // AMD
     define( 'flickity/js/add-remove-cell',[
@@ -3829,7 +3825,6 @@ return Flickity;
 // lazyload
 ( function( window, factory ) {
   // universal module definition
-  /* jshint strict: false */
   if ( typeof define == 'function' && define.amd ) {
     // AMD
     define( 'flickity/js/lazyload',[
@@ -3964,19 +3959,18 @@ return Flickity;
 } ) );
 
 /*!
- * Flickity v2.2.1
+ * Flickity v2.2.2
  * Touch, responsive, flickable carousels
  *
  * Licensed GPLv3 for open source use
  * or Flickity Commercial License for commercial use
  *
  * https://flickity.metafizzy.co
- * Copyright 2015-2020 Metafizzy
+ * Copyright 2015-2021 Metafizzy
  */
 
 ( function( window, factory ) {
   // universal module definition
-  /* jshint strict: false */
   if ( typeof define == 'function' && define.amd ) {
     // AMD
     define( 'flickity/js/index',[
@@ -4002,7 +3996,6 @@ return Flickity;
   }
 
 } )( window, function factory( Flickity ) {
-  /* jshint strict: false*/
   return Flickity;
 } );
 
