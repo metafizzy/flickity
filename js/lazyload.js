@@ -67,7 +67,8 @@ function getCellLazyImages( cellElem ) {
   }
   // select lazy images in cell
   var lazySelector = 'img[data-flickity-lazyload], ' +
-    'img[data-flickity-lazyload-src], img[data-flickity-lazyload-srcset]';
+    'img[data-flickity-lazyload-src], img[data-flickity-lazyload-srcset], ' +
+    'source[data-flickity-lazyload-srcset]';
   var imgs = cellElem.querySelectorAll( lazySelector );
   return utils.makeArray( imgs );
 }
@@ -95,7 +96,9 @@ LazyLoader.prototype.load = function() {
     this.img.getAttribute('data-flickity-lazyload-src');
   var srcset = this.img.getAttribute('data-flickity-lazyload-srcset');
   // set src & serset
-  this.img.src = src;
+  if ( this.img.tagName.toLowerCase() === 'img' && src ) {
+    this.img.src = src;
+  }
   if ( srcset ) {
     this.img.setAttribute( 'srcset', srcset );
   }
