@@ -217,7 +217,6 @@ proto.dragMove = function( event, pointer, moveVector ) {
   }
   event.preventDefault();
 
-  this.previousDragX = this.dragX;
   // reverse if right-to-left
   var direction = this.options.rightToLeft ? -1 : 1;
   if ( this.options.wrapAround ) {
@@ -234,6 +233,10 @@ proto.dragMove = function( event, pointer, moveVector ) {
     dragX = dragX < endBound ? ( dragX + endBound ) * 0.5 : dragX;
   }
 
+  if (this.dragX !== dragX) {
+    this.previousDragX = this.dragX;
+  }
+  
   this.dragX = dragX;
 
   this.dragMoveTime = new Date();
