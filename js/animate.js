@@ -127,6 +127,8 @@ proto.settle = function( previousX ) {
     this.positionSlider();
     this.dispatchEvent( 'settle', null, [ this.selectedIndex ] );
   }
+
+  this.checkVisibility();
 };
 
 proto.shiftWrapCells = function( x ) {
