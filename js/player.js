@@ -139,6 +139,7 @@ proto.activatePlayer = function() {
   }
   this.player.play();
   this.element.addEventListener( 'mouseenter', this );
+  this.element.addEventListener( 'focus', this );
 };
 
 // Player API, don't hate the ... thanks I know where the door is
@@ -179,6 +180,17 @@ proto.onmouseenter = function() {
 proto.onmouseleave = function() {
   this.player.unpause();
   this.element.removeEventListener( 'mouseleave', this );
+};
+
+// ----- focus/blur ----- //
+proto.onfocus = function() {
+  this.player.pause();
+  this.element.addEventListener( 'blur', this );
+};
+
+proto.onblur = function() {
+  this.player.unpause();
+  this.element.removeEventListener( 'blur', this );
 };
 
 // -----  ----- //
