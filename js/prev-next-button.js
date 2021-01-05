@@ -58,7 +58,10 @@ PrevNextButton.prototype._create = function() {
   // init as disabled
   this.disable();
 
-  element.setAttribute( 'aria-label', this.isPrevious ? 'Previous' : 'Next' );
+  var prevButtonAriaLabel = this.parent.options.prevButtonAriaLabel;
+  var nextButtonAriaLabel = this.parent.options.nextButtonAriaLabel;
+
+  element.setAttribute( 'aria-label', this.isPrevious ? prevButtonAriaLabel : nextButtonAriaLabel );
 
   // create arrow
   var svg = this.createSVG();
