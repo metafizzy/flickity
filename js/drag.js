@@ -83,6 +83,8 @@ proto.updateDraggable = function() {
   // disable dragging if less than 2 slides. #278
   if ( this.options.draggable == '>1' ) {
     this.isDraggable = this.slides.length > 1;
+  } else if (this.options.draggable === 'onOverflow') {
+    this.isDraggable = this.viewport.scrollWidth > this.viewport.offsetWidth;
   } else {
     this.isDraggable = this.options.draggable;
   }
