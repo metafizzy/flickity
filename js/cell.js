@@ -71,8 +71,11 @@ proto.updateTarget = proto.setDefaultTarget = function() {
 
 proto.renderPosition = function( x ) {
   // render position of cell with in slider
-  var side = this.parent.originSide;
-  this.element.style[ side ] = this.parent.getPositionValue( x );
+  var adjustmentValue = this.parent.originSide == 'left' ?
+    this.parent.getPositionValue( x ) :
+    this.parent.getInversePositionValue( x );
+
+  this.element.style.transform = 'translateX(' + adjustmentValue + ')';
 };
 
 proto.select = function() {

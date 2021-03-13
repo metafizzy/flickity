@@ -106,10 +106,18 @@ proto.getPositionValue = function( position ) {
   if ( this.options.percentPosition ) {
     // percent position, round to 2 digits, like 12.34%
     return ( Math.round( ( position / this.size.innerWidth ) * 10000 ) * 0.01 ) + '%';
-  } else {
-    // pixel positioning
-    return Math.round( position ) + 'px';
   }
+  // pixel positioning
+  return Math.round( position ) + 'px';
+};
+
+proto.getInversePositionValue = function( position ) {
+  if ( this.options.percentPosition ) {
+    // percent position, round to 2 digits, like 12.34%
+    return -1 * (Math.round((position / this.size.innerWidth) * 10000) * 0.01) + '%';
+  }
+  // pixel positioning
+  return -1 * Math.round( position ) + 'px';
 };
 
 proto.settle = function( previousX ) {
