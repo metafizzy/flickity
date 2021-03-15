@@ -49,6 +49,7 @@ proto.destroy = function() {
   this.element.style.position = '';
   var side = this.parent.originSide;
   this.element.style[ side ] = '';
+  this.element.style.transform = '';
   this.element.removeAttribute('aria-hidden');
 };
 
@@ -72,7 +73,24 @@ proto.updateTarget = proto.setDefaultTarget = function() {
 proto.renderPosition = function( x ) {
   // render position of cell with in slider
   var side = this.parent.originSide;
-  this.element.style[ side ] = this.parent.getPositionValue( x );
+  var positionValue = this.parent.getPositionValue( x );
+  if ( this.parent.options.percentPosition ) {
+    this.element.style[ side ] = positionValue;
+  } else {
+    this.element.style[ side ] = 0;
+
+    // when not using `percentPosition` (which means left/right offset
+    // is now calculated in pixels) prefer using a transform
+    // based position, as transforms are more efficient and
+    // do not affect Cumulative Layout Shift
+    var newPosition = this.element.style.transform;
+    if (side === 'left') {
+      newPosition = `translateX(${positionValue})`;
+    } else {
+      newPosition = `translateX(calc(${positionValue} * -1))`;
+    }
+    this.element.style.transform = newPosition;
+  }
 };
 
 proto.select = function() {
