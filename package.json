@@ -12,6 +12,7 @@
     "bundleCss": "cp css/flickity.css dist/flickity.css && node bin/bundle-css.js",
     "bundleJs": "node bin/bundle-js.js",
     "uglify": "npx uglifyjs dist/flickity.pkgd.js -o dist/flickity.pkgd.min.js --mangle --comments /^!/",
+    "serve": "serve",
     "version": "node bin/version.js && npm run dist && git add -A css js dist"
   },
   "dependencies": {
@@ -30,6 +31,7 @@
     "flickity-imagesloaded": "^2.0.0",
     "jquery-bridget": "^2.0.0",
     "requirejs": "^2.3.6",
+    "serve": "^12.0.1",
     "uglify-js": "^3.9.3"
   },
   "repository": {
