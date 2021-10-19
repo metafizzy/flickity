@@ -53,6 +53,21 @@ proto._touchActionValue = 'pan-y';
 
 var isTouch = 'createTouch' in document;
 var isTouchmoveScrollCanceled = false;
+var preventScrolling = false;
+var passiveListener = (function checkPassiveListener() {
+  var supportsPassive = false;
+  try {
+    var opts = Object.defineProperty({}, 'passive', {
+      get: function () {
+        supportsPassive = true;
+      },
+    });
+    window.addEventListener( 'testPassiveListener', null, opts );
+  } catch (e) {
+    // No support
+  }
+  return supportsPassive;
+})();
 
 proto._createDrag = function() {
   this.on( 'activate', this.onActivateDrag );
@@ -63,7 +78,16 @@ proto._createDrag = function() {
   // HACK - add seemingly innocuous handler to fix iOS 10 scroll behavior
   // #457, RubaXa/Sortable#973
   if ( isTouch && !isTouchmoveScrollCanceled ) {
-    window.addEventListener( 'touchmove', function() {} );
+    window.addEventListener(
+      'touchmove',
+      function( event ) {
+        if ( !preventScrolling ) {
+          return;
+        }
+        event.preventDefault();
+      },
+      passiveListener ? { passive: false } : false
+    );
     isTouchmoveScrollCanceled = true;
   }
 };
@@ -201,6 +225,7 @@ proto.dragStart = function( event, pointer ) {
   }
   this.dragStartPosition = this.x;
   this.startAnimation();
+  preventScrolling = true;
   window.removeEventListener( 'scroll', this );
   this.dispatchEvent( 'dragStart', event, [ pointer ] );
 };
@@ -241,6 +266,7 @@ proto.dragMove = function( event, pointer, moveVector ) {
 };
 
 proto.dragEnd = function( event, pointer ) {
+  preventScrolling = false;
   if ( !this.isDraggable ) {
     return;
   }
