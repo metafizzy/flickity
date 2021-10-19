@@ -126,6 +126,10 @@ proto.settle = function( previousX ) {
     // render position with translateX when settled
     this.positionSlider();
     this.dispatchEvent( 'settle', null, [ this.selectedIndex ] );
+    if ( this.resizeQueued ) {
+      this.resizeQueued = false;
+      this.resize();
+    }
   }
 };
 

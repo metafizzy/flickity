@@ -782,6 +782,10 @@ proto.onresize = function() {
 utils.debounceMethod( Flickity, 'onresize', 150 );
 
 proto.resize = function() {
+  if ( this.isAnimating ) {
+    this.resizeQueued = true;
+    return;
+  }
   if ( !this.isActive ) {
     return;
   }
