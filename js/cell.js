@@ -1,3 +1,6 @@
+
+
+
 // Flickity.Cell
 ( function( window, factory ) {
   // universal module definition
@@ -83,13 +86,31 @@ proto.renderPosition = function( x ) {
     this.parent.getPositionValue( adjustedX ) + ')';
 };
 
+proto.showFocusables = function() {
+  console.log("running show",  this.element.querySelectorAll('a[href], button, input, textarea, select, details,[tabindex]'))
+  this.element.querySelectorAll('a[href], button, input, textarea, select, details,[tabindex]').forEach(focusableEl=>{
+    focusableEl.removeAttribute("aria-hidden")
+    focusableEl.setAttribute("tabindex", "0");
+  })
+};
+
 proto.select = function() {
   this.element.classList.add('is-selected');
+  this.showFocusables();
   this.element.removeAttribute('aria-hidden');
 };
 
+proto.hideFocusables = function() {
+  console.log("running hide",  this.element.querySelectorAll('a[href], button, input, textarea, select, details,[tabindex]'))
+  this.element.querySelectorAll('a[href], button, input, textarea, select, details,[tabindex]').forEach(focusableEl=>{
+    focusableEl.setAttribute("aria-hidden", "true");
+    focusableEl.setAttribute("tabindex", "-1");
+  });
+}
+
 proto.unselect = function() {
   this.element.classList.remove('is-selected');
+  this.hideFocusables(this.element);
   this.element.setAttribute( 'aria-hidden', 'true' );
 };
 
