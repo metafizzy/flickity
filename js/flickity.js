@@ -190,6 +190,15 @@ proto.activate = function() {
     this.element.tabIndex = 0;
     // listen for key presses
     this.element.addEventListener( 'keydown', this );
+    // handle aria-live
+    if ( this.options.autoPlay ) {
+      // https://www.w3.org/TR/wai-aria-practices/examples/carousel/carousel-1.html
+      // Very importantly, if automatic rotation is turned on, the live region is disabled. If it were not, the page would be come unusable as announcements of the continuously changing content constantly interrupt anything else the user is reading.
+      this.element.setAttribute('aria-live', 'off')
+    } else {
+      // When automatic rotation is turned off, the carousel slide content is included in a live region. This makes it easier for screen reader users to scan through the carousel slides. When screen reader users activate the next or previous slide button , the new slide content is announced, giving users immediate feedback that helps them determine whether or not to interact with the content.
+      this.element.setAttribute('aria-live', 'assertive')
+    }
   }
 
   this.emitEvent('activate');
