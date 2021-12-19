@@ -51,9 +51,6 @@ proto._touchActionValue = 'pan-y';
 
 // --------------------------  -------------------------- //
 
-var isTouch = 'createTouch' in document;
-var isTouchmoveScrollCanceled = false;
-
 proto._createDrag = function() {
   this.on( 'activate', this.onActivateDrag );
   this.on( 'uiChange', this._uiChangeDrag );

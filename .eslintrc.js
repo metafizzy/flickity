@@ -19,4 +19,5 @@ module.exports = {
     'no-var': 'off',
     strict: 'off',
   },
+  ignorePatterns: [ 'bower_components' ],
 };
