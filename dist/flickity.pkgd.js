@@ -1,5 +1,5 @@
 /*!
- * Flickity PACKAGED v2.2.2
+ * Flickity PACKAGED v2.3.0
  * Touch, responsive, flickable carousels
  *
  * Licensed GPLv3 for open source use
@@ -813,6 +813,7 @@ proto.create = function() {
   this.element.setAttribute( 'aria-hidden', 'true' );
   this.x = 0;
   this.shift = 0;
+  this.element.style[ this.parent.originSide ] = 0;
 };
 
 proto.destroy = function() {
@@ -821,6 +822,7 @@ proto.destroy = function() {
   this.element.style.position = '';
   var side = this.parent.originSide;
   this.element.style[ side ] = '';
+  this.element.style.transform = '';
   this.element.removeAttribute('aria-hidden');
 };
 
@@ -843,8 +845,14 @@ proto.updateTarget = proto.setDefaultTarget = function() {
 
 proto.renderPosition = function( x ) {
   // render position of cell with in slider
-  var side = this.parent.originSide;
-  this.element.style[ side ] = this.parent.getPositionValue( x );
+  var sideOffset = this.parent.originSide === 'left' ? 1 : -1;
+
+  var adjustedX = this.parent.options.percentPosition ?
+    x * sideOffset * ( this.parent.size.innerWidth / this.size.width ) :
+    x * sideOffset;
+
+  this.element.style.transform = 'translateX(' +
+    this.parent.getPositionValue( adjustedX ) + ')';
 };
 
 proto.select = function() {
@@ -1934,7 +1942,8 @@ proto.onresize = function() {
 utils.debounceMethod( Flickity, 'onresize', 150 );
 
 proto.resize = function() {
-  if ( !this.isActive ) {
+  // #1177 disable resize behavior when animating or dragging for iOS 15
+  if ( !this.isActive || this.isAnimating || this.isDragging ) {
     return;
   }
   this.getSize();
@@ -2087,7 +2096,7 @@ return Flickity;
 } ) );
 
 /*!
- * Unipointer v2.3.0
+ * Unipointer v2.4.0
  * base class for doing one thing with pointer event
  * MIT license
  */
@@ -2148,12 +2157,13 @@ proto._bindStartEvent = function( elem, isAdd ) {
 
   // default to mouse events
   var startEvent = 'mousedown';
-  if ( window.PointerEvent ) {
+  if ( 'ontouchstart' in window ) {
+    // HACK prefer Touch Events as you can preventDefault on touchstart to
+    // disable scroll in iOS & mobile Chrome metafizzy/flickity#1177
+    startEvent = 'touchstart';
+  } else if ( window.PointerEvent ) {
     // Pointer Events
     startEvent = 'pointerdown';
-  } else if ( 'ontouchstart' in window ) {
-    // Touch Events. iOS Safari
-    startEvent = 'touchstart';
   }
   elem[ bindMethod ]( startEvent, this );
 };
@@ -2389,7 +2399,7 @@ return Unipointer;
 }));
 
 /*!
- * Unidragger v2.3.1
+ * Unidragger v2.4.0
  * Draggable base class
  * MIT license
  */
@@ -2725,21 +2735,12 @@ proto._touchActionValue = 'pan-y';
 
 // --------------------------  -------------------------- //
 
-var isTouch = 'createTouch' in document;
-var isTouchmoveScrollCanceled = false;
-
 proto._createDrag = function() {
   this.on( 'activate', this.onActivateDrag );
   this.on( 'uiChange', this._uiChangeDrag );
   this.on( 'deactivate', this.onDeactivateDrag );
   this.on( 'cellChange', this.updateDraggable );
   // TODO updateDraggable on resize? if groupCells & slides change
-  // HACK - add seemingly innocuous handler to fix iOS 10 scroll behavior
-  // #457, RubaXa/Sortable#973
-  if ( isTouch && !isTouchmoveScrollCanceled ) {
-    window.addEventListener( 'touchmove', function() {} );
-    isTouchmoveScrollCanceled = true;
-  }
 };
 
 proto.onActivateDrag = function() {
@@ -3959,7 +3960,7 @@ return Flickity;
 } ) );
 
 /*!
- * Flickity v2.2.2
+ * Flickity v2.3.0
  * Touch, responsive, flickable carousels
  *
  * Licensed GPLv3 for open source use
