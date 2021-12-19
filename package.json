@@ -19,8 +19,8 @@
     "ev-emitter": "^1.1.1",
     "fizzy-ui-utils": "^2.0.7",
     "get-size": "^2.0.3",
-    "unidragger": "^2.3.0",
-    "unipointer": "^2.3.0"
+    "unidragger": "^2.4.0",
+    "unipointer": "^2.4.0"
   },
   "devDependencies": {
     "clean-css": "^4.2.3",
