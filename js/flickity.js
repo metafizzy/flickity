@@ -782,7 +782,8 @@ proto.onresize = function() {
 utils.debounceMethod( Flickity, 'onresize', 150 );
 
 proto.resize = function() {
-  if ( !this.isActive ) {
+  // #1177 disable resize behavior when animating or dragging for iOS 15
+  if ( !this.isActive || this.isAnimating || this.isDragging ) {
     return;
   }
   this.getSize();
