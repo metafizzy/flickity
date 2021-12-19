@@ -60,12 +60,6 @@ proto._createDrag = function() {
   this.on( 'deactivate', this.onDeactivateDrag );
   this.on( 'cellChange', this.updateDraggable );
   // TODO updateDraggable on resize? if groupCells & slides change
-  // HACK - add seemingly innocuous handler to fix iOS 10 scroll behavior
-  // #457, RubaXa/Sortable#973
-  if ( isTouch && !isTouchmoveScrollCanceled ) {
-    window.addEventListener( 'touchmove', function() {} );
-    isTouchmoveScrollCanceled = true;
-  }
 };
 
 proto.onActivateDrag = function() {
