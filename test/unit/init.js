@@ -30,8 +30,11 @@ QUnit.test( 'init', function( assert ) {
       'flickity-enabled class added' );
 
   assert.equal( flkty.cells.length, 6, 'has 6 cells' );
-  assert.equal( flkty.cells[0].element.style.left, '0%', 'first cell left: 0%' );
-  assert.equal( flkty.cells[5].element.style.left, '500%', '6th cell left: 500%' );
+  assert.equal( flkty.cells[0].element.style.left, '0px', 'first cell left: 0px' );
+  assert.equal( flkty.cells[0].element.style.transform,
+      'translateX(0%)', 'first cell translateX: 0%' );
+  assert.equal( flkty.cells[5].element.style.transform,
+      'translateX(500%)', '6th cell translateX: 500%' );
 
   assert.equal( flkty.selectedIndex, 0, 'selectedIndex = 0' );
   assert.equal( flkty.cursorPosition, 200, 'cursorPosition = 200' );

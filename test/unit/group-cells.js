@@ -1,6 +1,8 @@
 QUnit.test( 'groupCells', function( assert ) {
   'use strict';
 
+  var done = assert.async();
+
   var flkty = new Flickity( '#group-cells', {
     groupCells: true,
   } );
@@ -31,10 +33,13 @@ QUnit.test( 'groupCells', function( assert ) {
   flkty.reposition();
   assert.equal( getSlideCellsCount(), '2,1,1,2,1,1,1,2,2,1', 'groupCells: 75%' );
 
-  flkty.element.classList.add('is-expanded'); // 600px wide
-  flkty.options.groupCells = true;
-  flkty.resize();
-  assert.equal( getSlideCellsCount(), '3,3,2,3,3',
-      'groupCells: true, container @ 600px' );
+  flkty.once( 'settle', function() {
+    flkty.element.classList.add('is-expanded'); // 600px wide
+    flkty.options.groupCells = true;
+    flkty.resize();
+    assert.equal( getSlideCellsCount(), '3,3,2,3,3',
+        'groupCells: true, container @ 600px' );
+    done();
+  } );
 
 } );

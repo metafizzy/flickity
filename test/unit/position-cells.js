@@ -16,7 +16,8 @@ function checkCellPositions( flkty, expecteds ) {
   for ( var i = 0; i < expecteds.length; i++ ) {
     var expected = expecteds[i];
     var cell = flkty.cells[i];
-    var position = cell.element.style.left;
+    var transform = cell.element.style.transform;
+    var position = transform.replace( 'translateX(', '' ).replace( ')', '' );
     isOK = isPositionApprox( position, expected );
     if ( !isOK ) {
       console.error( 'wrong cell position, index: ' + i + '. ' +
@@ -31,12 +32,12 @@ QUnit.test( 'position cells', function( assert ) {
 
   var flkty = new Flickity('#position-cells');
 
-  assert.ok( checkCellPositions( flkty, [ 0, 40, 65, 125, 165, 225 ] ),
+  assert.ok( checkCellPositions( flkty, [ 0, 160, 108.3, 312.5, 275, 900 ] ),
       'percent cell position' );
   // .cell { margin: 0 2%; }
   flkty.element.classList.add('percent-margin');
   flkty.positionCells();
-  assert.ok( checkCellPositions( flkty, [ 0, 44, 73, 137, 181, 245 ] ),
+  assert.ok( checkCellPositions( flkty, [ 0, 176, 121.67, 342.5, 301.67, 980 ] ),
       'percent cell position with margin' );
   flkty.element.classList.remove('percent-margin');
   // pixel-based position

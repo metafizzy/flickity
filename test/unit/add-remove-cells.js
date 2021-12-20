@@ -9,6 +9,7 @@ QUnit.test( 'add/remove cells', function( assert ) {
 
   // position values can be off by 0.1% or 1px
   function isPositionApprox( value, expected ) {
+    value = value.replace( 'translateX(', '' ).replace( ')', '' );
     var isPercent = value.indexOf('%') != -1;
     value = parseFloat( value );
     var diff = Math.abs( expected - value );
@@ -24,8 +25,8 @@ QUnit.test( 'add/remove cells', function( assert ) {
         message + ' cell element in DOM correct' );
     assert.equal( flkty.cells[ index ].element, cellElem,
         message + ' element added as cell' );
-    assert.ok( isPositionApprox( cellElem.style.left, index * 25 ),
-        ' element positioned' );
+    assert.ok( isPositionApprox( cellElem.style.transform, index * 100 ),
+        ' element positioned ' + ( index * 100 ) );
   }
 
   // prepend cell element
@@ -57,9 +58,9 @@ QUnit.test( 'add/remove cells', function( assert ) {
 
   function checkCellPositions() {
     var isGap = false;
-    for ( var i = 0, len = flkty.cells.length; i < len; i++ ) {
+    for ( var i = 0; i < flkty.cells.length; i++ ) {
       var cell = flkty.cells[i];
-      if ( !isPositionApprox( cell.element.style.left, i * 25 ) ) {
+      if ( !isPositionApprox( cell.element.style.transform, i * 100 ) ) {
         assert.ok( false, 'gap in cell position ' + i + ' after removal' );
         isGap = true;
       }
