@@ -41,7 +41,11 @@ var proto = Cell.prototype;
 
 proto.create = function() {
   this.element.style.position = 'absolute';
-  this.element.setAttribute( 'aria-hidden', 'true' );
+  this.element.setAttribute('aria-hidden', 'true');
+  this.element.querySelectorAll('a[href], button, input, textarea, select, details,[tabindex]').forEach(focusableEl=>{
+    focusableEl.setAttribute( 'aria-hidden', 'true' );
+    focusableEl.setAttribute("tabindex", "-1");
+  });
   this.x = 0;
   this.shift = 0;
   this.element.style[ this.parent.originSide ] = 0;
@@ -89,7 +93,7 @@ proto.renderPosition = function( x ) {
 proto.showFocusables = function() {
   console.log("running show",  this.element.querySelectorAll('a[href], button, input, textarea, select, details,[tabindex]'))
   this.element.querySelectorAll('a[href], button, input, textarea, select, details,[tabindex]').forEach(focusableEl=>{
-    focusableEl.removeAttribute("aria-hidden")
+    focusableEl.removeAttribute("aria-hidden");
     focusableEl.setAttribute("tabindex", "0");
   })
 };
@@ -103,14 +107,14 @@ proto.select = function() {
 proto.hideFocusables = function() {
   console.log("running hide",  this.element.querySelectorAll('a[href], button, input, textarea, select, details,[tabindex]'))
   this.element.querySelectorAll('a[href], button, input, textarea, select, details,[tabindex]').forEach(focusableEl=>{
-    focusableEl.setAttribute("aria-hidden", "true");
+    focusableEl.setAttribute( 'aria-hidden', 'true' );
     focusableEl.setAttribute("tabindex", "-1");
   });
 }
 
 proto.unselect = function() {
   this.element.classList.remove('is-selected');
-  this.hideFocusables(this.element);
+  this.hideFocusables();
   this.element.setAttribute( 'aria-hidden', 'true' );
 };
 
