@@ -51,6 +51,8 @@ proto.getLastCell = function() {
 };
 
 proto.select = function() {
+  this.parent.checkVisibility();
+
   this.cells.forEach( function( cell ) {
     cell.select();
   } );

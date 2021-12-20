@@ -757,6 +757,27 @@ proto.queryCell = function( selector ) {
   return this.getCell( selector );
 };
 
+proto.checkVisibility = function() {
+  var viewportX = this.viewport.getBoundingClientRect().x;
+  var viewportWidth = this.viewport.offsetWidth;
+
+  this.cells.forEach(function (cell) {
+    var cellX = cell.element.getBoundingClientRect().x - viewportX;
+    var isVisible = (
+        (cellX + cell.size.innerWidth > viewportX) && (cellX + cell.size.innerWidth < viewportWidth) ||
+        (cellX > viewportX) && (cellX < viewportWidth)
+    );
+
+    if (isVisible) {
+      cell.element.classList.add('is-visible');
+      cell.element.removeAttribute('aria-hidden');
+    } else {
+      cell.element.classList.remove('is-visible');
+      cell.element.setAttribute('aria-hidden', true);
+    }
+  });
+};
+
 // -------------------------- events -------------------------- //
 
 proto.uiChange = function() {
