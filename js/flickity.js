@@ -109,6 +109,8 @@ Flickity.defaults = {
   setGallerySize: true,
   // watchCSS: false,
   // wrapAround: false
+  prevButtonAriaLabel: 'Previous',
+  nextButtonAriaLabel: 'Next'
 };
 
 // hash of methods triggered on _create()

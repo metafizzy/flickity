@@ -114,6 +114,9 @@ var flky = new Flickity( '.gallery', {
   // set img data-flickity-lazyload="src.jpg"
   // set to number to load images adjacent cells
 
+  nextButtonAriaLabel: 'Next',
+  // sets next button aria-label
+
   percentPosition: true,
   // sets positioning in percent values, rather than pixels
   // Enable if items have percent widths
@@ -121,6 +124,9 @@ var flky = new Flickity( '.gallery', {
 
   prevNextButtons: true,
   // creates and enables buttons to click to previous & next cells
+
+  prevButtonAriaLabel: 'Previous',
+  // sets previous button aria-label
 
   pageDots: true,
   // create and enable page dots
