@@ -87,6 +87,12 @@ PrevNextButton.prototype.createSVG = function() {
   var svg = document.createElementNS( svgURI, 'svg' );
   svg.setAttribute( 'class', 'flickity-button-icon' );
   svg.setAttribute( 'viewBox', '0 0 100 100' );
+  // add title #1189
+  var title = document.createElementNS( svgURI, 'title' );
+  var titleText = document.createTextNode( this.isPrevious ? 'Previous' : 'Next' );
+  title.appendChild( titleText );
+  svg.appendChild( title );
+  // add path
   var path = document.createElementNS( svgURI, 'path' );
   var pathMovements = getArrowMovements( this.parent.options.arrowShape );
   path.setAttribute( 'd', pathMovements );
