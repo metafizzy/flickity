@@ -1,6 +1,3 @@
-
-
-
 // Flickity.Cell
 ( function( window, factory ) {
   // universal module definition

@@ -832,7 +832,7 @@ proto.watchCSS = function() {
 proto.onkeydown = function( event ) {
   // only work if element is in focus
   var isNotFocused = document.activeElement && document.activeElement != this.element;
-  if ( !this.options.accessibility || isNotFocused ) {
+  if ( !this.options.accessibility && isNotFocused ) {
     return;
   }
 
