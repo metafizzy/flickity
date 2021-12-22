@@ -27,6 +27,8 @@
 
 'use strict';
 
+var FOCUSABLES_SELECTOR = 'a[href], button, input, textarea, select, details,[tabindex]';
+
 function Cell( elem, parent ) {
   this.element = elem;
   this.parent = parent;
@@ -39,6 +41,7 @@ var proto = Cell.prototype;
 proto.create = function() {
   this.element.style.position = 'absolute';
   this.element.setAttribute( 'aria-hidden', 'true' );
+  _hideFocusables( this.element );
   this.x = 0;
   this.shift = 0;
   this.element.style[ this.parent.originSide ] = 0;
@@ -83,13 +86,29 @@ proto.renderPosition = function( x ) {
     this.parent.getPositionValue( adjustedX ) + ')';
 };
 
+  function _showFocusables( element ) {
+    element.querySelectorAll( FOCUSABLES_SELECTOR ).forEach( function( focusableEl ) {
+    focusableEl.removeAttribute('aria-hidden');
+      focusableEl.setAttribute( 'tabindex', '0' );
+    } );
+  }
+
 proto.select = function() {
   this.element.classList.add('is-selected');
+  _showFocusables( this.element );
   this.element.removeAttribute('aria-hidden');
 };
 
+  function _hideFocusables( element ) {
+    element.querySelectorAll( FOCUSABLES_SELECTOR ).forEach( function( focusableEl ) {
+      focusableEl.setAttribute( 'aria-hidden', 'true' );
+      focusableEl.setAttribute( 'tabindex', '-1' );
+    } );
+  }
+
 proto.unselect = function() {
   this.element.classList.remove('is-selected');
+  _hideFocusables( this.element );
   this.element.setAttribute( 'aria-hidden', 'true' );
 };
 

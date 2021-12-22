@@ -58,7 +58,7 @@ PrevNextButton.prototype._create = function() {
   // init as disabled
   this.disable();
 
-  element.setAttribute( 'aria-label', this.isPrevious ? 'Previous' : 'Next' );
+  element.setAttribute( 'aria-label', this.isPrevious ? 'Previous Slide' : 'Next Slide' );
 
   // create arrow
   var svg = this.createSVG();
