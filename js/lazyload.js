@@ -5,7 +5,7 @@
     // CommonJS
     module.exports = factory(
         window,
-        require('./flickity'),
+        require('./core'),
         require('fizzy-ui-utils'),
     );
   } else {

@@ -6,7 +6,7 @@
     module.exports = factory(
         require('ev-emitter'),
         require('fizzy-ui-utils'),
-        require('./flickity'),
+        require('./core'),
     );
   } else {
     // browser global

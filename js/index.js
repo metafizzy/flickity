@@ -14,7 +14,7 @@
   if ( typeof module == 'object' && module.exports ) {
     // CommonJS
     module.exports = factory(
-        require('./flickity'),
+        require('./core'),
         require('./drag'),
         require('./prev-next-button'),
         require('./page-dots'),
