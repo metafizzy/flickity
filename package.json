@@ -15,22 +15,19 @@
     "version": "node bin/version.js && npm run dist && git add -A css js dist"
   },
   "dependencies": {
-    "desandro-matches-selector": "^2.0.0",
-    "ev-emitter": "^1.1.1",
-    "fizzy-ui-utils": "^2.0.7",
-    "get-size": "^2.0.3",
-    "unidragger": "^2.4.0",
-    "unipointer": "^2.4.0"
+    "ev-emitter": "^2.1.2",
+    "fizzy-ui-utils": "^3.0.0",
+    "get-size": "^3.0.0",
+    "unidragger": "^3.0.0"
   },
   "devDependencies": {
-    "clean-css": "^4.2.3",
-    "eslint": "^7.17.0",
+    "clean-css": "^5.2.2",
+    "eslint": "^7.32.0",
     "eslint-plugin-metafizzy": "^1.2.1",
     "flickity-as-nav-for": "^2.0.0",
     "flickity-imagesloaded": "^2.0.0",
-    "jquery-bridget": "^2.0.0",
-    "requirejs": "^2.3.6",
-    "uglify-js": "^3.9.3"
+    "jquery-bridget": "^3.0.1",
+    "terser": "^5.10.0"
   },
   "repository": {
     "type": "git",

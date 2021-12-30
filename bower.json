@@ -6,18 +6,12 @@
     "css/flickity.css"
   ],
   "dependencies": {
-    "desandro-matches-selector": "^2.0.0",
-    "ev-emitter": "^1.0.2",
-    "fizzy-ui-utils": "^2.0.0",
-    "get-size": "^2.0.0",
-    "unidragger": "^2.4.0",
-    "unipointer": "^2.4.0"
+    "ev-emitter": "^2.1.2",
+    "fizzy-ui-utils": "^3.0.0",
+    "get-size": "^3.0.0",
+    "unidragger": "^3.0.0"
   },
   "devDependencies": {
-    "flickity-imagesloaded": "^2.0.0",
-    "flickity-as-nav-for": "^2.0.0",
-    "jquery-bridget": "^2.0.0",
-    "qunit": "^2.0.0"
   },
   "keywords": [
     "gallery",
