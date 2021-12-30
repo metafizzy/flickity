@@ -16,7 +16,7 @@
         window,
         require('./flickity'),
         require('unipointer'),
-        require('fizzy-ui-utils')
+        require('fizzy-ui-utils'),
     );
   } else {
     // browser global
@@ -24,14 +24,13 @@
         window,
         window.Flickity,
         window.Unipointer,
-        window.fizzyUIUtils
+        window.fizzyUIUtils,
     );
   }
 
 }( window, function factory( window, Flickity, Unipointer, utils ) {
-'use strict';
 
-var svgURI = 'http://www.w3.org/2000/svg';
+const svgURI = 'http://www.w3.org/2000/svg';
 
 // -------------------------- PrevNextButton -------------------------- //
 
@@ -47,10 +46,10 @@ PrevNextButton.prototype._create = function() {
   // properties
   this.isEnabled = true;
   this.isPrevious = this.direction == -1;
-  var leftDirection = this.parent.options.rightToLeft ? 1 : -1;
+  let leftDirection = this.parent.options.rightToLeft ? 1 : -1;
   this.isLeft = this.direction == leftDirection;
 
-  var element = this.element = document.createElement('button');
+  let element = this.element = document.createElement('button');
   element.className = 'flickity-button flickity-prev-next-button';
   element.className += this.isPrevious ? ' previous' : ' next';
   // prevent button from submitting form http://stackoverflow.com/a/10836076/182183
@@ -61,7 +60,7 @@ PrevNextButton.prototype._create = function() {
   element.setAttribute( 'aria-label', this.isPrevious ? 'Previous' : 'Next' );
 
   // create arrow
-  var svg = this.createSVG();
+  let svg = this.createSVG();
   element.appendChild( svg );
   // events
   this.parent.on( 'select', this.update.bind( this ) );
@@ -84,17 +83,17 @@ PrevNextButton.prototype.deactivate = function() {
 };
 
 PrevNextButton.prototype.createSVG = function() {
-  var svg = document.createElementNS( svgURI, 'svg' );
+  let svg = document.createElementNS( svgURI, 'svg' );
   svg.setAttribute( 'class', 'flickity-button-icon' );
   svg.setAttribute( 'viewBox', '0 0 100 100' );
   // add title #1189
-  var title = document.createElementNS( svgURI, 'title' );
-  var titleText = document.createTextNode( this.isPrevious ? 'Previous' : 'Next' );
+  let title = document.createElementNS( svgURI, 'title' );
+  let titleText = document.createTextNode( this.isPrevious ? 'Previous' : 'Next' );
   title.appendChild( titleText );
   svg.appendChild( title );
   // add path
-  var path = document.createElementNS( svgURI, 'path' );
-  var pathMovements = getArrowMovements( this.parent.options.arrowShape );
+  let path = document.createElementNS( svgURI, 'path' );
+  let pathMovements = getArrowMovements( this.parent.options.arrowShape );
   path.setAttribute( 'd', pathMovements );
   path.setAttribute( 'class', 'arrow' );
   // rotate arrow
@@ -128,7 +127,7 @@ PrevNextButton.prototype.onclick = function() {
     return;
   }
   this.parent.uiChange();
-  var method = this.isPrevious ? 'previous' : 'next';
+  let method = this.isPrevious ? 'previous' : 'next';
   this.parent[ method ]();
 };
 
@@ -152,15 +151,15 @@ PrevNextButton.prototype.disable = function() {
 
 PrevNextButton.prototype.update = function() {
   // index of first or last slide, if previous or next
-  var slides = this.parent.slides;
+  let slides = this.parent.slides;
   // enable is wrapAround and at least 2 slides
   if ( this.parent.options.wrapAround && slides.length > 1 ) {
     this.enable();
     return;
   }
-  var lastIndex = slides.length ? slides.length - 1 : 0;
-  var boundIndex = this.isPrevious ? 0 : lastIndex;
-  var method = this.parent.selectedIndex == boundIndex ? 'disable' : 'enable';
+  let lastIndex = slides.length ? slides.length - 1 : 0;
+  let boundIndex = this.isPrevious ? 0 : lastIndex;
+  let method = this.parent.selectedIndex == boundIndex ? 'disable' : 'enable';
   this[ method ]();
 };
 
@@ -182,7 +181,7 @@ utils.extend( Flickity.defaults, {
 } );
 
 Flickity.createMethods.push('_createPrevNextButtons');
-var proto = Flickity.prototype;
+let proto = Flickity.prototype;
 
 proto._createPrevNextButtons = function() {
   if ( !this.options.prevNextButtons ) {

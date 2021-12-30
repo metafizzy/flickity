@@ -1,9 +1,8 @@
 QUnit.test( 'empty', function( assert ) {
-  'use strict';
 
-  var gallery = document.querySelector('#empty');
+  let gallery = document.querySelector('#empty');
 
-  var flkty = new Flickity( gallery );
+  let flkty = new Flickity( gallery );
 
   assert.ok( true, 'empty gallery ok' );
   assert.ok( flkty.prevButton.element.disabled, 'previous button disabled' );
@@ -14,7 +13,7 @@ QUnit.test( 'empty', function( assert ) {
   assert.ok( true, 'resize with empty gallery ok' );
 
   function makeCellElem() {
-    var cellElem = document.createElement('div');
+    let cellElem = document.createElement('div');
     cellElem.className = 'cell';
     return cellElem;
   }

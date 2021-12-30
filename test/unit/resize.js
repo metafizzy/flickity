@@ -1,9 +1,7 @@
 QUnit.test( 'resize', function( assert ) {
 
-  'use strict';
-
-  var elem = document.querySelector('#resize');
-  var flkty = new Flickity( elem, {
+  let elem = document.querySelector('#resize');
+  let flkty = new Flickity( elem, {
     initialIndex: 2,
   } );
   elem.style.width = '500px';

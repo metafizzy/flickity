@@ -8,7 +8,7 @@ module.exports = {
     commonjs: true,
   },
   parserOptions: {
-    ecmaVersion: 5,
+    ecmaVersion: 2018,
   },
   globals: {
     Flickity: 'readonly',
@@ -16,8 +16,6 @@ module.exports = {
     define: 'readonly',
   },
   rules: {
-    'no-var': 'off',
-    strict: 'off',
   },
   ignorePatterns: [ 'bower_components' ],
 };

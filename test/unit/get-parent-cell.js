@@ -1,14 +1,13 @@
 QUnit.test( 'getParentCell', function( assert ) {
-  'use strict';
 
-  var gallery = document.querySelector('#get-parent-cell');
-  var flkty = new Flickity( gallery );
+  let gallery = document.querySelector('#get-parent-cell');
+  let flkty = new Flickity( gallery );
 
   // cell1
-  var cell = flkty.getParentCell( gallery.querySelector('.cell1') );
+  let cell = flkty.getParentCell( gallery.querySelector('.cell1') );
   assert.ok( cell, 'getParentCell( cell ) ok' );
   assert.ok( cell instanceof Flickity.Cell, 'cell is Flickity.Cell' );
-  var index = flkty.cells.indexOf( cell );
+  let index = flkty.cells.indexOf( cell );
   assert.equal( index, 0, 'cell is index 0' );
   // cell3
   cell = flkty.getParentCell( gallery.querySelector('.cell3') );

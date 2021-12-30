@@ -1,8 +1,7 @@
 QUnit.test( 'watch fallback', function( assert ) {
-  'use strict';
 
-  var elem = document.querySelector('#watch');
-  var flkty = new Flickity( elem, {
+  let elem = document.querySelector('#watch');
+  let flkty = new Flickity( elem, {
     watchCSS: true,
   } );
 

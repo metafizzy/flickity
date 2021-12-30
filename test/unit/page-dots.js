@@ -1,11 +1,10 @@
 QUnit.test( 'pageDots', function( assert ) {
-  'use strict';
 
-  var elem = document.querySelector('#page-dots');
-  var flkty = new Flickity( elem );
+  let elem = document.querySelector('#page-dots');
+  let flkty = new Flickity( elem );
 
-  var dotsHolder = elem.querySelector('.flickity-page-dots');
-  var dotsElems = dotsHolder.querySelectorAll('.dot');
+  let dotsHolder = elem.querySelector('.flickity-page-dots');
+  let dotsElems = dotsHolder.querySelectorAll('.dot');
 
   assert.ok( dotsHolder, 'dots holder in DOM' );
   assert.equal( flkty.pageDots.holder, dotsHolder,
@@ -14,9 +13,9 @@ QUnit.test( 'pageDots', function( assert ) {
       'number of dots matches number of cells' );
 
   function getSelectedDotIndex() {
-    var selectedDot = dotsHolder.querySelector('.is-selected');
-    for ( var i = 0; i < dotsElems.length; i++ ) {
-      var dotElem = dotsElems[i];
+    let selectedDot = dotsHolder.querySelector('.is-selected');
+    for ( let i = 0; i < dotsElems.length; i++ ) {
+      let dotElem = dotsElems[i];
       if ( dotElem == selectedDot ) {
         return i;
       }

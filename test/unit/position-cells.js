@@ -1,23 +1,21 @@
 ( function() {
 
-'use strict';
-
 // position values can be off by 0.1% or 1px
 function isPositionApprox( value, expected ) {
-  var isPercent = value.indexOf('%') != -1;
+  let isPercent = value.indexOf('%') != -1;
   value = parseFloat( value );
-  var diff = Math.abs( expected - value );
+  let diff = Math.abs( expected - value );
   return isPercent ? diff < 0.1 : diff <= 1;
 }
 
 // loop through cells and check position values against expecteds
 function checkCellPositions( flkty, expecteds ) {
-  var isOK;
-  for ( var i = 0; i < expecteds.length; i++ ) {
-    var expected = expecteds[i];
-    var cell = flkty.cells[i];
-    var transform = cell.element.style.transform;
-    var position = transform.replace( 'translateX(', '' ).replace( ')', '' );
+  let isOK;
+  for ( let i = 0; i < expecteds.length; i++ ) {
+    let expected = expecteds[i];
+    let cell = flkty.cells[i];
+    let transform = cell.element.style.transform;
+    let position = transform.replace( 'translateX(', '' ).replace( ')', '' );
     isOK = isPositionApprox( position, expected );
     if ( !isOK ) {
       console.error( 'wrong cell position, index: ' + i + '. ' +
@@ -30,7 +28,7 @@ function checkCellPositions( flkty, expecteds ) {
 
 QUnit.test( 'position cells', function( assert ) {
 
-  var flkty = new Flickity('#position-cells');
+  let flkty = new Flickity('#position-cells');
 
   assert.ok( checkCellPositions( flkty, [ 0, 160, 108.3, 312.5, 275, 900 ] ),
       'percent cell position' );

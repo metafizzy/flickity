@@ -1,11 +1,10 @@
 QUnit.test( 'prev-next-buttons', function( assert ) {
-  'use strict';
 
-  var elem = document.querySelector('#prev-next-buttons');
-  var flkty = new Flickity( elem );
+  let elem = document.querySelector('#prev-next-buttons');
+  let flkty = new Flickity( elem );
 
-  var prevElem = elem.querySelector('.flickity-prev-next-button.previous');
-  var nextElem = elem.querySelector('.flickity-prev-next-button.next');
+  let prevElem = elem.querySelector('.flickity-prev-next-button.previous');
+  let nextElem = elem.querySelector('.flickity-prev-next-button.next');
   assert.ok( prevElem, 'previous button in DOM' );
   assert.ok( nextElem, 'next button in DOM' );
   assert.equal( flkty.prevButton.element, prevElem,

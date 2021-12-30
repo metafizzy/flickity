@@ -23,11 +23,11 @@
         require('fizzy-ui-utils'),
         require('./cell'),
         require('./slide'),
-        require('./animate')
+        require('./animate'),
     );
   } else {
     // browser global
-    var _Flickity = window.Flickity;
+    let _Flickity = window.Flickity;
 
     window.Flickity = factory(
         window,
@@ -36,7 +36,7 @@
         window.fizzyUIUtils,
         _Flickity.Cell,
         _Flickity.Slide,
-        _Flickity.animatePrototype
+        _Flickity.animatePrototype,
     );
   }
 
@@ -44,12 +44,11 @@
     utils, Cell, Slide, animatePrototype ) {
 
 /* eslint-enable max-params */
-'use strict';
 
 // vars
-var jQuery = window.jQuery;
-var getComputedStyle = window.getComputedStyle;
-var console = window.console;
+let jQuery = window.jQuery;
+const getComputedStyle = window.getComputedStyle;
+const console = window.console;
 
 function moveElements( elems, toElem ) {
   elems = utils.makeArray( elems );
@@ -61,12 +60,12 @@ function moveElements( elems, toElem ) {
 // -------------------------- Flickity -------------------------- //
 
 // globally unique identifiers
-var GUID = 0;
+let GUID = 0;
 // internal store of all Flickity intances
-var instances = {};
+let instances = {};
 
 function Flickity( element, options ) {
-  var queryElement = utils.getQueryElement( element );
+  let queryElement = utils.getQueryElement( element );
   if ( !queryElement ) {
     if ( console ) {
       console.error( 'Bad element for Flickity: ' + ( queryElement || element ) );
@@ -76,7 +75,7 @@ function Flickity( element, options ) {
   this.element = queryElement;
   // do not initialize twice on same element
   if ( this.element.flickityGUID ) {
-    var instance = instances[ this.element.flickityGUID ];
+    let instance = instances[ this.element.flickityGUID ];
     if ( instance ) instance.option( options );
     return instance;
   }
@@ -114,13 +113,13 @@ Flickity.defaults = {
 // hash of methods triggered on _create()
 Flickity.createMethods = [];
 
-var proto = Flickity.prototype;
+let proto = Flickity.prototype;
 // inherit EventEmitter
 utils.extend( proto, EvEmitter.prototype );
 
 proto._create = function() {
   // add id for Flickity.data
-  var id = this.guid = ++GUID;
+  let id = this.guid = ++GUID;
   this.element.flickityGUID = id; // expando
   instances[ id ] = this; // associate via id
   // initial properties
@@ -141,8 +140,8 @@ proto._create = function() {
   }
 
   // add listeners from on option
-  for ( var eventName in this.options.on ) {
-    var listener = this.options.on[ eventName ];
+  for ( let eventName in this.options.on ) {
+    let listener = this.options.on[ eventName ];
     this.on( eventName, listener );
   }
 
@@ -178,7 +177,7 @@ proto.activate = function() {
 
   this.getSize();
   // move initial cell elements so they can be loaded as cells
-  var cellElems = this._filterFindCellElements( this.element.children );
+  let cellElems = this._filterFindCellElements( this.element.children );
   moveElements( cellElems, this.slider );
   this.viewport.appendChild( this.slider );
   this.element.appendChild( this.viewport );
@@ -203,7 +202,7 @@ proto.activate = function() {
 // slider positions the cells
 proto._createSlider = function() {
   // slider element does all the positioning
-  var slider = document.createElement('div');
+  let slider = document.createElement('div');
   slider.className = 'flickity-slider';
   slider.style[ this.originSide ] = 0;
   this.slider = slider;
@@ -228,10 +227,10 @@ proto.reloadCells = function() {
  * @returns {Array} items - collection of new Flickity Cells
  */
 proto._makeCells = function( elems ) {
-  var cellElems = this._filterFindCellElements( elems );
+  let cellElems = this._filterFindCellElements( elems );
 
   // create new Flickity for collection
-  var cells = cellElems.map( function( cellElem ) {
+  let cells = cellElems.map( function( cellElem ) {
     return new Cell( cellElem, this );
   }, this );
 
@@ -263,15 +262,15 @@ proto._positionCells = function( index ) {
   // also measure maxCellHeight
   // start 0 if positioning all cells
   this.maxCellHeight = index ? this.maxCellHeight || 0 : 0;
-  var cellX = 0;
+  let cellX = 0;
   // get cellX
   if ( index > 0 ) {
-    var startCell = this.cells[ index - 1 ];
+    let startCell = this.cells[ index - 1 ];
     cellX = startCell.x + startCell.size.outerWidth;
   }
-  var len = this.cells.length;
-  for ( var i = index; i < len; i++ ) {
-    var cell = this.cells[i];
+  let len = this.cells.length;
+  for ( let i = index; i < len; i++ ) {
+    let cell = this.cells[i];
     cell.setPosition( cellX );
     cellX += cell.size.outerWidth;
     this.maxCellHeight = Math.max( cell.size.outerHeight, this.maxCellHeight );
@@ -304,12 +303,12 @@ proto.updateSlides = function() {
     return;
   }
 
-  var slide = new Slide( this );
+  let slide = new Slide( this );
   this.slides.push( slide );
-  var isOriginLeft = this.originSide == 'left';
-  var nextMargin = isOriginLeft ? 'marginRight' : 'marginLeft';
+  let isOriginLeft = this.originSide == 'left';
+  let nextMargin = isOriginLeft ? 'marginRight' : 'marginLeft';
 
-  var canCellFit = this._getCanCellFit();
+  let canCellFit = this._getCanCellFit();
 
   this.cells.forEach( function( cell, i ) {
     // just add cell if first cell in slide
@@ -318,7 +317,7 @@ proto.updateSlides = function() {
       return;
     }
 
-    var slideWidth = ( slide.outerWidth - slide.firstMargin ) +
+    let slideWidth = ( slide.outerWidth - slide.firstMargin ) +
       ( cell.size.outerWidth - cell.size[ nextMargin ] );
 
     if ( canCellFit.call( this, i, slideWidth ) ) {
@@ -339,23 +338,23 @@ proto.updateSlides = function() {
 };
 
 proto._getCanCellFit = function() {
-  var groupCells = this.options.groupCells;
+  let groupCells = this.options.groupCells;
   if ( !groupCells ) {
     return function() {
       return false;
     };
   } else if ( typeof groupCells == 'number' ) {
     // group by number. 3 -> [0,1,2], [3,4,5], ...
-    var number = parseInt( groupCells, 10 );
+    let number = parseInt( groupCells, 10 );
     return function( i ) {
       return ( i % number ) !== 0;
     };
   }
   // default, group by width of slide
   // parse '75%
-  var percentMatch = typeof groupCells == 'string' &&
+  let percentMatch = typeof groupCells == 'string' &&
     groupCells.match( /^(\d+)%$/ );
-  var percent = percentMatch ? parseInt( percentMatch[1], 10 ) / 100 : 1;
+  let percent = percentMatch ? parseInt( percentMatch[1], 10 ) / 100 : 1;
   return function( i, slideWidth ) {
     /* eslint-disable-next-line no-invalid-this */
     return slideWidth <= ( this.size.innerWidth + 1 ) * percent;
@@ -375,7 +374,7 @@ proto.getSize = function() {
   this.cursorPosition = this.size.innerWidth * this.cellAlign;
 };
 
-var cellAlignShorthands = {
+let cellAlignShorthands = {
   // cell align, then based on origin side
   center: {
     left: 0.5,
@@ -392,13 +391,13 @@ var cellAlignShorthands = {
 };
 
 proto.setCellAlign = function() {
-  var shorthand = cellAlignShorthands[ this.options.cellAlign ];
+  let shorthand = cellAlignShorthands[ this.options.cellAlign ];
   this.cellAlign = shorthand ? shorthand[ this.originSide ] : this.options.cellAlign;
 };
 
 proto.setGallerySize = function() {
   if ( this.options.setGallerySize ) {
-    var height = this.options.adaptiveHeight && this.selectedSlide ?
+    let height = this.options.adaptiveHeight && this.selectedSlide ?
       this.selectedSlide.height : this.maxCellHeight;
     this.viewport.style.height = height + 'px';
   }
@@ -414,8 +413,8 @@ proto._getWrapShiftCells = function() {
   this._unshiftCells( this.afterShiftCells );
   // get before cells
   // initial gap
-  var gapX = this.cursorPosition;
-  var cellIndex = this.cells.length - 1;
+  let gapX = this.cursorPosition;
+  let cellIndex = this.cells.length - 1;
   this.beforeShiftCells = this._getGapCells( gapX, cellIndex, -1 );
   // get after cells
   // ending gap between last cell and end of gallery viewport
@@ -426,9 +425,9 @@ proto._getWrapShiftCells = function() {
 
 proto._getGapCells = function( gapX, cellIndex, increment ) {
   // keep adding cells until the cover the initial gap
-  var cells = [];
+  let cells = [];
   while ( gapX > 0 ) {
-    var cell = this.cells[ cellIndex ];
+    let cell = this.cells[ cellIndex ];
     if ( !cell ) {
       break;
     }
@@ -446,15 +445,15 @@ proto._containSlides = function() {
   if ( !this.options.contain || this.options.wrapAround || !this.cells.length ) {
     return;
   }
-  var isRightToLeft = this.options.rightToLeft;
-  var beginMargin = isRightToLeft ? 'marginRight' : 'marginLeft';
-  var endMargin = isRightToLeft ? 'marginLeft' : 'marginRight';
-  var contentWidth = this.slideableWidth - this.getLastCell().size[ endMargin ];
+  let isRightToLeft = this.options.rightToLeft;
+  let beginMargin = isRightToLeft ? 'marginRight' : 'marginLeft';
+  let endMargin = isRightToLeft ? 'marginLeft' : 'marginRight';
+  let contentWidth = this.slideableWidth - this.getLastCell().size[ endMargin ];
   // content is less than gallery size
-  var isContentSmaller = contentWidth < this.size.innerWidth;
+  let isContentSmaller = contentWidth < this.size.innerWidth;
   // bounds
-  var beginBound = this.cursorPosition + this.cells[0].size[ beginMargin ];
-  var endBound = contentWidth - this.size.innerWidth * ( 1 - this.cellAlign );
+  let beginBound = this.cursorPosition + this.cells[0].size[ beginMargin ];
+  let endBound = contentWidth - this.size.innerWidth * ( 1 - this.cellAlign );
   // contain each cell target
   this.slides.forEach( function( slide ) {
     if ( isContentSmaller ) {
@@ -477,16 +476,16 @@ proto._containSlides = function() {
  * @param {Array} args - extra arguments
  */
 proto.dispatchEvent = function( type, event, args ) {
-  var emitArgs = event ? [ event ].concat( args ) : args;
+  let emitArgs = event ? [ event ].concat( args ) : args;
   this.emitEvent( type, emitArgs );
 
   if ( jQuery && this.$element ) {
     // default trigger with type if no event
     type += this.options.namespaceJQueryEvents ? '.flickity' : '';
-    var $event = type;
+    let $event = type;
     if ( event ) {
       // create jQuery event
-      var jQEvent = new jQuery.Event( event );
+      let jQEvent = new jQuery.Event( event );
       jQEvent.type = type;
       $event = jQEvent;
     }
@@ -515,7 +514,7 @@ proto.select = function( index, isWrap, isInstant ) {
   if ( !this.slides[ index ] ) {
     return;
   }
-  var prevIndex = this.selectedIndex;
+  let prevIndex = this.selectedIndex;
   this.selectedIndex = index;
   this.updateSelectedSlide();
   if ( isInstant ) {
@@ -538,16 +537,16 @@ proto.select = function( index, isWrap, isInstant ) {
 
 // wraps position for wrapAround, to move to closest slide. #113
 proto._wrapSelect = function( index ) {
-  var len = this.slides.length;
-  var isWrapping = this.options.wrapAround && len > 1;
+  let len = this.slides.length;
+  let isWrapping = this.options.wrapAround && len > 1;
   if ( !isWrapping ) {
     return index;
   }
-  var wrapIndex = utils.modulo( index, len );
+  let wrapIndex = utils.modulo( index, len );
   // go to shortest
-  var delta = Math.abs( wrapIndex - this.selectedIndex );
-  var backWrapDelta = Math.abs( ( wrapIndex + len ) - this.selectedIndex );
-  var forewardWrapDelta = Math.abs( ( wrapIndex - len ) - this.selectedIndex );
+  let delta = Math.abs( wrapIndex - this.selectedIndex );
+  let backWrapDelta = Math.abs( ( wrapIndex + len ) - this.selectedIndex );
+  let forewardWrapDelta = Math.abs( ( wrapIndex - len ) - this.selectedIndex );
   if ( !this.isDragSelect && backWrapDelta < delta ) {
     index += len;
   } else if ( !this.isDragSelect && forewardWrapDelta < delta ) {
@@ -570,7 +569,7 @@ proto.next = function( isWrap, isInstant ) {
 };
 
 proto.updateSelectedSlide = function() {
-  var slide = this.slides[ this.selectedIndex ];
+  let slide = this.slides[ this.selectedIndex ];
   // selectedIndex could be outside of slides, if triggered before resize()
   if ( !slide ) {
     return;
@@ -595,7 +594,7 @@ proto.unselectSelectedSlide = function() {
 };
 
 proto.selectInitialIndex = function() {
-  var initialIndex = this.options.initialIndex;
+  let initialIndex = this.options.initialIndex;
   // already activated, select previous selectedIndex
   if ( this.isInitActivated ) {
     this.select( this.selectedIndex, false, true );
@@ -603,14 +602,14 @@ proto.selectInitialIndex = function() {
   }
   // select with selector string
   if ( initialIndex && typeof initialIndex == 'string' ) {
-    var cell = this.queryCell( initialIndex );
+    let cell = this.queryCell( initialIndex );
     if ( cell ) {
       this.selectCell( initialIndex, false, true );
       return;
     }
   }
 
-  var index = 0;
+  let index = 0;
   // select with number
   if ( initialIndex && this.slides[ initialIndex ] ) {
     index = initialIndex;
@@ -627,20 +626,20 @@ proto.selectInitialIndex = function() {
  */
 proto.selectCell = function( value, isWrap, isInstant ) {
   // get cell
-  var cell = this.queryCell( value );
+  let cell = this.queryCell( value );
   if ( !cell ) {
     return;
   }
 
-  var index = this.getCellSlideIndex( cell );
+  let index = this.getCellSlideIndex( cell );
   this.select( index, isWrap, isInstant );
 };
 
 proto.getCellSlideIndex = function( cell ) {
   // get index of slides that has cell
-  for ( var i = 0; i < this.slides.length; i++ ) {
-    var slide = this.slides[i];
-    var index = slide.cells.indexOf( cell );
+  for ( let i = 0; i < this.slides.length; i++ ) {
+    let slide = this.slides[i];
+    let index = slide.cells.indexOf( cell );
     if ( index != -1 ) {
       return i;
     }
@@ -656,8 +655,8 @@ proto.getCellSlideIndex = function( cell ) {
  */
 proto.getCell = function( elem ) {
   // loop through cells to get the one that matches
-  for ( var i = 0; i < this.cells.length; i++ ) {
-    var cell = this.cells[i];
+  for ( let i = 0; i < this.cells.length; i++ ) {
+    let cell = this.cells[i];
     if ( cell.element == elem ) {
       return cell;
     }
@@ -671,9 +670,9 @@ proto.getCell = function( elem ) {
  */
 proto.getCells = function( elems ) {
   elems = utils.makeArray( elems );
-  var cells = [];
+  let cells = [];
   elems.forEach( function( elem ) {
-    var cell = this.getCell( elem );
+    let cell = this.getCell( elem );
     if ( cell ) {
       cells.push( cell );
     }
@@ -698,7 +697,7 @@ proto.getCellElements = function() {
  */
 proto.getParentCell = function( elem ) {
   // first check if elem is cell
-  var cell = this.getCell( elem );
+  let cell = this.getCell( elem );
   if ( cell ) {
     return cell;
   }
@@ -719,15 +718,15 @@ proto.getAdjacentCellElements = function( adjCount, index ) {
   }
   index = index === undefined ? this.selectedIndex : index;
 
-  var len = this.slides.length;
+  let len = this.slides.length;
   if ( 1 + ( adjCount * 2 ) >= len ) {
     return this.getCellElements();
   }
 
-  var cellElems = [];
-  for ( var i = index - adjCount; i <= index + adjCount; i++ ) {
-    var slideIndex = this.options.wrapAround ? utils.modulo( i, len ) : i;
-    var slide = this.slides[ slideIndex ];
+  let cellElems = [];
+  for ( let i = index - adjCount; i <= index + adjCount; i++ ) {
+    let slideIndex = this.options.wrapAround ? utils.modulo( i, len ) : i;
+    let slide = this.slides[ slideIndex ];
     if ( slide ) {
       cellElems = cellElems.concat( slide.getCellElements() );
     }
@@ -797,18 +796,18 @@ proto.resize = function() {
   this.emitEvent('resize');
   // update selected index for group slides, instant
   // TODO: position can be lost between groups of various numbers
-  var selectedElement = this.selectedElements && this.selectedElements[0];
+  let selectedElement = this.selectedElements && this.selectedElements[0];
   this.selectCell( selectedElement, false, true );
 };
 
 // watches the :after property, activates/deactivates
 proto.watchCSS = function() {
-  var watchOption = this.options.watchCSS;
+  let watchOption = this.options.watchCSS;
   if ( !watchOption ) {
     return;
   }
 
-  var afterContent = getComputedStyle( this.element, ':after' ).content;
+  let afterContent = getComputedStyle( this.element, ':after' ).content;
   // activate if :after { content: 'flickity' }
   if ( afterContent.indexOf('flickity') != -1 ) {
     this.activate();
@@ -822,12 +821,12 @@ proto.watchCSS = function() {
 // go previous/next if left/right keys pressed
 proto.onkeydown = function( event ) {
   // only work if element is in focus
-  var isNotFocused = document.activeElement && document.activeElement != this.element;
+  let isNotFocused = document.activeElement && document.activeElement != this.element;
   if ( !this.options.accessibility || isNotFocused ) {
     return;
   }
 
-  var handler = Flickity.keyboardHandlers[ event.keyCode ];
+  let handler = Flickity.keyboardHandlers[ event.keyCode ];
   if ( handler ) {
     handler.call( this );
   }
@@ -836,13 +835,13 @@ proto.onkeydown = function( event ) {
 Flickity.keyboardHandlers = {
   // left arrow
   37: function() {
-    var leftMethod = this.options.rightToLeft ? 'next' : 'previous';
+    let leftMethod = this.options.rightToLeft ? 'next' : 'previous';
     this.uiChange();
     this[ leftMethod ]();
   },
   // right arrow
   39: function() {
-    var rightMethod = this.options.rightToLeft ? 'previous' : 'next';
+    let rightMethod = this.options.rightToLeft ? 'previous' : 'next';
     this.uiChange();
     this[ rightMethod ]();
   },
@@ -854,7 +853,7 @@ proto.focus = function() {
   // TODO remove scrollTo once focus options gets more support
   // https://developer.mozilla.org/en-US/docs/Web/API/HTMLElement/focus ...
   //    #Browser_compatibility
-  var prevScrollY = window.pageYOffset;
+  let prevScrollY = window.pageYOffset;
   this.element.focus({ preventScroll: true });
   // hack to fix scroll jump after focus, #76
   if ( window.pageYOffset != prevScrollY ) {
@@ -913,7 +912,7 @@ utils.extend( proto, animatePrototype );
  */
 Flickity.data = function( elem ) {
   elem = utils.getQueryElement( elem );
-  var id = elem && elem.flickityGUID;
+  let id = elem && elem.flickityGUID;
   return id && instances[ id ];
 };
 

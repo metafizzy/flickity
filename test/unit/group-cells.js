@@ -1,21 +1,20 @@
 QUnit.test( 'groupCells', function( assert ) {
-  'use strict';
 
-  var done = assert.async();
+  let done = assert.async();
 
-  var flkty = new Flickity( '#group-cells', {
+  let flkty = new Flickity( '#group-cells', {
     groupCells: true,
   } );
 
   function getSlideCellsCount() {
-    var counts = flkty.slides.map( function( slide ) {
+    let counts = flkty.slides.map( function( slide ) {
       return slide.cells.length;
     } );
     return counts.join(',');
   }
 
   assert.equal( getSlideCellsCount(), '3,2,2,1,1,3,2', 'groupCells: true' );
-  var targets = flkty.slides.map( function( slide ) {
+  let targets = flkty.slides.map( function( slide ) {
     return slide.target;
   } );
   assert.deepEqual( targets, [ 200, 600, 1000, 1300, 1600, 2000, 2300 ], 'targets' );

@@ -1,7 +1,6 @@
 QUnit.test( 'adaptiveHeight', function( assert ) {
-  'use strict';
 
-  var flkty = new Flickity( '#adaptive-height', {
+  let flkty = new Flickity( '#adaptive-height', {
     adaptiveHeight: true,
   } );
 

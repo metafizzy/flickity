@@ -1,9 +1,8 @@
 QUnit.test( 'selectCell', function( assert ) {
-  'use strict';
 
-  var gallery = document.querySelector('#select-cell');
-  var cellElems = gallery.querySelectorAll('.cell');
-  var flkty = new Flickity( gallery, {
+  let gallery = document.querySelector('#select-cell');
+  let cellElems = gallery.querySelectorAll('.cell');
+  let flkty = new Flickity( gallery, {
     groupCells: true, // groups of 3
   } );
 

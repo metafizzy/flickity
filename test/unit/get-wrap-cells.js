@@ -1,7 +1,6 @@
 QUnit.test( 'getWrapCells', function( assert ) {
-  'use strict';
 
-  var flkty = new Flickity( '#get-wrap-cells', {
+  let flkty = new Flickity( '#get-wrap-cells', {
     wrapAround: true,
   } );
   // cells are 25% width

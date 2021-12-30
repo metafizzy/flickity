@@ -1,20 +1,19 @@
 QUnit.test( 'auto play', function( assert ) {
-  'use strict';
 
-  var done = assert.async();
+  let done = assert.async();
 
-  var flkty = new Flickity( '#auto-play', {
+  let flkty = new Flickity( '#auto-play', {
     autoPlay: 200,
   } );
 
-  var selectCount = 0;
-  var testDelay = flkty.options.autoPlay + 100;
+  let selectCount = 0;
+  let testDelay = flkty.options.autoPlay + 100;
 
-  var tests;
+  let tests;
 
   function nextTest() {
     if ( tests.length ) {
-      var next = tests.shift();
+      let next = tests.shift();
       return next();
     } else {
       flkty.stopPlayer();
@@ -56,7 +55,7 @@ QUnit.test( 'auto play', function( assert ) {
     },
     // stopPlayer
     function() {
-      var ticks = 0;
+      let ticks = 0;
       function onSelect() {
         ticks++;
       }
@@ -69,7 +68,7 @@ QUnit.test( 'auto play', function( assert ) {
     },
     // double playPlayer()
     function() {
-      var ticks = 0;
+      let ticks = 0;
       function onSelect() {
         ticks++;
       }

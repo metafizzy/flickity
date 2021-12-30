@@ -1,8 +1,7 @@
 QUnit.test( 'add/remove cells', function( assert ) {
-  'use strict';
 
   function makeCellElem() {
-    var cellElem = document.createElement('div');
+    let cellElem = document.createElement('div');
     cellElem.className = 'cell';
     return cellElem;
   }
@@ -10,15 +9,15 @@ QUnit.test( 'add/remove cells', function( assert ) {
   // position values can be off by 0.1% or 1px
   function isPositionApprox( value, expected ) {
     value = value.replace( 'translateX(', '' ).replace( ')', '' );
-    var isPercent = value.indexOf('%') != -1;
+    let isPercent = value.indexOf('%') != -1;
     value = parseFloat( value );
-    var diff = Math.abs( expected - value );
+    let diff = Math.abs( expected - value );
     return isPercent ? diff < 0.1 : diff <= 1;
   }
 
-  var elem = document.querySelector('#add-remove-cells');
-  var flkty = new Flickity( elem );
-  var sliderElem = elem.querySelector('.flickity-slider');
+  let elem = document.querySelector('#add-remove-cells');
+  let flkty = new Flickity( elem );
+  let sliderElem = elem.querySelector('.flickity-slider');
 
   function checkCellElem( cellElem, index, message ) {
     assert.equal( sliderElem.children[ index ], cellElem,
@@ -30,14 +29,14 @@ QUnit.test( 'add/remove cells', function( assert ) {
   }
 
   // prepend cell element
-  var cellElem = makeCellElem();
+  let cellElem = makeCellElem();
   flkty.prepend( cellElem );
   checkCellElem( cellElem, 0, 'prepended' );
   assert.equal( flkty.selectedIndex, 1, 'selectedIndex +1 after prepend' );
   // append cell element
   cellElem = makeCellElem();
   flkty.append( cellElem );
-  var lastIndex = flkty.cells.length - 1;
+  let lastIndex = flkty.cells.length - 1;
   checkCellElem( cellElem, lastIndex, 'appended' );
   assert.equal( flkty.selectedIndex, 1, 'selectedIndex same after prepend' );
   // insert single cell element
@@ -49,7 +48,7 @@ QUnit.test( 'add/remove cells', function( assert ) {
   flkty.insert( makeCellElem(), 4 );
   assert.equal( flkty.selectedIndex, 3, 'selectedIndex same after insert before' );
   // insert multiple cell elements
-  var cellElems = [ makeCellElem(), makeCellElem(), makeCellElem() ];
+  let cellElems = [ makeCellElem(), makeCellElem(), makeCellElem() ];
   flkty.insert( cellElems, 3 );
   checkCellElem( cellElems[0], 3, 'first multiple inserted' );
   checkCellElem( cellElems[1], 4, 'second multiple inserted' );
@@ -57,9 +56,9 @@ QUnit.test( 'add/remove cells', function( assert ) {
   assert.equal( flkty.selectedIndex, 6, 'selectedIndex +6 after 3 insert before' );
 
   function checkCellPositions() {
-    var isGap = false;
-    for ( var i = 0; i < flkty.cells.length; i++ ) {
-      var cell = flkty.cells[i];
+    let isGap = false;
+    for ( let i = 0; i < flkty.cells.length; i++ ) {
+      let cell = flkty.cells[i];
       if ( !isPositionApprox( cell.element.style.transform, i * 100 ) ) {
         assert.ok( false, 'gap in cell position ' + i + ' after removal' );
         isGap = true;
@@ -69,7 +68,7 @@ QUnit.test( 'add/remove cells', function( assert ) {
   }
 
   // remove single cell element that was inserted
-  var len = flkty.cells.length;
+  let len = flkty.cells.length;
   flkty.remove( cellElem );
   assert.equal( len - sliderElem.children.length, 1, 'element removed from DOM' );
   assert.equal( len - flkty.cells.length, 1, 'cell removed' );

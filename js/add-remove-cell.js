@@ -14,24 +14,22 @@
     module.exports = factory(
         window,
         require('./flickity'),
-        require('fizzy-ui-utils')
+        require('fizzy-ui-utils'),
     );
   } else {
     // browser global
     factory(
         window,
         window.Flickity,
-        window.fizzyUIUtils
+        window.fizzyUIUtils,
     );
   }
 
 }( window, function factory( window, Flickity, utils ) {
 
-'use strict';
-
 // append cells to a document fragment
 function getCellsFragment( cells ) {
-  var fragment = document.createDocumentFragment();
+  let fragment = document.createDocumentFragment();
   cells.forEach( function( cell ) {
     fragment.appendChild( cell.element );
   } );
@@ -40,7 +38,7 @@ function getCellsFragment( cells ) {
 
 // -------------------------- add/remove cell prototype -------------------------- //
 
-var proto = Flickity.prototype;
+let proto = Flickity.prototype;
 
 /**
  * Insert, prepend, or append cells
@@ -48,21 +46,21 @@ var proto = Flickity.prototype;
  * @param {Integer} index - Zero-based number to insert
  */
 proto.insert = function( elems, index ) {
-  var cells = this._makeCells( elems );
+  let cells = this._makeCells( elems );
   if ( !cells || !cells.length ) {
     return;
   }
-  var len = this.cells.length;
+  let len = this.cells.length;
   // default to append
   index = index === undefined ? len : index;
   // add cells with document fragment
-  var fragment = getCellsFragment( cells );
+  let fragment = getCellsFragment( cells );
   // append to slider
-  var isAppend = index == len;
+  let isAppend = index == len;
   if ( isAppend ) {
     this.slider.appendChild( fragment );
   } else {
-    var insertCellElement = this.cells[ index ].element;
+    let insertCellElement = this.cells[ index ].element;
     this.slider.insertBefore( fragment, insertCellElement );
   }
   // add to this.cells
@@ -74,7 +72,7 @@ proto.insert = function( elems, index ) {
     this.cells = this.cells.concat( cells );
   } else {
     // insert in this.cells
-    var endCells = this.cells.splice( index, len - index );
+    let endCells = this.cells.splice( index, len - index );
     this.cells = this.cells.concat( cells ).concat( endCells );
   }
 
@@ -95,16 +93,16 @@ proto.prepend = function( elems ) {
  * @param {[Element, Array, NodeList]} elems - ELements to remove
  */
 proto.remove = function( elems ) {
-  var cells = this.getCells( elems );
+  let cells = this.getCells( elems );
   if ( !cells || !cells.length ) {
     return;
   }
 
-  var minCellIndex = this.cells.length - 1;
+  let minCellIndex = this.cells.length - 1;
   // remove cells from collection & DOM
   cells.forEach( function( cell ) {
     cell.remove();
-    var index = this.cells.indexOf( cell );
+    let index = this.cells.indexOf( cell );
     minCellIndex = Math.min( index, minCellIndex );
     utils.removeFrom( this.cells, cell );
   }, this );
@@ -117,13 +115,13 @@ proto.remove = function( elems ) {
  * @param {Element} elem - cell's element
  */
 proto.cellSizeChange = function( elem ) {
-  var cell = this.getCell( elem );
+  let cell = this.getCell( elem );
   if ( !cell ) {
     return;
   }
   cell.getSize();
 
-  var index = this.cells.indexOf( cell );
+  let index = this.cells.indexOf( cell );
   this.cellChange( index );
 };
 
@@ -133,13 +131,13 @@ proto.cellSizeChange = function( elem ) {
  * @param {Boolean} isPositioningSlider - Positions slider after selection
  */
 proto.cellChange = function( changedCellIndex, isPositioningSlider ) {
-  var prevSelectedElem = this.selectedElement;
+  let prevSelectedElem = this.selectedElement;
   this._positionCells( changedCellIndex );
   this._getWrapShiftCells();
   this.setGallerySize();
   // update selectedIndex
   // try to maintain position & select previous selected element
-  var cell = this.getCell( prevSelectedElem );
+  let cell = this.getCell( prevSelectedElem );
   if ( cell ) {
     this.selectedIndex = this.getCellSlideIndex( cell );
   }

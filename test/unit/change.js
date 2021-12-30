@@ -1,9 +1,8 @@
 /* eslint-disable no-invalid-this */
 
 QUnit.test( 'change', function( assert ) {
-  'use strict';
 
-  var done = assert.async();
+  let done = assert.async();
 
   function onInitChange() {
     assert.ok( false, 'change should not trigger on init' );

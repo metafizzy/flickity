@@ -16,7 +16,7 @@
         window,
         require('./flickity'),
         require('unipointer'),
-        require('fizzy-ui-utils')
+        require('fizzy-ui-utils'),
     );
   } else {
     // browser global
@@ -24,15 +24,13 @@
         window,
         window.Flickity,
         window.Unipointer,
-        window.fizzyUIUtils
+        window.fizzyUIUtils,
     );
   }
 
 }( window, function factory( window, Flickity, Unipointer, utils ) {
 
 // -------------------------- PageDots -------------------------- //
-
-'use strict';
 
 function PageDots( parent ) {
   this.parent = parent;
@@ -69,7 +67,7 @@ PageDots.prototype.deactivate = function() {
 
 PageDots.prototype.setDots = function() {
   // get difference between number of slides and number of dots
-  var delta = this.parent.slides.length - this.dots.length;
+  let delta = this.parent.slides.length - this.dots.length;
   if ( delta > 0 ) {
     this.addDots( delta );
   } else if ( delta < 0 ) {
@@ -78,13 +76,13 @@ PageDots.prototype.setDots = function() {
 };
 
 PageDots.prototype.addDots = function( count ) {
-  var fragment = document.createDocumentFragment();
-  var newDots = [];
-  var length = this.dots.length;
-  var max = length + count;
+  let fragment = document.createDocumentFragment();
+  let newDots = [];
+  let length = this.dots.length;
+  let max = length + count;
 
-  for ( var i = length; i < max; i++ ) {
-    var dot = document.createElement('li');
+  for ( let i = length; i < max; i++ ) {
+    let dot = document.createElement('li');
     dot.className = 'dot';
     dot.setAttribute( 'aria-label', 'Page dot ' + ( i + 1 ) );
     fragment.appendChild( dot );
@@ -97,7 +95,7 @@ PageDots.prototype.addDots = function( count ) {
 
 PageDots.prototype.removeDots = function( count ) {
   // remove from this.dots collection
-  var removeDots = this.dots.splice( this.dots.length - count, count );
+  let removeDots = this.dots.splice( this.dots.length - count, count );
   // remove from DOM
   removeDots.forEach( function( dot ) {
     this.holder.removeChild( dot );
@@ -121,14 +119,14 @@ PageDots.prototype.updateSelected = function() {
 
 PageDots.prototype.onTap = // old method name, backwards-compatible
 PageDots.prototype.onClick = function( event ) {
-  var target = event.target;
+  let target = event.target;
   // only care about dot clicks
   if ( target.nodeName != 'LI' ) {
     return;
   }
 
   this.parent.uiChange();
-  var index = this.dots.indexOf( target );
+  let index = this.dots.indexOf( target );
   this.parent.select( index );
 };
 
@@ -147,7 +145,7 @@ utils.extend( Flickity.defaults, {
 
 Flickity.createMethods.push('_createPageDots');
 
-var proto = Flickity.prototype;
+let proto = Flickity.prototype;
 
 proto._createPageDots = function() {
   if ( !this.options.pageDots ) {

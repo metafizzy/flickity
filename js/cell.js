@@ -12,20 +12,18 @@
     // CommonJS
     module.exports = factory(
         window,
-        require('get-size')
+        require('get-size'),
     );
   } else {
     // browser global
     window.Flickity = window.Flickity || {};
     window.Flickity.Cell = factory(
         window,
-        window.getSize
+        window.getSize,
     );
   }
 
 }( window, function factory( window, getSize ) {
-
-'use strict';
 
 function Cell( elem, parent ) {
   this.element = elem;
@@ -34,7 +32,7 @@ function Cell( elem, parent ) {
   this.create();
 }
 
-var proto = Cell.prototype;
+let proto = Cell.prototype;
 
 proto.create = function() {
   this.element.style.position = 'absolute';
@@ -48,7 +46,7 @@ proto.destroy = function() {
   // reset style
   this.unselect();
   this.element.style.position = '';
-  var side = this.parent.originSide;
+  let side = this.parent.originSide;
   this.element.style[ side ] = '';
   this.element.style.transform = '';
   this.element.removeAttribute('aria-hidden');
@@ -66,16 +64,16 @@ proto.setPosition = function( x ) {
 
 // setDefaultTarget v1 method, backwards compatibility, remove in v3
 proto.updateTarget = proto.setDefaultTarget = function() {
-  var marginProperty = this.parent.originSide == 'left' ? 'marginLeft' : 'marginRight';
+  let marginProperty = this.parent.originSide == 'left' ? 'marginLeft' : 'marginRight';
   this.target = this.x + this.size[ marginProperty ] +
     this.size.width * this.parent.cellAlign;
 };
 
 proto.renderPosition = function( x ) {
   // render position of cell with in slider
-  var sideOffset = this.parent.originSide === 'left' ? 1 : -1;
+  let sideOffset = this.parent.originSide === 'left' ? 1 : -1;
 
-  var adjustedX = this.parent.options.percentPosition ?
+  let adjustedX = this.parent.options.percentPosition ?
     x * sideOffset * ( this.parent.size.innerWidth / this.size.width ) :
     x * sideOffset;
 

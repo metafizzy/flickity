@@ -2,24 +2,22 @@
 
 ( function() {
 
-'use strict';
-
 QUnit.module('Flickity');
 
-var utils = window.fizzyUIUtils;
+let utils = window.fizzyUIUtils;
 
 QUnit.test( 'init', function( assert ) {
 
-  var elem = document.querySelector('#init');
-  var flkty = new Flickity( elem );
+  let elem = document.querySelector('#init');
+  let flkty = new Flickity( elem );
 
-  for ( var prop in Flickity.defaults ) {
+  for ( let prop in Flickity.defaults ) {
     assert.equal( flkty.options[ prop ], Flickity.defaults[ prop ],
         prop + ' option matches default' );
   }
 
   assert.equal( flkty.element, elem, '.element is proper element' );
-  var children = utils.makeArray( flkty.element.children );
+  let children = utils.makeArray( flkty.element.children );
   assert.notEqual( children.indexOf( flkty.viewport ), -1,
       'viewport element is a child element' );
   assert.equal( flkty.viewport.children[0], flkty.slider, 'slider is in viewport' );

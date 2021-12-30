@@ -2,12 +2,10 @@
 
 QUnit.test( 'destroy', function( assert ) {
 
-  'use strict';
+  let elem = document.querySelector('#destroy');
+  let flkty = new Flickity( elem );
 
-  var elem = document.querySelector('#destroy');
-  var flkty = new Flickity( elem );
-
-  var done = assert.async();
+  let done = assert.async();
   // do it async
   setTimeout( function() {
     flkty.destroy();

@@ -1,7 +1,6 @@
 QUnit.test( 'initialIndex', function( assert ) {
-  'use strict';
   // initialIndex number
-  var flkty = new Flickity( '#initial-index', {
+  let flkty = new Flickity( '#initial-index', {
     initialIndex: 3,
   } );
   assert.equal( flkty.selectedIndex, 3, 'initialIndex number' );

@@ -1,12 +1,10 @@
 ( function() {
 
-'use strict';
-
-var utils = window.fizzyUIUtils;
+let utils = window.fizzyUIUtils;
 
 function noop() {}
 
-var fakeDrag = window.fakeDrag = function( flkty, positions ) {
+let fakeDrag = window.fakeDrag = function( flkty, positions ) {
 
   function fakeEvent( type, pageX ) {
     return {
@@ -18,17 +16,17 @@ var fakeDrag = window.fakeDrag = function( flkty, positions ) {
     };
   }
 
-  var hasBeenDown = false;
+  let hasBeenDown = false;
 
   function triggerEvent() {
-    var position = positions.shift();
+    let position = positions.shift();
     // down or move event
     if ( !hasBeenDown ) {
-      var downEvent = fakeEvent( 'mousedown', position );
+      let downEvent = fakeEvent( 'mousedown', position );
       flkty._pointerDown( downEvent, downEvent );
       hasBeenDown = true;
     } else {
-      var moveEvent = fakeEvent( 'mousemove', position );
+      let moveEvent = fakeEvent( 'mousemove', position );
       flkty._pointerMove( moveEvent, moveEvent );
     }
 
@@ -37,7 +35,7 @@ var fakeDrag = window.fakeDrag = function( flkty, positions ) {
       setTimeout( triggerEvent, 40 );
     } else {
       // up event
-      var upEvent = fakeEvent( 'mouseup', position );
+      let upEvent = fakeEvent( 'mouseup', position );
       flkty._pointerUp( upEvent, upEvent );
     }
   }
@@ -45,12 +43,12 @@ var fakeDrag = window.fakeDrag = function( flkty, positions ) {
   triggerEvent();
 };
 
-var dragTests;
+let dragTests;
 // do each drag test one after another
 function getDoNextDragTest( done ) {
   return function doNextDragTest() {
     if ( dragTests.length ) {
-      var dragTest = dragTests.shift();
+      let dragTest = dragTests.shift();
       dragTest();
     } else {
       done();
@@ -60,18 +58,18 @@ function getDoNextDragTest( done ) {
 
 // flickity, dragPositions, index, onSettle, message
 function getFakeDragTest( args ) {
-  var assert = args.assert;
-  var flkty = args.flickity;
-  var msgCell = 'slide[' + args.index + ']';
+  let assert = args.assert;
+  let flkty = args.flickity;
+  let msgCell = 'slide[' + args.index + ']';
 
   return function fakeDragTest() {
-    var selectMsg = ( args.message ? args.message + '. ' : '' ) + 'selected ' + msgCell;
+    let selectMsg = ( args.message ? args.message + '. ' : '' ) + 'selected ' + msgCell;
     flkty.once( 'select', function() {
       assert.equal( flkty.selectedIndex, args.index, selectMsg );
     } );
 
-    var settleMsg = ( args.message ? args.message + '. ' : '' ) + 'settled ' + msgCell;
-    var target = flkty.slides[ args.index ].target;
+    let settleMsg = ( args.message ? args.message + '. ' : '' ) + 'settled ' + msgCell;
+    let target = flkty.slides[ args.index ].target;
     flkty.once( 'settle', function() {
       assert.equal( Math.round( -flkty.x ), Math.round( target ), settleMsg );
       setTimeout( args.onSettle );
@@ -83,11 +81,11 @@ function getFakeDragTest( args ) {
 
 QUnit.test( 'drag', function( assert ) {
   // async test
-  var done = assert.async();
+  let done = assert.async();
 
-  var flkty = new Flickity('#drag');
+  let flkty = new Flickity('#drag');
 
-  var doNextDragTest = getDoNextDragTest( done );
+  let doNextDragTest = getDoNextDragTest( done );
 
   function getDragTest( args ) {
     args = utils.extend( args, {
@@ -144,13 +142,13 @@ QUnit.test( 'drag', function( assert ) {
 
 QUnit.test( 'drag with wrapAround', function( assert ) {
   // async test
-  var done = assert.async();
+  let done = assert.async();
 
-  var flkty = new Flickity( '#drag-wrap-around', {
+  let flkty = new Flickity( '#drag-wrap-around', {
     wrapAround: true,
   } );
 
-  var doNextDragTest = getDoNextDragTest( done );
+  let doNextDragTest = getDoNextDragTest( done );
 
   function getDragTest( args ) {
     args = utils.extend( args, {

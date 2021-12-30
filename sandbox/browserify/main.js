@@ -1,3 +1,3 @@
-var Flickity = require('../../js/index');
+let Flickity = require('../../js/index');
 
 new Flickity('#gallery');

@@ -15,20 +15,18 @@
     module.exports = factory(
         require('ev-emitter'),
         require('fizzy-ui-utils'),
-        require('./flickity')
+        require('./flickity'),
     );
   } else {
     // browser global
     factory(
         window.EvEmitter,
         window.fizzyUIUtils,
-        window.Flickity
+        window.Flickity,
     );
   }
 
 }( window, function factory( EvEmitter, utils, Flickity ) {
-
-'use strict';
 
 // -------------------------- Player -------------------------- //
 
@@ -48,7 +46,7 @@ Player.prototype.play = function() {
     return;
   }
   // do not play if page is hidden, start playing when page is visible
-  var isPageHidden = document.hidden;
+  let isPageHidden = document.hidden;
   if ( isPageHidden ) {
     document.addEventListener( 'visibilitychange', this.onVisibilityPlay );
     return;
@@ -67,10 +65,10 @@ Player.prototype.tick = function() {
     return;
   }
 
-  var time = this.parent.options.autoPlay;
+  let time = this.parent.options.autoPlay;
   // default to 3 seconds
   time = typeof time == 'number' ? time : 3000;
-  var _this = this;
+  let _this = this;
   // HACK: reset ticks if stopped and started within interval
   this.clear();
   this.timeout = setTimeout( function() {
@@ -106,7 +104,7 @@ Player.prototype.unpause = function() {
 
 // pause if page visibility is hidden, unpause if visible
 Player.prototype.visibilityChange = function() {
-  var isPageHidden = document.hidden;
+  let isPageHidden = document.hidden;
   this[ isPageHidden ? 'pause' : 'unpause' ]();
 };
 
@@ -122,7 +120,7 @@ utils.extend( Flickity.defaults, {
 } );
 
 Flickity.createMethods.push('_createPlayer');
-var proto = Flickity.prototype;
+let proto = Flickity.prototype;
 
 proto._createPlayer = function() {
   this.player = new Player( this );

@@ -31,7 +31,7 @@
         require('./page-dots'),
         require('./player'),
         require('./add-remove-cell'),
-        require('./lazyload')
+        require('./lazyload'),
     );
   }
 
