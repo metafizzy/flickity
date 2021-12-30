@@ -6,7 +6,7 @@
     module.exports = factory(
         window,
         require('./core'),
-        require('unipointer'),
+        require('ev-emitter'),
         require('fizzy-ui-utils'),
     );
   } else {
@@ -14,12 +14,12 @@
     factory(
         window,
         window.Flickity,
-        window.Unipointer,
+        window.EvEmitter,
         window.fizzyUIUtils,
     );
   }
 
-}( window, function factory( window, Flickity, Unipointer, utils ) {
+}( window, function factory( window, Flickity, EvEmitter, utils ) {
 
 // -------------------------- PageDots -------------------------- //
 
@@ -28,7 +28,7 @@ function PageDots( parent ) {
   this._create();
 }
 
-PageDots.prototype = Object.create( Unipointer.prototype );
+PageDots.prototype = Object.create( EvEmitter.prototype );
 
 PageDots.prototype._create = function() {
   // create holder element
@@ -38,20 +38,23 @@ PageDots.prototype._create = function() {
   this.dots = [];
   // events
   this.handleClick = this.onClick.bind( this );
-  this.on( 'pointerDown', this.parent.childUIPointerDown.bind( this.parent ) );
+  // TODOv3 resolve childUIPointerDown
+  // this.on( 'pointerDown', this.parent.childUIPointerDown.bind( this.parent ) );
 };
 
 PageDots.prototype.activate = function() {
   this.setDots();
   this.holder.addEventListener( 'click', this.handleClick );
-  this.bindStartEvent( this.holder );
+  // TODOv3 resolve childUIPointerDown
+  // this.bindStartEvent( this.holder );
   // add to DOM
   this.parent.element.appendChild( this.holder );
 };
 
 PageDots.prototype.deactivate = function() {
   this.holder.removeEventListener( 'click', this.handleClick );
-  this.unbindStartEvent( this.holder );
+  // TODOv3 resolve childUIPointerDown
+  // this.unbindStartEvent( this.holder );
   // remove from DOM
   this.parent.element.removeChild( this.holder );
 };

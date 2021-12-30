@@ -6,7 +6,7 @@
     module.exports = factory(
         window,
         require('./core'),
-        require('unipointer'),
+        require('ev-emitter'),
         require('fizzy-ui-utils'),
     );
   } else {
@@ -14,12 +14,12 @@
     factory(
         window,
         window.Flickity,
-        window.Unipointer,
+        window.EvEmitter,
         window.fizzyUIUtils,
     );
   }
 
-}( window, function factory( window, Flickity, Unipointer, utils ) {
+}( window, function factory( window, Flickity, EvEmitter, utils ) {
 
 const svgURI = 'http://www.w3.org/2000/svg';
 
@@ -31,7 +31,7 @@ function PrevNextButton( direction, parent ) {
   this._create();
 }
 
-PrevNextButton.prototype = Object.create( Unipointer.prototype );
+PrevNextButton.prototype = Object.create( EvEmitter.prototype );
 
 PrevNextButton.prototype._create = function() {
   // properties
@@ -55,11 +55,13 @@ PrevNextButton.prototype._create = function() {
   element.appendChild( svg );
   // events
   this.parent.on( 'select', this.update.bind( this ) );
-  this.on( 'pointerDown', this.parent.childUIPointerDown.bind( this.parent ) );
+  // TODOv3 resolve childUIPointerDown
+  // this.on( 'pointerDown', this.parent.childUIPointerDown.bind( this.parent ) );
 };
 
 PrevNextButton.prototype.activate = function() {
-  this.bindStartEvent( this.element );
+  // TODOv3 resolve childUIPointerDown
+  // this.bindStartEvent( this.element );
   this.element.addEventListener( 'click', this );
   // add to DOM
   this.parent.element.appendChild( this.element );
