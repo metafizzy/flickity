@@ -15,6 +15,7 @@ module.exports = {
     QUnit: 'readonly',
   },
   rules: {
+    'prefer-object-spread': 'error',
   },
   ignorePatterns: [ 'bower_components' ],
 };

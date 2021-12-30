@@ -35,7 +35,7 @@ Flickity.createMethods.push('_createDrag');
 // -------------------------- drag prototype -------------------------- //
 
 let proto = Flickity.prototype;
-utils.extend( proto, Unidragger.prototype );
+Object.assign( proto, Unidragger.prototype ); // inherit Unidragger
 proto._touchActionValue = 'pan-y';
 
 // --------------------------  -------------------------- //
@@ -45,6 +45,13 @@ proto._createDrag = function() {
   this.on( 'uiChange', this._uiChangeDrag );
   this.on( 'deactivate', this.onDeactivateDrag );
   this.on( 'cellChange', this.updateDraggable );
+  this.on( 'pointerDown', this.handlePointerDown );
+  this.on( 'pointerUp', this.handlePointerUp );
+  this.on( 'pointerDown', this.handlePointerDone );
+  this.on( 'dragStart', this.handleDragStart );
+  this.on( 'dragMove', this.handleDragMove );
+  this.on( 'dragEnd', this.handleDragEnd );
+  this.on( 'staticClick', this.handleStaticClick );
   // TODO updateDraggable on resize? if groupCells & slides change
 };
 
@@ -73,40 +80,23 @@ proto.updateDraggable = function() {
   }
 };
 
-// backwards compatibility
-proto.bindDrag = function() {
-  this.options.draggable = true;
-  this.updateDraggable();
-};
-
-proto.unbindDrag = function() {
-  this.options.draggable = false;
-  this.updateDraggable();
-};
-
 proto._uiChangeDrag = function() {
   delete this.isFreeScrolling;
 };
 
 // -------------------------- pointer events -------------------------- //
 
-proto.pointerDown = function( event, pointer ) {
+proto.handlePointerDown = function( event ) {
   if ( !this.isDraggable ) {
-    this._pointerDownDefault( event, pointer );
-    return;
-  }
-  let isOkay = this.okayPointerDown( event );
-  if ( !isOkay ) {
+    // proceed for staticClick
+    this.bindActivePointerEvents( event );
     return;
   }
 
   this._pointerDownPreventDefault( event );
   this.pointerDownFocus( event );
   // blur
-  if ( document.activeElement != this.element ) {
-    // do not blur if already focused
-    this.pointerDownBlur();
-  }
+  if ( document.activeElement != this.element ) document.activeElement.blur();
 
   // stop if it was moving
   this.dragX = this.x;
@@ -114,40 +104,20 @@ proto.pointerDown = function( event, pointer ) {
   // track scrolling
   this.pointerDownScroll = getScrollPosition();
   window.addEventListener( 'scroll', this );
-
-  this._pointerDownDefault( event, pointer );
+  this.bindActivePointerEvents( event );
 };
 
-// default pointerDown logic, used for staticClick
-proto._pointerDownDefault = function( event, pointer ) {
-  // track start event position
-  // Safari 9 overrides pageX and pageY. These values needs to be copied. #779
-  this.pointerDownPointer = {
-    pageX: pointer.pageX,
-    pageY: pointer.pageY,
-  };
-  // bind move and end events
-  this._bindPostStartEvents( event );
-  this.dispatchEvent( 'pointerDown', event, [ pointer ] );
-};
-
-let focusNodes = {
-  INPUT: true,
-  TEXTAREA: true,
-  SELECT: true,
-};
+const focusNodes = [ 'INPUT', 'TEXTAREA', 'SELECT' ];
 
 proto.pointerDownFocus = function( event ) {
-  let isFocusNode = focusNodes[ event.target.nodeName ];
-  if ( !isFocusNode ) {
-    this.focus();
-  }
+  let isFocusNode = focusNodes.includes( event.target.nodeName );
+  if ( !isFocusNode ) this.focus();
 };
 
 proto._pointerDownPreventDefault = function( event ) {
   let isTouchStart = event.type == 'touchstart';
   let isTouchPointer = event.pointerType == 'touch';
-  let isFocusNode = focusNodes[ event.target.nodeName ];
+  let isFocusNode = focusNodes.includes( event.target.nodeName );
   if ( !isTouchStart && !isTouchPointer && !isFocusNode ) {
     event.preventDefault();
   }
@@ -161,40 +131,29 @@ proto.hasDragStarted = function( moveVector ) {
 
 // ----- up ----- //
 
-proto.pointerUp = function( event, pointer ) {
+proto.handlePointerUp = function() {
   delete this.isTouchScrolling;
   this.viewport.classList.remove('is-pointer-down');
-  this.dispatchEvent( 'pointerUp', event, [ pointer ] );
-  this._dragPointerUp( event, pointer );
 };
 
-proto.pointerDone = function() {
+proto.handlePointerDone = function() {
   window.removeEventListener( 'scroll', this );
   delete this.pointerDownScroll;
 };
 
 // -------------------------- dragging -------------------------- //
 
-proto.dragStart = function( event, pointer ) {
-  if ( !this.isDraggable ) {
-    return;
-  }
+proto.handleDragStart = function() {
+  if ( !this.isDraggable ) return;
+
   this.dragStartPosition = this.x;
   this.startAnimation();
   window.removeEventListener( 'scroll', this );
-  this.dispatchEvent( 'dragStart', event, [ pointer ] );
 };
 
-proto.pointerMove = function( event, pointer ) {
-  let moveVector = this._dragPointerMove( event, pointer );
-  this.dispatchEvent( 'pointerMove', event, [ pointer, moveVector ] );
-  this._dragMove( event, pointer, moveVector );
-};
+proto.handleDragMove = function( event, pointer, moveVector ) {
+  if ( !this.isDraggable ) return;
 
-proto.dragMove = function( event, pointer, moveVector ) {
-  if ( !this.isDraggable ) {
-    return;
-  }
   event.preventDefault();
 
   this.previousDragX = this.dragX;
@@ -217,16 +176,12 @@ proto.dragMove = function( event, pointer, moveVector ) {
   this.dragX = dragX;
 
   this.dragMoveTime = new Date();
-  this.dispatchEvent( 'dragMove', event, [ pointer, moveVector ] );
 };
 
-proto.dragEnd = function( event, pointer ) {
-  if ( !this.isDraggable ) {
-    return;
-  }
-  if ( this.options.freeScroll ) {
-    this.isFreeScrolling = true;
-  }
+proto.handleDragEnd = function() {
+  if ( !this.isDraggable ) return;
+
+  if ( this.options.freeScroll ) this.isFreeScrolling = true;
   // set selectedIndex based on where flick will end up
   let index = this.dragEndRestingSelect();
 
@@ -248,7 +203,6 @@ proto.dragEnd = function( event, pointer ) {
   this.isDragSelect = this.options.wrapAround;
   this.select( index );
   delete this.isDragSelect;
-  this.dispatchEvent( 'dragEnd', event, [ pointer ] );
 };
 
 proto.dragEndRestingSelect = function() {
@@ -341,12 +295,13 @@ proto.dragEndBoostSelect = function() {
 
 // ----- staticClick ----- //
 
-proto.staticClick = function( event, pointer ) {
+proto.handleStaticClick = function( /* event */ ) {
+  // TODOv3 dispatch cellElem and cellIndex ???
   // get clickedCell, if cell was clicked
-  let clickedCell = this.getParentCell( event.target );
-  let cellElem = clickedCell && clickedCell.element;
-  let cellIndex = clickedCell && this.cells.indexOf( clickedCell );
-  this.dispatchEvent( 'staticClick', event, [ pointer, cellElem, cellIndex ] );
+  // let clickedCell = this.getParentCell( event.target );
+  // let cellElem = clickedCell && clickedCell.element;
+  // let cellIndex = clickedCell && this.cells.indexOf( clickedCell );
+  // this.dispatchEvent( 'staticClick', event, [ pointer, cellElem, cellIndex ] );
 };
 
 // ----- scroll ----- //
@@ -357,7 +312,7 @@ proto.onscroll = function() {
   let scrollMoveY = this.pointerDownScroll.y - scroll.y;
   // cancel click/tap if scroll is too much
   if ( Math.abs( scrollMoveX ) > 3 || Math.abs( scrollMoveY ) > 3 ) {
-    this._pointerDone();
+    this.pointerDone();
   }
 };
 
