@@ -1,14 +1,7 @@
 // animate
 ( function( window, factory ) {
   // universal module definition
-  if ( typeof define == 'function' && define.amd ) {
-    // AMD
-    define( [
-      'fizzy-ui-utils/utils',
-    ], function( utils ) {
-      return factory( window, utils );
-    } );
-  } else if ( typeof module == 'object' && module.exports ) {
+  if ( typeof module == 'object' && module.exports ) {
     // CommonJS
     module.exports = factory(
         window,

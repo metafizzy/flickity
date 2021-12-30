@@ -13,7 +13,6 @@ module.exports = {
   globals: {
     Flickity: 'readonly',
     QUnit: 'readonly',
-    define: 'readonly',
   },
   rules: {
   },

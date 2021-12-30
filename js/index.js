@@ -11,18 +11,7 @@
 
 ( function( window, factory ) {
   // universal module definition
-  if ( typeof define == 'function' && define.amd ) {
-    // AMD
-    define( [
-      './flickity',
-      './drag',
-      './prev-next-button',
-      './page-dots',
-      './player',
-      './add-remove-cell',
-      './lazyload',
-    ], factory );
-  } else if ( typeof module == 'object' && module.exports ) {
+  if ( typeof module == 'object' && module.exports ) {
     // CommonJS
     module.exports = factory(
         require('./flickity'),

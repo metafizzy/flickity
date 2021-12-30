@@ -1,16 +1,7 @@
 // drag
 ( function( window, factory ) {
   // universal module definition
-  if ( typeof define == 'function' && define.amd ) {
-    // AMD
-    define( [
-      './flickity',
-      'unidragger/unidragger',
-      'fizzy-ui-utils/utils',
-    ], function( Flickity, Unidragger, utils ) {
-      return factory( window, Flickity, Unidragger, utils );
-    } );
-  } else if ( typeof module == 'object' && module.exports ) {
+  if ( typeof module == 'object' && module.exports ) {
     // CommonJS
     module.exports = factory(
         window,

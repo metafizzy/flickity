@@ -1,14 +1,7 @@
 // Flickity.Cell
 ( function( window, factory ) {
   // universal module definition
-  if ( typeof define == 'function' && define.amd ) {
-    // AMD
-    define( [
-      'get-size/get-size',
-    ], function( getSize ) {
-      return factory( window, getSize );
-    } );
-  } else if ( typeof module == 'object' && module.exports ) {
+  if ( typeof module == 'object' && module.exports ) {
     // CommonJS
     module.exports = factory(
         window,

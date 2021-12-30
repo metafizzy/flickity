@@ -2,19 +2,7 @@
 /* eslint-disable max-params */
 ( function( window, factory ) {
   // universal module definition
-  if ( typeof define == 'function' && define.amd ) {
-    // AMD
-    define( [
-      'ev-emitter/ev-emitter',
-      'get-size/get-size',
-      'fizzy-ui-utils/utils',
-      './cell',
-      './slide',
-      './animate',
-    ], function( EvEmitter, getSize, utils, Cell, Slide, animatePrototype ) {
-      return factory( window, EvEmitter, getSize, utils, Cell, Slide, animatePrototype );
-    } );
-  } else if ( typeof module == 'object' && module.exports ) {
+  if ( typeof module == 'object' && module.exports ) {
     // CommonJS
     module.exports = factory(
         window,

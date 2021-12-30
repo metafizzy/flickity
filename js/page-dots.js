@@ -1,16 +1,7 @@
 // page dots
 ( function( window, factory ) {
   // universal module definition
-  if ( typeof define == 'function' && define.amd ) {
-    // AMD
-    define( [
-      './flickity',
-      'unipointer/unipointer',
-      'fizzy-ui-utils/utils',
-    ], function( Flickity, Unipointer, utils ) {
-      return factory( window, Flickity, Unipointer, utils );
-    } );
-  } else if ( typeof module == 'object' && module.exports ) {
+  if ( typeof module == 'object' && module.exports ) {
     // CommonJS
     module.exports = factory(
         window,

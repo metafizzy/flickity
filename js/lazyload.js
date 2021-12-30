@@ -1,15 +1,7 @@
 // lazyload
 ( function( window, factory ) {
   // universal module definition
-  if ( typeof define == 'function' && define.amd ) {
-    // AMD
-    define( [
-      './flickity',
-      'fizzy-ui-utils/utils',
-    ], function( Flickity, utils ) {
-      return factory( window, Flickity, utils );
-    } );
-  } else if ( typeof module == 'object' && module.exports ) {
+  if ( typeof module == 'object' && module.exports ) {
     // CommonJS
     module.exports = factory(
         window,

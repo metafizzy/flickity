@@ -1,16 +1,7 @@
 // player & autoPlay
 ( function( window, factory ) {
   // universal module definition
-  if ( typeof define == 'function' && define.amd ) {
-    // AMD
-    define( [
-      'ev-emitter/ev-emitter',
-      'fizzy-ui-utils/utils',
-      './flickity',
-    ], function( EvEmitter, utils, Flickity ) {
-      return factory( EvEmitter, utils, Flickity );
-    } );
-  } else if ( typeof module == 'object' && module.exports ) {
+  if ( typeof module == 'object' && module.exports ) {
     // CommonJS
     module.exports = factory(
         require('ev-emitter'),
