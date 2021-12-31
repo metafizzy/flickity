@@ -1,5 +1,3 @@
-/* globals matchesSelector */
-
 QUnit.test( 'cellSelector', function( assert ) {
 
   let elem = document.querySelector('#cell-selector');
@@ -11,22 +9,18 @@ QUnit.test( 'cellSelector', function( assert ) {
   } );
 
   let cellsMatchSelector = true;
-  let i;
-  for ( i = 0; i < flkty.cells.length; i++ ) {
-    let cell = flkty.cells[i];
-    let isMatch = matchesSelector( cell.element, flkty.options.cellSelector );
+  for ( let cell of flkty.cells ) {
+    let isMatch = cell.element.matches( flkty.options.cellSelector );
     cellsMatchSelector = cellsMatchSelector && isMatch;
   }
 
   // getCellElements()
   let cellElems = flkty.getCellElements();
   let queriedCellElems = elem.querySelectorAll( flkty.options.cellSelector );
-  assert.equal( cellElems.length, flkty.cells.length,
-      'getCellElements returns corrent number of elements' );
-  for ( i = 0; i < cellElems.length; i++ ) {
-    assert.equal( cellElems[i], queriedCellElems[i],
+  cellElems.forEach( ( cellElem, i ) => {
+    assert.equal( cellElem, queriedCellElems[i],
         'cell element same as queried cell element' );
-  }
+  } );
 
   assert.ok( cellsMatchSelector, 'all cell elements match cellSelector' );
 

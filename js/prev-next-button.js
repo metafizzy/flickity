@@ -71,7 +71,8 @@ PrevNextButton.prototype.deactivate = function() {
   // remove from DOM
   this.parent.element.removeChild( this.element );
   // click events
-  this.unbindStartEvent( this.element );
+  // TODOv3 resolve childUIPointerDown
+  // this.unbindStartEvent( this.element );
   this.element.removeEventListener( 'click', this );
 };
 

@@ -1,5 +1,3 @@
-/* globals matchesSelector */
-
 ( function() {
 
 QUnit.module('Flickity');
@@ -24,8 +22,7 @@ QUnit.test( 'init', function( assert ) {
   assert.equal( flkty.viewport.style.height, '100px', 'viewport height set' );
 
   assert.ok( flkty.isActive, 'isActive' );
-  assert.ok( matchesSelector( elem, '.flickity-enabled' ),
-      'flickity-enabled class added' );
+  assert.ok( elem.matches('.flickity-enabled'), 'flickity-enabled class added' );
 
   assert.equal( flkty.cells.length, 6, 'has 6 cells' );
   assert.equal( flkty.cells[0].element.style.left, '0px', 'first cell left: 0px' );
