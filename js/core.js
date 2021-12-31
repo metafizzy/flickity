@@ -666,8 +666,8 @@ proto.getParentCell = function( elem ) {
   if ( cell ) return cell;
 
   // try to get parent cell elem
-  elem = utils.getParent( elem, '.flickity-slider > *' );
-  return this.getCell( elem );
+  let closest = elem.closest('.flickity-slider > *');
+  return this.getCell( closest );
 };
 
 /**

@@ -189,29 +189,17 @@ function makeCell() {
   return cell;
 }
 
-function getParent( elem, selector ) {
-  while ( elem != document.body ) {
-    elem = elem.parentNode;
-    if ( matchesSelector( elem, selector ) ) {
-      return elem;
-    }
-  }
-}
-
 function onContainerClick( event ) {
-  if ( event.target.className != 'remove-button' ) {
-    return;
-  }
+  if ( event.target.className != 'remove-button' ) return;
 
-  //
-  var cellElement = getParent( event.target, '.cell' );
-  var container = getParent( event.target, '.container' );
+  var cellElement = event.target.closest('.cell');;
+  var container = event.target.closest('.container');
   var flkty = Flickity.data( container );
   flkty.remove( cellElement );
 }
 
 function getParentFlickity( elem ) {
-  var demo = getParent( elem, '.demo' );
+  var demo = elem.closest('.demo');
   return Flickity.data( demo.querySelector('.container') );
 }
 
