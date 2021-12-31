@@ -88,7 +88,7 @@ QUnit.test( 'drag', function( assert ) {
   let doNextDragTest = getDoNextDragTest( done );
 
   function getDragTest( args ) {
-    args = utils.extend( args, {
+    args = Object.assign( args, {
       assert: assert,
       flickity: flkty,
       onSettle: doNextDragTest,
@@ -151,7 +151,7 @@ QUnit.test( 'drag with wrapAround', function( assert ) {
   let doNextDragTest = getDoNextDragTest( done );
 
   function getDragTest( args ) {
-    args = utils.extend( args, {
+    args = Object.assign( args, {
       assert: assert,
       flickity: flkty,
       onSettle: doNextDragTest,

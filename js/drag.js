@@ -23,7 +23,7 @@
 
 // ----- defaults ----- //
 
-utils.extend( Flickity.defaults, {
+Object.assign( Flickity.defaults, {
   draggable: '>1',
   dragThreshold: 3,
 } );

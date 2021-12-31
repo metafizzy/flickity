@@ -106,7 +106,7 @@ Player.prototype.visibilityPlay = function() {
 
 // -------------------------- Flickity -------------------------- //
 
-utils.extend( Flickity.defaults, {
+Object.assign( Flickity.defaults, {
   pauseAutoPlayOnHover: true,
 } );
 

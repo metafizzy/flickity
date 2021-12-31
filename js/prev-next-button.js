@@ -164,7 +164,7 @@ PrevNextButton.prototype.destroy = function() {
 
 // -------------------------- Flickity prototype -------------------------- //
 
-utils.extend( Flickity.defaults, {
+Object.assign( Flickity.defaults, {
   prevNextButtons: true,
   arrowShape: {
     x0: 10,

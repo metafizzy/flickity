@@ -73,7 +73,7 @@ function Flickity( element, options ) {
     this.$element = jQuery( this.element );
   }
   // options
-  this.options = utils.extend( {}, this.constructor.defaults );
+  this.options = { ...this.constructor.defaults };
   this.option( options );
 
   // kick things off
@@ -103,7 +103,7 @@ Flickity.createMethods = [];
 
 let proto = Flickity.prototype;
 // inherit EventEmitter
-utils.extend( proto, EvEmitter.prototype );
+Object.assign( proto, EvEmitter.prototype );
 
 proto._create = function() {
   // add id for Flickity.data
@@ -150,7 +150,7 @@ proto._create = function() {
  * @param {Object} opts - options to extend
  */
 proto.option = function( opts ) {
-  utils.extend( this.options, opts );
+  Object.assign( this.options, opts );
 };
 
 proto.activate = function() {
@@ -863,7 +863,7 @@ proto.destroy = function() {
 
 // -------------------------- prototype -------------------------- //
 
-utils.extend( proto, animatePrototype );
+Object.assign( proto, animatePrototype );
 
 // -------------------------- extras -------------------------- //
 

@@ -133,7 +133,7 @@ Flickity.PageDots = PageDots;
 
 // -------------------------- Flickity -------------------------- //
 
-utils.extend( Flickity.defaults, {
+Object.assign( Flickity.defaults, {
   pageDots: true,
 } );
 
