@@ -22,9 +22,7 @@
 // append cells to a document fragment
 function getCellsFragment( cells ) {
   let fragment = document.createDocumentFragment();
-  cells.forEach( function( cell ) {
-    fragment.appendChild( cell.element );
-  } );
+  cells.forEach( ( cell ) => fragment.appendChild( cell.element ) );
   return fragment;
 }
 
@@ -92,12 +90,12 @@ proto.remove = function( elems ) {
 
   let minCellIndex = this.cells.length - 1;
   // remove cells from collection & DOM
-  cells.forEach( function( cell ) {
+  cells.forEach( ( cell ) => {
     cell.remove();
     let index = this.cells.indexOf( cell );
     minCellIndex = Math.min( index, minCellIndex );
     utils.removeFrom( this.cells, cell );
-  }, this );
+  } );
 
   this.cellChange( minCellIndex, true );
 };

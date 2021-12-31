@@ -7,7 +7,6 @@
         window,
         require('./core'),
         require('ev-emitter'),
-        require('fizzy-ui-utils'),
     );
   } else {
     // browser global
@@ -15,11 +14,10 @@
         window,
         window.Flickity,
         window.EvEmitter,
-        window.fizzyUIUtils,
     );
   }
 
-}( window, function factory( window, Flickity, EvEmitter, utils ) {
+}( window, function factory( window, Flickity, EvEmitter ) {
 
 // -------------------------- PageDots -------------------------- //
 
@@ -91,9 +89,7 @@ PageDots.prototype.removeDots = function( count ) {
   // remove from this.dots collection
   let removeDots = this.dots.splice( this.dots.length - count, count );
   // remove from DOM
-  removeDots.forEach( function( dot ) {
-    this.holder.removeChild( dot );
-  }, this );
+  removeDots.forEach( ( dot ) => this.holder.removeChild( dot ) );
 };
 
 PageDots.prototype.updateSelected = function() {

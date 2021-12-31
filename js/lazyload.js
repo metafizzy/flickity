@@ -36,14 +36,12 @@ proto.lazyLoad = function() {
   let cellElems = this.getAdjacentCellElements( adjCount );
   // get lazy images in those cells
   let lazyImages = [];
-  cellElems.forEach( function( cellElem ) {
+  cellElems.forEach( ( cellElem ) => {
     let lazyCellImages = getCellLazyImages( cellElem );
     lazyImages = lazyImages.concat( lazyCellImages );
   } );
   // load lazy images
-  lazyImages.forEach( function( img ) {
-    new LazyLoader( img, this );
-  }, this );
+  lazyImages.forEach( ( img ) => new LazyLoader( img, this ) );
 };
 
 function getCellLazyImages( cellElem ) {

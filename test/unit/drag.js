@@ -1,7 +1,5 @@
 ( function() {
 
-let utils = window.fizzyUIUtils;
-
 function noop() {}
 
 let fakeDrag = window.fakeDrag = function( flkty, positions ) {

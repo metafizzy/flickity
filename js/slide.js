@@ -47,21 +47,15 @@ proto.getLastCell = function() {
 };
 
 proto.select = function() {
-  this.cells.forEach( function( cell ) {
-    cell.select();
-  } );
+  this.cells.forEach( ( cell ) => cell.select() );
 };
 
 proto.unselect = function() {
-  this.cells.forEach( function( cell ) {
-    cell.unselect();
-  } );
+  this.cells.forEach( ( cell ) => cell.unselect() );
 };
 
 proto.getCellElements = function() {
-  return this.cells.map( function( cell ) {
-    return cell.element;
-  } );
+  return this.cells.map( ( cell ) => cell.element );
 };
 
 return Slide;

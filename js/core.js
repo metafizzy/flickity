@@ -133,9 +133,7 @@ proto._create = function() {
     this.on( eventName, listener );
   }
 
-  Flickity.createMethods.forEach( function( method ) {
-    this[ method ]();
-  }, this );
+  Flickity.createMethods.forEach( ( method ) => this[ method ]() );
 
   if ( this.options.watchCSS ) {
     this.watchCSS();
@@ -439,7 +437,7 @@ proto._containSlides = function() {
   let beginBound = this.cursorPosition + this.cells[0].size[ beginMargin ];
   let endBound = contentWidth - this.size.innerWidth * ( 1 - this.cellAlign );
   // contain each cell target
-  this.slides.forEach( function( slide ) {
+  this.slides.forEach( ( slide ) => {
     if ( isContentSmaller ) {
       // all cells fit inside gallery
       slide.target = contentWidth * this.cellAlign;
@@ -448,7 +446,7 @@ proto._containSlides = function() {
       slide.target = Math.max( slide.target, beginBound );
       slide.target = Math.min( slide.target, endBound );
     }
-  }, this );
+  } );
 };
 
 // -----  ----- //
@@ -834,9 +832,7 @@ proto.deactivate = function() {
   this.element.classList.remove('flickity-rtl');
   this.unselectSelectedSlide();
   // destroy cells
-  this.cells.forEach( function( cell ) {
-    cell.destroy();
-  } );
+  this.cells.forEach( ( cell ) => cell.destroy() );
   this.element.removeChild( this.viewport );
   // move child elements back into element
   moveElements( this.slider.children, this.element );

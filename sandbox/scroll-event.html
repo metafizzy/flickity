@@ -252,7 +252,7 @@ window.onload = function() {
 var imgs = document.querySelectorAll('.image-carousel img');
 
 imgFlkty.on( 'scroll', function( progress ) {
-  imgFlkty.slides.forEach( function( slide, i ) {
+  imgFlkty.slides.forEach( ( slide, i ) => {
     var img = imgs[i];
     var x = ( slide.target + imgFlkty.x ) * -0.333;
     img.style.transform = 'translateX( ' + x  + 'px)';
