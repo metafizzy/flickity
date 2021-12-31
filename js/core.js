@@ -256,13 +256,12 @@ proto._positionCells = function( index ) {
     let startCell = this.cells[ index - 1 ];
     cellX = startCell.x + startCell.size.outerWidth;
   }
-  let len = this.cells.length;
-  for ( let i = index; i < len; i++ ) {
-    let cell = this.cells[i];
+
+  this.cells.slice( index ).forEach( ( cell ) => {
     cell.setPosition( cellX );
     cellX += cell.size.outerWidth;
     this.maxCellHeight = Math.max( cell.size.outerHeight, this.maxCellHeight );
-  }
+  } );
   // keep track of cellX for wrap-around
   this.slideableWidth = cellX;
   // slides
@@ -270,7 +269,8 @@ proto._positionCells = function( index ) {
   // contain slides target
   this._containSlides();
   // update slidesWidth
-  this.slidesWidth = len ? this.getLastSlide().target - this.slides[0].target : 0;
+  this.slidesWidth = this.cells.length ?
+    this.getLastSlide().target - this.slides[0].target : 0;
 };
 
 /**
@@ -278,18 +278,14 @@ proto._positionCells = function( index ) {
  * @param {Array} cells - cells to size
  */
 proto._sizeCells = function( cells ) {
-  cells.forEach( function( cell ) {
-    cell.getSize();
-  } );
+  cells.forEach( ( cell ) => cell.getSize() );
 };
 
 // --------------------------  -------------------------- //
 
 proto.updateSlides = function() {
   this.slides = [];
-  if ( !this.cells.length ) {
-    return;
-  }
+  if ( !this.cells.length ) return;
 
   let slide = new Slide( this );
   this.slides.push( slide );
@@ -298,7 +294,7 @@ proto.updateSlides = function() {
 
   let canCellFit = this._getCanCellFit();
 
-  this.cells.forEach( function( cell, i ) {
+  this.cells.forEach( ( cell, i ) => {
     // just add cell if first cell in slide
     if ( !slide.cells.length ) {
       slide.addCell( cell );
@@ -318,7 +314,7 @@ proto.updateSlides = function() {
       this.slides.push( slide );
       slide.addCell( cell );
     }
-  }, this );
+  } );
   // last slide
   slide.updateTarget();
   // update .selectedSlide
@@ -615,23 +611,16 @@ proto.selectInitialIndex = function() {
 proto.selectCell = function( value, isWrap, isInstant ) {
   // get cell
   let cell = this.queryCell( value );
-  if ( !cell ) {
-    return;
-  }
+  if ( !cell ) return;
 
   let index = this.getCellSlideIndex( cell );
   this.select( index, isWrap, isInstant );
 };
 
 proto.getCellSlideIndex = function( cell ) {
-  // get index of slides that has cell
-  for ( let i = 0; i < this.slides.length; i++ ) {
-    let slide = this.slides[i];
-    let index = slide.cells.indexOf( cell );
-    if ( index != -1 ) {
-      return i;
-    }
-  }
+  // get index of slide that has cell
+  let cellSlide = this.slides.filter( ( slide ) => slide.cells.includes( cell ) )[0];
+  return this.slides.indexOf( cellSlide );
 };
 
 // -------------------------- get cells -------------------------- //
@@ -643,11 +632,8 @@ proto.getCellSlideIndex = function( cell ) {
  */
 proto.getCell = function( elem ) {
   // loop through cells to get the one that matches
-  for ( let i = 0; i < this.cells.length; i++ ) {
-    let cell = this.cells[i];
-    if ( cell.element == elem ) {
-      return cell;
-    }
+  for ( let cell of this.cells ) {
+    if ( cell.element == elem ) return cell;
   }
 };
 
@@ -658,14 +644,7 @@ proto.getCell = function( elem ) {
  */
 proto.getCells = function( elems ) {
   elems = utils.makeArray( elems );
-  let cells = [];
-  elems.forEach( function( elem ) {
-    let cell = this.getCell( elem );
-    if ( cell ) {
-      cells.push( cell );
-    }
-  }, this );
-  return cells;
+  return elems.map( ( elem ) => this.getCell( elem ) ).filter( Boolean );
 };
 
 /**
@@ -673,9 +652,7 @@ proto.getCells = function( elems ) {
  * @returns {Array} cellElems
  */
 proto.getCellElements = function() {
-  return this.cells.map( function( cell ) {
-    return cell.element;
-  } );
+  return this.cells.map( ( cell ) => cell.element );
 };
 
 /**
@@ -686,9 +663,8 @@ proto.getCellElements = function() {
 proto.getParentCell = function( elem ) {
   // first check if elem is cell
   let cell = this.getCell( elem );
-  if ( cell ) {
-    return cell;
-  }
+  if ( cell ) return cell;
+
   // try to get parent cell elem
   elem = utils.getParent( elem, '.flickity-slider > *' );
   return this.getCell( elem );
@@ -732,11 +708,9 @@ proto.queryCell = function( selector ) {
     // use number as index
     return this.cells[ selector ];
   }
-  if ( typeof selector == 'string' ) {
-    // do not select invalid selectors from hash: #123, #/. #791
-    if ( selector.match( /^[#.]?[\d/]/ ) ) {
-      return;
-    }
+  // do not select invalid selectors from hash: #123, #/. #791
+  let isSelectorString = typeof selector == 'string' && !selector.match( /^[#.]?[\d/]/ );
+  if ( isSelectorString ) {
     // use string as selector, get element
     selector = this.element.querySelector( selector );
   }

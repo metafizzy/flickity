@@ -130,21 +130,17 @@ proto.shiftWrapCells = function( x ) {
 };
 
 proto._shiftCells = function( cells, gap, shift ) {
-  for ( let i = 0; i < cells.length; i++ ) {
-    let cell = cells[i];
+  cells.forEach( ( cell ) => {
     let cellShift = gap > 0 ? shift : 0;
     cell.wrapShift( cellShift );
     gap -= cell.size.outerWidth;
-  }
+  } );
 };
 
 proto._unshiftCells = function( cells ) {
-  if ( !cells || !cells.length ) {
-    return;
-  }
-  for ( let i = 0; i < cells.length; i++ ) {
-    cells[i].wrapShift( 0 );
-  }
+  if ( !cells || !cells.length ) return;
+
+  cells.forEach( ( cell ) => cell.wrapShift( 0 ) );
 };
 
 // -------------------------- physics -------------------------- //

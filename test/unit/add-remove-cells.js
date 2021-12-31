@@ -57,13 +57,12 @@ QUnit.test( 'add/remove cells', function( assert ) {
 
   function checkCellPositions() {
     let isGap = false;
-    for ( let i = 0; i < flkty.cells.length; i++ ) {
-      let cell = flkty.cells[i];
+    flkty.cells.forEach( ( cell, i ) => {
       if ( !isPositionApprox( cell.element.style.transform, i * 100 ) ) {
         assert.ok( false, 'gap in cell position ' + i + ' after removal' );
         isGap = true;
       }
-    }
+    } );
     assert.ok( !isGap, 'no gaps in cell positions' );
   }
 

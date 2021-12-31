@@ -15,10 +15,7 @@ QUnit.test( 'pageDots', function( assert ) {
   function getSelectedDotIndex() {
     let selectedDot = dotsHolder.querySelector('.is-selected');
     for ( let i = 0; i < dotsElems.length; i++ ) {
-      let dotElem = dotsElems[i];
-      if ( dotElem == selectedDot ) {
-        return i;
-      }
+      if ( dotsElems[i] == selectedDot ) return i;
     }
     return -1;
   }
