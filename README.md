@@ -49,6 +49,7 @@ If you are creating an open source application under a license compatible with t
 
 Flickity works with a container element and a set of child cell elements
 
+HTML
 ``` html
 <div class="carousel">
   <div class="carousel-cell">...</div>
@@ -57,6 +58,13 @@ Flickity works with a container element and a set of child cell elements
   ...
 </div>
 ```
+
+JS
+```js
+new Flickity('carousel', { cellSelector: 'carousel-cell' })
+```
+
+**Note**: the `cellSelector` param is required, but it does _not_ have a default, so you must set it in order for Flickity to find your cells!
 
 ### Options
 
