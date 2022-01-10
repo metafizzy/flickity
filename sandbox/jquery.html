@@ -60,7 +60,7 @@ $( function() {
   // });
 
   $gallery1.on( 'cellSelect.flickity', function( event ) {
-    console.log('selected', event.type, 'ns:' + event.namespace, flkty.selectedIndex );
+    console.log('selected', event.type, `ns:${event.namespace}`, flkty.selectedIndex );
   });
 
   $gallery1.on( 'settle.flickity', function( event ) {

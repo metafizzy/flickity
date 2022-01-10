@@ -12,7 +12,7 @@ QUnit.test( 'lazyload srcset', function( assert ) {
     loadCount++;
 
     assert.equal( event.type, 'load', 'event.type == load' );
-    assert.ok( event.target.complete, 'img ' + loadCount + ' is complete' );
+    assert.ok( event.target.complete, `img ${loadCount} is complete` );
     assert.ok( cellElem, 'cellElement argument there' );
     let srcset = event.target.getAttribute('srcset');
     assert.ok( srcset, 'srcset attribute set' );

@@ -58,15 +58,15 @@ function getDoNextDragTest( done ) {
 function getFakeDragTest( args ) {
   let assert = args.assert;
   let flkty = args.flickity;
-  let msgCell = 'slide[' + args.index + ']';
+  let msgCell = `'slide[${args.index}]'`;
 
   return function fakeDragTest() {
-    let selectMsg = ( args.message ? args.message + '. ' : '' ) + 'selected ' + msgCell;
+    let selectMsg = `${args.message ? args.message + '. ' : ''} selected ${msgCell}`;
     flkty.once( 'select', function() {
       assert.equal( flkty.selectedIndex, args.index, selectMsg );
     } );
 
-    let settleMsg = ( args.message ? args.message + '. ' : '' ) + 'settled ' + msgCell;
+    let settleMsg = `${args.message ? args.message + '. ' : ''} settled ${msgCell}`;
     let target = flkty.slides[ args.index ].target;
     flkty.once( 'settle', function() {
       assert.equal( Math.round( -flkty.x ), Math.round( target ), settleMsg );

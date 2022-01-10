@@ -55,9 +55,7 @@ let instances = {};
 function Flickity( element, options ) {
   let queryElement = utils.getQueryElement( element );
   if ( !queryElement ) {
-    if ( console ) {
-      console.error( 'Bad element for Flickity: ' + ( queryElement || element ) );
-    }
+    if ( console ) console.error(`Bad element for Flickity: ${queryElement || element}`);
     return;
   }
   this.element = queryElement;

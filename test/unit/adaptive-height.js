@@ -8,7 +8,7 @@ QUnit.test( 'adaptiveHeight', function( assert ) {
 
   function checkSelectHeight( index, height ) {
     flkty.select( index, false, true );
-    assert.equal( flkty.viewport.style.height, height + 'px', 'slide ' + index );
+    assert.equal( flkty.viewport.style.height, `${height}px`, `slide ${index}` );
   }
 
   checkSelectHeight( 0, 200 );

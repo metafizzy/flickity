@@ -76,7 +76,7 @@ PageDots.prototype.addDots = function( count ) {
   for ( let i = length; i < max; i++ ) {
     let dot = document.createElement('li');
     dot.className = 'dot';
-    dot.setAttribute( 'aria-label', 'Page dot ' + ( i + 1 ) );
+    dot.setAttribute( 'aria-label', `Page dot ${i + 1}` );
     fragment.appendChild( dot );
     newDots.push( dot );
   }

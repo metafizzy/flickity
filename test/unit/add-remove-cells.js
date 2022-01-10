@@ -25,7 +25,7 @@ QUnit.test( 'add/remove cells', function( assert ) {
     assert.equal( flkty.cells[ index ].element, cellElem,
         message + ' element added as cell' );
     assert.ok( isPositionApprox( cellElem.style.transform, index * 100 ),
-        ' element positioned ' + ( index * 100 ) );
+        ` element positioned ${index * 100}` );
   }
 
   // prepend cell element
@@ -59,7 +59,7 @@ QUnit.test( 'add/remove cells', function( assert ) {
     let isGap = false;
     flkty.cells.forEach( ( cell, i ) => {
       if ( !isPositionApprox( cell.element.style.transform, i * 100 ) ) {
-        assert.ok( false, 'gap in cell position ' + i + ' after removal' );
+        assert.ok( false, `gap in cell position ${i} after removal` );
         isGap = true;
       }
     } );

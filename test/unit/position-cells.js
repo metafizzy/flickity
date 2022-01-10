@@ -18,8 +18,8 @@ function checkCellPositions( flkty, expecteds ) {
     let position = transform.replace( 'translateX(', '' ).replace( ')', '' );
     isOK = isPositionApprox( position, expected );
     if ( !isOK ) {
-      console.error( 'wrong cell position, index: ' + i + '. ' +
-        'expected: ' + expected + '. position: ' + position );
+      console.error(`wrong cell position, index: ${i}.
+        expected: ${expected}. position: ${position}`);
       break;
     }
   }

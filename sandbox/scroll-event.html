@@ -255,7 +255,7 @@ imgFlkty.on( 'scroll', function( progress ) {
   imgFlkty.slides.forEach( ( slide, i ) => {
     var img = imgs[i];
     var x = ( slide.target + imgFlkty.x ) * -0.333;
-    img.style.transform = 'translateX( ' + x  + 'px)';
+    img.style.transform = `translateX(${x}px)`;
   });
 });
 

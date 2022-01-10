@@ -101,17 +101,18 @@ PrevNextButton.prototype.createSVG = function() {
 // get SVG path movmement
 function getArrowMovements( shape ) {
   // use shape as movement if string
-  if ( typeof shape == 'string' ) {
-    return shape;
-  }
+  if ( typeof shape == 'string' ) return shape;
+
+  let { x0, x1, x2, x3, y1, y2 } = shape;
+
   // create movement string
-  return 'M ' + shape.x0 + ',50' +
-    ' L ' + shape.x1 + ',' + ( shape.y1 + 50 ) +
-    ' L ' + shape.x2 + ',' + ( shape.y2 + 50 ) +
-    ' L ' + shape.x3 + ',50 ' +
-    ' L ' + shape.x2 + ',' + ( 50 - shape.y2 ) +
-    ' L ' + shape.x1 + ',' + ( 50 - shape.y1 ) +
-    ' Z';
+  return `M ${x0}, 50
+    L ${x1}, ${y1 + 50}
+    L ${x2}, ${y2 + 50}
+    L ${x3}, 50
+    L ${x2}, ${50 - y2}
+    L ${x1}, ${50 - y1}
+    Z`;
 }
 
 PrevNextButton.prototype.handleEvent = utils.handleEvent;

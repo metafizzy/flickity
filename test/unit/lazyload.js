@@ -12,7 +12,7 @@ QUnit.test( 'lazyload', function( assert ) {
     loadCount++;
 
     assert.equal( event.type, 'load', 'event.type == load' );
-    assert.ok( event.target.complete, 'img ' + loadCount + ' is complete' );
+    assert.ok( event.target.complete, `img ${loadCount} is complete` );
     assert.ok( cellElem, 'cellElement argument there' );
     let lazyAttr = event.target.getAttribute('data-flickity-lazyload');
     assert.ok( !lazyAttr, 'data-flickity-lazyload attribute removed' );
