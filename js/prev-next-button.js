@@ -3,98 +3,71 @@
   // universal module definition
   if ( typeof module == 'object' && module.exports ) {
     // CommonJS
-    module.exports = factory(
-        window,
-        require('./core'),
-        require('ev-emitter'),
-        require('fizzy-ui-utils'),
-    );
+    module.exports = factory( window, require('./core') );
   } else {
     // browser global
-    factory(
-        window,
-        window.Flickity,
-        window.EvEmitter,
-        window.fizzyUIUtils,
-    );
+    factory( window, window.Flickity );
   }
 
-}( window, function factory( window, Flickity, EvEmitter, utils ) {
+}( window, function factory( window, Flickity ) {
 
 const svgURI = 'http://www.w3.org/2000/svg';
 
 // -------------------------- PrevNextButton -------------------------- //
 
-function PrevNextButton( direction, parent ) {
+function PrevNextButton( increment, direction, arrowShape ) {
+  this.increment = increment;
   this.direction = direction;
-  this.parent = parent;
-  this._create();
+  this.isPrevious = increment == 'previous';
+  this.isLeft = direction == 'left';
+  this._create( arrowShape );
 }
 
-PrevNextButton.prototype = Object.create( EvEmitter.prototype );
-
-PrevNextButton.prototype._create = function() {
+PrevNextButton.prototype._create = function( arrowShape ) {
   // properties
-  this.isEnabled = true;
-  this.isPrevious = this.direction == -1;
-  let leftDirection = this.parent.options.rightToLeft ? 1 : -1;
-  this.isLeft = this.direction == leftDirection;
-
   let element = this.element = document.createElement('button');
-  element.className = 'flickity-button flickity-prev-next-button';
-  element.className += this.isPrevious ? ' previous' : ' next';
+  element.className = `flickity-button flickity-prev-next-button ${this.increment}`;
   // prevent button from submitting form http://stackoverflow.com/a/10836076/182183
+  let label = this.isPrevious ? 'Previous' : 'Next';
   element.setAttribute( 'type', 'button' );
+  element.setAttribute( 'aria-label', label );
   // init as disabled
   this.disable();
 
-  element.setAttribute( 'aria-label', this.isPrevious ? 'Previous' : 'Next' );
-
   // create arrow
-  let svg = this.createSVG();
-  element.appendChild( svg );
+  let svg = this.createSVG( label, arrowShape );
+  element.append( svg );
   // events
-  this.parent.on( 'select', this.update.bind( this ) );
   // TODOv3 resolve childUIPointerDown
   // this.on( 'pointerDown', this.parent.childUIPointerDown.bind( this.parent ) );
 };
 
-PrevNextButton.prototype.activate = function() {
-  // TODOv3 resolve childUIPointerDown
-  // this.bindStartEvent( this.element );
-  this.element.addEventListener( 'click', this );
-  // add to DOM
-  this.parent.element.appendChild( this.element );
-};
+// TODOv3 remove these method, resolve childUIPointerDown
+// PrevNextButton.prototype.activate = function() {
+//   this.bindStartEvent( this.element );
+// };
+//
+// PrevNextButton.prototype.deactivate = function() {
+//   this.unbindStartEvent( this.element );
+// };
 
-PrevNextButton.prototype.deactivate = function() {
-  // remove from DOM
-  this.parent.element.removeChild( this.element );
-  // click events
-  // TODOv3 resolve childUIPointerDown
-  // this.unbindStartEvent( this.element );
-  this.element.removeEventListener( 'click', this );
-};
-
-PrevNextButton.prototype.createSVG = function() {
+PrevNextButton.prototype.createSVG = function( label, arrowShape ) {
   let svg = document.createElementNS( svgURI, 'svg' );
   svg.setAttribute( 'class', 'flickity-button-icon' );
   svg.setAttribute( 'viewBox', '0 0 100 100' );
   // add title #1189
   let title = document.createElementNS( svgURI, 'title' );
-  let titleText = document.createTextNode( this.isPrevious ? 'Previous' : 'Next' );
-  title.appendChild( titleText );
-  svg.appendChild( title );
+  title.append( label );
   // add path
   let path = document.createElementNS( svgURI, 'path' );
-  let pathMovements = getArrowMovements( this.parent.options.arrowShape );
+  let pathMovements = getArrowMovements( arrowShape );
   path.setAttribute( 'd', pathMovements );
   path.setAttribute( 'class', 'arrow' );
   // rotate arrow
   if ( !this.isLeft ) {
-    path.setAttribute( 'transform', 'translate(100, 100) rotate(180) ' );
+    path.setAttribute( 'transform', 'translate(100, 100) rotate(180)' );
   }
-  svg.appendChild( path );
+  svg.append( title, path );
   return svg;
 };
 
@@ -115,52 +88,14 @@ function getArrowMovements( shape ) {
     Z`;
 }
 
-PrevNextButton.prototype.handleEvent = utils.handleEvent;
-
-PrevNextButton.prototype.onclick = function() {
-  if ( !this.isEnabled ) {
-    return;
-  }
-  this.parent.uiChange();
-  let method = this.isPrevious ? 'previous' : 'next';
-  this.parent[ method ]();
-};
-
 // -----  ----- //
 
 PrevNextButton.prototype.enable = function() {
-  if ( this.isEnabled ) {
-    return;
-  }
-  this.element.disabled = false;
-  this.isEnabled = true;
+  this.element.removeAttribute('disabled');
 };
 
 PrevNextButton.prototype.disable = function() {
-  if ( !this.isEnabled ) {
-    return;
-  }
-  this.element.disabled = true;
-  this.isEnabled = false;
-};
-
-PrevNextButton.prototype.update = function() {
-  // index of first or last slide, if previous or next
-  let slides = this.parent.slides;
-  // enable is wrapAround and at least 2 slides
-  if ( this.parent.options.wrapAround && slides.length > 1 ) {
-    this.enable();
-    return;
-  }
-  let lastIndex = slides.length ? slides.length - 1 : 0;
-  let boundIndex = this.isPrevious ? 0 : lastIndex;
-  let method = this.parent.selectedIndex == boundIndex ? 'disable' : 'enable';
-  this[ method ]();
-};
-
-PrevNextButton.prototype.destroy = function() {
-  this.deactivate();
-  this.allOff();
+  this.element.setAttribute( 'disabled', true );
 };
 
 // -------------------------- Flickity prototype -------------------------- //
@@ -179,25 +114,55 @@ Flickity.createMethods.push('_createPrevNextButtons');
 let proto = Flickity.prototype;
 
 proto._createPrevNextButtons = function() {
-  if ( !this.options.prevNextButtons ) {
+  if ( !this.options.prevNextButtons ) return;
+
+  let { rightToLeft, arrowShape } = this.options;
+  let prevDirection = rightToLeft ? 'right' : 'left';
+  let nextDirection = rightToLeft ? 'left' : 'right';
+  this.prevButton = new PrevNextButton( 'previous', prevDirection, arrowShape );
+  this.nextButton = new PrevNextButton( 'next', nextDirection, arrowShape );
+
+  this.handlePrevButtonClick = () => {
+    this.uiChange();
+    this.previous();
+  };
+
+  this.handleNextButtonClick = () => {
+    this.uiChange();
+    this.next();
+  };
+
+  this.on( 'activate', this.activatePrevNextButtons );
+  this.on( 'select', this.updatePrevNextButtons );
+};
+
+proto.updatePrevNextButtons = function() {
+  // enable is wrapAround and at least 2 slides
+  if ( this.options.wrapAround && this.slides.length > 1 ) {
+    this.prevButton.enable();
+    this.nextButton.enable();
     return;
   }
 
-  this.prevButton = new PrevNextButton( -1, this );
-  this.nextButton = new PrevNextButton( 1, this );
-
-  this.on( 'activate', this.activatePrevNextButtons );
+  let lastIndex = this.slides.length ? this.slides.length - 1 : 0;
+  let isPrevEnabled = this.selectedIndex != 0;
+  let isNextEnabled = this.selectedIndex != lastIndex;
+  this.prevButton[ isPrevEnabled ? 'enable' : 'disable' ]();
+  this.nextButton[ isNextEnabled ? 'enable' : 'disable' ]();
 };
 
 proto.activatePrevNextButtons = function() {
-  this.prevButton.activate();
-  this.nextButton.activate();
+  this.prevButton.element.addEventListener( 'click', this.handlePrevButtonClick );
+  this.nextButton.element.addEventListener( 'click', this.handleNextButtonClick );
+  this.element.append( this.prevButton.element, this.nextButton.element );
   this.on( 'deactivate', this.deactivatePrevNextButtons );
 };
 
 proto.deactivatePrevNextButtons = function() {
-  this.prevButton.deactivate();
-  this.nextButton.deactivate();
+  this.prevButton.element.remove();
+  this.nextButton.element.remove();
+  this.prevButton.element.removeEventListener( 'click', this.handlePrevButtonClick );
+  this.nextButton.element.removeEventListener( 'click', this.handleNextButtonClick );
   this.off( 'deactivate', this.deactivatePrevNextButtons );
 };
 
