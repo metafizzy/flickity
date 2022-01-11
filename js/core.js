@@ -291,10 +291,11 @@ proto.updateSlides = function() {
   this.slides = [];
   if ( !this.cells.length ) return;
 
-  let slide = new Slide( this );
-  this.slides.push( slide );
   let isOriginLeft = this.originSide == 'left';
-  let nextMargin = isOriginLeft ? 'marginRight' : 'marginLeft';
+  let beginMargin = isOriginLeft ? 'marginLeft' : 'marginRight';
+  let endMargin = isOriginLeft ? 'marginRight' : 'marginLeft';
+  let slide = new Slide( beginMargin, endMargin, this.cellAlign );
+  this.slides.push( slide );
 
   let canCellFit = this._getCanCellFit();
 
@@ -306,7 +307,7 @@ proto.updateSlides = function() {
     }
 
     let slideWidth = ( slide.outerWidth - slide.firstMargin ) +
-      ( cell.size.outerWidth - cell.size[ nextMargin ] );
+      ( cell.size.outerWidth - cell.size[ endMargin ] );
 
     if ( canCellFit.call( this, i, slideWidth ) ) {
       slide.addCell( cell );
@@ -314,7 +315,7 @@ proto.updateSlides = function() {
       // doesn't fit, new slide
       slide.updateTarget();
 
-      slide = new Slide( this );
+      slide = new Slide( beginMargin, endMargin, this.cellAlign );
       this.slides.push( slide );
       slide.addCell( cell );
     }
