@@ -779,21 +779,19 @@ proto.onkeydown = function( event ) {
     focusableElems.some( ( elem ) => activeElement == elem );
   if ( !isFocused ) return;
 
-  let handler = Flickity.keyboardHandlers[ event.keyCode ];
+  let handler = Flickity.keyboardHandlers[ event.key ];
   if ( handler ) handler.call( this );
 };
 
 Flickity.keyboardHandlers = {
-  // left arrow
-  37: function() {
-    let leftMethod = this.options.rightToLeft ? 'next' : 'previous';
+  ArrowLeft: function() {
     this.uiChange();
+    let leftMethod = this.options.rightToLeft ? 'next' : 'previous';
     this[ leftMethod ]();
   },
-  // right arrow
-  39: function() {
-    let rightMethod = this.options.rightToLeft ? 'previous' : 'next';
+  ArrowRight: function() {
     this.uiChange();
+    let rightMethod = this.options.rightToLeft ? 'previous' : 'next';
     this[ rightMethod ]();
   },
 };
@@ -801,15 +799,7 @@ Flickity.keyboardHandlers = {
 // ----- focus ----- //
 
 proto.focus = function() {
-  // TODO remove scrollTo once focus options gets more support
-  // https://developer.mozilla.org/en-US/docs/Web/API/HTMLElement/focus ...
-  //    #Browser_compatibility
-  let prevScrollY = window.pageYOffset;
   this.element.focus({ preventScroll: true });
-  // hack to fix scroll jump after focus, #76
-  if ( window.pageYOffset != prevScrollY ) {
-    window.scrollTo( window.pageXOffset, prevScrollY );
-  }
 };
 
 // -------------------------- destroy -------------------------- //
