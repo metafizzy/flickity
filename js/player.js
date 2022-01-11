@@ -3,39 +3,29 @@
   // universal module definition
   if ( typeof module == 'object' && module.exports ) {
     // CommonJS
-    module.exports = factory(
-        require('ev-emitter'),
-        require('fizzy-ui-utils'),
-        require('./core'),
-    );
+    module.exports = factory( require('./core') );
   } else {
     // browser global
-    factory(
-        window.EvEmitter,
-        window.fizzyUIUtils,
-        window.Flickity,
-    );
+    factory( window.Flickity );
   }
 
-}( window, function factory( EvEmitter, utils, Flickity ) {
+}( window, function factory( Flickity ) {
 
 // -------------------------- Player -------------------------- //
 
-function Player( parent ) {
-  this.parent = parent;
+function Player( autoPlay, onTick ) {
+  this.autoPlay = autoPlay;
+  this.onTick = onTick;
   this.state = 'stopped';
   // visibility change event handler
   this.onVisibilityChange = this.visibilityChange.bind( this );
   this.onVisibilityPlay = this.visibilityPlay.bind( this );
 }
 
-Player.prototype = Object.create( EvEmitter.prototype );
-
 // start play
 Player.prototype.play = function() {
-  if ( this.state == 'playing' ) {
-    return;
-  }
+  if ( this.state == 'playing' ) return;
+
   // do not play if page is hidden, start playing when page is visible
   let isPageHidden = document.hidden;
   if ( isPageHidden ) {
@@ -52,19 +42,15 @@ Player.prototype.play = function() {
 
 Player.prototype.tick = function() {
   // do not tick if not playing
-  if ( this.state != 'playing' ) {
-    return;
-  }
+  if ( this.state != 'playing' ) return;
 
-  let time = this.parent.options.autoPlay;
   // default to 3 seconds
-  time = typeof time == 'number' ? time : 3000;
-  let _this = this;
+  let time = typeof this.autoPlay == 'number' ? this.autoPlay : 3000;
   // HACK: reset ticks if stopped and started within interval
   this.clear();
-  this.timeout = setTimeout( function() {
-    _this.parent.next( true );
-    _this.tick();
+  this.timeout = setTimeout( () => {
+    this.onTick();
+    this.tick();
   }, time );
 };
 
@@ -88,9 +74,7 @@ Player.prototype.pause = function() {
 
 Player.prototype.unpause = function() {
   // re-start play if paused
-  if ( this.state == 'paused' ) {
-    this.play();
-  }
+  if ( this.state == 'paused' ) this.play();
 };
 
 // pause if page visibility is hidden, unpause if visible
@@ -114,7 +98,7 @@ Flickity.createMethods.push('_createPlayer');
 let proto = Flickity.prototype;
 
 proto._createPlayer = function() {
-  this.player = new Player( this );
+  this.player = new Player( this.options.autoPlay, () => this.next( true ) );
 
   this.on( 'activate', this.activatePlayer );
   this.on( 'uiChange', this.stopPlayer );
@@ -123,9 +107,8 @@ proto._createPlayer = function() {
 };
 
 proto.activatePlayer = function() {
-  if ( !this.options.autoPlay ) {
-    return;
-  }
+  if ( !this.options.autoPlay ) return;
+
   this.player.play();
   this.element.addEventListener( 'mouseenter', this );
 };
