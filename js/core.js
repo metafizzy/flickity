@@ -28,8 +28,8 @@
     );
   }
 
-}( window, function factory( window, EvEmitter, getSize,
-    utils, Cell, Slide, animatePrototype ) {
+}( typeof window != 'undefined' ? window : this,
+    function factory( window, EvEmitter, getSize, utils, Cell, Slide, animatePrototype ) {
 
 /* eslint-enable max-params */
 
@@ -131,6 +131,15 @@ proto._create = function() {
     this.on( eventName, listener );
   }
 
+  // TODOv3
+  // Object.values( this.options.on, ( listener ) => {
+  //   this.on( eventName, listener )
+  // })
+
+  // for (let method in Flickity.create) {
+  //   Flickity.create[ method ].call( this );
+  // }
+
   Flickity.createMethods.forEach( ( method ) => this[ method ]() );
 
   if ( this.options.watchCSS ) {
@@ -138,7 +147,6 @@ proto._create = function() {
   } else {
     this.activate();
   }
-
 };
 
 /**

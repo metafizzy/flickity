@@ -9,7 +9,7 @@
     factory( window.Flickity );
   }
 
-}( window, function factory( Flickity ) {
+}( typeof window != 'undefined' ? window : this, function factory( Flickity ) {
 
 // -------------------------- Player -------------------------- //
 
@@ -98,7 +98,9 @@ Flickity.createMethods.push('_createPlayer');
 let proto = Flickity.prototype;
 
 proto._createPlayer = function() {
-  this.player = new Player( this.options.autoPlay, () => this.next( true ) );
+  this.player = new Player( this.options.autoPlay, () => {
+    this.next( true );
+  } );
 
   this.on( 'activate', this.activatePlayer );
   this.on( 'uiChange', this.stopPlayer );

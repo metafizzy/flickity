@@ -4,20 +4,18 @@
   if ( typeof module == 'object' && module.exports ) {
     // CommonJS
     module.exports = factory(
-        window,
         require('./core'),
         require('fizzy-ui-utils'),
     );
   } else {
     // browser global
     factory(
-        window,
         window.Flickity,
         window.fizzyUIUtils,
     );
   }
 
-}( window, function factory( window, Flickity, utils ) {
+}( typeof window != 'undefined' ? window : this, function factory( Flickity, utils ) {
 
 // append cells to a document fragment
 function getCellsFragment( cells ) {

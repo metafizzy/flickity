@@ -19,7 +19,8 @@
     );
   }
 
-}( window, function factory( window, Flickity, Unidragger, utils ) {
+}( typeof window != 'undefined' ? window : this,
+    function factory( window, Flickity, Unidragger, utils ) {
 
 // ----- defaults ----- //
 

@@ -16,7 +16,7 @@
     );
   }
 
-}( window, function factory( window, getSize ) {
+}( typeof window != 'undefined' ? window : this, function factory( window, getSize ) {
 
 function Cell( elem, parent ) {
   this.element = elem;

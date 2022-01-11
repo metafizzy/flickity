@@ -3,13 +3,13 @@
   // universal module definition
   if ( typeof module == 'object' && module.exports ) {
     // CommonJS
-    module.exports = factory( window, require('./core') );
+    module.exports = factory( require('./core') );
   } else {
     // browser global
-    factory( window, window.Flickity );
+    factory( window.Flickity );
   }
 
-}( window, function factory( window, Flickity ) {
+}( typeof window != 'undefined' ? window : this, function factory( Flickity ) {
 
 const svgURI = 'http://www.w3.org/2000/svg';
 

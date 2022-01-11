@@ -3,20 +3,14 @@
   // universal module definition
   if ( typeof module == 'object' && module.exports ) {
     // CommonJS
-    module.exports = factory(
-        window,
-        require('fizzy-ui-utils'),
-    );
+    module.exports = factory( require('fizzy-ui-utils') );
   } else {
     // browser global
     window.Flickity = window.Flickity || {};
-    window.Flickity.animatePrototype = factory(
-        window,
-        window.fizzyUIUtils,
-    );
+    window.Flickity.animatePrototype = factory( window.fizzyUIUtils );
   }
 
-}( window, function factory( window, utils ) {
+}( typeof window != 'undefined' ? window : this, function factory( utils ) {
 
 // -------------------------- animate -------------------------- //
 
