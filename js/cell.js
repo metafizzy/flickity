@@ -51,15 +51,7 @@ proto.getSize = function() {
 
 proto.setPosition = function( x ) {
   this.x = x;
-  this.updateTarget();
   this.renderPosition( x );
-};
-
-// setDefaultTarget v1 method, backwards compatibility, remove in v3
-proto.updateTarget = proto.setDefaultTarget = function() {
-  let marginProperty = this.parent.originSide == 'left' ? 'marginLeft' : 'marginRight';
-  this.target = this.x + this.size[ marginProperty ] +
-    this.size.width * this.parent.cellAlign;
 };
 
 proto.renderPosition = function( x ) {

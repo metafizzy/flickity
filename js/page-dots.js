@@ -3,63 +3,29 @@
   // universal module definition
   if ( typeof module == 'object' && module.exports ) {
     // CommonJS
-    module.exports = factory(
-        window,
-        require('./core'),
-        require('ev-emitter'),
-    );
+    module.exports = factory( window, require('./core') );
   } else {
     // browser global
-    factory(
-        window,
-        window.Flickity,
-        window.EvEmitter,
-    );
+    factory( window, window.Flickity );
   }
 
-}( window, function factory( window, Flickity, EvEmitter ) {
+}( window, function factory( window, Flickity ) {
 
 // -------------------------- PageDots -------------------------- //
 
-function PageDots( parent ) {
-  this.parent = parent;
-  this._create();
-}
-
-PageDots.prototype = Object.create( EvEmitter.prototype );
-
-PageDots.prototype._create = function() {
+function PageDots() {
   // create holder element
   this.holder = document.createElement('ol');
   this.holder.className = 'flickity-page-dots';
   // create dots, array of elements
   this.dots = [];
-  // events
-  this.handleClick = this.onClick.bind( this );
   // TODOv3 resolve childUIPointerDown
   // this.on( 'pointerDown', this.parent.childUIPointerDown.bind( this.parent ) );
-};
+}
 
-PageDots.prototype.activate = function() {
-  this.setDots();
-  this.holder.addEventListener( 'click', this.handleClick );
-  // TODOv3 resolve childUIPointerDown
-  // this.bindStartEvent( this.holder );
-  // add to DOM
-  this.parent.element.appendChild( this.holder );
-};
-
-PageDots.prototype.deactivate = function() {
-  this.holder.removeEventListener( 'click', this.handleClick );
-  // TODOv3 resolve childUIPointerDown
-  // this.unbindStartEvent( this.holder );
-  // remove from DOM
-  this.parent.element.removeChild( this.holder );
-};
-
-PageDots.prototype.setDots = function() {
+PageDots.prototype.setDots = function( slidesLength ) {
   // get difference between number of slides and number of dots
-  let delta = this.parent.slides.length - this.dots.length;
+  let delta = slidesLength - this.dots.length;
   if ( delta > 0 ) {
     this.addDots( delta );
   } else if ( delta < 0 ) {
@@ -68,7 +34,6 @@ PageDots.prototype.setDots = function() {
 };
 
 PageDots.prototype.addDots = function( count ) {
-  let fragment = document.createDocumentFragment();
   let newDots = [];
   let length = this.dots.length;
   let max = length + count;
@@ -77,11 +42,10 @@ PageDots.prototype.addDots = function( count ) {
     let dot = document.createElement('li');
     dot.className = 'dot';
     dot.setAttribute( 'aria-label', `Page dot ${i + 1}` );
-    fragment.appendChild( dot );
     newDots.push( dot );
   }
 
-  this.holder.appendChild( fragment );
+  this.holder.append( ...newDots );
   this.dots = this.dots.concat( newDots );
 };
 
@@ -89,40 +53,21 @@ PageDots.prototype.removeDots = function( count ) {
   // remove from this.dots collection
   let removeDots = this.dots.splice( this.dots.length - count, count );
   // remove from DOM
-  removeDots.forEach( ( dot ) => this.holder.removeChild( dot ) );
+  removeDots.forEach( ( dot ) => dot.remove() );
 };
 
-PageDots.prototype.updateSelected = function() {
+PageDots.prototype.updateSelected = function( index ) {
   // remove selected class on previous
   if ( this.selectedDot ) {
     this.selectedDot.className = 'dot';
     this.selectedDot.removeAttribute('aria-current');
   }
   // don't proceed if no dots
-  if ( !this.dots.length ) {
-    return;
-  }
-  this.selectedDot = this.dots[ this.parent.selectedIndex ];
+  if ( !this.dots.length ) return;
+
+  this.selectedDot = this.dots[ index ];
   this.selectedDot.className = 'dot is-selected';
   this.selectedDot.setAttribute( 'aria-current', 'step' );
-};
-
-PageDots.prototype.onTap = // old method name, backwards-compatible
-PageDots.prototype.onClick = function( event ) {
-  let target = event.target;
-  // only care about dot clicks
-  if ( target.nodeName != 'LI' ) {
-    return;
-  }
-
-  this.parent.uiChange();
-  let index = this.dots.indexOf( target );
-  this.parent.select( index );
-};
-
-PageDots.prototype.destroy = function() {
-  this.deactivate();
-  this.allOff();
 };
 
 Flickity.PageDots = PageDots;
@@ -141,7 +86,8 @@ proto._createPageDots = function() {
   if ( !this.options.pageDots ) {
     return;
   }
-  this.pageDots = new PageDots( this );
+  this.pageDots = new PageDots();
+  this.handlePageDotsClick = this.onPageDotsClick.bind( this );
   // events
   this.on( 'activate', this.activatePageDots );
   this.on( 'select', this.updateSelectedPageDots );
@@ -151,19 +97,30 @@ proto._createPageDots = function() {
 };
 
 proto.activatePageDots = function() {
-  this.pageDots.activate();
+  this.pageDots.setDots( this.slides.length );
+  this.pageDots.holder.addEventListener( 'click', this.handlePageDotsClick );
+  this.element.append( this.pageDots.holder );
+};
+
+proto.onPageDotsClick = function( event ) {
+  let index = this.pageDots.dots.indexOf( event.target );
+  if ( index == -1 ) return; // only dot clicks
+
+  this.uiChange();
+  this.select( index );
 };
 
 proto.updateSelectedPageDots = function() {
-  this.pageDots.updateSelected();
+  this.pageDots.updateSelected( this.selectedIndex );
 };
 
 proto.updatePageDots = function() {
-  this.pageDots.setDots();
+  this.pageDots.setDots( this.slides.length );
 };
 
 proto.deactivatePageDots = function() {
-  this.pageDots.deactivate();
+  this.pageDots.holder.remove();
+  this.pageDots.holder.removeEventListener( 'click', this.handlePageDotsClick );
 };
 
 // -----  ----- //
