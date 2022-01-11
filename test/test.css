@@ -1,8 +1,13 @@
-/** { box-sizing: border-box; }*/
-
 body {
   font-family: sans-serif;
   color: #333;
+}
+
+/* move over qunit window to reduce overlaps */
+@media (min-height: 500px) {
+  #qunit {
+    left: 420px;
+  }
 }
 
 .gallery {
@@ -26,8 +31,6 @@ body {
 #position-cells.percent-margin .cell { margin: 0 2%; }
 #position-cells.pixel-margin .cell { margin: 0 10px; }
 
-/*#drag-wrap-around { position: fixed; top: 0;}*/
-
 .drag .cell { margin-right: 5%; }
 
 #watch.has-after:after {
@@ -44,7 +47,6 @@ body {
 
 #group-cells .cell {
   width: 100px;
-/*  border: 1px solid;*/
 }
 
 #group-cells .cell--width2 { width: 200px; }

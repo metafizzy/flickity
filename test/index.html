@@ -6,9 +6,9 @@
 
   <title>Flickity tests</title>
 
-  <link rel="stylesheet" href="../node_modules/qunit/qunit/qunit.css" media="screen" />
-  <link rel="stylesheet" href="test.css" media="screen" />
-  <link rel="stylesheet" href="../css/flickity.css" media="screen" />
+  <link rel="stylesheet" href="../node_modules/qunit/qunit/qunit.css" />
+  <link rel="stylesheet" href="test.css" />
+  <link rel="stylesheet" href="../css/flickity.css" />
 
   <script src="../node_modules/qunit/qunit/qunit.js"></script>
 
@@ -29,11 +29,6 @@
   <script src="../js/player.js"></script>
   <script src="../js/add-remove-cell.js"></script>
   <script src="../js/lazyload.js"></script>
-  <!-- turn off accessibility for these tests
-    was causing bugs with dragging tests -->
-  <script>
-    Flickity.defaults.accessibility = false;
-  </script>
   <!-- unit tests -->
   <script src="unit/init.js"></script>
   <script src="unit/cell-selector.js"></script>
@@ -41,8 +36,6 @@
   <script src="unit/get-parent-cell.js"></script>
   <script src="unit/position-cells.js"></script>
   <script src="unit/contain.js"></script>
-  <!-- drag tests are buggy. moved to drag.html -->
-  <!-- <script src="unit/drag.js"></script> -->
   <script src="unit/auto-play.js"></script>
   <script src="unit/prev-next-buttons.js"></script>
   <script src="unit/page-dots.js"></script>

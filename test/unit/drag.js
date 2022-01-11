@@ -21,11 +21,11 @@ let fakeDrag = window.fakeDrag = function( flkty, positions ) {
     // down or move event
     if ( !hasBeenDown ) {
       let downEvent = fakeEvent( 'mousedown', position );
-      flkty._pointerDown( downEvent, downEvent );
+      flkty.pointerDown( downEvent, downEvent );
       hasBeenDown = true;
     } else {
       let moveEvent = fakeEvent( 'mousemove', position );
-      flkty._pointerMove( moveEvent, moveEvent );
+      flkty.pointerMove( moveEvent, moveEvent );
     }
 
     if ( positions.length ) {
@@ -34,7 +34,7 @@ let fakeDrag = window.fakeDrag = function( flkty, positions ) {
     } else {
       // up event
       let upEvent = fakeEvent( 'mouseup', position );
-      flkty._pointerUp( upEvent, upEvent );
+      flkty.pointerUp( upEvent, upEvent );
     }
   }
 
