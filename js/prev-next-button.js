@@ -71,6 +71,7 @@ PrevNextButton.prototype._create = function() {
 PrevNextButton.prototype.activate = function() {
   this.bindStartEvent( this.element );
   this.element.addEventListener( 'click', this );
+  this.element.addEventListener( 'focus', this );
   // add to DOM
   this.parent.element.appendChild( this.element );
 };
@@ -124,6 +125,22 @@ PrevNextButton.prototype.onclick = function() {
   this.parent.uiChange();
   var method = this.isPrevious ? 'previous' : 'next';
   this.parent[ method ]();
+};
+
+PrevNextButton.prototype.onfocus = function() {
+  if ( !this.isEnabled ) {
+    return;
+  }
+  this.parent.stopPlayer();
+  this.element.addEventListener( 'blur', this );
+};
+
+PrevNextButton.prototype.onblur = function() {
+  if ( !this.isEnabled ) {
+    return;
+  }
+  this.parent.playPlayer();
+  this.element.removeEventListener( 'blur', this );
 };
 
 // -----  ----- //
