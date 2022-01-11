@@ -33,23 +33,10 @@ PrevNextButton.prototype._create = function( arrowShape ) {
   element.setAttribute( 'aria-label', label );
   // init as disabled
   this.disable();
-
   // create arrow
   let svg = this.createSVG( label, arrowShape );
   element.append( svg );
-  // events
-  // TODOv3 resolve childUIPointerDown
-  // this.on( 'pointerDown', this.parent.childUIPointerDown.bind( this.parent ) );
 };
-
-// TODOv3 remove these method, resolve childUIPointerDown
-// PrevNextButton.prototype.activate = function() {
-//   this.bindStartEvent( this.element );
-// };
-//
-// PrevNextButton.prototype.deactivate = function() {
-//   this.unbindStartEvent( this.element );
-// };
 
 PrevNextButton.prototype.createSVG = function( label, arrowShape ) {
   let svg = document.createElementNS( svgURI, 'svg' );
@@ -137,18 +124,24 @@ proto._createPrevNextButtons = function() {
 };
 
 proto.updatePrevNextButtons = function() {
+  let lastIndex = this.slides.length ? this.slides.length - 1 : 0;
+  this.updatePrevNextButton( this.prevButton, 0 );
+  this.updatePrevNextButton( this.nextButton, lastIndex );
+};
+
+proto.updatePrevNextButton = function( button, disabledIndex ) {
   // enable is wrapAround and at least 2 slides
   if ( this.options.wrapAround && this.slides.length > 1 ) {
-    this.prevButton.enable();
-    this.nextButton.enable();
+    button.enable();
     return;
   }
 
-  let lastIndex = this.slides.length ? this.slides.length - 1 : 0;
-  let isPrevEnabled = this.selectedIndex != 0;
-  let isNextEnabled = this.selectedIndex != lastIndex;
-  this.prevButton[ isPrevEnabled ? 'enable' : 'disable' ]();
-  this.nextButton[ isNextEnabled ? 'enable' : 'disable' ]();
+  let isEnabled = this.selectedIndex != disabledIndex;
+  button[ isEnabled ? 'enable' : 'disable' ]();
+  // if disabling button that is focused,
+  // shift focus to element to maintain keyboard accessibility
+  let isDisabledFocused = !isEnabled && document.activeElement == button.element;
+  if ( isDisabledFocused ) this.focus();
 };
 
 proto.activatePrevNextButtons = function() {

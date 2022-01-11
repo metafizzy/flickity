@@ -720,15 +720,6 @@ proto.uiChange = function() {
   this.emitEvent('uiChange');
 };
 
-// keep focus on element when child UI elements are clicked
-proto.childUIPointerDown = function( event ) {
-  // HACK iOS does not allow touch events to bubble up?!
-  if ( event.type != 'touchstart' ) {
-    event.preventDefault();
-  }
-  this.focus();
-};
-
 // ----- resize ----- //
 
 proto.onresize = function() {
@@ -778,16 +769,18 @@ proto.watchCSS = function() {
 
 // go previous/next if left/right keys pressed
 proto.onkeydown = function( event ) {
+  if ( !this.options.accessibility ) return;
   // only work if element is in focus
-  let isNotFocused = document.activeElement && document.activeElement != this.element;
-  if ( !this.options.accessibility || isNotFocused ) {
-    return;
-  }
+  let { activeElement } = document;
+  let focusableElems = [ this.element ];
+  if ( this.prevButton ) focusableElems.push( this.prevButton.element );
+  if ( this.nextButton ) focusableElems.push( this.nextButton.element );
+  let isFocused = activeElement &&
+    focusableElems.some( ( elem ) => activeElement == elem );
+  if ( !isFocused ) return;
 
   let handler = Flickity.keyboardHandlers[ event.keyCode ];
-  if ( handler ) {
-    handler.call( this );
-  }
+  if ( handler ) handler.call( this );
 };
 
 Flickity.keyboardHandlers = {

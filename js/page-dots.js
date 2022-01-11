@@ -19,8 +19,6 @@ function PageDots() {
   this.holder.className = 'flickity-page-dots';
   // create dots, array of elements
   this.dots = [];
-  // TODOv3 resolve childUIPointerDown
-  // this.on( 'pointerDown', this.parent.childUIPointerDown.bind( this.parent ) );
 }
 
 PageDots.prototype.setDots = function( slidesLength ) {
