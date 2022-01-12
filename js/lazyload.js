@@ -33,15 +33,11 @@ proto.lazyLoad = function() {
 
   // get adjacent cells, use lazyLoad option for adjacent count
   let adjCount = typeof lazyLoad == 'number' ? lazyLoad : 0;
-  let cellElems = this.getAdjacentCellElements( adjCount );
-  // get lazy images in those cells
-  let lazyImages = [];
-  cellElems.forEach( ( cellElem ) => {
-    let lazyCellImages = getCellLazyImages( cellElem );
-    lazyImages = lazyImages.concat( lazyCellImages );
-  } );
-  // load lazy images
-  lazyImages.forEach( ( img ) => new LazyLoader( img, this ) );
+  // lazy load images
+  this.getAdjacentCellElements( adjCount )
+    .map( getCellLazyImages )
+    .flat()
+    .forEach( ( img ) => new LazyLoader( img, this ) );
 };
 
 function getCellLazyImages( cellElem ) {
@@ -51,13 +47,12 @@ function getCellLazyImages( cellElem ) {
     let cellSrcAttr = cellElem.getAttribute( lazySrcAttr );
     let cellSrcsetAttr = cellElem.getAttribute( lazySrcsetAttr );
     if ( cellAttr || cellSrcAttr || cellSrcsetAttr ) {
-      return [ cellElem ];
+      return cellElem;
     }
   }
   // select lazy images in cell
   let lazySelector = `img[${lazyAttr}], img[${lazySrcAttr}], img[${lazySrcsetAttr}]`;
-  let imgs = cellElem.querySelectorAll( lazySelector );
-  return utils.makeArray( imgs );
+  return [ ...cellElem.querySelectorAll( lazySelector ) ];
 }
 
 // -------------------------- LazyLoader -------------------------- //
