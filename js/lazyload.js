@@ -17,12 +17,11 @@
 
 }( typeof window != 'undefined' ? window : this, function factory( Flickity, utils ) {
 
-Flickity.createMethods.push('_createLazyload');
-let proto = Flickity.prototype;
-
-proto._createLazyload = function() {
+Flickity.create.lazyLoad = function() {
   this.on( 'select', this.lazyLoad );
 };
+
+let proto = Flickity.prototype;
 
 proto.lazyLoad = function() {
   let lazyLoad = this.options.lazyLoad;

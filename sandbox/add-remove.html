@@ -234,9 +234,7 @@ for ( var i=0; i < demos.length; i++ ) {
   });
 
   window.mapTargets = function() {
-    return flkty.slides.map( function( slide ) {
-      return ~~slide.target;
-    });
+    return flkty.slides.map( ( slide ) => ~~slide.target );
   }
 })();
 

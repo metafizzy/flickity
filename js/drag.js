@@ -29,10 +29,6 @@ Object.assign( Flickity.defaults, {
   dragThreshold: 3,
 } );
 
-// ----- create ----- //
-
-Flickity.createMethods.push('_createDrag');
-
 // -------------------------- drag prototype -------------------------- //
 
 let proto = Flickity.prototype;
@@ -41,7 +37,7 @@ proto._touchActionValue = 'pan-y';
 
 // --------------------------  -------------------------- //
 
-proto._createDrag = function() {
+Flickity.create.drag = function() {
   this.on( 'activate', this.onActivateDrag );
   this.on( 'uiChange', this._uiChangeDrag );
   this.on( 'deactivate', this.onDeactivateDrag );

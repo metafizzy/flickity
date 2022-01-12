@@ -76,11 +76,7 @@ Object.assign( Flickity.defaults, {
   pageDots: true,
 } );
 
-Flickity.createMethods.push('_createPageDots');
-
-let proto = Flickity.prototype;
-
-proto._createPageDots = function() {
+Flickity.create.pageDots = function() {
   if ( !this.options.pageDots ) {
     return;
   }
@@ -93,6 +89,8 @@ proto._createPageDots = function() {
   this.on( 'resize', this.updatePageDots );
   this.on( 'deactivate', this.deactivatePageDots );
 };
+
+let proto = Flickity.prototype;
 
 proto.activatePageDots = function() {
   this.pageDots.setDots( this.slides.length );

@@ -97,10 +97,7 @@ Object.assign( Flickity.defaults, {
   },
 } );
 
-Flickity.createMethods.push('_createPrevNextButtons');
-let proto = Flickity.prototype;
-
-proto._createPrevNextButtons = function() {
+Flickity.create.prevNextButtons = function() {
   if ( !this.options.prevNextButtons ) return;
 
   let { rightToLeft, arrowShape } = this.options;
@@ -122,6 +119,8 @@ proto._createPrevNextButtons = function() {
   this.on( 'activate', this.activatePrevNextButtons );
   this.on( 'select', this.updatePrevNextButtons );
 };
+
+let proto = Flickity.prototype;
 
 proto.updatePrevNextButtons = function() {
   let lastIndex = this.slides.length ? this.slides.length - 1 : 0;

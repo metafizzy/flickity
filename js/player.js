@@ -94,10 +94,7 @@ Object.assign( Flickity.defaults, {
   pauseAutoPlayOnHover: true,
 } );
 
-Flickity.createMethods.push('_createPlayer');
-let proto = Flickity.prototype;
-
-proto._createPlayer = function() {
+Flickity.create.player = function() {
   this.player = new Player( this.options.autoPlay, () => {
     this.next( true );
   } );
@@ -107,6 +104,8 @@ proto._createPlayer = function() {
   this.on( 'pointerDown', this.stopPlayer );
   this.on( 'deactivate', this.deactivatePlayer );
 };
+
+let proto = Flickity.prototype;
 
 proto.activatePlayer = function() {
   if ( !this.options.autoPlay ) return;

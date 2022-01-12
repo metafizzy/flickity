@@ -97,7 +97,7 @@ Flickity.defaults = {
 };
 
 // hash of methods triggered on _create()
-Flickity.createMethods = [];
+Flickity.create = {};
 
 let proto = Flickity.prototype;
 // inherit EventEmitter
@@ -136,11 +136,9 @@ proto._create = function() {
   //   this.on( eventName, listener )
   // })
 
-  // for (let method in Flickity.create) {
-  //   Flickity.create[ method ].call( this );
-  // }
-
-  Flickity.createMethods.forEach( ( method ) => this[ method ]() );
+  for ( let method in Flickity.create ) {
+    Flickity.create[ method ].call( this );
+  }
 
   if ( this.options.watchCSS ) {
     this.watchCSS();

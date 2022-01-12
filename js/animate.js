@@ -17,9 +17,7 @@
 let proto = {};
 
 proto.startAnimation = function() {
-  if ( this.isAnimating ) {
-    return;
-  }
+  if ( this.isAnimating ) return;
 
   this.isAnimating = true;
   this.restingFrames = 0;
@@ -36,12 +34,7 @@ proto.animate = function() {
   this.positionSlider();
   this.settle( previousX );
   // animate next frame
-  if ( this.isAnimating ) {
-    let _this = this;
-    requestAnimationFrame( function animateFrame() {
-      _this.animate();
-    } );
-  }
+  if ( this.isAnimating ) requestAnimationFrame( () => this.animate() );
 };
 
 proto.positionSlider = function() {
