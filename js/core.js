@@ -104,6 +104,7 @@ let proto = Flickity.prototype;
 Object.assign( proto, EvEmitter.prototype );
 
 proto._create = function() {
+  let { resize, watchCSS, rightToLeft } = this.options;
   // add id for Flickity.data
   let id = this.guid = ++GUID;
   this.element.flickityGUID = id; // expando
@@ -115,13 +116,14 @@ proto._create = function() {
   // initial physics properties
   this.x = 0;
   this.velocity = 0;
-  this.originSide = this.options.rightToLeft ? 'right' : 'left';
+  this.beginMargin = rightToLeft ? 'marginRight' : 'marginLeft';
+  this.endMargin = rightToLeft ? 'marginLeft' : 'marginRight';
   // create viewport & slider
   this.viewport = document.createElement('div');
   this.viewport.className = 'flickity-viewport';
   this._createSlider();
 
-  if ( this.options.resize || this.options.watchCSS ) {
+  if ( resize || watchCSS ) {
     window.addEventListener( 'resize', this );
   }
 
@@ -140,7 +142,7 @@ proto._create = function() {
     Flickity.create[ method ].call( this );
   }
 
-  if ( this.options.watchCSS ) {
+  if ( watchCSS ) {
     this.watchCSS();
   } else {
     this.activate();
@@ -193,7 +195,6 @@ proto._createSlider = function() {
   // slider element does all the positioning
   let slider = document.createElement('div');
   slider.className = 'flickity-slider';
-  slider.style[ this.originSide ] = 0;
   this.slider = slider;
 };
 
@@ -273,7 +274,7 @@ proto._positionCells = function( index ) {
 
 proto._renderCellPosition = function( cell, x ) {
   // render position of cell with in slider
-  let sideOffset = this.originSide === 'left' ? 1 : -1;
+  let sideOffset = this.options.rightToLeft ? -1 : 1;
   let renderX = x * sideOffset;
   if ( this.options.percentPosition ) renderX *= this.size.innerWidth / cell.size.width;
   let positionValue = this.getPositionValue( renderX );
@@ -294,9 +295,7 @@ proto.updateSlides = function() {
   this.slides = [];
   if ( !this.cells.length ) return;
 
-  let isOriginLeft = this.originSide == 'left';
-  let beginMargin = isOriginLeft ? 'marginLeft' : 'marginRight';
-  let endMargin = isOriginLeft ? 'marginRight' : 'marginLeft';
+  let { beginMargin, endMargin } = this;
   let slide = new Slide( beginMargin, endMargin, this.cellAlign );
   this.slides.push( slide );
 
@@ -367,32 +366,24 @@ proto.getSize = function() {
 };
 
 let cellAlignShorthands = {
-  // cell align, then based on origin side
-  center: {
-    left: 0.5,
-    right: 0.5,
-  },
-  left: {
-    left: 0,
-    right: 1,
-  },
-  right: {
-    right: 0,
-    left: 1,
-  },
+  left: 0,
+  center: 0.5,
+  right: 1,
 };
 
 proto.setCellAlign = function() {
-  let shorthand = cellAlignShorthands[ this.options.cellAlign ];
-  this.cellAlign = shorthand ? shorthand[ this.originSide ] : this.options.cellAlign;
+  let { cellAlign, rightToLeft } = this.options;
+  let shorthand = cellAlignShorthands[ cellAlign ];
+  this.cellAlign = shorthand !== undefined ? shorthand : cellAlign;
+  if ( rightToLeft ) this.cellAlign = 1 - this.cellAlign;
 };
 
 proto.setGallerySize = function() {
-  if ( this.options.setGallerySize ) {
-    let height = this.options.adaptiveHeight && this.selectedSlide ?
-      this.selectedSlide.height : this.maxCellHeight;
-    this.viewport.style.height = height + 'px';
-  }
+  if ( !this.options.setGallerySize ) return;
+
+  let height = this.options.adaptiveHeight && this.selectedSlide ?
+    this.selectedSlide.height : this.maxCellHeight;
+  this.viewport.style.height = `${height}px`;
 };
 
 proto._getWrapShiftCells = function() {
@@ -437,26 +428,23 @@ proto._containSlides = function() {
       this.cells.length;
   if ( !isContaining ) return;
 
-  let isRightToLeft = this.options.rightToLeft;
-  let beginMargin = isRightToLeft ? 'marginRight' : 'marginLeft';
-  let endMargin = isRightToLeft ? 'marginLeft' : 'marginRight';
-  let contentWidth = this.slideableWidth - this.getLastCell().size[ endMargin ];
+  let contentWidth = this.slideableWidth - this.getLastCell().size[ this.endMargin ];
   // content is less than gallery size
   let isContentSmaller = contentWidth < this.size.innerWidth;
-  // bounds
-  let beginBound = this.cursorPosition + this.cells[0].size[ beginMargin ];
-  let endBound = contentWidth - this.size.innerWidth * ( 1 - this.cellAlign );
-  // contain each cell target
-  this.slides.forEach( ( slide ) => {
-    if ( isContentSmaller ) {
-      // all cells fit inside gallery
+  if ( isContentSmaller ) {
+    // all cells fit inside gallery
+    this.slides.forEach( ( slide ) => {
       slide.target = contentWidth * this.cellAlign;
-    } else {
-      // contain to bounds
+    } );
+  } else {
+    // contain to bounds
+    let beginBound = this.cursorPosition + this.cells[0].size[ this.beginMargin ];
+    let endBound = contentWidth - this.size.innerWidth * ( 1 - this.cellAlign );
+    this.slides.forEach( ( slide ) => {
       slide.target = Math.max( slide.target, beginBound );
       slide.target = Math.min( slide.target, endBound );
-    }
-  } );
+    } );
+  }
 };
 
 // -----  ----- //
@@ -776,6 +764,7 @@ proto.onkeydown = function( event ) {
   // only work if element is in focus
   let { activeElement } = document;
   let focusableElems = [ this.element ];
+  // TODOv3 maybe add this.focusableElems and handle this in prev-next-buttons.js
   if ( this.prevButton ) focusableElems.push( this.prevButton.element );
   if ( this.nextButton ) focusableElems.push( this.nextButton.element );
   let isFocused = activeElement &&
