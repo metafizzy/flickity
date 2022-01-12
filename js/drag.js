@@ -70,11 +70,7 @@ proto.updateDraggable = function() {
   } else {
     this.isDraggable = this.options.draggable;
   }
-  if ( this.isDraggable ) {
-    this.element.classList.add('is-draggable');
-  } else {
-    this.element.classList.remove('is-draggable');
-  }
+  this.element.classList.toggle( 'is-draggable', this.isDraggable );
 };
 
 proto._uiChangeDrag = function() {
@@ -178,18 +174,19 @@ proto.handleDragMove = function( event, pointer, moveVector ) {
 proto.handleDragEnd = function() {
   if ( !this.isDraggable ) return;
 
-  if ( this.options.freeScroll ) this.isFreeScrolling = true;
+  let { freeScroll, wrapAround } = this.options;
+  if ( freeScroll ) this.isFreeScrolling = true;
   // set selectedIndex based on where flick will end up
   let index = this.dragEndRestingSelect();
 
-  if ( this.options.freeScroll && !this.options.wrapAround ) {
+  if ( freeScroll && !wrapAround ) {
     // if free-scroll & not wrap around
     // do not free-scroll if going outside of bounding slides
     // so bounding slides can attract slider, and keep it in bounds
     let restingX = this.getRestingPosition();
     this.isFreeScrolling = -restingX > this.slides[0].target &&
       -restingX < this.getLastSlide().target;
-  } else if ( !this.options.freeScroll && index == this.selectedIndex ) {
+  } else if ( !freeScroll && index == this.selectedIndex ) {
     // boost selection if selected index has not changed
     index += this.dragEndBoostSelect();
   }
@@ -197,7 +194,7 @@ proto.handleDragEnd = function() {
   // apply selection
   // TODO refactor this, selecting here feels weird
   // HACK, set flag so dragging stays in correct direction
-  this.isDragSelect = this.options.wrapAround;
+  this.isDragSelect = wrapAround;
   this.select( index );
   delete this.isDragSelect;
 };
@@ -210,9 +207,8 @@ proto.dragEndRestingSelect = function() {
   let positiveResting = this._getClosestResting( restingX, distance, 1 );
   let negativeResting = this._getClosestResting( restingX, distance, -1 );
   // use closer resting for wrap-around
-  let index = positiveResting.distance < negativeResting.distance ?
+  return positiveResting.distance < negativeResting.distance ?
     positiveResting.index : negativeResting.index;
-  return index;
 };
 
 /**
@@ -227,20 +223,17 @@ proto._getClosestResting = function( restingX, distance, increment ) {
   let index = this.selectedIndex;
   let minDistance = Infinity;
   let condition = this.options.contain && !this.options.wrapAround ?
-    // if contain, keep going if distance is equal to minDistance
-    function( dist, minDist ) {
-      return dist <= minDist;
-    } : function( dist, minDist ) {
-      return dist < minDist;
-    };
+    // if containing, keep going if distance is equal to minDistance
+    ( dist, minDist ) => dist <= minDist :
+    ( dist, minDist ) => dist < minDist;
+
   while ( condition( distance, minDistance ) ) {
     // measure distance to next cell
     index += increment;
     minDistance = distance;
     distance = this.getSlideDistance( -restingX, index );
-    if ( distance === null ) {
-      break;
-    }
+    if ( distance === null ) break;
+
     distance = Math.abs( distance );
   }
   return {
@@ -262,9 +255,8 @@ proto.getSlideDistance = function( x, index ) {
   let isWrapAround = this.options.wrapAround && len > 1;
   let slideIndex = isWrapAround ? utils.modulo( index, len ) : index;
   let slide = this.slides[ slideIndex ];
-  if ( !slide ) {
-    return null;
-  }
+  if ( !slide ) return null;
+
   // add distance for wrap-around slides
   let wrap = isWrapAround ? this.slideableWidth * Math.floor( index/len ) : 0;
   return x - ( slide.target + wrap );

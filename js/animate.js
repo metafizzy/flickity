@@ -92,9 +92,7 @@ proto.settle = function( previousX ) {
   // keep track of frames where x hasn't moved
   let isResting = !this.isPointerDown &&
       Math.round( this.x * 100 ) == Math.round( previousX * 100 );
-  if ( isResting ) {
-    this.restingFrames++;
-  }
+  if ( isResting ) this.restingFrames++;
   // stop animating if resting for 3 or more frames
   if ( this.restingFrames > 2 ) {
     this.isAnimating = false;

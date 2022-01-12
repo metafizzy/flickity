@@ -131,9 +131,7 @@ proto.cellChange = function( changedCellIndex, isPositioningSlider ) {
   // position slider
   this.select( this.selectedIndex );
   // do not position slider after lazy load
-  if ( isPositioningSlider ) {
-    this.positionSliderAtSelected();
-  }
+  if ( isPositioningSlider ) this.positionSliderAtSelected();
 };
 
 // -----  ----- //

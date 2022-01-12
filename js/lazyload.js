@@ -17,6 +17,10 @@
 
 }( typeof window != 'undefined' ? window : this, function factory( Flickity, utils ) {
 
+const lazyAttr = 'data-flickity-lazyload';
+const lazySrcAttr = `${lazyAttr}-src`;
+const lazySrcsetAttr = `${lazyAttr}-srcset`;
+
 Flickity.create.lazyLoad = function() {
   this.on( 'select', this.lazyLoad );
 };
@@ -43,16 +47,15 @@ proto.lazyLoad = function() {
 function getCellLazyImages( cellElem ) {
   // check if cell element is lazy image
   if ( cellElem.nodeName == 'IMG' ) {
-    let lazyloadAttr = cellElem.getAttribute('data-flickity-lazyload');
-    let srcAttr = cellElem.getAttribute('data-flickity-lazyload-src');
-    let srcsetAttr = cellElem.getAttribute('data-flickity-lazyload-srcset');
-    if ( lazyloadAttr || srcAttr || srcsetAttr ) {
+    let cellAttr = cellElem.getAttribute( lazyAttr );
+    let cellSrcAttr = cellElem.getAttribute( lazySrcAttr );
+    let cellSrcsetAttr = cellElem.getAttribute( lazySrcsetAttr );
+    if ( cellAttr || cellSrcAttr || cellSrcsetAttr ) {
       return [ cellElem ];
     }
   }
   // select lazy images in cell
-  let lazySelector = 'img[data-flickity-lazyload], ' +
-    'img[data-flickity-lazyload-src], img[data-flickity-lazyload-srcset]';
+  let lazySelector = `img[${lazyAttr}], img[${lazySrcAttr}], img[${lazySrcsetAttr}]`;
   let imgs = cellElem.querySelectorAll( lazySelector );
   return utils.makeArray( imgs );
 }
@@ -76,18 +79,18 @@ LazyLoader.prototype.load = function() {
   this.img.addEventListener( 'load', this );
   this.img.addEventListener( 'error', this );
   // get src & srcset
-  let src = this.img.getAttribute('data-flickity-lazyload') ||
-    this.img.getAttribute('data-flickity-lazyload-src');
-  let srcset = this.img.getAttribute('data-flickity-lazyload-srcset');
+  let src = this.img.getAttribute( lazyAttr ) ||
+    this.img.getAttribute( lazySrcAttr );
+  let srcset = this.img.getAttribute( lazySrcsetAttr );
   // set src & serset
   this.img.src = src;
   if ( srcset ) {
     this.img.setAttribute( 'srcset', srcset );
   }
   // remove attr
-  this.img.removeAttribute('data-flickity-lazyload');
-  this.img.removeAttribute('data-flickity-lazyload-src');
-  this.img.removeAttribute('data-flickity-lazyload-srcset');
+  this.img.removeAttribute( lazyAttr );
+  this.img.removeAttribute( lazySrcAttr );
+  this.img.removeAttribute( lazySrcsetAttr );
 };
 
 LazyLoader.prototype.onload = function( event ) {

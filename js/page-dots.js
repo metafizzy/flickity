@@ -32,16 +32,14 @@ PageDots.prototype.setDots = function( slidesLength ) {
 };
 
 PageDots.prototype.addDots = function( count ) {
-  let newDots = [];
-  let length = this.dots.length;
-  let max = length + count;
-
-  for ( let i = length; i < max; i++ ) {
-    let dot = document.createElement('li');
-    dot.className = 'dot';
-    dot.setAttribute( 'aria-label', `Page dot ${i + 1}` );
-    newDots.push( dot );
-  }
+  let newDots = new Array( count ).fill()
+    .map( ( item, i ) => {
+      let dot = document.createElement('li');
+      let num = i + 1 + this.dots.length;
+      dot.className = 'dot';
+      dot.setAttribute( 'aria-label', `Page dot ${num}` );
+      return dot;
+    } );
 
   this.holder.append( ...newDots );
   this.dots = this.dots.concat( newDots );
@@ -57,14 +55,14 @@ PageDots.prototype.removeDots = function( count ) {
 PageDots.prototype.updateSelected = function( index ) {
   // remove selected class on previous
   if ( this.selectedDot ) {
-    this.selectedDot.className = 'dot';
+    this.selectedDot.classList.remove('is-selected');
     this.selectedDot.removeAttribute('aria-current');
   }
   // don't proceed if no dots
   if ( !this.dots.length ) return;
 
   this.selectedDot = this.dots[ index ];
-  this.selectedDot.className = 'dot is-selected';
+  this.selectedDot.classList.add('is-selected');
   this.selectedDot.setAttribute( 'aria-current', 'step' );
 };
 
