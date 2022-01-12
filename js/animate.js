@@ -63,18 +63,16 @@ proto.setTranslateX = function( x, is3d ) {
 
 proto.dispatchScrollEvent = function() {
   let firstSlide = this.slides[0];
-  if ( !firstSlide ) {
-    return;
-  }
+  if ( !firstSlide ) return;
+
   let positionX = -this.x - firstSlide.target;
   let progress = positionX / this.slidesWidth;
   this.dispatchEvent( 'scroll', null, [ progress, positionX ] );
 };
 
 proto.positionSliderAtSelected = function() {
-  if ( !this.cells.length ) {
-    return;
-  }
+  if ( !this.cells.length ) return;
+
   this.x = -this.selectedSlide.target;
   this.velocity = 0; // stop wobble
   this.positionSlider();
@@ -156,9 +154,8 @@ proto.getRestingPosition = function() {
 };
 
 proto.applyDragForce = function() {
-  if ( !this.isDraggable || !this.isPointerDown ) {
-    return;
-  }
+  if ( !this.isDraggable || !this.isPointerDown ) return;
+
   // change the position to drag position by applying force
   let dragVelocity = this.dragX - this.x;
   let dragForce = dragVelocity - this.velocity;
@@ -168,9 +165,8 @@ proto.applyDragForce = function() {
 proto.applySelectedAttraction = function() {
   // do not attract if pointer down or no slides
   let dragDown = this.isDraggable && this.isPointerDown;
-  if ( dragDown || this.isFreeScrolling || !this.slides.length ) {
-    return;
-  }
+  if ( dragDown || this.isFreeScrolling || !this.slides.length ) return;
+
   let distance = this.selectedSlide.target * -1 - this.x;
   let force = distance * this.options.selectedAttraction;
   this.applyForce( force );

@@ -156,9 +156,8 @@ proto.option = function( opts ) {
 };
 
 proto.activate = function() {
-  if ( this.isActive ) {
-    return;
-  }
+  if ( this.isActive ) return;
+
   this.isActive = true;
   this.element.classList.add('flickity-enabled');
   if ( this.options.rightToLeft ) {
@@ -398,22 +397,21 @@ proto.setGallerySize = function() {
 
 proto._getWrapShiftCells = function() {
   // only for wrap-around
-  if ( !this.options.wrapAround ) {
-    return;
-  }
+  if ( !this.options.wrapAround ) return;
+
   // unshift previous cells
   this._unshiftCells( this.beforeShiftCells );
   this._unshiftCells( this.afterShiftCells );
   // get before cells
   // initial gap
-  let gapX = this.cursorPosition;
-  let cellIndex = this.cells.length - 1;
-  this.beforeShiftCells = this._getGapCells( gapX, cellIndex, -1 );
+  let beforeGapX = this.cursorPosition;
+  let lastIndex = this.cells.length - 1;
+  this.beforeShiftCells = this._getGapCells( beforeGapX, lastIndex, -1 );
   // get after cells
   // ending gap between last cell and end of gallery viewport
-  gapX = this.size.innerWidth - this.cursorPosition;
+  let afterGapX = this.size.innerWidth - this.cursorPosition;
   // start cloning at first cell, working forwards
-  this.afterShiftCells = this._getGapCells( gapX, 0, 1 );
+  this.afterShiftCells = this._getGapCells( afterGapX, 0, 1 );
 };
 
 proto._getGapCells = function( gapX, cellIndex, increment ) {
@@ -435,9 +433,10 @@ proto._getGapCells = function( gapX, cellIndex, increment ) {
 
 // contain cell targets so no excess sliding
 proto._containSlides = function() {
-  if ( !this.options.contain || this.options.wrapAround || !this.cells.length ) {
-    return;
-  }
+  let isContaining = this.options.contain && !this.options.wrapAround &&
+      this.cells.length;
+  if ( !isContaining ) return;
+
   let isRightToLeft = this.options.rightToLeft;
   let beginMargin = isRightToLeft ? 'marginRight' : 'marginLeft';
   let endMargin = isRightToLeft ? 'marginLeft' : 'marginRight';
@@ -494,9 +493,8 @@ proto.dispatchEvent = function( type, event, args ) {
  * @param {Boolean} isInstant - will immediately set position at selected cell
  */
 proto.select = function( index, isWrap, isInstant ) {
-  if ( !this.isActive ) {
-    return;
-  }
+  if ( !this.isActive ) return;
+
   index = parseInt( index, 10 );
   this._wrapSelect( index );
 
@@ -504,9 +502,8 @@ proto.select = function( index, isWrap, isInstant ) {
     index = utils.modulo( index, this.slides.length );
   }
   // bail if invalid index
-  if ( !this.slides[ index ] ) {
-    return;
-  }
+  if ( !this.slides[ index ] ) return;
+
   let prevIndex = this.selectedIndex;
   this.selectedIndex = index;
   this.updateSelectedSlide();
@@ -564,9 +561,8 @@ proto.next = function( isWrap, isInstant ) {
 proto.updateSelectedSlide = function() {
   let slide = this.slides[ this.selectedIndex ];
   // selectedIndex could be outside of slides, if triggered before resize()
-  if ( !slide ) {
-    return;
-  }
+  if ( !slide ) return;
+
   // unselect previous selected slide
   this.unselectSelectedSlide();
   // update new selected slide
@@ -575,15 +571,13 @@ proto.updateSelectedSlide = function() {
   this.selectedCells = slide.cells;
   this.selectedElements = slide.getCellElements();
   // HACK: selectedCell & selectedElement is first cell in slide, backwards compatibility
-  // Remove in v3?
+  // TODOv3 Remove in v3?
   this.selectedCell = slide.cells[0];
   this.selectedElement = this.selectedElements[0];
 };
 
 proto.unselectSelectedSlide = function() {
-  if ( this.selectedSlide ) {
-    this.selectedSlide.unselect();
-  }
+  if ( this.selectedSlide ) this.selectedSlide.unselect();
 };
 
 proto.selectInitialIndex = function() {
@@ -744,9 +738,7 @@ utils.debounceMethod( Flickity, 'onresize', 150 );
 
 proto.resize = function() {
   // #1177 disable resize behavior when animating or dragging for iOS 15
-  if ( !this.isActive || this.isAnimating || this.isDragging ) {
-    return;
-  }
+  if ( !this.isActive || this.isAnimating || this.isDragging ) return;
   this.getSize();
   // wrap values
   if ( this.options.wrapAround ) {
@@ -765,9 +757,7 @@ proto.resize = function() {
 // watches the :after property, activates/deactivates
 proto.watchCSS = function() {
   let watchOption = this.options.watchCSS;
-  if ( !watchOption ) {
-    return;
-  }
+  if ( !watchOption ) return;
 
   let afterContent = getComputedStyle( this.element, ':after' ).content;
   // activate if :after { content: 'flickity' }
@@ -819,9 +809,8 @@ proto.focus = function() {
 
 // deactivate all Flickity functionality, but keep stuff available
 proto.deactivate = function() {
-  if ( !this.isActive ) {
-    return;
-  }
+  if ( !this.isActive ) return;
+
   this.element.classList.remove('flickity-enabled');
   this.element.classList.remove('flickity-rtl');
   this.unselectSelectedSlide();

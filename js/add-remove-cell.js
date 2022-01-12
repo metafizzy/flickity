@@ -35,9 +35,8 @@ let proto = Flickity.prototype;
  */
 proto.insert = function( elems, index ) {
   let cells = this._makeCells( elems );
-  if ( !cells || !cells.length ) {
-    return;
-  }
+  if ( !cells || !cells.length ) return;
+
   let len = this.cells.length;
   // default to append
   index = index === undefined ? len : index;
@@ -82,9 +81,7 @@ proto.prepend = function( elems ) {
  */
 proto.remove = function( elems ) {
   let cells = this.getCells( elems );
-  if ( !cells || !cells.length ) {
-    return;
-  }
+  if ( !cells || !cells.length ) return;
 
   let minCellIndex = this.cells.length - 1;
   // remove cells from collection & DOM
@@ -104,9 +101,8 @@ proto.remove = function( elems ) {
  */
 proto.cellSizeChange = function( elem ) {
   let cell = this.getCell( elem );
-  if ( !cell ) {
-    return;
-  }
+  if ( !cell ) return;
+
   cell.getSize();
 
   let index = this.cells.indexOf( cell );

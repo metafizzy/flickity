@@ -77,9 +77,8 @@ Object.assign( Flickity.defaults, {
 } );
 
 Flickity.create.pageDots = function() {
-  if ( !this.options.pageDots ) {
-    return;
-  }
+  if ( !this.options.pageDots ) return;
+
   this.pageDots = new PageDots();
   this.handlePageDotsClick = this.onPageDotsClick.bind( this );
   // events

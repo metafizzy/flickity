@@ -25,9 +25,8 @@ let proto = Flickity.prototype;
 
 proto.lazyLoad = function() {
   let lazyLoad = this.options.lazyLoad;
-  if ( !lazyLoad ) {
-    return;
-  }
+  if ( !lazyLoad ) return;
+
   // get adjacent cells, use lazyLoad option for adjacent count
   let adjCount = typeof lazyLoad == 'number' ? lazyLoad : 0;
   let cellElems = this.getAdjacentCellElements( adjCount );

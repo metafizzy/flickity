@@ -141,9 +141,8 @@ proto.deactivatePlayer = function() {
 
 // pause auto-play on hover
 proto.onmouseenter = function() {
-  if ( !this.options.pauseAutoPlayOnHover ) {
-    return;
-  }
+  if ( !this.options.pauseAutoPlayOnHover ) return;
+
   this.player.pause();
   this.element.addEventListener( 'mouseleave', this );
 };
