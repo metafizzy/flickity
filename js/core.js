@@ -221,12 +221,8 @@ proto.reloadCells = function() {
 proto._makeCells = function( elems ) {
   let cellElems = this._filterFindCellElements( elems );
 
-  // create new Flickity for collection
-  let cells = cellElems.map( function( cellElem ) {
-    return new Cell( cellElem, this );
-  }, this );
-
-  return cells;
+  // create new Cells for collection
+  return cellElems.map( ( cellElem ) => new Cell( cellElem ) );
 };
 
 proto.getLastCell = function() {
@@ -262,7 +258,8 @@ proto._positionCells = function( index ) {
   }
 
   this.cells.slice( index ).forEach( ( cell ) => {
-    cell.setPosition( cellX );
+    cell.x = cellX;
+    this._renderCellPosition( cell, cellX );
     cellX += cell.size.outerWidth;
     this.maxCellHeight = Math.max( cell.size.outerHeight, this.maxCellHeight );
   } );
@@ -275,6 +272,15 @@ proto._positionCells = function( index ) {
   // update slidesWidth
   this.slidesWidth = this.cells.length ?
     this.getLastSlide().target - this.slides[0].target : 0;
+};
+
+proto._renderCellPosition = function( cell, x ) {
+  // render position of cell with in slider
+  let sideOffset = this.originSide === 'left' ? 1 : -1;
+  let renderX = x * sideOffset;
+  if ( this.options.percentPosition ) renderX *= this.size.innerWidth / cell.size.width;
+  let positionValue = this.getPositionValue( renderX );
+  cell.element.style.transform = `translateX( ${positionValue} )`;
 };
 
 /**

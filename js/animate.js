@@ -126,7 +126,7 @@ proto.shiftWrapCells = function( x ) {
 proto._shiftCells = function( cells, gap, shift ) {
   cells.forEach( ( cell ) => {
     let cellShift = gap > 0 ? shift : 0;
-    cell.wrapShift( cellShift );
+    this._wrapShiftCell( cell, cellShift );
     gap -= cell.size.outerWidth;
   } );
 };
@@ -134,7 +134,12 @@ proto._shiftCells = function( cells, gap, shift ) {
 proto._unshiftCells = function( cells ) {
   if ( !cells || !cells.length ) return;
 
-  cells.forEach( ( cell ) => cell.wrapShift( 0 ) );
+  cells.forEach( ( cell ) => this._wrapShiftCell( cell, 0 ) );
+};
+
+// @param {Integer} shift - 0, 1, or -1
+proto._wrapShiftCell = function( cell, shift ) {
+  this._renderCellPosition( cell, cell.x + this.slideableWidth * shift );
 };
 
 // -------------------------- physics -------------------------- //

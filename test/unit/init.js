@@ -11,7 +11,7 @@ QUnit.test( 'init', function( assert ) {
 
   for ( let prop in Flickity.defaults ) {
     assert.equal( flkty.options[ prop ], Flickity.defaults[ prop ],
-        prop + ' option matches default' );
+        `${prop} option matches default` );
   }
 
   assert.equal( flkty.element, elem, '.element is proper element' );
@@ -25,7 +25,8 @@ QUnit.test( 'init', function( assert ) {
   assert.ok( elem.matches('.flickity-enabled'), 'flickity-enabled class added' );
 
   assert.equal( flkty.cells.length, 6, 'has 6 cells' );
-  assert.equal( flkty.cells[0].element.style.left, '0px', 'first cell left: 0px' );
+  assert.equal( getComputedStyle( flkty.cells[0].element ).left, '0px',
+      'first cell left: 0px' );
   assert.equal( flkty.cells[0].element.style.transform,
       'translateX(0%)', 'first cell translateX: 0%' );
   assert.equal( flkty.cells[5].element.style.transform,

@@ -41,6 +41,18 @@ https://flickity.metafizzy.co
   cursor: grabbing;
 }
 
+/* ---- flickity-cell ---- */
+
+.flickity-cell {
+  position: absolute;
+  left: 0;
+}
+
+.flickity-rtl .flickity-cell {
+  left: unset;
+  right: 0;
+}
+
 /* ---- flickity-button ---- */
 
 .flickity-button {
