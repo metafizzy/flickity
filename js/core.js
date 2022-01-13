@@ -38,13 +38,6 @@ let jQuery = window.jQuery;
 const getComputedStyle = window.getComputedStyle;
 const console = window.console;
 
-function moveElements( elems, toElem ) {
-  elems = utils.makeArray( elems );
-  while ( elems.length ) {
-    toElem.appendChild( elems.shift() );
-  }
-}
-
 // -------------------------- Flickity -------------------------- //
 
 // globally unique identifiers
@@ -169,9 +162,9 @@ proto.activate = function() {
   this.getSize();
   // move initial cell elements so they can be loaded as cells
   let cellElems = this._filterFindCellElements( this.element.children );
-  moveElements( cellElems, this.slider );
-  this.viewport.appendChild( this.slider );
-  this.element.appendChild( this.viewport );
+  this.slider.append( ...cellElems );
+  this.viewport.append( this.slider );
+  this.element.append( this.viewport );
   // get cells from children
   this.reloadCells();
 
@@ -311,7 +304,7 @@ proto.updateSlides = function() {
     let slideWidth = ( slide.outerWidth - slide.firstMargin ) +
       ( cell.size.outerWidth - cell.size[ endMargin ] );
 
-    if ( canCellFit.call( this, i, slideWidth ) ) {
+    if ( canCellFit( i, slideWidth ) ) {
       slide.addCell( cell );
     } else {
       // doesn't fit, new slide
@@ -329,27 +322,21 @@ proto.updateSlides = function() {
 };
 
 proto._getCanCellFit = function() {
-  let groupCells = this.options.groupCells;
-  if ( !groupCells ) {
-    return function() {
-      return false;
-    };
-  } else if ( typeof groupCells == 'number' ) {
+  let { groupCells } = this.options;
+  if ( !groupCells ) return () => false;
+
+  if ( typeof groupCells == 'number' ) {
     // group by number. 3 -> [0,1,2], [3,4,5], ...
     let number = parseInt( groupCells, 10 );
-    return function( i ) {
-      return ( i % number ) !== 0;
-    };
+    return ( i ) => ( i % number ) !== 0;
   }
   // default, group by width of slide
+  let percent = 1;
   // parse '75%
-  let percentMatch = typeof groupCells == 'string' &&
-    groupCells.match( /^(\d+)%$/ );
-  let percent = percentMatch ? parseInt( percentMatch[1], 10 ) / 100 : 1;
-  return function( i, slideWidth ) {
-    /* eslint-disable-next-line no-invalid-this */
-    return slideWidth <= ( this.size.innerWidth + 1 ) * percent;
-  };
+  let percentMatch = typeof groupCells == 'string' && groupCells.match( /^(\d+)%$/ );
+  if ( percentMatch ) percent = parseInt( percentMatch[1], 10 ) / 100;
+  let groupWidth = ( this.size.innerWidth + 1 ) * percent;
+  return ( i, slideWidth ) => slideWidth <= groupWidth;
 };
 
 // alias _init for jQuery plugin .flickity()
@@ -410,9 +397,8 @@ proto._getGapCells = function( gapX, cellIndex, increment ) {
   let cells = [];
   while ( gapX > 0 ) {
     let cell = this.cells[ cellIndex ];
-    if ( !cell ) {
-      break;
-    }
+    if ( !cell ) break;
+
     cells.push( cell );
     cellIndex += increment;
     gapX -= cell.size.outerWidth;
@@ -509,8 +495,6 @@ proto.select = function( index, isWrap, isInstant ) {
   if ( index != prevIndex ) {
     this.dispatchEvent( 'change', null, [ index ] );
   }
-  // old v1 event name, remove in v3
-  this.dispatchEvent('cellSelect');
 };
 
 // wraps position for wrapAround, to move to closest slide. #113
@@ -610,7 +594,7 @@ proto.selectCell = function( value, isWrap, isInstant ) {
 
 proto.getCellSlideIndex = function( cell ) {
   // get index of slide that has cell
-  let cellSlide = this.slides.filter( ( slide ) => slide.cells.includes( cell ) )[0];
+  let cellSlide = this.slides.find( ( slide ) => slide.cells.includes( cell ) );
   return this.slides.indexOf( cellSlide );
 };
 
@@ -668,14 +652,13 @@ proto.getParentCell = function( elem ) {
  * @returns {Array} cells - array of Flickity.Cells
  */
 proto.getAdjacentCellElements = function( adjCount, index ) {
-  if ( !adjCount ) {
-    return this.selectedSlide.getCellElements();
-  }
+  if ( !adjCount ) return this.selectedSlide.getCellElements();
+
   index = index === undefined ? this.selectedIndex : index;
 
   let len = this.slides.length;
   if ( 1 + ( adjCount * 2 ) >= len ) {
-    return this.getCellElements();
+    return this.getCellElements(); // get all
   }
 
   let cellElems = [];
@@ -744,12 +727,11 @@ proto.resize = function() {
 
 // watches the :after property, activates/deactivates
 proto.watchCSS = function() {
-  let watchOption = this.options.watchCSS;
-  if ( !watchOption ) return;
+  if ( !this.options.watchCSS ) return;
 
   let afterContent = getComputedStyle( this.element, ':after' ).content;
   // activate if :after { content: 'flickity' }
-  if ( afterContent.indexOf('flickity') != -1 ) {
+  if ( afterContent.includes('flickity') ) {
     this.activate();
   } else {
     this.deactivate();
@@ -805,9 +787,9 @@ proto.deactivate = function() {
   this.unselectSelectedSlide();
   // destroy cells
   this.cells.forEach( ( cell ) => cell.destroy() );
-  this.element.removeChild( this.viewport );
+  this.viewport.remove();
   // move child elements back into element
-  moveElements( this.slider.children, this.element );
+  this.element.append( ...this.slider.children );
   if ( this.options.accessibility ) {
     this.element.removeAttribute('tabIndex');
     this.element.removeEventListener( 'keydown', this );
@@ -842,8 +824,7 @@ Object.assign( proto, animatePrototype );
  */
 Flickity.data = function( elem ) {
   elem = utils.getQueryElement( elem );
-  let id = elem && elem.flickityGUID;
-  return id && instances[ id ];
+  if ( elem ) return instances[ elem.flickityGUID ];
 };
 
 utils.htmlInit( Flickity, 'flickity' );

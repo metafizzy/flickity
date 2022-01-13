@@ -20,6 +20,7 @@
 const lazyAttr = 'data-flickity-lazyload';
 const lazySrcAttr = `${lazyAttr}-src`;
 const lazySrcsetAttr = `${lazyAttr}-srcset`;
+const imgSelector = `img[${lazyAttr}], img[${lazySrcAttr}], img[${lazySrcsetAttr}]`;
 
 Flickity.create.lazyLoad = function() {
   this.on( 'select', this.lazyLoad );
@@ -51,8 +52,7 @@ function getCellLazyImages( cellElem ) {
     }
   }
   // select lazy images in cell
-  let lazySelector = `img[${lazyAttr}], img[${lazySrcAttr}], img[${lazySrcsetAttr}]`;
-  return [ ...cellElem.querySelectorAll( lazySelector ) ];
+  return [ ...cellElem.querySelectorAll( imgSelector ) ];
 }
 
 // -------------------------- LazyLoader -------------------------- //
