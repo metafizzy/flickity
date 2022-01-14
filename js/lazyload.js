@@ -24,6 +24,8 @@ const imgSelector = `img[${lazyAttr}], img[${lazySrcAttr}], img[${lazySrcsetAttr
 
 Flickity.create.lazyLoad = function() {
   this.on( 'select', this.lazyLoad );
+
+  this.handleLazyLoadComplete = this.onLazyLoadComplete.bind( this );
 };
 
 let proto = Flickity.prototype;
@@ -38,7 +40,7 @@ proto.lazyLoad = function() {
   this.getAdjacentCellElements( adjCount )
     .map( getCellLazyImages )
     .flat()
-    .forEach( ( img ) => new LazyLoader( img, this ) );
+    .forEach( ( img ) => new LazyLoader( img, this.handleLazyLoadComplete ) );
 };
 
 function getCellLazyImages( cellElem ) {
@@ -55,16 +57,24 @@ function getCellLazyImages( cellElem ) {
   return [ ...cellElem.querySelectorAll( imgSelector ) ];
 }
 
+proto.onLazyLoadComplete = function( img, event ) {
+  let cell = this.getParentCell( img );
+  let cellElem = cell && cell.element;
+  this.cellSizeChange( cellElem );
+
+  this.dispatchEvent( 'lazyLoad', event, cellElem );
+};
+
 // -------------------------- LazyLoader -------------------------- //
 
 /**
  * class to handle loading images
  * @param {Image} img - Image element
- * @param {Flickity} flickity - Flickity instance
+ * @param {Function} onComplete - callback function
  */
-function LazyLoader( img, flickity ) {
+function LazyLoader( img, onComplete ) {
   this.img = img;
-  this.flickity = flickity;
+  this.onComplete = onComplete;
   this.load();
 }
 
@@ -79,9 +89,7 @@ LazyLoader.prototype.load = function() {
   let srcset = this.img.getAttribute( lazySrcsetAttr );
   // set src & serset
   this.img.src = src;
-  if ( srcset ) {
-    this.img.setAttribute( 'srcset', srcset );
-  }
+  if ( srcset ) this.img.setAttribute( 'srcset', srcset );
   // remove attr
   this.img.removeAttribute( lazyAttr );
   this.img.removeAttribute( lazySrcAttr );
@@ -100,13 +108,9 @@ LazyLoader.prototype.complete = function( event, className ) {
   // unbind events
   this.img.removeEventListener( 'load', this );
   this.img.removeEventListener( 'error', this );
-
-  let cell = this.flickity.getParentCell( this.img );
-  let cellElem = cell && cell.element;
-  this.flickity.cellSizeChange( cellElem );
-
   this.img.classList.add( className );
-  this.flickity.dispatchEvent( 'lazyLoad', event, cellElem );
+
+  this.onComplete( this.img, event );
 };
 
 // -----  ----- //

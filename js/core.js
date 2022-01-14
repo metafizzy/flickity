@@ -126,11 +126,6 @@ proto._create = function() {
     this.on( eventName, listener );
   }
 
-  // TODOv3
-  // Object.values( this.options.on, ( listener ) => {
-  //   this.on( eventName, listener )
-  // })
-
   for ( let method in Flickity.create ) {
     Flickity.create[ method ].call( this );
   }
@@ -200,7 +195,7 @@ proto.reloadCells = function() {
   // collection of item elements
   this.cells = this._makeCells( this.slider.children );
   this.positionCells();
-  this._getWrapShiftCells();
+  this._updateWrapShiftCells();
   this.setGallerySize();
 };
 
@@ -373,7 +368,7 @@ proto.setGallerySize = function() {
   this.viewport.style.height = `${height}px`;
 };
 
-proto._getWrapShiftCells = function() {
+proto._updateWrapShiftCells = function() {
   // only for wrap-around
   if ( !this.options.wrapAround ) return;
 
@@ -716,7 +711,7 @@ proto.resize = function() {
     this.x = utils.modulo( this.x, this.slideableWidth );
   }
   this.positionCells();
-  this._getWrapShiftCells();
+  this._updateWrapShiftCells();
   this.setGallerySize();
   this.emitEvent('resize');
   // update selected index for group slides, instant

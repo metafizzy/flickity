@@ -64,7 +64,8 @@ proto.insert = function( elems, index ) {
   }
 
   this._sizeCells( cells );
-  this.cellChange( index, true );
+  this.cellChange( index );
+  this.positionSliderAtSelected();
 };
 
 proto.append = function( elems ) {
@@ -92,7 +93,8 @@ proto.remove = function( elems ) {
     utils.removeFrom( this.cells, cell );
   } );
 
-  this.cellChange( minCellIndex, true );
+  this.cellChange( minCellIndex );
+  this.positionSliderAtSelected();
 };
 
 /**
@@ -107,31 +109,26 @@ proto.cellSizeChange = function( elem ) {
 
   let index = this.cells.indexOf( cell );
   this.cellChange( index );
+  // do not position slider after lazy load
 };
 
 /**
  * logic any time a cell is changed: added, removed, or size changed
  * @param {Integer} changedCellIndex - index of the changed cell, optional
- * @param {Boolean} isPositioningSlider - Positions slider after selection
  */
-proto.cellChange = function( changedCellIndex, isPositioningSlider ) {
+proto.cellChange = function( changedCellIndex ) {
   let prevSelectedElem = this.selectedElement;
   this._positionCells( changedCellIndex );
-  this._getWrapShiftCells();
+  this._updateWrapShiftCells();
   this.setGallerySize();
-  // update selectedIndex
-  // try to maintain position & select previous selected element
+  // update selectedIndex, try to maintain position & select previous selected element
   let cell = this.getCell( prevSelectedElem );
-  if ( cell ) {
-    this.selectedIndex = this.getCellSlideIndex( cell );
-  }
+  if ( cell ) this.selectedIndex = this.getCellSlideIndex( cell );
   this.selectedIndex = Math.min( this.slides.length - 1, this.selectedIndex );
 
   this.emitEvent( 'cellChange', [ changedCellIndex ] );
   // position slider
   this.select( this.selectedIndex );
-  // do not position slider after lazy load
-  if ( isPositioningSlider ) this.positionSliderAtSelected();
 };
 
 // -----  ----- //
