@@ -737,19 +737,19 @@ proto.watchCSS = function() {
 
 // go previous/next if left/right keys pressed
 proto.onkeydown = function( event ) {
-  if ( !this.options.accessibility ) return;
-  // only work if element is in focus
   let { activeElement } = document;
+  let handler = Flickity.keyboardHandlers[ event.key ];
+  // only work if element is in focus
+  if ( !this.options.accessibility || !activeElement || !handler ) return;
+
   let focusableElems = [ this.element ];
   // TODOv3 maybe add this.focusableElems and handle this in prev-next-buttons.js
   if ( this.prevButton ) focusableElems.push( this.prevButton.element );
   if ( this.nextButton ) focusableElems.push( this.nextButton.element );
-  let isFocused = activeElement &&
-    focusableElems.some( ( elem ) => activeElement == elem );
-  if ( !isFocused ) return;
+  if ( this.pageDots ) focusableElems.push( ...this.pageDots.dots );
 
-  let handler = Flickity.keyboardHandlers[ event.key ];
-  if ( handler ) handler.call( this );
+  let isFocused = focusableElems.some( ( elem ) => activeElement == elem );
+  if ( isFocused ) handler.call( this );
 };
 
 Flickity.keyboardHandlers = {

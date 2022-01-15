@@ -15,7 +15,7 @@
 
 function PageDots() {
   // create holder element
-  this.holder = document.createElement('ol');
+  this.holder = document.createElement('div');
   this.holder.className = 'flickity-page-dots';
   // create dots, array of elements
   this.dots = [];
@@ -34,10 +34,11 @@ PageDots.prototype.setDots = function( slidesLength ) {
 PageDots.prototype.addDots = function( count ) {
   let newDots = new Array( count ).fill()
     .map( ( item, i ) => {
-      let dot = document.createElement('li');
+      let dot = document.createElement('button');
+      dot.setAttribute( 'type', 'button' );
       let num = i + 1 + this.dots.length;
-      dot.className = 'dot';
-      dot.setAttribute( 'aria-label', `Page dot ${num}` );
+      dot.className = 'flickity-page-dot';
+      dot.textContent = `View slide ${num}`;
       return dot;
     } );
 
