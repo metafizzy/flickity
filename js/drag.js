@@ -33,7 +33,7 @@ Object.assign( Flickity.defaults, {
 
 let proto = Flickity.prototype;
 Object.assign( proto, Unidragger.prototype ); // inherit Unidragger
-proto._touchActionValue = 'pan-y';
+proto.touchActionValue = '';
 
 // --------------------------  -------------------------- //
 
@@ -79,6 +79,8 @@ proto._uiChangeDrag = function() {
 
 // -------------------------- pointer events -------------------------- //
 
+const focusNodes = [ 'INPUT', 'TEXTAREA', 'SELECT' ];
+
 proto.handlePointerDown = function( event ) {
   if ( !this.isDraggable ) {
     // proceed for staticClick
@@ -86,11 +88,13 @@ proto.handlePointerDown = function( event ) {
     return;
   }
 
-  this._pointerDownPreventDefault( event );
-  this.pointerDownFocus( event );
+  let isTouchStart = event.type == 'touchstart';
+  let isTouchPointer = event.pointerType == 'touch';
+  let isFocusNode = focusNodes.includes( event.target.nodeName );
+  if ( !isTouchStart && !isTouchPointer && !isFocusNode ) event.preventDefault();
+  if ( !isFocusNode ) this.focus();
   // blur
   if ( document.activeElement != this.element ) document.activeElement.blur();
-
   // stop if it was moving
   this.dragX = this.x;
   this.viewport.classList.add('is-pointer-down');
@@ -98,22 +102,6 @@ proto.handlePointerDown = function( event ) {
   this.pointerDownScroll = getScrollPosition();
   window.addEventListener( 'scroll', this );
   this.bindActivePointerEvents( event );
-};
-
-const focusNodes = [ 'INPUT', 'TEXTAREA', 'SELECT' ];
-
-proto.pointerDownFocus = function( event ) {
-  let isFocusNode = focusNodes.includes( event.target.nodeName );
-  if ( !isFocusNode ) this.focus();
-};
-
-proto._pointerDownPreventDefault = function( event ) {
-  let isTouchStart = event.type == 'touchstart';
-  let isTouchPointer = event.pointerType == 'touch';
-  let isFocusNode = focusNodes.includes( event.target.nodeName );
-  if ( !isTouchStart && !isTouchPointer && !isFocusNode ) {
-    event.preventDefault();
-  }
 };
 
 // ----- move ----- //
