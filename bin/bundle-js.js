@@ -1,36 +1,44 @@
 const fs = require('fs');
-const requirejs = require('requirejs');
+const { execSync } = require('child_process');
+const { minify } = require('terser');
 
-// get banner
-let indexJsSrc = fs.readFileSync( 'js/index.js', 'utf8' );
-let banner = indexJsSrc.split(' */')[0] + ' */\n\n';
+const indexPath = 'js/index.js';
+const distPath = 'dist/flickity.pkgd.js';
+const distMinPath = 'dist/flickity.pkgd.min.js';
+
+let indexContent = fs.readFileSync( `./${indexPath}`, 'utf8' );
+// get file paths from index.js
+let cjsBlockRegex = /module\.exports = factory\([\w ,'.\-()/\n]+;/i;
+let cjsBlockMatch = indexContent.match( cjsBlockRegex );
+let jsPaths = indexContent.match( /require\('([.\-/\w]+)'\)/gi )
+  .map( ( path ) => path.replace( "require('.", 'js' ).replace( "')", '.js' ) );
+
+let paths = [
+  'node_modules/jquery-bridget/jquery-bridget.js',
+  'node_modules/ev-emitter/ev-emitter.js',
+  'node_modules/get-size/get-size.js',
+  'node_modules/fizzy-ui-utils/utils.js',
+  'node_modules/unidragger/unidragger.js',
+  'js/cell.js',
+  'js/slide.js',
+  'js/animate.js',
+  ...jsPaths,
+  'node_modules/flickity-imagesloaded/flickity-imagesloaded.js',
+  'node_modules/imagesloaded/imagesloaded.js',
+];
+
+// concatenate files
+execSync(`cat ${paths.join(' ')} > ${distPath}`);
+
+// add banner
+let banner = indexContent.split(' */')[0] + ' */\n\n';
 banner = banner.replace( 'Flickity', 'Flickity PACKAGED' );
+let distJsContent = fs.readFileSync( distPath, 'utf8' );
+distJsContent = banner + distJsContent;
+fs.writeFileSync( distPath, distJsContent );
 
-let options = {
-  out: 'dist/flickity.pkgd.js',
-  baseUrl: 'bower_components',
-  optimize: 'none',
-  include: [
-    'jquery-bridget/jquery-bridget',
-    'flickity/js/index',
-    'flickity-as-nav-for/as-nav-for',
-    'flickity-imagesloaded/flickity-imagesloaded',
-  ],
-  paths: {
-    flickity: '../',
-    jquery: 'empty:',
-  },
-};
-
-requirejs.optimize(
-    options,
-    function() {
-      let content = fs.readFileSync( options.out, 'utf8' );
-      content = content.replace( "'flickity-imagesloaded/flickity-imagesloaded',", '' );
-      content = banner + content;
-      fs.writeFileSync( options.out, content );
-    },
-    function( err ) {
-      throw new Error( err );
-    },
-);
+// minify
+( async function() {
+  let { code } = await minify( distJsContent, { mangle: true } );
+  fs.writeFileSync( distMinPath, code );
+} )();

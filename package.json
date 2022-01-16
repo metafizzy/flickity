@@ -24,7 +24,6 @@
     "clean-css": "^5.2.2",
     "eslint": "^7.32.0",
     "eslint-plugin-metafizzy": "^1.2.1",
-    "flickity-as-nav-for": "^2.0.0",
     "flickity-imagesloaded": "^2.0.0",
     "jquery-bridget": "^3.0.1",
     "qunit": "^2.17.2",
