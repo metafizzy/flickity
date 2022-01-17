@@ -40,9 +40,8 @@ proto.animate = function() {
 proto.positionSlider = function() {
   let x = this.x;
   // wrap position around
-  if ( this.options.wrapAround && this.cells.length > 1 ) {
-    x = utils.modulo( x, this.slideableWidth );
-    x -= this.slideableWidth;
+  if ( this.isWrapping ) {
+    x = utils.modulo( x, this.slideableWidth ) - this.slideableWidth;
     this.shiftWrapCells( x );
   }
 
@@ -53,7 +52,7 @@ proto.positionSlider = function() {
 proto.setTranslateX = function( x, is3d ) {
   x += this.cursorPosition;
   // reverse if right-to-left and using transform
-  x = this.options.rightToLeft ? -x : x;
+  if ( this.options.rightToLeft ) x = -x;
   let translateX = this.getPositionValue( x );
   // use 3D transforms for hardware acceleration on iOS
   // but use 2D when settled, for better font-rendering

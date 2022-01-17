@@ -367,8 +367,10 @@ proto.setGallerySize = function() {
 };
 
 proto._updateWrapShiftCells = function() {
+  // update isWrapping
+  this.isWrapping = this.getIsWrapping();
   // only for wrap-around
-  if ( !this.options.wrapAround ) return;
+  if ( !this.isWrapping ) return;
 
   // unshift previous cells
   this._unshiftCells( this.beforeShiftCells );
@@ -385,6 +387,22 @@ proto._updateWrapShiftCells = function() {
   this.afterShiftCells = this._getGapCells( afterGapX, 0, 1 );
 };
 
+proto.getIsWrapping = function() {
+  let { wrapAround } = this.options;
+  if ( !wrapAround || this.slides.length < 2 ) return false;
+
+  if ( wrapAround != 'fill' ) return true;
+  // check that slides can fit
+
+  let gapWidth = this.slideableWidth - this.size.innerWidth;
+  if ( gapWidth > this.size.innerWidth ) return true; // gap * 2x big, all good
+  // check that content width - shifting cell is bigger than viewport width
+  for ( let cell of this.cells ) {
+    if ( cell.size.outerWidth > gapWidth ) return false;
+  }
+  return true;
+};
+
 proto._getGapCells = function( gapX, cellIndex, increment ) {
   // keep adding cells until the cover the initial gap
   let cells = [];
@@ -399,11 +417,11 @@ proto._getGapCells = function( gapX, cellIndex, increment ) {
   return cells;
 };
 
-// ----- contain ----- //
+// ----- contain & wrap ----- //
 
 // contain cell targets so no excess sliding
 proto._containSlides = function() {
-  let isContaining = this.options.contain && !this.options.wrapAround &&
+  let isContaining = this.options.contain && !this.isWrapping &&
       this.cells.length;
   if ( !isContaining ) return;
 
@@ -465,7 +483,7 @@ proto.select = function( index, isWrap, isInstant ) {
   index = parseInt( index, 10 );
   this._wrapSelect( index );
 
-  if ( this.options.wrapAround || isWrap ) {
+  if ( this.isWrapping || isWrap ) {
     index = utils.modulo( index, this.slides.length );
   }
   // bail if invalid index
@@ -492,27 +510,33 @@ proto.select = function( index, isWrap, isInstant ) {
 
 // wraps position for wrapAround, to move to closest slide. #113
 proto._wrapSelect = function( index ) {
-  let len = this.slides.length;
-  let isWrapping = this.options.wrapAround && len > 1;
-  if ( !isWrapping ) {
-    return index;
+  if ( !this.isWrapping ) return;
+
+  const { selectedIndex, slideableWidth, slides: { length } } = this;
+  // shift index for wrap, do not wrap dragSelect
+  if ( !this.isDragSelect ) {
+    let wrapIndex = utils.modulo( index, length );
+    // go to shortest
+    let delta = Math.abs( wrapIndex - selectedIndex );
+    let backWrapDelta = Math.abs( ( wrapIndex + length ) - selectedIndex );
+    let forewardWrapDelta = Math.abs( ( wrapIndex - length ) - selectedIndex );
+    if ( backWrapDelta < delta ) {
+      index += length;
+    } else if ( forewardWrapDelta < delta ) {
+      index -= length;
+    }
   }
-  let wrapIndex = utils.modulo( index, len );
-  // go to shortest
-  let delta = Math.abs( wrapIndex - this.selectedIndex );
-  let backWrapDelta = Math.abs( ( wrapIndex + len ) - this.selectedIndex );
-  let forewardWrapDelta = Math.abs( ( wrapIndex - len ) - this.selectedIndex );
-  if ( !this.isDragSelect && backWrapDelta < delta ) {
-    index += len;
-  } else if ( !this.isDragSelect && forewardWrapDelta < delta ) {
-    index -= len;
-  }
+
   // wrap position so slider is within normal area
   if ( index < 0 ) {
-    this.x -= this.slideableWidth;
-  } else if ( index >= len ) {
-    this.x += this.slideableWidth;
+    this.x -= slideableWidth;
+  } else if ( index >= length ) {
+    this.x += slideableWidth;
   }
+};
+
+proto._getWrapIndex = function( index ) {
+  if ( !this.isDragSelect ) return index;
 };
 
 proto.previous = function( isWrap, isInstant ) {
@@ -656,7 +680,7 @@ proto.getAdjacentCellElements = function( adjCount, index ) {
 
   let cellElems = [];
   for ( let i = index - adjCount; i <= index + adjCount; i++ ) {
-    let slideIndex = this.options.wrapAround ? utils.modulo( i, len ) : i;
+    let slideIndex = this.isWrapping ? utils.modulo( i, len ) : i;
     let slide = this.slides[ slideIndex ];
     if ( slide ) {
       cellElems = cellElems.concat( slide.getCellElements() );
@@ -705,7 +729,7 @@ proto.resize = function() {
   if ( !this.isActive || this.isAnimating || this.isDragging ) return;
   this.getSize();
   // wrap values
-  if ( this.options.wrapAround ) {
+  if ( this.isWrapping ) {
     this.x = utils.modulo( this.x, this.slideableWidth );
   }
   this.positionCells();

@@ -130,7 +130,7 @@ proto.updatePrevNextButtons = function() {
 
 proto.updatePrevNextButton = function( button, disabledIndex ) {
   // enable is wrapAround and at least 2 slides
-  if ( this.options.wrapAround && this.slides.length > 1 ) {
+  if ( this.isWrapping && this.slides.length > 1 ) {
     button.enable();
     return;
   }

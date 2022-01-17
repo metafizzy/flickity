@@ -70,3 +70,9 @@ body {
 /* ---- select-cell ---- */
 
 #select-cell .cell { width: 33.33%; }
+
+/* ---- wrap-around-fill ---- */
+
+.variable-width .cell.cell--wrap-around-short {
+  width: 20%;
+}

@@ -140,13 +140,11 @@ proto.handleDragMove = function( event, pointer, moveVector ) {
   this.previousDragX = this.dragX;
   // reverse if right-to-left
   let direction = this.options.rightToLeft ? -1 : 1;
-  if ( this.options.wrapAround ) {
-    // wrap around move. #589
-    moveVector.x %= this.slideableWidth;
-  }
+  // wrap around move. #589
+  if ( this.isWrapping ) moveVector.x %= this.slideableWidth;
   let dragX = this.dragStartPosition + moveVector.x * direction;
 
-  if ( !this.options.wrapAround && this.slides.length ) {
+  if ( !this.isWrapping ) {
     // slow drag
     let originBound = Math.max( -this.slides[0].target, this.dragStartPosition );
     dragX = dragX > originBound ? ( dragX + originBound ) * 0.5 : dragX;
@@ -155,19 +153,18 @@ proto.handleDragMove = function( event, pointer, moveVector ) {
   }
 
   this.dragX = dragX;
-
   this.dragMoveTime = new Date();
 };
 
 proto.handleDragEnd = function() {
   if ( !this.isDraggable ) return;
 
-  let { freeScroll, wrapAround } = this.options;
+  let { freeScroll } = this.options;
   if ( freeScroll ) this.isFreeScrolling = true;
   // set selectedIndex based on where flick will end up
   let index = this.dragEndRestingSelect();
 
-  if ( freeScroll && !wrapAround ) {
+  if ( freeScroll && !this.isWrapping ) {
     // if free-scroll & not wrap around
     // do not free-scroll if going outside of bounding slides
     // so bounding slides can attract slider, and keep it in bounds
@@ -182,7 +179,7 @@ proto.handleDragEnd = function() {
   // apply selection
   // TODO refactor this, selecting here feels weird
   // HACK, set flag so dragging stays in correct direction
-  this.isDragSelect = wrapAround;
+  this.isDragSelect = this.isWrapping;
   this.select( index );
   delete this.isDragSelect;
 };
@@ -210,7 +207,7 @@ proto.dragEndRestingSelect = function() {
 proto._getClosestResting = function( restingX, distance, increment ) {
   let index = this.selectedIndex;
   let minDistance = Infinity;
-  let condition = this.options.contain && !this.options.wrapAround ?
+  let condition = this.options.contain && !this.isWrapping ?
     // if containing, keep going if distance is equal to minDistance
     ( dist, minDist ) => dist <= minDist :
     ( dist, minDist ) => dist < minDist;

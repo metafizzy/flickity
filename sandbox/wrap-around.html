@@ -124,6 +124,23 @@
     <div class="cell n4">4</div>
   </div>
 
+  <h2>wrapAround: 'fill', should disabled</h2>
+  <div class="container variable-width" data-flickity='{ "wrapAround": "fill" }'>
+    <div class="cell n1">1</div>
+    <div class="cell n2 w2">2</div>
+    <div class="cell n3 w3">3</div>
+    <div class="cell n4">4</div>
+  </div>
+
+  <h2>wrapAround: 'fill', should enabled</h2>
+  <div class="container variable-width" data-flickity='{ "wrapAround": "fill" }'>
+    <div class="cell n1">1</div>
+    <div class="cell n2 w2">2</div>
+    <div class="cell n3 w3">3</div>
+    <div class="cell n4">4</div>
+    <div class="cell n4">5</div>
+  </div>
+
 <script src="../node_modules/get-size/get-size.js"></script>
 <script src="../node_modules/ev-emitter/ev-emitter.js"></script>
 <script src="../node_modules/unidragger/unidragger.js"></script>
