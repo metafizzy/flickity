@@ -152,6 +152,11 @@ https://flickity.metafizzy.co
   appearance: none;
   border: none;
   text-indent: -9999px;
+  overflow: hidden;
+}
+
+.flickity-rtl .flickity-page-dot {
+  text-index: 9999px;
 }
 
 .flickity-page-dot:focus {
