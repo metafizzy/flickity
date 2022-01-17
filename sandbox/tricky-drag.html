@@ -73,46 +73,7 @@
 <script src="../js/player.js"></script>
 <script src="../js/add-remove-cell.js"></script>
 
-<script>
-var nonDragFlkty = new Flickity( '.carousel--non-drag', {
-  draggable: false,
-});
-
-function onStaticClick( event, pointer, cellElem, cellIndex ) {
-  console.log('staticClick', this.element.className, cellIndex );
-}
-
-nonDragFlkty.on( 'staticClick', onStaticClick );
-
-var singleCellFlkty = new Flickity('.carousel--single-cell');
-singleCellFlkty.on( 'staticClick', onStaticClick );
-
-var groupCarousel = document.querySelector('.carousel--group');
-
-var groupFlkty = new Flickity( groupCarousel, {
-  groupCells: true,
-});
-
-groupFlkty.on( 'staticClick', function( event, pointer, cellElem, cellIndex ) {
-  if ( cellElem ) {
-    groupFlkty.remove( cellElem );
-  }
-});
-
-function makeGroupCell() {
-  var cell = document.createElement('div');
-  cell.className = 'carousel-cell';
-  var b = document.createElement('b');
-  b.textContent = groupFlkty.cells.length + 1;
-  cell.appendChild( b );
-  return cell;
-}
-
-document.querySelector('.add-group-cell-button').onclick = function() {
-  groupFlkty.append( makeGroupCell() );
-};
-
-</script>
+<script src="js/tricky-drag.js"></script>
 
 </body>
 </html>

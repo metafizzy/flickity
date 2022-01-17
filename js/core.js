@@ -30,13 +30,11 @@
 
 }( typeof window != 'undefined' ? window : this,
     function factory( window, EvEmitter, getSize, utils, Cell, Slide, animatePrototype ) {
-
 /* eslint-enable max-params */
 
 // vars
-let jQuery = window.jQuery;
-const getComputedStyle = window.getComputedStyle;
-const console = window.console;
+const { getComputedStyle, console } = window;
+let { jQuery } = window;
 
 // -------------------------- Flickity -------------------------- //
 
@@ -824,8 +822,9 @@ Flickity.data = function( elem ) {
 
 utils.htmlInit( Flickity, 'flickity' );
 
-if ( jQuery && jQuery.bridget ) {
-  jQuery.bridget( 'flickity', Flickity );
+let { jQueryBridget } = window;
+if ( jQuery && jQueryBridget ) {
+  jQueryBridget( 'flickity', Flickity, jQuery );
 }
 
 // set internal jQuery, for Webpack + jQuery v3, #478

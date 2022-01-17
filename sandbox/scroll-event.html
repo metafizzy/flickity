@@ -200,66 +200,7 @@ html { overflow-y: scroll; }
 <script src="../js/add-remove-cell.js"></script>
 <script src="../js/lazyload.js"></script>
 
-<script>
-var flkty = new Flickity( '.carousel1', {
-  initialIndex: 2,
-  // groupCells: true,
-  // wrapAround: true,
-  // cellAlign: 'right'
-});
-
-var progressBar = document.querySelector('.progress-bar');
-
-flkty.on( 'scroll', function( progress ) {
-  console.log( progress );
-  var width = Math.max( 0, Math.min( 1, progress ) );
-  progressBar.style.width = width * 100 + '%';
-});
-
-flkty.reposition();
-
-// -----  ----- //
-
-var paraBG = document.querySelector('.parallax__layer--bg');
-var paraFG = document.querySelector('.parallax__layer--fg');
-
-var paraFlkty = new Flickity( '.parallax__carousel', {
-
-});
-
-var cellRatio = 0.6;
-var bgRatio = 0.8;
-var fgRatio = 1.25;
-
-paraFlkty.on( 'scroll', function( progress ) {
-  // console.log( progress );
-  paraBG.style.left = ( 0.5 - ( 0.5 + progress * 4 ) * cellRatio * bgRatio ) * 100 + '%';
-  paraFG.style.left = ( 0.5 - ( 0.5 + progress * 4 ) * cellRatio * fgRatio ) * 100 + '%';
-});
-
-paraFlkty.reposition();
-
-// -----  ----- //
-
-
-var imgFlkty = new Flickity( '.image-carousel', {
-});
-
-window.onload = function() {
-  imgFlkty.reposition();
-}
-
-var imgs = document.querySelectorAll('.image-carousel img');
-
-imgFlkty.on( 'scroll', function( progress ) {
-  imgFlkty.slides.forEach( ( slide, i ) => {
-    var img = imgs[i];
-    var x = ( slide.target + imgFlkty.x ) * -0.333;
-    img.style.transform = `translateX(${x}px)`;
-  });
-});
-
-</script>
+<script src="js/scroll-event.js"></script>
 
 </body>
 </html>

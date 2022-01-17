@@ -8,8 +8,6 @@ const distMinPath = 'dist/flickity.pkgd.min.js';
 
 let indexContent = fs.readFileSync( `./${indexPath}`, 'utf8' );
 // get file paths from index.js
-let cjsBlockRegex = /module\.exports = factory\([\w ,'.\-()/\n]+;/i;
-let cjsBlockMatch = indexContent.match( cjsBlockRegex );
 let jsPaths = indexContent.match( /require\('([.\-/\w]+)'\)/gi )
   .map( ( path ) => path.replace( "require('.", 'js' ).replace( "')", '.js' ) );
 
