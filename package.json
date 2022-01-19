@@ -6,8 +6,10 @@
   "style": "css/flickity.css",
   "scripts": {
     "test": "npm run lint && echo \"View test/ in browser\" && exit 1",
-    "lint": "node bin/lint-json.js && npx eslint .",
-    "lintFix": "npx eslint . --fix",
+    "lintJs": "npx eslint .",
+    "lintJson": "node bin/lint-json.js",
+    "lintCss": "npx stylelint '**/*.css'",
+    "lint": "npm run lintJson && npm run lintJs && npm run lintCss",
     "dist": "npm run bundleCss && npm run bundleJs && npm run uglify",
     "bundleCss": "cp css/flickity.css dist/flickity.css && node bin/bundle-css.js",
     "bundleJs": "node bin/bundle-js.js",
@@ -27,6 +29,8 @@
     "flickity-imagesloaded": "^2.0.0",
     "jquery-bridget": "^3.0.1",
     "qunit": "^2.17.2",
+    "stylelint": "^14.2.0",
+    "stylelint-config-standard": "^24.0.0",
     "terser": "^5.10.0"
   },
   "repository": {

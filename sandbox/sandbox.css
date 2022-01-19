@@ -10,7 +10,7 @@ body {
   margin-bottom: 50px;
 }
 
-.container:after {
+.container::after {
   content: '';
   display: block;
   clear: both;
@@ -21,33 +21,28 @@ body {
 .cell {
   width: 100%;
   height: 200px;
-  border: 0px solid white;
+  border: 0 solid white;
   background: #CCC;
 }
 
 .cell.is-selected {
-  outline: 4px solid hsla(0, 0%, 0%, 0.25);
+  outline: 4px solid hsl(0 0% 0% / 25%);
   outline-offset: -4px;
 }
 
-.cell:nth-child(6n) { background: hsl(0, 80%, 70%); }
-.cell:nth-child(6n+1) { background: hsl(60, 80%, 70%); }
-.cell:nth-child(6n+2) { background: hsl(120, 80%, 70%); }
-.cell:nth-child(6n+3) { background: hsl(180, 80%, 70%); }
-.cell:nth-child(6n+4) { background: hsl(240, 80%, 70%); }
-.cell:nth-child(6n+5) { background: hsl(300, 80%, 70%); }
+.cell:nth-child(6n) { background: hsl(0 80% 70%); }
+.cell:nth-child(6n+1) { background: hsl(60 80% 70%); }
+.cell:nth-child(6n+2) { background: hsl(120 80% 70%); }
+.cell:nth-child(6n+3) { background: hsl(180 80% 70%); }
+.cell:nth-child(6n+4) { background: hsl(240 80% 70%); }
+.cell:nth-child(6n+5) { background: hsl(300 80% 70%); }
 
-.cell.n1 { background: #D22; background: hsl(0, 80%, 70%); }
-.cell.n2 { background: #DD2; background: hsl(60, 80%, 70%); }
-.cell.n3 { background: #2D2; background: hsl(120, 80%, 70%); }
-.cell.n4 { background: #2DD; background: hsl(180, 80%, 70%); }
-.cell.n5 { background: #22D; background: hsl(240, 80%, 70%); }
-.cell.n6 { background: #D2D; background: hsl(300, 80%, 70%); }
-
-#half-width .cell {
-  width: 48%;
-  margin-right: 4%;
-}
+.cell.n1 { background: hsl(0 80% 70%); }
+.cell.n2 { background: hsl(60 80% 70%); }
+.cell.n3 { background: hsl(120 80% 70%); }
+.cell.n4 { background: hsl(180 80% 70%); }
+.cell.n5 { background: hsl(240 80% 70%); }
+.cell.n6 { background: hsl(300 80% 70%); }
 
 .variable-width .cell {
   width: 20%;
@@ -60,6 +55,11 @@ body {
 .fixed-width .cell {
   width: 200px;
   margin-right: 20px;
+}
+
+#half-width .cell {
+  width: 48%;
+  margin-right: 4%;
 }
 
 /* big number */
@@ -78,7 +78,7 @@ body {
   counter-reset: cell;
 }
 
-.counting .cell:before {
+.counting .cell::before {
   counter-increment: cell;
   content: counter(cell);
   display: block;
