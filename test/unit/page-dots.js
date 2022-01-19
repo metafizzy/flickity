@@ -4,7 +4,7 @@ QUnit.test( 'pageDots', function( assert ) {
   let flkty = new Flickity( elem );
 
   let dotsHolder = elem.querySelector('.flickity-page-dots');
-  let dotsElems = [ ...dotsHolder.querySelectorAll('.dot') ];
+  let dotsElems = [ ...dotsHolder.querySelectorAll('.flickity-page-dot') ];
 
   assert.ok( dotsHolder, 'dots holder in DOM' );
   assert.equal( flkty.pageDots.holder, dotsHolder,
