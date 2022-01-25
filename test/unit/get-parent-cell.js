@@ -34,4 +34,4 @@ QUnit.test( 'getParentCell', function( assert ) {
   index = flkty.cells.indexOf( cell );
   assert.equal( index, -1, 'not cell is index -1' );
 
-});
+} );

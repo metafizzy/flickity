@@ -4,8 +4,8 @@ QUnit.test( 'auto play', function( assert ) {
   var done = assert.async();
 
   var flkty = new Flickity( '#auto-play', {
-    autoPlay: 200
-  });
+    autoPlay: 200,
+  } );
 
   var selectCount = 0;
   var testDelay = flkty.options.autoPlay + 100;
@@ -15,7 +15,7 @@ QUnit.test( 'auto play', function( assert ) {
   function nextTest() {
     if ( tests.length ) {
       var next = tests.shift();
-      next();
+      return next();
     } else {
       flkty.stopPlayer();
       done();
@@ -25,18 +25,17 @@ QUnit.test( 'auto play', function( assert ) {
   tests = [
     // check that player runs
     function() {
-      var onSelect = function() {
+      flkty.on( 'select', function onSelect() {
         selectCount++;
         if ( selectCount < 5 ) {
           assert.equal( flkty.selectedIndex, selectCount % flkty.cells.length,
-            'auto-played to ' + flkty.selectedIndex );
+              'auto-played to ' + flkty.selectedIndex );
         } else if ( selectCount == 5 ) {
           // HACK do async, should be able to stop after a tick
           flkty.off( 'select', onSelect );
           nextTest();
         }
-      };
-      flkty.on( 'select', onSelect );
+      } );
     },
     // pause & unpause
     function() {
@@ -51,7 +50,7 @@ QUnit.test( 'auto play', function( assert ) {
         flkty.once( 'select', function() {
           assert.ok( true, 'player resumed after unpausing' );
           nextTest();
-        });
+        } );
         flkty.unpausePlayer();
       }, testDelay );
     },
@@ -88,4 +87,4 @@ QUnit.test( 'auto play', function( assert ) {
 
   nextTest();
 
-});
+} );

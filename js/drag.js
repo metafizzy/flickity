@@ -1,31 +1,30 @@
 // drag
 ( function( window, factory ) {
   // universal module definition
-  /* jshint strict: false */
   if ( typeof define == 'function' && define.amd ) {
     // AMD
     define( [
       './flickity',
       'unidragger/unidragger',
-      'fizzy-ui-utils/utils'
+      'fizzy-ui-utils/utils',
     ], function( Flickity, Unidragger, utils ) {
       return factory( window, Flickity, Unidragger, utils );
-    });
+    } );
   } else if ( typeof module == 'object' && module.exports ) {
     // CommonJS
     module.exports = factory(
-      window,
-      require('./flickity'),
-      require('unidragger'),
-      require('fizzy-ui-utils')
+        window,
+        require('./flickity'),
+        require('unidragger'),
+        require('fizzy-ui-utils')
     );
   } else {
     // browser global
     window.Flickity = factory(
-      window,
-      window.Flickity,
-      window.Unidragger,
-      window.fizzyUIUtils
+        window,
+        window.Flickity,
+        window.Unidragger,
+        window.fizzyUIUtils
     );
   }
 
@@ -38,7 +37,7 @@
 utils.extend( Flickity.defaults, {
   draggable: '>1',
   dragThreshold: 3,
-});
+} );
 
 // ----- create ----- //
 
@@ -52,22 +51,12 @@ proto._touchActionValue = 'pan-y';
 
 // --------------------------  -------------------------- //
 
-var isTouch = 'createTouch' in document;
-var isTouchmoveScrollCanceled = false;
-
 proto._createDrag = function() {
   this.on( 'activate', this.onActivateDrag );
   this.on( 'uiChange', this._uiChangeDrag );
-  this.on( 'childUIPointerDown', this._childUIPointerDownDrag );
   this.on( 'deactivate', this.onDeactivateDrag );
   this.on( 'cellChange', this.updateDraggable );
   // TODO updateDraggable on resize? if groupCells & slides change
-  // HACK - add seemingly innocuous handler to fix iOS 10 scroll behavior
-  // #457, RubaXa/Sortable#973
-  if ( isTouch && !isTouchmoveScrollCanceled ) {
-    window.addEventListener( 'touchmove', function() {});
-    isTouchmoveScrollCanceled = true;
-  }
 };
 
 proto.onActivateDrag = function() {
@@ -108,13 +97,6 @@ proto.unbindDrag = function() {
 
 proto._uiChangeDrag = function() {
   delete this.isFreeScrolling;
-};
-
-proto._childUIPointerDownDrag = function( event ) {
-  // allow focus & preventDefault even when not draggable
-  // so child UI elements keep focus on carousel. #721
-  event.preventDefault();
-  this.pointerDownFocus( event );
 };
 
 // -------------------------- pointer events -------------------------- //
@@ -231,7 +213,7 @@ proto.dragMove = function( event, pointer, moveVector ) {
   var direction = this.options.rightToLeft ? -1 : 1;
   if ( this.options.wrapAround ) {
     // wrap around move. #589
-    moveVector.x = moveVector.x % this.slideableWidth;
+    moveVector.x %= this.slideableWidth;
   }
   var dragX = this.dragStartPosition + moveVector.x * direction;
 
@@ -306,7 +288,11 @@ proto._getClosestResting = function( restingX, distance, increment ) {
   var minDistance = Infinity;
   var condition = this.options.contain && !this.options.wrapAround ?
     // if contain, keep going if distance is equal to minDistance
-    function( d, md ) { return d <= md; } : function( d, md ) { return d < md; };
+    function( dist, minDist ) {
+      return dist <= minDist;
+    } : function( dist, minDist ) {
+      return dist < minDist;
+    };
   while ( condition( distance, minDistance ) ) {
     // measure distance to next cell
     index += increment;
@@ -320,14 +306,15 @@ proto._getClosestResting = function( restingX, distance, increment ) {
   return {
     distance: minDistance,
     // selected was previous index
-    index: index - increment
+    index: index - increment,
   };
 };
 
 /**
  * measure distance between x and a slide target
- * @param {Number} x
+ * @param {Number} x - horizontal position
  * @param {Integer} index - slide index
+ * @returns {Number} - slide distance
  */
 proto.getSlideDistance = function( x, index ) {
   var len = this.slides.length;
@@ -339,7 +326,7 @@ proto.getSlideDistance = function( x, index ) {
     return null;
   }
   // add distance for wrap-around slides
-  var wrap = isWrapAround ? this.slideableWidth * Math.floor( index / len ) : 0;
+  var wrap = isWrapAround ? this.slideableWidth * Math.floor( index/len ) : 0;
   return x - ( slide.target + wrap );
 };
 
@@ -390,7 +377,7 @@ proto.onscroll = function() {
 function getScrollPosition() {
   return {
     x: window.pageXOffset,
-    y: window.pageYOffset
+    y: window.pageYOffset,
   };
 }
 
@@ -398,4 +385,4 @@ function getScrollPosition() {
 
 return Flickity;
 
-}));
+} ) );

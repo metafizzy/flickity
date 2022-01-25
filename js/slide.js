@@ -1,7 +1,6 @@
 // slide
 ( function( window, factory ) {
   // universal module definition
-  /* jshint strict: false */
   if ( typeof define == 'function' && define.amd ) {
     // AMD
     define( factory );
@@ -52,27 +51,23 @@ proto.getLastCell = function() {
 };
 
 proto.select = function() {
-  this.changeSelected( true );
+  this.cells.forEach( function( cell ) {
+    cell.select();
+  } );
 };
 
 proto.unselect = function() {
-  this.changeSelected( false );
-};
-
-proto.changeSelected = function( isSelected ) {
-  var classMethod = isSelected ? 'add' : 'remove';
   this.cells.forEach( function( cell ) {
-    cell.element.classList[ classMethod ]('is-selected');
-    cell.element.setAttribute( 'aria-selected', isSelected.toString() );
-  });
+    cell.unselect();
+  } );
 };
 
 proto.getCellElements = function() {
   return this.cells.map( function( cell ) {
     return cell.element;
-  });
+  } );
 };
 
 return Slide;
 
-}));
+} ) );

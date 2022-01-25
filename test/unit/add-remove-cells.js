@@ -20,9 +20,12 @@ QUnit.test( 'add/remove cells', function( assert ) {
   var sliderElem = elem.querySelector('.flickity-slider');
 
   function checkCellElem( cellElem, index, message ) {
-    assert.equal( sliderElem.children[ index ], cellElem, message + ' cell element in DOM correct' );
-    assert.equal( flkty.cells[ index ].element, cellElem, message + ' element added as cell' );
-    assert.ok( isPositionApprox( cellElem.style.left, index * 25 ), ' element positioned' );
+    assert.equal( sliderElem.children[ index ], cellElem,
+        message + ' cell element in DOM correct' );
+    assert.equal( flkty.cells[ index ].element, cellElem,
+        message + ' element added as cell' );
+    assert.ok( isPositionApprox( cellElem.style.left, index * 25 ),
+        ' element positioned' );
   }
 
   // prepend cell element
@@ -54,7 +57,7 @@ QUnit.test( 'add/remove cells', function( assert ) {
 
   function checkCellPositions() {
     var isGap = false;
-    for ( var i=0, len = flkty.cells.length; i < len; i++ ) {
+    for ( var i = 0, len = flkty.cells.length; i < len; i++ ) {
       var cell = flkty.cells[i];
       if ( !isPositionApprox( cell.element.style.left, i * 25 ) ) {
         assert.ok( false, 'gap in cell position ' + i + ' after removal' );
@@ -85,4 +88,4 @@ QUnit.test( 'add/remove cells', function( assert ) {
   flkty.resize();
   assert.ok( true, 'resize with zero items didnt freak out' );
 
-});
+} );

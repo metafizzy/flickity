@@ -1,29 +1,28 @@
 // player & autoPlay
 ( function( window, factory ) {
   // universal module definition
-  /* jshint strict: false */
   if ( typeof define == 'function' && define.amd ) {
     // AMD
     define( [
       'ev-emitter/ev-emitter',
       'fizzy-ui-utils/utils',
-      './flickity'
+      './flickity',
     ], function( EvEmitter, utils, Flickity ) {
       return factory( EvEmitter, utils, Flickity );
-    });
+    } );
   } else if ( typeof module == 'object' && module.exports ) {
     // CommonJS
     module.exports = factory(
-      require('ev-emitter'),
-      require('fizzy-ui-utils'),
-      require('./flickity')
+        require('ev-emitter'),
+        require('fizzy-ui-utils'),
+        require('./flickity')
     );
   } else {
     // browser global
     factory(
-      window.EvEmitter,
-      window.fizzyUIUtils,
-      window.Flickity
+        window.EvEmitter,
+        window.fizzyUIUtils,
+        window.Flickity
     );
   }
 
@@ -119,8 +118,8 @@ Player.prototype.visibilityPlay = function() {
 // -------------------------- Flickity -------------------------- //
 
 utils.extend( Flickity.defaults, {
-  pauseAutoPlayOnHover: true
-});
+  pauseAutoPlayOnHover: true,
+} );
 
 Flickity.createMethods.push('_createPlayer');
 var proto = Flickity.prototype;
@@ -188,4 +187,4 @@ Flickity.Player = Player;
 
 return Flickity;
 
-}));
+} ) );

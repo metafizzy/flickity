@@ -1,35 +1,34 @@
 // page dots
 ( function( window, factory ) {
   // universal module definition
-  /* jshint strict: false */
   if ( typeof define == 'function' && define.amd ) {
     // AMD
     define( [
       './flickity',
-      'tap-listener/tap-listener',
-      'fizzy-ui-utils/utils'
-    ], function( Flickity, TapListener, utils ) {
-      return factory( window, Flickity, TapListener, utils );
-    });
+      'unipointer/unipointer',
+      'fizzy-ui-utils/utils',
+    ], function( Flickity, Unipointer, utils ) {
+      return factory( window, Flickity, Unipointer, utils );
+    } );
   } else if ( typeof module == 'object' && module.exports ) {
     // CommonJS
     module.exports = factory(
-      window,
-      require('./flickity'),
-      require('tap-listener'),
-      require('fizzy-ui-utils')
+        window,
+        require('./flickity'),
+        require('unipointer'),
+        require('fizzy-ui-utils')
     );
   } else {
     // browser global
     factory(
-      window,
-      window.Flickity,
-      window.TapListener,
-      window.fizzyUIUtils
+        window,
+        window.Flickity,
+        window.Unipointer,
+        window.fizzyUIUtils
     );
   }
 
-}( window, function factory( window, Flickity, TapListener, utils ) {
+}( window, function factory( window, Flickity, Unipointer, utils ) {
 
 // -------------------------- PageDots -------------------------- //
 
@@ -40,7 +39,7 @@ function PageDots( parent ) {
   this._create();
 }
 
-PageDots.prototype = new TapListener();
+PageDots.prototype = Object.create( Unipointer.prototype );
 
 PageDots.prototype._create = function() {
   // create holder element
@@ -49,21 +48,23 @@ PageDots.prototype._create = function() {
   // create dots, array of elements
   this.dots = [];
   // events
-  this.on( 'tap', this.onTap );
+  this.handleClick = this.onClick.bind( this );
   this.on( 'pointerDown', this.parent.childUIPointerDown.bind( this.parent ) );
 };
 
 PageDots.prototype.activate = function() {
   this.setDots();
-  this.bindTap( this.holder );
+  this.holder.addEventListener( 'click', this.handleClick );
+  this.bindStartEvent( this.holder );
   // add to DOM
   this.parent.element.appendChild( this.holder );
 };
 
 PageDots.prototype.deactivate = function() {
+  this.holder.removeEventListener( 'click', this.handleClick );
+  this.unbindStartEvent( this.holder );
   // remove from DOM
   this.parent.element.removeChild( this.holder );
-  TapListener.prototype.destroy.call( this );
 };
 
 PageDots.prototype.setDots = function() {
@@ -120,7 +121,8 @@ PageDots.prototype.updateSelected = function() {
   this.selectedDot.setAttribute( 'aria-current', 'step' );
 };
 
-PageDots.prototype.onTap = function( event ) {
+PageDots.prototype.onTap = // old method name, backwards-compatible
+PageDots.prototype.onClick = function( event ) {
   var target = event.target;
   // only care about dot clicks
   if ( target.nodeName != 'LI' ) {
@@ -134,6 +136,7 @@ PageDots.prototype.onTap = function( event ) {
 
 PageDots.prototype.destroy = function() {
   this.deactivate();
+  this.allOff();
 };
 
 Flickity.PageDots = PageDots;
@@ -143,7 +146,7 @@ Flickity.PageDots = PageDots;
 utils.extend( Flickity.defaults, {
   pageDots: true,
   pageDotAriaLabel: 'Page dot %n'
-});
+} );
 
 Flickity.createMethods.push('_createPageDots');
 
@@ -184,4 +187,4 @@ Flickity.PageDots = PageDots;
 
 return Flickity;
 
-}));
+} ) );

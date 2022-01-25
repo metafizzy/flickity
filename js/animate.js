@@ -1,26 +1,25 @@
 // animate
 ( function( window, factory ) {
   // universal module definition
-  /* jshint strict: false */
   if ( typeof define == 'function' && define.amd ) {
     // AMD
     define( [
-      'fizzy-ui-utils/utils'
+      'fizzy-ui-utils/utils',
     ], function( utils ) {
       return factory( window, utils );
-    });
+    } );
   } else if ( typeof module == 'object' && module.exports ) {
     // CommonJS
     module.exports = factory(
-      window,
-      require('fizzy-ui-utils')
+        window,
+        require('fizzy-ui-utils')
     );
   } else {
     // browser global
     window.Flickity = window.Flickity || {};
     window.Flickity.animatePrototype = factory(
-      window,
-      window.fizzyUIUtils
+        window,
+        window.fizzyUIUtils
     );
   }
 
@@ -56,7 +55,7 @@ proto.animate = function() {
     var _this = this;
     requestAnimationFrame( function animateFrame() {
       _this.animate();
-    });
+    } );
   }
 };
 
@@ -65,26 +64,33 @@ proto.positionSlider = function() {
   // wrap position around
   if ( this.options.wrapAround && this.cells.length > 1 ) {
     x = utils.modulo( x, this.slideableWidth );
-    x = x - this.slideableWidth;
+    x -= this.slideableWidth;
     this.shiftWrapCells( x );
   }
 
-  x = x + this.cursorPosition;
+  this.setTranslateX( x, this.isAnimating );
+  this.dispatchScrollEvent();
+};
+
+proto.setTranslateX = function( x, is3d ) {
+  x += this.cursorPosition;
   // reverse if right-to-left and using transform
   x = this.options.rightToLeft ? -x : x;
-  var value = this.getPositionValue( x );
-  // use 3D tranforms for hardware acceleration on iOS
+  var translateX = this.getPositionValue( x );
+  // use 3D transforms for hardware acceleration on iOS
   // but use 2D when settled, for better font-rendering
-  this.slider.style.transform = this.isAnimating ?
-    'translate3d(' + value + ',0,0)' : 'translateX(' + value + ')';
+  this.slider.style.transform = is3d ?
+    'translate3d(' + translateX + ',0,0)' : 'translateX(' + translateX + ')';
+};
 
-  // scroll event
+proto.dispatchScrollEvent = function() {
   var firstSlide = this.slides[0];
-  if ( firstSlide ) {
-    var positionX = -this.x - firstSlide.target;
-    var progress = positionX / this.slidesWidth;
-    this.dispatchEvent( 'scroll', null, [ progress, positionX ] );
+  if ( !firstSlide ) {
+    return;
   }
+  var positionX = -this.x - firstSlide.target;
+  var progress = positionX / this.slidesWidth;
+  this.dispatchEvent( 'scroll', null, [ progress, positionX ] );
 };
 
 proto.positionSliderAtSelected = function() {
@@ -99,7 +105,7 @@ proto.positionSliderAtSelected = function() {
 proto.getPositionValue = function( position ) {
   if ( this.options.percentPosition ) {
     // percent position, round to 2 digits, like 12.34%
-    return ( Math.round( ( position / this.size.innerWidth ) * 10000 ) * 0.01 )+ '%';
+    return ( Math.round( ( position / this.size.innerWidth ) * 10000 ) * 0.01 ) + '%';
   } else {
     // pixel positioning
     return Math.round( position ) + 'px';
@@ -108,7 +114,9 @@ proto.getPositionValue = function( position ) {
 
 proto.settle = function( previousX ) {
   // keep track of frames where x hasn't moved
-  if ( !this.isPointerDown && Math.round( this.x * 100 ) == Math.round( previousX * 100 ) ) {
+  var isResting = !this.isPointerDown &&
+      Math.round( this.x * 100 ) == Math.round( previousX * 100 );
+  if ( isResting ) {
     this.restingFrames++;
   }
   // stop animating if resting for 3 or more frames
@@ -131,7 +139,7 @@ proto.shiftWrapCells = function( x ) {
 };
 
 proto._shiftCells = function( cells, gap, shift ) {
-  for ( var i=0; i < cells.length; i++ ) {
+  for ( var i = 0; i < cells.length; i++ ) {
     var cell = cells[i];
     var cellShift = gap > 0 ? shift : 0;
     cell.wrapShift( cellShift );
@@ -143,7 +151,7 @@ proto._unshiftCells = function( cells ) {
   if ( !cells || !cells.length ) {
     return;
   }
-  for ( var i=0; i < cells.length; i++ ) {
+  for ( var i = 0; i < cells.length; i++ ) {
     cells[i].wrapShift( 0 );
   }
 };
@@ -191,4 +199,4 @@ proto.applySelectedAttraction = function() {
 
 return proto;
 
-}));
+} ) );

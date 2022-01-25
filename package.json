@@ -1,35 +1,36 @@
 {
   "name": "flickity",
-  "version": "2.1.2",
+  "version": "2.3.0",
   "description": "Touch, responsive, flickable carousels",
   "main": "js/index.js",
   "style": "css/flickity.css",
+  "scripts": {
+    "test": "npm run lint && echo \"View test/ in browser\" && exit 1",
+    "lint": "node bin/lint-json.js && npx eslint .",
+    "lintFix": "npx eslint . --fix",
+    "dist": "npm run bundleCss && npm run bundleJs && npm run uglify",
+    "bundleCss": "cp css/flickity.css dist/flickity.css && node bin/bundle-css.js",
+    "bundleJs": "node bin/bundle-js.js",
+    "uglify": "npx uglifyjs dist/flickity.pkgd.js -o dist/flickity.pkgd.min.js --mangle --comments /^!/",
+    "version": "node bin/version.js && npm run dist && git add -A css js dist"
+  },
   "dependencies": {
     "desandro-matches-selector": "^2.0.0",
-    "ev-emitter": "^1.0.2",
-    "fizzy-ui-utils": "^2.0.0",
-    "get-size": "^2.0.0",
-    "tap-listener": "^2.0.0",
-    "unidragger": "^2.3.0"
+    "ev-emitter": "^1.1.1",
+    "fizzy-ui-utils": "^2.0.7",
+    "get-size": "^2.0.3",
+    "unidragger": "^2.4.0",
+    "unipointer": "^2.4.0"
   },
   "devDependencies": {
-    "flickity-imagesloaded": "^2.0.0",
+    "clean-css": "^4.2.3",
+    "eslint": "^7.17.0",
+    "eslint-plugin-metafizzy": "^1.2.1",
     "flickity-as-nav-for": "^2.0.0",
+    "flickity-imagesloaded": "^2.0.0",
     "jquery-bridget": "^2.0.0",
-    "gulp": "^3.8.10",
-    "gulp-jshint": "^1.9.0",
-    "gulp-rename": "^1.2.0",
-    "gulp-util": "^3.0.2",
-    "chalk": "^0.5.1",
-    "gulp-replace": "^0.5.1",
-    "gulp-requirejs-optimize": "github:metafizzy/gulp-requirejs-optimize",
-    "gulp-uglify": "^1.0.2",
-    "gulp-json-lint": "0.0.1",
-    "gulp-clean-css": "^2.0.4",
-    "minimist": "^1.1.0"
-  },
-  "scripts": {
-    "test": "echo \"View test/ in browser\" && exit 1"
+    "requirejs": "^2.3.6",
+    "uglify-js": "^3.9.3"
   },
   "repository": {
     "type": "git",

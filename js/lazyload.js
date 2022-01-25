@@ -1,28 +1,27 @@
 // lazyload
 ( function( window, factory ) {
   // universal module definition
-  /* jshint strict: false */
   if ( typeof define == 'function' && define.amd ) {
     // AMD
     define( [
       './flickity',
-      'fizzy-ui-utils/utils'
+      'fizzy-ui-utils/utils',
     ], function( Flickity, utils ) {
       return factory( window, Flickity, utils );
-    });
+    } );
   } else if ( typeof module == 'object' && module.exports ) {
     // CommonJS
     module.exports = factory(
-      window,
-      require('./flickity'),
-      require('fizzy-ui-utils')
+        window,
+        require('./flickity'),
+        require('fizzy-ui-utils')
     );
   } else {
     // browser global
     factory(
-      window,
-      window.Flickity,
-      window.fizzyUIUtils
+        window,
+        window.Flickity,
+        window.fizzyUIUtils
     );
   }
 
@@ -49,7 +48,7 @@ proto.lazyLoad = function() {
   cellElems.forEach( function( cellElem ) {
     var lazyCellImages = getCellLazyImages( cellElem );
     lazyImages = lazyImages.concat( lazyCellImages );
-  });
+  } );
   // load lazy images
   lazyImages.forEach( function( img ) {
     new LazyLoader( img, this );
@@ -77,6 +76,8 @@ function getCellLazyImages( cellElem ) {
 
 /**
  * class to handle loading images
+ * @param {Image} img - Image element
+ * @param {Flickity} flickity - Flickity instance
  */
 function LazyLoader( img, flickity ) {
   this.img = img;
@@ -131,4 +132,4 @@ Flickity.LazyLoader = LazyLoader;
 
 return Flickity;
 
-}));
+} ) );
