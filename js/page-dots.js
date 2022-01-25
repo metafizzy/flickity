@@ -82,11 +82,13 @@ PageDots.prototype.addDots = function( count ) {
   var newDots = [];
   var length = this.dots.length;
   var max = length + count;
+  var ariaLabel = this.parent.options.pageDotAriaLabel;
 
   for ( var i = length; i < max; i++ ) {
     var dot = document.createElement('li');
+    var label = ariaLabel.replace( '%n', i + 1 );
     dot.className = 'dot';
-    dot.setAttribute( 'aria-label', 'Page dot ' + ( i + 1 ) );
+    dot.setAttribute( 'aria-label', label );
     fragment.appendChild( dot );
     newDots.push( dot );
   }
@@ -143,6 +145,7 @@ Flickity.PageDots = PageDots;
 
 utils.extend( Flickity.defaults, {
   pageDots: true,
+  pageDotAriaLabel: 'Page dot %n'
 } );
 
 Flickity.createMethods.push('_createPageDots');
