@@ -14,10 +14,10 @@
 
   <!-- dependencies -->
   <script src="../node_modules/get-size/get-size.js"></script>
-<!-- <script src="../node_modules/imagesloaded/imagesloaded.js"></script> -->
   <script src="../node_modules/ev-emitter/ev-emitter.js"></script>
   <script src="../node_modules/fizzy-ui-utils/utils.js"></script>
   <script src="../node_modules/unidragger/unidragger.js"></script>
+  <script src="../node_modules/imagesloaded/imagesloaded.js"></script>
   <!-- Flickity source -->
   <script src="../js/cell.js"></script>
   <script src="../js/slide.js"></script>
@@ -29,6 +29,7 @@
   <script src="../js/player.js"></script>
   <script src="../js/add-remove-cell.js"></script>
   <script src="../js/lazyload.js"></script>
+  <script src="../js/imagesloaded.js"></script>
   <!-- unit tests -->
   <script src="unit/init.js"></script>
   <script src="unit/cell-selector.js"></script>
@@ -52,6 +53,7 @@
   <script src="unit/change.js"></script>
   <script src="unit/initial-index.js"></script>
   <script src="unit/wrap-around-fill.js"></script>
+  <script src="unit/imagesloaded.js"></script>
 
 </head>
 <body>
@@ -311,6 +313,31 @@
     <div class="cell">2</div>
     <div class="cell">3</div>
     <div class="cell cell--wrap-around-short">4</div>
+  </div>
+
+  <h2>imagesLoaded</h2>
+  <div id="imagesloaded" class="gallery gallery--imagesloaded">
+    <img src="https://i.imgur.com/r8p3Xgq.jpg" />
+    <img src="https://i.imgur.com/q9zO6tw.jpg" />
+    <img src="https://i.imgur.com/bwy74ok.jpg" />
+    <img src="https://i.imgur.com/hODreXI.jpg" />
+    <img src="https://i.imgur.com/UORFJ3w.jpg" />
+    <img src="https://i.imgur.com/bAZWoqx.jpg" />
+    <img src="https://i.imgur.com/PgmEBSB.jpg" />
+    <img src="https://i.imgur.com/aboaFoB.jpg" />
+    <img src="https://i.imgur.com/LkmcILl.jpg" />
+  </div>
+
+  <div id="imagesloaded-in-divs" class="gallery gallery--imagesloaded">
+    <div><img src="https://i.imgur.com/r8p3Xgq.jpg" /></div>
+    <div><img src="https://i.imgur.com/q9zO6tw.jpg" /></div>
+    <div><img src="https://i.imgur.com/bwy74ok.jpg" /></div>
+    <div><div><img src="https://i.imgur.com/hODreXI.jpg" /></div></div>
+    <div><div><img src="https://i.imgur.com/UORFJ3w.jpg" /></div></div>
+    <div><img src="https://i.imgur.com/bAZWoqx.jpg" /></div>
+    <div><img src="https://i.imgur.com/PgmEBSB.jpg" /></div>
+    <div><div><img src="https://i.imgur.com/aboaFoB.jpg" /></div></div>
+    <div><img src="https://i.imgur.com/LkmcILl.jpg" /></div>
   </div>
 
 </body>

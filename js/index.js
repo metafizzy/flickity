@@ -17,6 +17,7 @@ if ( typeof module == 'object' && module.exports ) {
   require('./player');
   require('./add-remove-cell');
   require('./lazyload');
+  require('./imagesloaded');
 
   module.exports = Flickity;
 }

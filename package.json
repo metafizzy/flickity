@@ -20,13 +20,13 @@
     "ev-emitter": "^2.1.2",
     "fizzy-ui-utils": "^3.0.0",
     "get-size": "^3.0.0",
+    "imagesloaded": "^5.0.0",
     "unidragger": "^3.0.0"
   },
   "devDependencies": {
     "clean-css": "^5.2.2",
     "eslint": "^8.10.0",
     "eslint-plugin-metafizzy": "^2.0.1",
-    "flickity-imagesloaded": "^2.0.0",
     "jquery-bridget": "^3.0.1",
     "qunit": "^2.17.2",
     "stylelint": "^14.2.0",

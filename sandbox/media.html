@@ -121,6 +121,7 @@
 <script src="../node_modules/ev-emitter/ev-emitter.js"></script>
 <script src="../node_modules/unidragger/unidragger.js"></script>
 <script src="../node_modules/fizzy-ui-utils/utils.js"></script>
+<script src="../node_modules/imagesloaded/imagesloaded.js"></script>
 
 <script src="../js/cell.js"></script>
 <script src="../js/slide.js"></script>
@@ -132,23 +133,7 @@
 <script src="../js/player.js"></script>
 <script src="../js/add-remove-cell.js"></script>
 <script src="../js/lazyload.js"></script>
-
-<script src="../node_modules/imagesloaded/imagesloaded.js"></script>
-<script src="../node_modules/flickity-imagesloaded/flickity-imagesloaded.js"></script>
-
-<!-- <script src="../dist/flickity.pkgd.js"></script> -->
-
-<script>
-// var imgLoad = imagesLoaded('#image-gallery1');
-let flkty1 = Flickity.data('#image-gallery1');
-// imgLoad.on( 'progress', function( instance, image ) {
-//   flkty1.cellSizeChange( image.img );
-// });
-
-flkty1.on( 'staticClick', function( event, pointer ) {
-  console.log( event.target );
-});
-</script>
+<script src="../js/imagesloaded.js"></script>
 
 </body>
 </html>

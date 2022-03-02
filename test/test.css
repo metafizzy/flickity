@@ -18,6 +18,11 @@ body {
   margin-bottom: 40px;
 }
 
+.gallery--imagesloaded img {
+  display: block;
+  height: 140px;
+}
+
 .gallery .cell {
   width: 100%;
   height: 100px;

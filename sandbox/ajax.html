@@ -39,7 +39,7 @@
 <script src="../js/page-dots.js"></script>
 <script src="../js/player.js"></script>
 <script src="../js/add-remove-cell.js"></script>
-<script src="../node_modules/flickity-imagesloaded/flickity-imagesloaded.js"></script>
+<script src="../js/imagesloaded.js"></script>
 
 <script>
 window.onajaxload = function({ items }) {
@@ -51,7 +51,7 @@ window.onajaxload = function({ items }) {
   new Flickity( gallery, {
     freeScroll: true,
     friction: 0.2,
-    // imagesLoaded: true,
+    imagesLoaded: true,
     prevNextButtons: false,
     pageDots: false,
     wrapAround: true
