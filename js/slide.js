@@ -28,7 +28,7 @@ proto.addCell = function( cell ) {
   this.outerWidth += cell.size.outerWidth;
   this.height = Math.max( cell.size.outerHeight, this.height );
   // first cell stuff
-  if ( this.cells.length == 1 ) {
+  if ( this.cells.length === 1 ) {
     this.x = cell.x; // x comes from first cell
     this.firstMargin = cell.size[ this.beginMargin ];
   }

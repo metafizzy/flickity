@@ -65,7 +65,7 @@ proto.onDeactivateDrag = function() {
 
 proto.updateDraggable = function() {
   // disable dragging if less than 2 slides. #278
-  if ( this.options.draggable == '>1' ) {
+  if ( this.options.draggable === '>1' ) {
     this.isDraggable = this.slides.length > 1;
   } else {
     this.isDraggable = this.options.draggable;
@@ -88,13 +88,13 @@ proto.handlePointerDown = function( event ) {
     return;
   }
 
-  let isTouchStart = event.type == 'touchstart';
-  let isTouchPointer = event.pointerType == 'touch';
+  let isTouchStart = event.type === 'touchstart';
+  let isTouchPointer = event.pointerType === 'touch';
   let isFocusNode = focusNodes.includes( event.target.nodeName );
   if ( !isTouchStart && !isTouchPointer && !isFocusNode ) event.preventDefault();
   if ( !isFocusNode ) this.focus();
   // blur
-  if ( document.activeElement != this.element ) document.activeElement.blur();
+  if ( document.activeElement !== this.element ) document.activeElement.blur();
   // stop if it was moving
   this.dragX = this.x;
   this.viewport.classList.add('is-pointer-down');
@@ -171,7 +171,7 @@ proto.handleDragEnd = function() {
     let restingX = this.getRestingPosition();
     this.isFreeScrolling = -restingX > this.slides[0].target &&
       -restingX < this.getLastSlide().target;
-  } else if ( !freeScroll && index == this.selectedIndex ) {
+  } else if ( !freeScroll && index === this.selectedIndex ) {
     // boost selection if selected index has not changed
     index += this.dragEndBoostSelect();
   }

@@ -18,10 +18,10 @@ QUnit.test( 'lazyload', function( assert ) {
     assert.ok( !lazyAttr, 'data-flickity-lazyload attribute removed' );
 
     // after first 2 have loaded, select 7th cell
-    if ( loadCount == 2 ) {
+    if ( loadCount === 2 ) {
       flkty.select( 6 );
     }
-    if ( loadCount == 5 ) {
+    if ( loadCount === 5 ) {
       let loadedImgs = gallery.querySelectorAll('.flickity-lazyloaded');
       assert.equal( loadedImgs.length, '5', 'only 5 images loaded' );
       done();

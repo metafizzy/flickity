@@ -20,7 +20,7 @@ QUnit.test( 'lazyload srcset', function( assert ) {
     assert.ok( !lazyAttr, 'data-flickity-lazyload attribute removed' );
 
     // after first 2 have loaded, select 7th cell
-    if ( loadCount == 2 ) {
+    if ( loadCount === 2 ) {
       done();
     }
   } );

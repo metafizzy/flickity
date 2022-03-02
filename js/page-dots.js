@@ -98,7 +98,7 @@ proto.activatePageDots = function() {
 
 proto.onPageDotsClick = function( event ) {
   let index = this.pageDots.dots.indexOf( event.target );
-  if ( index == -1 ) return; // only dot clicks
+  if ( index === -1 ) return; // only dot clicks
 
   this.uiChange();
   this.select( index );

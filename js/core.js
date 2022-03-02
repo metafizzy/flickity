@@ -391,7 +391,7 @@ proto.getIsWrapping = function() {
   let { wrapAround } = this.options;
   if ( !wrapAround || this.slides.length < 2 ) return false;
 
-  if ( wrapAround != 'fill' ) return true;
+  if ( wrapAround !== 'fill' ) return true;
   // check that slides can fit
 
   let gapWidth = this.slideableWidth - this.size.innerWidth;
@@ -503,7 +503,7 @@ proto.select = function( index, isWrap, isInstant ) {
   // events
   this.dispatchEvent( 'select', null, [ index ] );
   // change event if new index
-  if ( index != prevIndex ) {
+  if ( index !== prevIndex ) {
     this.dispatchEvent( 'change', null, [ index ] );
   }
 };
@@ -625,7 +625,7 @@ proto.getCellSlideIndex = function( cell ) {
 proto.getCell = function( elem ) {
   // loop through cells to get the one that matches
   for ( let cell of this.cells ) {
-    if ( cell.element == elem ) return cell;
+    if ( cell.element === elem ) return cell;
   }
 };
 
@@ -770,7 +770,7 @@ proto.onkeydown = function( event ) {
   if ( this.nextButton ) focusableElems.push( this.nextButton.element );
   if ( this.pageDots ) focusableElems.push( ...this.pageDots.dots );
 
-  let isFocused = focusableElems.some( ( elem ) => activeElement == elem );
+  let isFocused = focusableElems.some( ( elem ) => activeElement === elem );
   if ( isFocused ) handler.call( this );
 };
 

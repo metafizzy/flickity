@@ -45,7 +45,7 @@ proto.lazyLoad = function() {
 
 function getCellLazyImages( cellElem ) {
   // check if cell element is lazy image
-  if ( cellElem.nodeName == 'IMG' ) {
+  if ( cellElem.nodeName === 'IMG' ) {
     let cellAttr = cellElem.getAttribute( lazyAttr );
     let cellSrcAttr = cellElem.getAttribute( lazySrcAttr );
     let cellSrcsetAttr = cellElem.getAttribute( lazySrcsetAttr );

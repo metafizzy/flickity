@@ -24,7 +24,7 @@ function Player( autoPlay, onTick ) {
 
 // start play
 Player.prototype.play = function() {
-  if ( this.state == 'playing' ) return;
+  if ( this.state === 'playing' ) return;
 
   // do not play if page is hidden, start playing when page is visible
   let isPageHidden = document.hidden;
@@ -42,7 +42,7 @@ Player.prototype.play = function() {
 
 Player.prototype.tick = function() {
   // do not tick if not playing
-  if ( this.state != 'playing' ) return;
+  if ( this.state !== 'playing' ) return;
 
   // default to 3 seconds
   let time = typeof this.autoPlay == 'number' ? this.autoPlay : 3000;
@@ -66,7 +66,7 @@ Player.prototype.clear = function() {
 };
 
 Player.prototype.pause = function() {
-  if ( this.state == 'playing' ) {
+  if ( this.state === 'playing' ) {
     this.state = 'paused';
     this.clear();
   }
@@ -74,7 +74,7 @@ Player.prototype.pause = function() {
 
 Player.prototype.unpause = function() {
   // re-start play if paused
-  if ( this.state == 'paused' ) this.play();
+  if ( this.state === 'paused' ) this.play();
 };
 
 // pause if page visibility is hidden, unpause if visible

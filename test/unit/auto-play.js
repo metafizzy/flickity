@@ -29,7 +29,7 @@ QUnit.test( 'auto play', function( assert ) {
         if ( selectCount < 5 ) {
           assert.equal( flkty.selectedIndex, selectCount % flkty.cells.length,
               `auto-played to ${flkty.selectedIndex}` );
-        } else if ( selectCount == 5 ) {
+        } else if ( selectCount === 5 ) {
           // HACK do async, should be able to stop after a tick
           flkty.off( 'select', onSelect );
           nextTest();

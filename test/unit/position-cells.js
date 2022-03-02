@@ -2,7 +2,7 @@
 
 // position values can be off by 0.1% or 1px
 function isPositionApprox( value, expected ) {
-  let isPercent = value.indexOf('%') != -1;
+  let isPercent = value.indexOf('%') !== -1;
   value = parseFloat( value );
   let diff = Math.abs( expected - value );
   return isPercent ? diff < 0.1 : diff <= 1;

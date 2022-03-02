@@ -18,8 +18,8 @@ const svgURI = 'http://www.w3.org/2000/svg';
 function PrevNextButton( increment, direction, arrowShape ) {
   this.increment = increment;
   this.direction = direction;
-  this.isPrevious = increment == 'previous';
-  this.isLeft = direction == 'left';
+  this.isPrevious = increment === 'previous';
+  this.isLeft = direction === 'left';
   this._create( arrowShape );
 }
 
@@ -135,11 +135,11 @@ proto.updatePrevNextButton = function( button, disabledIndex ) {
     return;
   }
 
-  let isEnabled = this.selectedIndex != disabledIndex;
+  let isEnabled = this.selectedIndex !== disabledIndex;
   button[ isEnabled ? 'enable' : 'disable' ]();
   // if disabling button that is focused,
   // shift focus to element to maintain keyboard accessibility
-  let isDisabledFocused = !isEnabled && document.activeElement == button.element;
+  let isDisabledFocused = !isEnabled && document.activeElement === button.element;
   if ( isDisabledFocused ) this.focus();
 };
 
