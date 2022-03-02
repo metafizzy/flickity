@@ -27,8 +27,8 @@ PrevNextButton.prototype._create = function( arrowShape ) {
   // properties
   let element = this.element = document.createElement('button');
   element.className = `flickity-button flickity-prev-next-button ${this.increment}`;
-  // prevent button from submitting form http://stackoverflow.com/a/10836076/182183
   let label = this.isPrevious ? 'Previous' : 'Next';
+  // prevent button from submitting form https://stackoverflow.com/a/10836076/182183
   element.setAttribute( 'type', 'button' );
   element.setAttribute( 'aria-label', label );
   // init as disabled

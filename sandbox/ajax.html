@@ -29,8 +29,6 @@
 <script src="../node_modules/unidragger/unidragger.js"></script>
 <script src="../node_modules/fizzy-ui-utils/utils.js"></script>
 <script src="../node_modules/imagesloaded/imagesloaded.js"></script>
-<script src="../node_modules/jquery/dist/jquery.min.js"></script>
-<script src="../node_modules/jquery-bridget/jquery-bridget.js"></script>
 
 <script src="../js/cell.js"></script>
 <script src="../js/slide.js"></script>
@@ -44,32 +42,24 @@
 <script src="../node_modules/flickity-imagesloaded/flickity-imagesloaded.js"></script>
 
 <script>
-(function ($) {
-    var url = "http://api.flickr.com/services/feeds/photos_public.gne?&format=json&jsoncallback=?&extras=url_n&per_page=10";
-
-    $.getJSON(
-    url).done(function (data) {
-        var items = data.items;
-        items.forEach(function (item) {
-            var html = "<div class=\"gallery-cell\"><img src=\"" + item.media.m + "\" /></div>";
-            $('.gallery').append(html);
-        });
-
-        $('.gallery').flickity({
-            contain: true,
-            freeScroll: true,
-            friction: 0.2,
-            imagesLoaded: true,
-            prevNextButtons: false,
-            pageDots: false,
-            wrapAround: true
-        });
-        $(window).on('staticClick.flickity', function (event, pointer, clickedCellIndex, clickedCellElem) {
-            console.log(clickedCellIndex, clickedCellElem);
-        });
-    });
-})(jQuery);
+window.onajaxload = function({ items }) {
+  let gallery = document.querySelector('.gallery');
+  gallery.innerHTML = items.map( ( item ) => {
+    return `<div class="gallery-cell"><img src="${item.media.m}" /></div>`;
+  } ).join(' ');
+  
+  new Flickity( gallery, {
+    freeScroll: true,
+    friction: 0.2,
+    // imagesLoaded: true,
+    prevNextButtons: false,
+    pageDots: false,
+    wrapAround: true
+  });
+};
 </script>
+
+<script src="https://api.flickr.com/services/feeds/photos_public.gne?&format=json&jsoncallback=onajaxload&extras=url_n&per_page=10"></script>
 
 </body>
 </html>
