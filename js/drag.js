@@ -79,8 +79,6 @@ proto._uiChangeDrag = function() {
 
 // -------------------------- pointer events -------------------------- //
 
-const focusNodes = [ 'INPUT', 'TEXTAREA', 'SELECT' ];
-
 proto.handlePointerDown = function( event ) {
   if ( !this.isDraggable ) {
     // proceed for staticClick
@@ -90,7 +88,7 @@ proto.handlePointerDown = function( event ) {
 
   let isTouchStart = event.type === 'touchstart';
   let isTouchPointer = event.pointerType === 'touch';
-  let isFocusNode = focusNodes.includes( event.target.nodeName );
+  let isFocusNode = event.target.matches('input, textarea, select');
   if ( !isTouchStart && !isTouchPointer && !isFocusNode ) event.preventDefault();
   if ( !isFocusNode ) this.focus();
   // blur
