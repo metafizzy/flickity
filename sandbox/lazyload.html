@@ -38,7 +38,8 @@
     background: #DDD;
   }
   
-  .carousel__cell__image {
+  .carousel__cell__image,
+  .carousel__cell__image img {
     display: block;
     max-width: 100%;
     max-height: 400px;
@@ -199,6 +200,32 @@
         https://picsum.photos/720/540/?image=1080 720w,
         https://picsum.photos/360/270/?image=1080 360w"
       sizes="(min-width: 1024px) 720px, 360px" />
+  </div>
+</div>
+
+<h2>&lt;picture&gt;</h2>
+
+<div class="carousel" data-flickity='{ "lazyLoad": true }'>
+  <div class="carousel__cell">
+    <picture class="carousel__cell__image">
+      <source data-flickity-lazyload-srcset="https://picsum.photos/id/1036/1200/900" media="(min-width: 1200px)">
+      <source data-flickity-lazyload-srcset="https://picsum.photos/id/1036/800/600" media="(min-width: 800px)">
+      <img data-flickity-lazyload-src="https://picsum.photos/id/1036/400/300">
+    </picture>
+  </div>
+  <div class="carousel__cell">
+    <picture class="carousel__cell__image">
+      <source data-flickity-lazyload-srcset="https://picsum.photos/id/103/1200/900" media="(min-width: 1200px)">
+      <source data-flickity-lazyload-srcset="https://picsum.photos/id/103/800/600" media="(min-width: 800px)">
+      <img data-flickity-lazyload-src="https://picsum.photos/id/103/400/300">
+    </picture>
+  </div>
+  <div class="carousel__cell">
+    <picture class="carousel__cell__image">
+      <source data-flickity-lazyload-srcset="https://picsum.photos/id/1080/900/1200" media="(min-width: 1200px)">
+      <source data-flickity-lazyload-srcset="https://picsum.photos/id/1080/600/800" media="(min-width: 800px)">
+      <img data-flickity-lazyload-src="https://picsum.photos/id/1080/300/400">
+    </picture>
   </div>
 </div>
 

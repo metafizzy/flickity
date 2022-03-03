@@ -20,7 +20,8 @@
 const lazyAttr = 'data-flickity-lazyload';
 const lazySrcAttr = `${lazyAttr}-src`;
 const lazySrcsetAttr = `${lazyAttr}-srcset`;
-const imgSelector = `img[${lazyAttr}], img[${lazySrcAttr}], img[${lazySrcsetAttr}]`;
+const imgSelector = `img[${lazyAttr}], img[${lazySrcAttr}], ` +
+  `img[${lazySrcsetAttr}], source[${lazySrcsetAttr}]`;
 
 Flickity.create.lazyLoad = function() {
   this.on( 'select', this.lazyLoad );
@@ -31,7 +32,7 @@ Flickity.create.lazyLoad = function() {
 let proto = Flickity.prototype;
 
 proto.lazyLoad = function() {
-  let lazyLoad = this.options.lazyLoad;
+  let { lazyLoad } = this.options;
   if ( !lazyLoad ) return;
 
   // get adjacent cells, use lazyLoad option for adjacent count
@@ -108,7 +109,8 @@ LazyLoader.prototype.complete = function( event, className ) {
   // unbind events
   this.img.removeEventListener( 'load', this );
   this.img.removeEventListener( 'error', this );
-  this.img.classList.add( className );
+  let mediaElem = this.img.parentNode.matches('picture') ? this.img.parentNode : this.img;
+  mediaElem.classList.add( className );
 
   this.onComplete( this.img, event );
 };
