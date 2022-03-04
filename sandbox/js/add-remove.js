@@ -55,8 +55,7 @@ function makeCells() {
 
 ( function() {
   let flkty = new Flickity('#reposition .container');
-  flkty.on( 'staticClick', function( event ) {
-    let cellElem = event.target.closest('.cell');
+  flkty.on( 'staticClick', function( event, pointer, cellElem ) {
     if ( !cellElem ) return;
 
     cellElem.classList.toggle('w3');

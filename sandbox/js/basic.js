@@ -16,7 +16,6 @@ let halfWidthflky = new Flickity( '#half-width', {
 } );
 
 halfWidthflky.on( 'staticClick', function( event, pointer, cellIndex, cellElement ) {
-  // TODOv3 get cellIndex, cellElement
   console.log( cellIndex, cellElement );
 } );
 

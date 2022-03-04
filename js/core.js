@@ -444,7 +444,7 @@ proto._containSlides = function() {
   }
 };
 
-// -----  ----- //
+// ----- events ----- //
 
 /**
  * emits events via eventEmitter and jQuery events
@@ -468,6 +468,38 @@ proto.dispatchEvent = function( type, event, args ) {
     }
     this.$element.trigger( $event, args );
   }
+};
+
+const unidraggerEvents = [
+  'dragStart',
+  'dragMove',
+  'dragEnd',
+  'pointerDown',
+  'pointerMove',
+  'pointerEnd',
+  'staticClick',
+];
+
+let _emitEvent = proto.emitEvent;
+proto.emitEvent = function( eventName, args ) {
+  if ( eventName === 'staticClick' ) {
+    // add cellElem and cellIndex args to staticClick
+    let clickedCell = this.getParentCell( args[0].target );
+    let cellElem = clickedCell && clickedCell.element;
+    let cellIndex = clickedCell && this.cells.indexOf( clickedCell );
+    args = args.concat( cellElem, cellIndex );
+  }
+  // do regular thing
+  _emitEvent.call( this, eventName, args );
+  // duck-punch in jQuery events for Unidragger events
+  let isUnidraggerEvent = unidraggerEvents.includes( eventName );
+  if ( !isUnidraggerEvent || !jQuery || !this.$element ) return;
+
+  eventName += this.options.namespaceJQueryEvents ? '.flickity' : '';
+  let event = args.shift( 0 );
+  let jQEvent = new jQuery.Event( event );
+  jQEvent.type = eventName;
+  this.$element.trigger( jQEvent, args );
 };
 
 // -------------------------- select -------------------------- //
@@ -560,7 +592,6 @@ proto.updateSelectedSlide = function() {
   this.selectedCells = slide.cells;
   this.selectedElements = slide.getCellElements();
   // HACK: selectedCell & selectedElement is first cell in slide, backwards compatibility
-  // TODOv3 Remove in v3?
   this.selectedCell = slide.cells[0];
   this.selectedElement = this.selectedElements[0];
 };

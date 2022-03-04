@@ -15,8 +15,8 @@ $gallery1.on( 'settle.flickity', function( event ) {
   console.log( 'settled', flkty.x, event.type );
 } );
 
-$gallery1.on( 'staticClick.flickity', function( event ) {
-  console.log( 'staticClick', event.type );
+$gallery1.on( 'staticClick.flickity', function( event, pointer, cellElem, cellIndex ) {
+  console.log( 'staticClick', event.type, cellIndex );
 } );
 
 $('#gallery2').flickity({

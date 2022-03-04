@@ -265,17 +265,6 @@ proto.dragEndBoostSelect = function() {
   return 0;
 };
 
-// ----- staticClick ----- //
-
-proto.handleStaticClick = function( /* event */ ) {
-  // TODOv3 dispatch cellElem and cellIndex ???
-  // get clickedCell, if cell was clicked
-  // let clickedCell = this.getParentCell( event.target );
-  // let cellElem = clickedCell && clickedCell.element;
-  // let cellIndex = clickedCell && this.cells.indexOf( clickedCell );
-  // this.dispatchEvent( 'staticClick', event, [ pointer, cellElem, cellIndex ] );
-};
-
 // ----- scroll ----- //
 
 proto.onscroll = function() {
