@@ -113,6 +113,8 @@ proto._create = function() {
   this.viewport = document.createElement('div');
   this.viewport.className = 'flickity-viewport';
   this._createSlider();
+  // used for keyboard navigation
+  this.focusableElems = [ this.element ];
 
   if ( resize || watchCSS ) {
     window.addEventListener( 'resize', this );
@@ -567,10 +569,6 @@ proto._wrapSelect = function( index ) {
   }
 };
 
-proto._getWrapIndex = function( index ) {
-  if ( !this.isDragSelect ) return index;
-};
-
 proto.previous = function( isWrap, isInstant ) {
   this.select( this.selectedIndex - 1, isWrap, isInstant );
 };
@@ -795,13 +793,7 @@ proto.onkeydown = function( event ) {
   // only work if element is in focus
   if ( !this.options.accessibility || !activeElement || !handler ) return;
 
-  let focusableElems = [ this.element ];
-  // TODOv3 maybe add this.focusableElems and handle this in prev-next-buttons.js
-  if ( this.prevButton ) focusableElems.push( this.prevButton.element );
-  if ( this.nextButton ) focusableElems.push( this.nextButton.element );
-  if ( this.pageDots ) focusableElems.push( ...this.pageDots.dots );
-
-  let isFocused = focusableElems.some( ( elem ) => activeElement === elem );
+  let isFocused = this.focusableElems.some( ( elem ) => activeElement === elem );
   if ( isFocused ) handler.call( this );
 };
 

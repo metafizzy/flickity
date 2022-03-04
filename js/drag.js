@@ -175,7 +175,6 @@ proto.handleDragEnd = function() {
   }
   delete this.previousDragX;
   // apply selection
-  // TODO refactor this, selecting here feels weird
   // HACK, set flag so dragging stays in correct direction
   this.isDragSelect = this.isWrapping;
   this.select( index );

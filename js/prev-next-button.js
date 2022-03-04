@@ -105,6 +105,8 @@ Flickity.create.prevNextButtons = function() {
   let nextDirection = rightToLeft ? 'left' : 'right';
   this.prevButton = new PrevNextButton( 'previous', prevDirection, arrowShape );
   this.nextButton = new PrevNextButton( 'next', nextDirection, arrowShape );
+  this.focusableElems.push( this.prevButton.element );
+  this.focusableElems.push( this.nextButton.element );
 
   this.handlePrevButtonClick = () => {
     this.uiChange();

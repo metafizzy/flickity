@@ -3,13 +3,19 @@
   // universal module definition
   if ( typeof module == 'object' && module.exports ) {
     // CommonJS
-    module.exports = factory( require('./core') );
+    module.exports = factory(
+        require('./core'),
+        require('fizzy-ui-utils'),
+    );
   } else {
     // browser global
-    factory( window.Flickity );
+    factory(
+        window.Flickity,
+        window.fizzyUIUtils,
+    );
   }
 
-}( typeof window != 'undefined' ? window : this, function factory( Flickity ) {
+}( typeof window != 'undefined' ? window : this, function factory( Flickity, utils ) {
 
 // -------------------------- PageDots -------------------------- //
 
@@ -92,6 +98,7 @@ let proto = Flickity.prototype;
 
 proto.activatePageDots = function() {
   this.pageDots.setDots( this.slides.length );
+  this.focusableElems.push( ...this.pageDots.dots );
   this.pageDots.holder.addEventListener( 'click', this.handlePageDotsClick );
   this.element.append( this.pageDots.holder );
 };
@@ -109,7 +116,11 @@ proto.updateSelectedPageDots = function() {
 };
 
 proto.updatePageDots = function() {
+  this.pageDots.dots.forEach( ( dot ) => {
+    utils.removeFrom( this.focusableElems, dot );
+  } );
   this.pageDots.setDots( this.slides.length );
+  this.focusableElems.push( ...this.pageDots.dots );
 };
 
 proto.deactivatePageDots = function() {
