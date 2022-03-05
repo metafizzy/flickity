@@ -10,10 +10,9 @@
     "lintJson": "node bin/lint-json.js",
     "lintCss": "npx stylelint '**/*.css'",
     "lint": "npm run lintJson && npm run lintJs && npm run lintCss",
-    "dist": "npm run bundleCss && npm run bundleJs && npm run uglify",
+    "dist": "npm run bundleCss && npm run bundleJs",
     "bundleCss": "cp css/flickity.css dist/flickity.css && node bin/bundle-css.js",
     "bundleJs": "node bin/bundle-js.js",
-    "uglify": "npx uglifyjs dist/flickity.pkgd.js -o dist/flickity.pkgd.min.js --mangle --comments /^!/",
     "version": "node bin/version.js && npm run dist && git add -A css js dist"
   },
   "dependencies": {

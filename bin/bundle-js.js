@@ -17,12 +17,11 @@ let paths = [
   'node_modules/get-size/get-size.js',
   'node_modules/fizzy-ui-utils/utils.js',
   'node_modules/unidragger/unidragger.js',
+  'node_modules/imagesloaded/imagesloaded.js',
   'js/cell.js',
   'js/slide.js',
   'js/animate.js',
   ...jsPaths,
-  'node_modules/flickity-imagesloaded/flickity-imagesloaded.js',
-  'node_modules/imagesloaded/imagesloaded.js',
 ];
 
 // concatenate files
