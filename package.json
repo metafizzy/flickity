@@ -20,7 +20,7 @@
     "fizzy-ui-utils": "^3.0.0",
     "get-size": "^3.0.0",
     "imagesloaded": "^5.0.0",
-    "unidragger": "^3.0.0"
+    "unidragger": "^3.0.1"
   },
   "devDependencies": {
     "clean-css": "^5.2.2",
