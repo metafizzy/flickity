@@ -1,6 +1,6 @@
 {
   "name": "flickity",
-  "version": "2.3.0",
+  "version": "3.0.0",
   "description": "Touch, responsive, flickable carousels",
   "main": "js/index.js",
   "style": "css/flickity.css",

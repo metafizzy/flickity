@@ -1,4 +1,4 @@
-/*! Flickity v2.3.0
+/*! Flickity v3.0.0
 https://flickity.metafizzy.co
 ---------------------------------------------- */
 
@@ -12,40 +12,54 @@ https://flickity.metafizzy.co
   overflow: hidden;
   position: relative;
   height: 100%;
+  touch-action: pan-y;
 }
 
 .flickity-slider {
   position: absolute;
   width: 100%;
   height: 100%;
+  left: 0;
+}
+
+.flickity-rtl .flickity-slider {
+  left: unset;
+  right: 0;
 }
 
 /* draggable */
 
 .flickity-enabled.is-draggable {
   -webkit-tap-highlight-color: transparent;
-  -webkit-user-select: none;
-     -moz-user-select: none;
-      -ms-user-select: none;
-          user-select: none;
+  user-select: none;
 }
 
 .flickity-enabled.is-draggable .flickity-viewport {
   cursor: move;
-  cursor: -webkit-grab;
   cursor: grab;
 }
 
 .flickity-enabled.is-draggable .flickity-viewport.is-pointer-down {
-  cursor: -webkit-grabbing;
   cursor: grabbing;
+}
+
+/* ---- flickity-cell ---- */
+
+.flickity-cell {
+  position: absolute;
+  left: 0;
+}
+
+.flickity-rtl .flickity-cell {
+  left: unset;
+  right: 0;
 }
 
 /* ---- flickity-button ---- */
 
 .flickity-button {
   position: absolute;
-  background: hsla(0, 0%, 100%, 0.75);
+  background: hsl(0 0% 100% / 75%);
   border: none;
   color: #333;
 }
@@ -93,6 +107,7 @@ https://flickity.metafizzy.co
   left: auto;
   right: 10px;
 }
+
 .flickity-rtl .flickity-prev-next-button.next {
   right: auto;
   left: 10px;
@@ -112,26 +127,38 @@ https://flickity.metafizzy.co
   position: absolute;
   width: 100%;
   bottom: -25px;
-  padding: 0;
-  margin: 0;
-  list-style: none;
   text-align: center;
-  line-height: 1;
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
 }
 
 .flickity-rtl .flickity-page-dots { direction: rtl; }
 
-.flickity-page-dots .dot {
-  display: inline-block;
+.flickity-page-dot {
+  display: block;
   width: 10px;
   height: 10px;
+  padding: 0;
   margin: 0 8px;
-  background: #333;
+  background: hsl(0 0% 20% / 25%);
   border-radius: 50%;
-  opacity: 0.25;
   cursor: pointer;
+  appearance: none;
+  border: none;
+  text-indent: -9999px;
+  overflow: hidden;
 }
 
-.flickity-page-dots .dot.is-selected {
-  opacity: 1;
+.flickity-rtl .flickity-page-dot {
+  text-indent: 9999px;
+}
+
+.flickity-page-dot:focus {
+  outline: none;
+  box-shadow: 0 0 0 5px #19F;
+}
+
+.flickity-page-dot.is-selected {
+  background: hsl(0 0% 20% / 100%);
 }
