@@ -43,7 +43,7 @@ PageDots.prototype.addDots = function( count ) {
       let dot = document.createElement('button');
       dot.setAttribute( 'type', 'button' );
       let num = i + 1 + this.dots.length;
-      dot.className = 'flickity-page-dot';
+      dot.className = 'flickity-button flickity-page-dot';
       dot.textContent = `View slide ${num}`;
       return dot;
     } );
