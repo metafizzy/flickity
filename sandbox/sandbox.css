@@ -26,23 +26,23 @@ body {
 }
 
 .cell.is-selected {
-  outline: 4px solid hsl(0 0% 0% / 25%);
+  outline: 4px solid hsla(0, 0%, 0%, 25%);
   outline-offset: -4px;
 }
 
-.cell:nth-child(6n) { background: hsl(0 80% 70%); }
-.cell:nth-child(6n+1) { background: hsl(60 80% 70%); }
-.cell:nth-child(6n+2) { background: hsl(120 80% 70%); }
-.cell:nth-child(6n+3) { background: hsl(180 80% 70%); }
-.cell:nth-child(6n+4) { background: hsl(240 80% 70%); }
-.cell:nth-child(6n+5) { background: hsl(300 80% 70%); }
+.cell:nth-child(6n) { background: hsl(0, 80%, 70%); }
+.cell:nth-child(6n+1) { background: hsl(60, 80%, 70%); }
+.cell:nth-child(6n+2) { background: hsl(120, 80%, 70%); }
+.cell:nth-child(6n+3) { background: hsl(180, 80%, 70%); }
+.cell:nth-child(6n+4) { background: hsl(240, 80%, 70%); }
+.cell:nth-child(6n+5) { background: hsl(300, 80%, 70%); }
 
-.cell.n1 { background: hsl(0 80% 70%); }
-.cell.n2 { background: hsl(60 80% 70%); }
-.cell.n3 { background: hsl(120 80% 70%); }
-.cell.n4 { background: hsl(180 80% 70%); }
-.cell.n5 { background: hsl(240 80% 70%); }
-.cell.n6 { background: hsl(300 80% 70%); }
+.cell.n1 { background: hsl(0, 80%, 70%); }
+.cell.n2 { background: hsl(60, 80%, 70%); }
+.cell.n3 { background: hsl(120, 80%, 70%); }
+.cell.n4 { background: hsl(180, 80%, 70%); }
+.cell.n5 { background: hsl(240, 80%, 70%); }
+.cell.n6 { background: hsl(300, 80%, 70%); }
 
 .variable-width .cell {
   width: 20%;

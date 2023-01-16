@@ -59,9 +59,9 @@ https://flickity.metafizzy.co
 
 .flickity-button {
   position: absolute;
-  background: hsl(0 0% 100% / 75%);
+  background: hsla(0, 0%, 100%, 75%);
   border: none;
-  color: hsl(0 0% 20%);
+  color: hsl(0, 0%, 20%);
 }
 
 .flickity-button:hover {
@@ -144,7 +144,7 @@ https://flickity.metafizzy.co
   height: 10px;
   padding: 0;
   margin: 0 8px;
-  background: hsl(0 0% 20% / 25%);
+  background: hsl(0, 0%, 20%, 25%);
   border-radius: 50%;
   cursor: pointer;
   appearance: none;
@@ -158,7 +158,7 @@ https://flickity.metafizzy.co
 }
 
 .flickity-page-dot:hover {
-  background: hsl(0 0% 20% / 75%);
+  background: hsla(0, 0%, 20%, 75%);
 }
 
 .flickity-page-dot:active {
@@ -166,5 +166,5 @@ https://flickity.metafizzy.co
 }
 
 .flickity-page-dot.is-selected {
-  background: hsl(0 0% 20%);
+  background: hsl(0, 0%, 20%);
 }
