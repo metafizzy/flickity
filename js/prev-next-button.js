@@ -148,7 +148,7 @@ proto.updatePrevNextButton = function( button, disabledIndex ) {
 proto.activatePrevNextButtons = function() {
   this.prevButton.element.addEventListener( 'click', this.handlePrevButtonClick );
   this.nextButton.element.addEventListener( 'click', this.handleNextButtonClick );
-  this.element.append( this.prevButton.element, this.nextButton.element );
+  this.element.prepend( this.prevButton.element, this.nextButton.element );
   this.on( 'deactivate', this.deactivatePrevNextButtons );
 };
 

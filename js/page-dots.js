@@ -100,7 +100,7 @@ proto.activatePageDots = function() {
   this.pageDots.setDots( this.slides.length );
   this.focusableElems.push( ...this.pageDots.dots );
   this.pageDots.holder.addEventListener( 'click', this.handlePageDotsClick );
-  this.element.append( this.pageDots.holder );
+  this.element.insertBefore( this.pageDots.holder, this.viewport );
 };
 
 proto.onPageDotsClick = function( event ) {

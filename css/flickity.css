@@ -95,6 +95,7 @@ https://flickity.metafizzy.co
   top: 50%;
   width: 44px;
   height: 44px;
+  z-index: 1; /* above viewport */
   border-radius: 50%;
   /* vertically center */
   transform: translateY(-50%);
@@ -127,6 +128,7 @@ https://flickity.metafizzy.co
   position: absolute;
   width: 100%;
   bottom: -25px;
+  z-index: 1; /* above viewport */
   text-align: center;
   display: flex;
   justify-content: center;
