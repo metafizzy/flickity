@@ -701,12 +701,7 @@ proto.getAdjacentCellElements = function( adjCount, index ) {
   if ( !adjCount ) return this.selectedSlide.getCellElements();
 
   index = index === undefined ? this.selectedIndex : index;
-
   let len = this.slides.length;
-  if ( 1 + ( adjCount * 2 ) >= len ) {
-    return this.getCellElements(); // get all
-  }
-
   let cellElems = [];
   for ( let i = index - adjCount; i <= index + adjCount; i++ ) {
     let slideIndex = this.isWrapping ? utils.modulo( i, len ) : i;
