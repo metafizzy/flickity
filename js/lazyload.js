@@ -89,7 +89,7 @@ LazyLoader.prototype.load = function() {
     this.img.getAttribute( lazySrcAttr );
   let srcset = this.img.getAttribute( lazySrcsetAttr );
   // set src & serset
-  this.img.src = src;
+  if ( src ) this.img.src = src;
   if ( srcset ) this.img.setAttribute( 'srcset', srcset );
   // remove attr
   this.img.removeAttribute( lazyAttr );
