@@ -62,17 +62,8 @@ PrevNextButton.prototype.createSVG = function( label, arrowShape ) {
 function getArrowMovements( shape ) {
   // use shape as movement if string
   if ( typeof shape == 'string' ) return shape;
-
-  let { x0, x1, x2, x3, y1, y2 } = shape;
-
-  // create movement string
-  return `M ${x0}, 50
-    L ${x1}, ${y1 + 50}
-    L ${x2}, ${y2 + 50}
-    L ${x3}, 50
-    L ${x2}, ${50 - y2}
-    L ${x1}, ${50 - y1}
-    Z`;
+  // return fallback `arrow left`
+  return `m10 50 50 50 10-10-40-40 40-40-10-10Z`;
 }
 
 // -----  ----- //
